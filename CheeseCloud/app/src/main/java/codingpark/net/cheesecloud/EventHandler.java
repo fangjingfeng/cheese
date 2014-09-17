@@ -764,8 +764,6 @@ public class EventHandler implements OnClickListener, OnItemLongClickListener{
 	 * is used in the Main activity. If any icons are to be added, they must
 	 * be implemented in the getView method. This class is instantiated once in Main
 	 * and has no reason to be instantiated again. 
-	 * 
-	 * @author Joe Berria
 	 */
     public class TableRow extends ArrayAdapter<String> {
     	private final int KB = 1024;
@@ -850,6 +848,7 @@ public class EventHandler implements OnClickListener, OnItemLongClickListener{
     			thumbnail.clearBitmapCache();
     		}
     	}
+
     	@Override
     	public View getView(int position, View convertView, ViewGroup parent){
     		if(mlistmode == CATALOG_MODE)

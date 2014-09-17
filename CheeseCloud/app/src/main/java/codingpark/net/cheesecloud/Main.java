@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Set;
 
+import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ListActivity;
@@ -111,14 +112,18 @@ public final class Main extends ListActivity implements FileOperateCallbacks{
 	
 	private String openType;
 	private File openFile;
+
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        
-        if(android.os.Build.VERSION.SDK_INT != 11)
-        	requestWindowFeature(Window.FEATURE_NO_TITLE);
 
-        //getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON, WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);  
+        // Android 3.0 before, action bar is title bar
+        if(android.os.Build.VERSION.SDK_INT < 11) {
+            requestWindowFeature(Window.FEATURE_NO_TITLE);
+        } else {
+            ActionBar actionBar = getActionBar();
+            actionBar.hide();
+        }
 
         setContentView(R.layout.main);
         
@@ -137,13 +142,14 @@ public final class Main extends ListActivity implements FileOperateCallbacks{
         mCataList = new CatalogList(this);
         mDevicePath = new DevicePath(this);
         
-        mHandler = new EventHandler(Main.this, this, mFileMag,mCataList);
+        mHandler = new EventHandler(Main.this, this, mFileMag, mCataList);
         mHandler.setTextColor(color);
         mHandler.setShowThumbnails(thumb);
         mTable = mHandler.new TableRow();
-        
-        /*sets the ListAdapter for our ListActivity and
-         *gives our EventHandler class the same adapter
+
+        /**
+         * sets the ListAdapter for our ListActivity and
+         * gives our EventHandler class the same adapter
          */
         mHandler.setListAdapter(mTable);
         setListAdapter(mTable);
@@ -200,13 +206,19 @@ public final class Main extends ListActivity implements FileOperateCallbacks{
 
 		/* setup buttons */
         int[] img_button_id = {R.id.home_flash_button,
-        					   R.id.home_sdcard_button,R.id.home_usbhost_button,
+        					   R.id.home_sdcard_button,
+                               R.id.home_usbhost_button,
         					   R.id.back_button,
-        					   R.id.manage_button, R.id.multiselect_button,
-        					   R.id.image_button,R.id.movie_button};
+        					   R.id.manage_button,
+                               R.id.multiselect_button,
+        					   R.id.image_button,
+                               R.id.movie_button};
         
-        int[] button_id = {R.id.hidden_paste, R.id.hidden_copy, R.id.hidden_attach,
-        				   R.id.hidden_delete, R.id.hidden_move};
+        int[] button_id = {R.id.hidden_paste,
+                           R.id.hidden_copy,
+                           R.id.hidden_attach,
+        				   R.id.hidden_delete,
+                           R.id.hidden_move};
         
         ImageButton[] bimg = new ImageButton[img_button_id.length];
         Button[] bt = new Button[button_id.length];
@@ -223,10 +235,9 @@ public final class Main extends ListActivity implements FileOperateCallbacks{
 
 		if( getIntent().getAction() != null ){
 			if(getIntent().getAction().equals(Intent.ACTION_GET_CONTENT)) {
-        	bimg[5].setVisibility(View.GONE);
-			
-        	mReturnIntent = true;
-			
+                bimg[5].setVisibility(View.GONE);
+
+                mReturnIntent = true;
 			}
 		}
         	
@@ -244,10 +255,6 @@ public final class Main extends ListActivity implements FileOperateCallbacks{
         				intent.getAction().equals(Intent.ACTION_MEDIA_BAD_REMOVAL))
         		{
         			Log.d(TAG, tmpstring);
-        			/*
-        			 * add by chenjd,chenjd@allwinnertech.com 2011-09-15
-        			 * waiting for unmounted really 
-        			 */
         			try
 					{
 						Thread.currentThread().sleep(1000);
