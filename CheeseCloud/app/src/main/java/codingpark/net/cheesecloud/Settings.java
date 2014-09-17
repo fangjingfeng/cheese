@@ -13,16 +13,15 @@ import android.widget.ImageButton;
 import android.widget.CompoundButton;
 
 public class Settings extends Activity {
-	private boolean mHiddenChanged = false;
-	private boolean mColorChanged = false;
-	private boolean mThumbnailChanged = false;
-	private boolean mSortChanged = false;
-	private boolean mSpaceChanged = false;
-	
-	private boolean hidden_state;
-	private boolean thumbnail_state;
-	private int color_state, sort_state, mSpaceState;
-	private Intent is = new Intent();
+	private boolean mHiddenChanged              = false;
+	private boolean mColorChanged               = false;
+	private boolean mThumbnailChanged           = false;
+	private boolean mSortChanged                = false;
+
+	private boolean hidden_state                = false;
+	private boolean thumbnail_state             = false;
+	private int color_state, sort_state;
+	private Intent is                           = new Intent();
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -30,33 +29,33 @@ public class Settings extends Activity {
 		setContentView(R.layout.settings);
 		
 		Intent i = getIntent();
-		hidden_state = i.getExtras().getBoolean("HIDDEN");
-		thumbnail_state = i.getExtras().getBoolean("THUMBNAIL");
-		color_state = i.getExtras().getInt("COLOR");
-		sort_state = i.getExtras().getInt("SORT");
-		mSpaceState = i.getExtras().getInt("SPACE");
-				
-		final CheckBox hidden_bx = (CheckBox)findViewById(R.id.setting_hidden_box);
-		final CheckBox thumbnail_bx = (CheckBox)findViewById(R.id.setting_thumbnail_box);
-		final CheckBox space_bx = (CheckBox)findViewById(R.id.setting_storage_box);
-		final ImageButton color_bt = (ImageButton)findViewById(R.id.setting_text_color_button);
-		final ImageButton sort_bt = (ImageButton)findViewById(R.id.settings_sort_button);
+		hidden_state        = i.getExtras().getBoolean("HIDDEN");
+		thumbnail_state     = i.getExtras().getBoolean("THUMBNAIL");
+		color_state         = i.getExtras().getInt("COLOR");
+		sort_state          = i.getExtras().getInt("SORT");
+
+		final CheckBox hidden_bx        = (CheckBox)findViewById(R.id.setting_hidden_box);
+		final CheckBox thumbnail_bx     = (CheckBox)findViewById(R.id.setting_thumbnail_box);
+		final ImageButton color_bt      = (ImageButton)findViewById(R.id.setting_text_color_button);
+		final ImageButton sort_bt       = (ImageButton)findViewById(R.id.settings_sort_button);
 		
 		hidden_bx.setChecked(hidden_state);
 		thumbnail_bx.setChecked(thumbnail_state);
-		space_bx.setChecked(mSpaceState == View.VISIBLE);
-		
+
 		color_bt.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View view) {
 				AlertDialog.Builder builder = new AlertDialog.Builder(Settings.this);
-				CharSequence[] options = {getResources().getString(R.string.White), 
+				CharSequence[] options = {
+                        getResources().getString(R.string.White),
 						getResources().getString(R.string.Magenta), 
 						getResources().getString(R.string.Yellow), 
 						getResources().getString(R.string.Red), 
 						getResources().getString(R.string.Cyan),
 						getResources().getString(R.string.Blue), 
-						getResources().getString(R.string.Green)};
+						getResources().getString(R.string.Green),
+                        "Black"
+                };
 				int index = ((color_state & 0x00ffffff) << 2) % options.length;
 				
 				builder.setTitle("Change text color");
@@ -134,20 +133,7 @@ public class Settings extends Activity {
 				mThumbnailChanged = true;
 			}
 		});
-		
-		space_bx.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-			@Override
-			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-				if(isChecked) 
-					mSpaceState = View.VISIBLE;
-				else 
-					mSpaceState = View.GONE;
-				
-				mSpaceChanged = true;
-				is.putExtra("SPACE", mSpaceState);				
-			}
-		});
-		
+
 		sort_bt.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View view) {
@@ -191,9 +177,6 @@ public class Settings extends Activity {
 	@Override
 	protected void onResume() {
 		super.onResume();
-		
-		if(!mSpaceChanged)
-			is.putExtra("SPACE", mSpaceState);
 		
 		if(!mHiddenChanged)
 			is.putExtra("HIDDEN", hidden_state);

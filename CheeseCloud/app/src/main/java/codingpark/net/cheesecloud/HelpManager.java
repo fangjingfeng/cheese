@@ -13,8 +13,8 @@ import android.widget.Button;
 import android.widget.Toast;
 
 public class HelpManager extends Activity implements OnClickListener {
-	private static final String[] EMAIL = {"nexesdevelopment@gmail.com"};
-	private static final String WEB = "http://nexesdevelopment.webs.com";
+	private static final String[] EMAIL = {"shan0xiao0xi@163.com"};
+	private static final String WEB = "http://codingpark.net/blog";
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -22,9 +22,9 @@ public class HelpManager extends Activity implements OnClickListener {
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.help_layout);
 		
-		String text = "Open Manager: If you have any questions or "
+		String text = "CheeseCloud: If you have any questions or "
 						+"comments, please email the developer or visit "
-						+"the Open Manager web page.\n\nThank you\n\n";
+						+"the Cheese Cloud web page.\n\nThank you\n\n";
 		
 		TextView label = (TextView)findViewById(R.id.help_top_label);
 		label.setText(text);
@@ -42,6 +42,7 @@ public class HelpManager extends Activity implements OnClickListener {
 		
 		switch(id) {
 			case R.id.help_email_bt:
+                // Create intent to start system email application
 				i.setAction(android.content.Intent.ACTION_SEND);
 				i.setType("message/rfc822");
 				i.putExtra(Intent.EXTRA_EMAIL, EMAIL);
@@ -54,6 +55,7 @@ public class HelpManager extends Activity implements OnClickListener {
 			break;
 			
 			case R.id.help_website_bt:
+                // Create intent to start system web browser
 				i.setAction(android.content.Intent.ACTION_VIEW);
 				i.setData(Uri.parse(WEB));
 				try {

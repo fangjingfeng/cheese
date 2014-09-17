@@ -4,7 +4,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Set;
 
-import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ListActivity;
@@ -28,7 +27,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.Window;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.Button;
 import android.widget.EditText;
@@ -63,15 +61,7 @@ public final class Main extends ListActivity implements FileOperateCallbacks{
 	private static final String PREFS_COLOR             = "color";
 	private static final String PREFS_THUMBNAIL         = "thumbnail";
 	private static final String PREFS_SORT              = "sort";
-	private static final String PREFS_STORAGE           = "sdcard space";
-	
-	private static final int MENU_MKDIR                 = 0x00;			//option menu id
-	private static final int MENU_SETTING               = 0x01;			//option menu id
-	private static final int MENU_SEARCH                = 0x02;			//option menu id
-	private static final int MENU_SPACE                 = 0x03;			//option menu id
-	private static final int MENU_QUIT                  = 0x04;			//option menu id
-	private static final int SEARCH_B                   = 0x09;
-	
+
 	private static final int D_MENU_DELETE              = 0x05;			//context menu directory delete
 	private static final int D_MENU_RENAME              = 0x06;			//context menu rename
 	private static final int D_MENU_COPY                = 0x07;			//context menu copy
@@ -79,7 +69,7 @@ public final class Main extends ListActivity implements FileOperateCallbacks{
 	private static final int D_MENU_ZIP                 = 0x0e;			//context menu zip
 	private static final int D_MENU_UNZIP               = 0x0f;			//context menu unzip
 	private static final int D_MENU_MOVE                = 0x30;			//context menu move
-    // TODO Why bluetooth ?
+    // TODO Support transfer file throught bluetooth
 	private static final int F_MENU_BLUETOOTH           = 0x11;			//context menu bluetooth ???
 	private static final int F_MENU_MOVE                = 0x20;			//context menu
 	private static final int F_MENU_DELETE              = 0x0a;			//context menu id
@@ -117,21 +107,22 @@ public final class Main extends ListActivity implements FileOperateCallbacks{
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Android 3.0 before, action bar is title bar
+        /*
+        Don't hide actionbar, need it to display menu
         if(android.os.Build.VERSION.SDK_INT < 11) {
             requestWindowFeature(Window.FEATURE_NO_TITLE);
         } else {
             ActionBar actionBar = getActionBar();
             actionBar.hide();
         }
+        */
 
         setContentView(R.layout.main);
-        
+
         /*read settings*/
         mSettings = getSharedPreferences(PREFS_NAME, 0);
         boolean hide = mSettings.getBoolean(PREFS_HIDDEN, false);
         boolean thumb = mSettings.getBoolean(PREFS_THUMBNAIL, true);
-        int space = mSettings.getInt(PREFS_STORAGE, View.VISIBLE);
         int color = mSettings.getInt(PREFS_COLOR, -1);
         int sort = mSettings.getInt(PREFS_SORT, 1);
 
@@ -163,16 +154,18 @@ public final class Main extends ListActivity implements FileOperateCallbacks{
         mHandler.setUpdateLabels(mPathLabel, mDetailLabel);
 		
         /*
-         * change to the specific file path if this component is started by other applications
+         * Start refresh list
+         * if this component is started by other applications
+         *      then: change to the specific file path
+         * else
+         *      then: list storage list
          */
         Bundle bundle = getIntent().getExtras();
-        if (bundle != null)
-        {        	
-			Log.i(TAG, "intent action ="+getIntent().getAction());
+        if (bundle != null) {
+            Log.i(TAG, "intent action ="+getIntent().getAction());
         	String path = bundle.getString("Path");
 			Log.i(TAG, "path = "+path);
-			if (path != null)
-        	{
+			if (path != null) {
         		if(mDevicePath.getUsbStoragePath().contains(path)) {
         			mPathLabel.setText(mFileMag.getCurrentDir());
         			mHandler.updateDirectory(mFileMag.getHomeDir(FileManager.ROOT_USBHOST));
@@ -189,15 +182,13 @@ public final class Main extends ListActivity implements FileOperateCallbacks{
         			getFocusForButton(R.id.home_flash_button);
         		}
         	}
-			else
-			{
+			else {
 				//default path        	
 	        	mPathLabel.setText(mFileMag.getCurrentDir());
 	        	mHandler.updateDirectory(mFileMag.getHomeDir(FileManager.ROOT_FLASH));
 	        	getFocusForButton(R.id.home_flash_button);
 			}
-        }
-        else { 
+        } else {
         	//default path        	
         	mPathLabel.setText(mFileMag.getCurrentDir());
         	mHandler.updateDirectory(mFileMag.getHomeDir(FileManager.ROOT_FLASH));
@@ -423,8 +414,7 @@ public final class Main extends ListActivity implements FileOperateCallbacks{
 	
 	@Override  
     protected void onDestroy() {   
-        // TODO Auto-generated method stub   
-        super.onDestroy();   
+        super.onDestroy();
         unregisterReceiver(mReceiver);   
     }   
 	/*(non Java-Doc)
@@ -603,7 +593,6 @@ public final class Main extends ListActivity implements FileOperateCallbacks{
 	    			returnIntentResults(file);
 	    			
 	    		} else {
-	    			//TODO:
 	    		}
 	    	}
 	    	
@@ -721,7 +710,6 @@ public final class Main extends ListActivity implements FileOperateCallbacks{
 			
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-				// TODO Auto-generated method stub
 				Intent mIntent = new Intent();
 				switch(which) {
 				case 0:
@@ -777,7 +765,6 @@ public final class Main extends ListActivity implements FileOperateCallbacks{
     		editor.putBoolean(PREFS_THUMBNAIL, thumbnail);
     		editor.putInt(PREFS_COLOR, color);
     		editor.putInt(PREFS_SORT, sort);
-    		editor.putInt(PREFS_STORAGE, space);
     		editor.commit();
     		  		
     		mFileMag.setShowHiddenFiles(check);
@@ -793,14 +780,7 @@ public final class Main extends ListActivity implements FileOperateCallbacks{
     /* ================Menus, options menu and context menu start here=================*/
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-    	menu.add(0, MENU_MKDIR, 0, getResources().getString(R.string.New_Directory)).setIcon(R.drawable.newfolder);
-    	menu.add(0, MENU_SEARCH, 0, getResources().getString(R.string.Search)).setIcon(R.drawable.search);
-    	
-    		/* free space will be implemented at a later time */
-//    	menu.add(0, MENU_SPACE, 0, "Free space").setIcon(R.drawable.space);
-    	menu.add(0, MENU_SETTING, 0, getResources().getString(R.string.Settings)).setIcon(R.drawable.setting);
-    	menu.add(0, MENU_QUIT, 0, getResources().getString(R.string.Quit)).setIcon(R.drawable.logout);
-    	
+        getMenuInflater().inflate(R.menu.main_menu, menu);
     	return true;
     }
     
@@ -810,16 +790,16 @@ public final class Main extends ListActivity implements FileOperateCallbacks{
     	switch(mode){
     	case EventHandler.TREEVIEW_MODE:
     		if(mFileMag.isRoot()){
-        		menu.findItem(MENU_MKDIR).setEnabled(mHoldingMkdir);
-        		menu.findItem(MENU_SEARCH).setEnabled(mHoldingSearch);
+        		menu.findItem(R.id.action_new_dir).setEnabled(mHoldingMkdir);
+        		menu.findItem(R.id.action_search).setEnabled(mHoldingSearch);
         	}else{
-        		menu.findItem(MENU_MKDIR).setEnabled(!mHoldingMkdir);
-        		menu.findItem(MENU_SEARCH).setEnabled(!mHoldingSearch);
+        		menu.findItem(R.id.action_new_dir).setEnabled(!mHoldingMkdir);
+        		menu.findItem(R.id.action_search).setEnabled(!mHoldingSearch);
         	}
     		break;
     	case EventHandler.CATALOG_MODE:
-    		menu.findItem(MENU_MKDIR).setEnabled(mHoldingMkdir);
-    		menu.findItem(MENU_SEARCH).setEnabled(!mHoldingSearch);
+    		menu.findItem(R.id.action_new_dir).setEnabled(mHoldingMkdir);
+    		menu.findItem(R.id.action_search).setEnabled(!mHoldingSearch);
     		break;
     	}
     	return super.onPrepareOptionsMenu(menu);
@@ -828,31 +808,30 @@ public final class Main extends ListActivity implements FileOperateCallbacks{
 	@Override
     public boolean onOptionsItemSelected(MenuItem item) {
     	switch(item.getItemId()) {
-    		case MENU_MKDIR:
-    			showDialog(MENU_MKDIR);
+    		case R.id.action_new_dir:
+    			showDialog(R.id.action_new_dir);
     			return true;
     			
-    		case MENU_SEARCH:
-    			showDialog(MENU_SEARCH);
+    		case R.id.action_search:
+    			showDialog(R.id.action_search);
     			return true;
     			
-    		case MENU_SPACE: /* not yet implemented */
-    			return true;
-    			
-    		case MENU_SETTING:
+    		case R.id.action_settings:
     			Intent settings_int = new Intent(this, Settings.class);
+                settings_int.putExtra("COLOR", mSettings.getInt(PREFS_COLOR, -1));
     			settings_int.putExtra("HIDDEN", mSettings.getBoolean(PREFS_HIDDEN, false));
     			settings_int.putExtra("THUMBNAIL", mSettings.getBoolean(PREFS_THUMBNAIL, true));
-    			settings_int.putExtra("COLOR", mSettings.getInt(PREFS_COLOR, -1));
     			settings_int.putExtra("SORT", mSettings.getInt(PREFS_SORT, 1));
-    			settings_int.putExtra("SPACE", mSettings.getInt(PREFS_STORAGE, View.VISIBLE));
-    			
     			startActivityForResult(settings_int, SETTING_REQ);
     			return true;
     			
-    		case MENU_QUIT:
+    		case R.id.action_logout:
     			finish();
     			return true;
+            case R.id.action_help:
+                Intent intent = new Intent(this, HelpManager.class);
+                this.startActivity(intent);
+                return true;
     	}
     	return false;
     }
@@ -1034,7 +1013,7 @@ public final class Main extends ListActivity implements FileOperateCallbacks{
     protected void  onPrepareDialog(int id, Dialog dialog) 
     {
     	switch(id) {
-    	case MENU_MKDIR:
+    	case R.id.action_new_dir:
 			TextView label = (TextView)dialog.findViewById(R.id.input_label);
 			label.setText(mFileMag.getCurrentDir());
 		break; 
@@ -1045,7 +1024,7 @@ public final class Main extends ListActivity implements FileOperateCallbacks{
     	final Dialog dialog = new Dialog(Main.this);
     	
     	switch(id) {
-    		case MENU_MKDIR:
+    		case R.id.action_new_dir:
     			dialog.setContentView(R.layout.input_layout);
     			dialog.setTitle(getResources().getString(R.string.Create_Directory));
     			dialog.setCancelable(false);
@@ -1133,8 +1112,7 @@ public final class Main extends ListActivity implements FileOperateCallbacks{
     			});
     		break;
     		
-    		case SEARCH_B:
-    		case MENU_SEARCH:
+    		case R.id.action_search:
     			dialog.setContentView(R.layout.input_layout);
     			dialog.setTitle(getResources().getString(R.string.Search));
     			dialog.setCancelable(false);
@@ -1180,7 +1158,7 @@ public final class Main extends ListActivity implements FileOperateCallbacks{
     	String current = mFileMag.getCurrentDir();
     	
     	if(keycode == KeyEvent.KEYCODE_SEARCH) {
-    		showDialog(SEARCH_B);
+    		showDialog(R.id.action_search);
     		
     		return true;
     		

@@ -58,8 +58,9 @@
     <string name="New_Directory">New Directory</string>
     <string name="Search">Search</string>
     <string name="Settings">Settings</string>
-    <string name="Quit">Quit</string>
-    
+    <string name="Quit">Logout</string>
+    <string name="Help">Help</string>
+
     <string name="Folder_operations">Folder operations</string>
     <string name="Delete_Folder">Delete Folder</string>
     <string name="Rename_Folder">Rename Folder</string>

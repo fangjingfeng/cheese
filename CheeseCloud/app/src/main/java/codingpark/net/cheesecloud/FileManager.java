@@ -60,6 +60,7 @@ public class FileManager {
 	public String usbhostList = "Usb";
 	
 	private Context mContext ;
+
 	/**
 	 * Constructs an object of the class
 	 * <br>

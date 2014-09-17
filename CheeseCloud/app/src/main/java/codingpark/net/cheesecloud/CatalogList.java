@@ -47,7 +47,6 @@ public class CatalogList {
 
 		@Override
 		public boolean accept(File pathname) {
-			// TODO Auto-generated method stub
 			//keep all directions and needed files
 			if(pathname.isDirectory())
 			{
@@ -76,7 +75,6 @@ public class CatalogList {
 
 		@Override
 		public boolean accept(File pathname) {
-			// TODO Auto-generated method stub
 			//keep all directions and needed files
 			if(pathname.isDirectory())
 			{
@@ -105,7 +103,6 @@ public class CatalogList {
 
 		@Override
 		public boolean accept(File pathname) {
-			// TODO Auto-generated method stub
 			//keep all directions and needed files
 			if(pathname.isDirectory())
 			{
@@ -134,7 +131,6 @@ public class CatalogList {
 
 		@Override
 		public boolean accept(File pathname) {
-			// TODO Auto-generated method stub
 			//keep all directions and needed files
 			if(pathname.isDirectory())
 			{
