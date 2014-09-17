@@ -4,71 +4,70 @@
     android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent">
-        <!--Use to show current path-->
-    	<TextView
-	    	android:id="@+id/path_label"
-	    	android:text="@string/path_is"
-	    	android:textColor="@color/white"
-            android:maxLines="1"
-	    	android:layout_width="fill_parent"
-	    	android:layout_height="wrap_content"
-	    	android:layout_weight="0"/>
-        <!--Use to display current select/hold file info-->
-	    <TextView
-	    	android:id="@+id/detail_label"
-	    	android:textColor="@color/brightRed"
-            android:layout_width="fill_parent"
-	    	android:layout_height="wrap_content"
-	    	android:gravity="center"
-	    	android:layout_weight="0"/>
-    	<ListView
-    		android:layout_width="fill_parent"
-    		android:layout_height="fill_parent"
-    		android:layout_weight="2"
-    		android:smoothScrollbar="true"
-    		android:longClickable="true"
-            android:id="@+id/android:list"
-            style="@style/AppTheme" />
-    		
+    <!--Use to show current path-->
+    <TextView
+        android:id="@+id/path_label"
+        android:text="@string/path_is"
+        android:maxLines="1"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0"/>
+    <!--Use to display current select/hold file info-->
+    <TextView
+        android:id="@+id/detail_label"
+        android:textColor="@color/brightRed"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_weight="0"/>
+    <ListView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_weight="2"
+        android:smoothScrollbar="true"
+        android:longClickable="true"
+        android:id="@+id/android:list"
+        style="@style/AppTheme" />
+
     <!--  Footer for Multi-select buttons -->
     <LinearLayout
-    	android:id="@+id/hidden_buttons"
-    	android:orientation="horizontal"
-    	android:layout_width="fill_parent"
-    	android:layout_height="wrap_content"
-    	android:background="@color/black"
-    	android:visibility="gone">
-    	<Button
-    		android:id="@+id/hidden_attach"
-    		android:layout_width="wrap_content"
-    		android:layout_height="wrap_content"
-    		android:layout_weight="1"
-    		android:text="@string/Attach"
-    		android:visibility="gone"/>
-    	<Button 
-    	    android:id="@+id/hidden_paste"
-    	    android:layout_width="wrap_content"
-    	    android:layout_height="wrap_content"
-    	    android:layout_weight="1"
-    	    android:text="@string/Paste"/>
-    	<Button
-    		android:id="@+id/hidden_delete"
-    		android:layout_width="wrap_content"
-    		android:layout_height="wrap_content"
-    		android:layout_weight="1"
-      		android:text="@string/Delete"/>
-    	<Button
-    		android:id="@+id/hidden_copy"
-    		android:layout_width="wrap_content"
-    		android:layout_height="wrap_content"
-    		android:layout_weight="1"
-    		android:text="@string/Copy"/>
-    	<Button
-    		android:id="@+id/hidden_move"
-    		android:layout_width="wrap_content"
-    		android:layout_height="wrap_content"
-    		android:layout_weight="1"
-    		android:text="@string/Move" />
+        android:id="@+id/hidden_buttons"
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/black"
+        android:visibility="gone">
+        <Button
+            android:id="@+id/hidden_attach"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/Attach"
+            android:visibility="gone"/>
+        <Button
+            android:id="@+id/hidden_paste"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/Paste"/>
+        <Button
+            android:id="@+id/hidden_delete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/Delete"/>
+        <Button
+            android:id="@+id/hidden_copy"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/Copy"/>
+        <Button
+            android:id="@+id/hidden_move"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/Move" />
     </LinearLayout>
     <LinearLayout
         android:orientation="horizontal"
