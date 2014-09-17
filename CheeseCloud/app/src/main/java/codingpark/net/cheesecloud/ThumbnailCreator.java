@@ -1,21 +1,3 @@
-/*
-    Open Manager, an open source file manager for the Android system
-    Copyright (C) 2009, 2010, 2011  Joe Berria <nexesdevelopment@gmail.com>
-
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-
 package codingpark.net.cheesecloud;
 
 import java.io.File;
@@ -45,7 +27,6 @@ public class ThumbnailCreator {
 		File f = new File(imageSrc);
 		Bitmap bmp = MessageCache.getInstance().loadThumbnailMessage(imageSrc);
 		if(bmp != null){
-			//������޸����ڲ�һ��,˵���ļ����޸Ĺ�,��Ҫ�����������ͼ
 			if(MessageCache.getInstance().loadModifiedTime(imageSrc) != f.lastModified()){
 				Log.d(TAG," the file had been change since last time,I should request thumbnail again ");
 				return null;
@@ -84,12 +65,7 @@ public class ThumbnailCreator {
 		thread.start();
 	}
 	
-	/**
-	 * ��������ͼ
-	 * @param imageSrc
-	 * @return ����null,�����ʱ�޷��������ͼ
-	 */
-	public Bitmap createThumbnail(String imageSrc) 
+	public Bitmap createThumbnail(String imageSrc)
 	{
 		boolean isJPG = false;
 		Bitmap thumbnail = null;
@@ -153,7 +129,6 @@ public class ThumbnailCreator {
 					thumbnail = createThumbnailByOptions(imageSrc);
 				}
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 				return null;
 			}
@@ -180,7 +155,6 @@ public class ThumbnailCreator {
 			thumb = BitmapFactory.decodeFile(imageSrc, options);
 			if(thumb == null)
 			{
-				/* ������decodeʱ����null */
 				return null;
 			}
 			thumb = Bitmap.createScaledBitmap(thumb, width, height, false);

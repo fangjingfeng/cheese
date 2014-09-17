@@ -1,5 +1,4 @@
 /*
- * add by chenjd, chenjd@allwinnertech.com  20110919
  * when a file is created,modify or delete,it will used this class to notify the MediaScanner to refresh the media database
  */
 

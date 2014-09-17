@@ -1,8 +1,5 @@
 /**
  * you can find the path of sdcard,flash and usbhost in here
- * @author chenjd
- * @email chenjd@allwinnertech.com
- * @data 2011-8-10
  */
 package codingpark.net.cheesecloud;
 
@@ -18,8 +15,6 @@ import android.os.storage.StorageManager;
 import android.util.Log;
 /**
  * define the root path of flash,sdcard,usbhost
- * @author chenjd
- *
  */
 public class DevicePath{
 	private ArrayList<String> totalDevicesList;
