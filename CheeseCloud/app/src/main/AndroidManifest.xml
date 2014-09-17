@@ -56,9 +56,6 @@
         <activity android:name=".ProcessManager"
             android:label="@string/manager_act" />
 
-        <activity android:name=".WirelessManager"
-            android:label="Wireless Information" />
-
         <activity android:name=".ApplicationBackup"
             android:label="Installed Applications" />
 
