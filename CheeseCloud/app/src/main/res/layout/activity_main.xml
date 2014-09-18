@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+        <ImageView
+            android:id="@+id/tab_home"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:src="@drawable/tab_home"
+            android:adjustViewBounds="true" />
+        <ImageView
+            android:id="@+id/tab_contact"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:src="@drawable/tab_contact_normal"
+            android:adjustViewBounds="true" />
+        <ImageView
+            android:id="@+id/tab_setting"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:src="@drawable/tab_setting_normal"
+            android:adjustViewBounds="true" />
+    </LinearLayout>
+
+
+    <android.support.v4.view.ViewPager xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/pager"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_weight="4"
+        tools:context="codingpark.net.cheesecloud.MainActivity" />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#96242424" />
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_alignParentBottom="true"
+        android:baselineAligned="false"
+        android:divider="@color/black">
+        <Button
+            android:id="@+id/menu_bottom_upload_bt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/menu_bottom_upload_bt_normal"
+            android:adjustViewBounds="true" />
+        <Button
+            android:id="@+id/menu_bottom_copy_bt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/menu_bottom_copy_bt_normal"
+            android:layout_weight="1"
+            android:adjustViewBounds="true" />
+        <Button
+            android:id="@+id/menu_bottom_paste_normal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/menu_bottom_paste_bt_normal"
+            android:layout_weight="1"
+            android:adjustViewBounds="true" />
+        <Button
+            android:id="@+id/menu_bottom_more_normal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/menu_bottom_more_bt_normal"
+            android:layout_weight="1"
+            android:adjustViewBounds="true" />
+    </LinearLayout>
+
+</LinearLayout>
