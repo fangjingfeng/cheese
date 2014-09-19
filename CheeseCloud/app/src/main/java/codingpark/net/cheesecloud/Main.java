@@ -36,6 +36,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import codingpark.net.cheesecloud.handle.EventHandler;
+
 /**
  * This is the main activity. The activity that is presented to the user
  * as the application launches.

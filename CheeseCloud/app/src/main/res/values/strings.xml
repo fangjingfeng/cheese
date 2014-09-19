@@ -121,4 +121,10 @@
     <string name="title_section2">Section 2</string>
     <string name="title_section3">Section 3</string>
 
+    <!--Home tab-->
+    <string name="home_tab_news_item">News</string>
+    <string-array name="home_tab_itmes_array">
+        <item>news</item>
+    </string-array>
+
 </resources>

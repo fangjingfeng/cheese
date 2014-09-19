@@ -1,4 +1,4 @@
-package codingpark.net.cheesecloud;
+package codingpark.net.cheesecloud.view;
 
 import android.app.ActionBar;
 import android.app.Activity;
@@ -7,6 +7,9 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
+
+import codingpark.net.cheesecloud.MainActivity;
+import codingpark.net.cheesecloud.R;
 
 
 public class WelcomeActivity extends Activity {

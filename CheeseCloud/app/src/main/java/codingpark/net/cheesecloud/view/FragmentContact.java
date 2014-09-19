@@ -1,4 +1,4 @@
-package codingpark.net.cheesecloud;
+package codingpark.net.cheesecloud.view;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -8,16 +8,17 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 
+import codingpark.net.cheesecloud.handle.OnFragmentInteractionListener;
 import codingpark.net.cheesecloud.dummy.DummyContent;
 
 /**
  * A fragment representing a list of Items.
  * <p />
  * <p />
- * Activities containing this fragment MUST implement the {@link Callbacks}
+ * Activities containing this fragment MUST implement the {@link codingpark.net.cheesecloud.handle.OnFragmentInteractionListener}
  * interface.
  */
-public class FragmentHome extends ListFragment {
+public class FragmentContact extends ListFragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -31,8 +32,8 @@ public class FragmentHome extends ListFragment {
     private OnFragmentInteractionListener mListener;
 
     // TODO: Rename and change types of parameters
-    public static FragmentHome newInstance(String param1, String param2) {
-        FragmentHome fragment = new FragmentHome();
+    public static FragmentContact newInstance(String param1, String param2) {
+        FragmentContact fragment = new FragmentContact();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -44,7 +45,7 @@ public class FragmentHome extends ListFragment {
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
-    public FragmentHome() {
+    public FragmentContact() {
     }
 
     @Override
@@ -91,19 +92,5 @@ public class FragmentHome extends ListFragment {
         }
     }
 
-    /**
-    * This interface must be implemented by activities that contain this
-    * fragment to allow an interaction in this fragment to be communicated
-    * to the activity and potentially other fragments contained in that
-    * activity.
-    * <p>
-    * See the Android Training lesson <a href=
-    * "http://developer.android.com/training/basics/fragments/communicating.html"
-    * >Communicating with Other Fragments</a> for more information.
-    */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        public void onFragmentInteraction(String id);
-    }
 
 }

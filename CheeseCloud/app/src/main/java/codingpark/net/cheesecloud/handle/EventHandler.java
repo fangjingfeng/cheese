@@ -1,4 +1,4 @@
-package codingpark.net.cheesecloud;
+package codingpark.net.cheesecloud.handle;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -30,6 +30,16 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import codingpark.net.cheesecloud.ApplicationBackup;
+import codingpark.net.cheesecloud.CatalogList;
+import codingpark.net.cheesecloud.DevicePath;
+import codingpark.net.cheesecloud.FileManager;
+import codingpark.net.cheesecloud.FileOperateCallbacks;
+import codingpark.net.cheesecloud.ProcessManager;
+import codingpark.net.cheesecloud.R;
+import codingpark.net.cheesecloud.ThumbnailCreator;
+import codingpark.net.cheesecloud.TypeFilter;
 
 /**
  * This class sits between the Main activity and the FileManager class. 

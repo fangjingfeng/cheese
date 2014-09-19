@@ -126,4 +126,6 @@
     
     <string name="paste_success">"粘贴成功"</string>
     <string name="paste_fail">"粘贴失败"</string>
+
+    <string name="home_tab_news_item">新闻通知</string>
 </resources>
