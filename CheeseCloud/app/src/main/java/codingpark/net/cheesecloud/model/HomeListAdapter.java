@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import codingpark.net.cheesecloud.R;
+import codingpark.net.cheesecloud.view.FragmentHome;
 
 /**
  * Created by ethanshan on 14-9-19.
@@ -40,15 +41,15 @@ public class HomeListAdapter extends ArrayAdapter<String>{
         ImageView imageView = (ImageView) v.findViewById(R.id.tab_home_item_new_iv);
         // change the icon for Windows and iPhone
         String s = values[position];
-        if (s.equals("news")) {
+        if (s.equals(FragmentHome.TAB_HOME_ITEM_NEWS)) {
             imageView.setImageResource(R.drawable.tab_home_news_items_normal);
-        } else if (s.equals("cloud_disk")){
+        } else if (s.equals(FragmentHome.TAB_HOME_ITEM_CLOUD_DISK)){
             imageView.setImageResource(R.drawable.tab_home_cloud_disk_itmes_normal);
-        } else if (s.equals("resource_library")) {
+        } else if (s.equals(FragmentHome.TAB_HOME_ITEM_RESOURCE_LIBRARY)) {
             imageView.setImageResource(R.drawable.tab_home_resource_library_item_normal);
-        } else if (s.equals("small_class")) {
+        } else if (s.equals(FragmentHome.TAB_HOME_ITEM_SMALL_CLASS)) {
             imageView.setImageResource(R.drawable.tab_home_small_class_item_normal);
-        } else if (s.equals("temp_screen")) {
+        } else if (s.equals(FragmentHome.TAB_HOME_ITEM_TEMP_SCREEN)) {
             imageView.setImageResource(R.drawable.tab_home_temp_screen_item_normal);
         }
         return v;

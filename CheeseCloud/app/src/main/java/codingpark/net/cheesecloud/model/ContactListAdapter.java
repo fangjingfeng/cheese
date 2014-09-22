@@ -44,7 +44,7 @@ public class ContactListAdapter extends ArrayAdapter<String> {
             imageView.setImageResource(R.drawable.tab_contact_old_friends_item_normal);
         } else if (s.equals("new_friends")){
             imageView.setImageResource(R.drawable.tab_contact_new_friends_normal);
-        } else if (s.equals("group_char")) {
+        } else if (s.equals("group_chat")) {
             imageView.setImageResource(R.drawable.tab_contact_group_chat_normal);
         } else if (s.equals("circle_of_friends")) {
             imageView.setImageResource(R.drawable.tab_contact_circle_of_friends_normal);

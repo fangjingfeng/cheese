@@ -48,10 +48,7 @@
             android:name=".ProcessManager"
             android:label="@string/manager_act" />
         <activity
-            android:name=".ApplicationBackup"
-            android:label="Installed Applications" />
-        <activity
-            android:name=".HelpManager"
+            android:name=".view.HelpActivity"
             android:label="About Open Manager"
             android:theme="@android:style/Theme.Dialog" />
         <activity
@@ -64,7 +61,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".MainActivity"
+            android:name=".view.MainActivity"
             android:label="@string/title_activity_main" >
         </activity>
     </application>

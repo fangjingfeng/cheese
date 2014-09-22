@@ -24,16 +24,25 @@ import codingpark.net.cheesecloud.model.ContactListAdapter;
 public class FragmentContact extends ListFragment {
 
     private static Context mContext             = null;
-    private static String[] values              = null;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
     // TODO: Rename and change types of parameters
-    private String mParam1;
     private String mParam2;
+
+    public static final String TAB_CONTACT_ITEM_OLD_FRIENDS                 = "old_friends";
+    public static final String TAB_CONTACT_ITEM_NEW_FRIENDS                 = "new_friends";
+    public static final String TAB_CONTACT_ITEM_GROUP_CHAT                  = "group_chat";
+    public static final String TAB_CONTACT_ITEM_CIRCLE_OF_FRIENDS           = "circle_of_friends";
+
+    private static final String[] values = new String[] {
+            TAB_CONTACT_ITEM_OLD_FRIENDS,
+            TAB_CONTACT_ITEM_NEW_FRIENDS,
+            TAB_CONTACT_ITEM_GROUP_CHAT,
+            TAB_CONTACT_ITEM_CIRCLE_OF_FRIENDS
+    };
 
     private OnFragmentInteractionListener mListener;
 
@@ -59,11 +68,10 @@ public class FragmentContact extends ListFragment {
         super.onCreate(savedInstanceState);
 
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
 
-        values = mContext.getResources().getStringArray(R.array.contact_tab_itmes_array);
+        //values = mContext.getResources().getStringArray(R.array.contact_tab_itmes_array);
         setListAdapter(new ContactListAdapter(mContext, R.layout.home_item_layout, values));
     }
 

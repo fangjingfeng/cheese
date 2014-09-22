@@ -1,4 +1,4 @@
-package codingpark.net.cheesecloud;
+package codingpark.net.cheesecloud.view;
 
 import java.util.Locale;
 
@@ -16,10 +16,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import codingpark.net.cheesecloud.R;
 import codingpark.net.cheesecloud.handle.OnFragmentInteractionListener;
-import codingpark.net.cheesecloud.view.FragmentContact;
-import codingpark.net.cheesecloud.view.FragmentHome;
-import codingpark.net.cheesecloud.view.FragmentSetting;
 
 
 public class MainActivity extends Activity implements OnFragmentInteractionListener {

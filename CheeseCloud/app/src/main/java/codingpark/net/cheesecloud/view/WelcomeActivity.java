@@ -8,7 +8,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 
-import codingpark.net.cheesecloud.MainActivity;
 import codingpark.net.cheesecloud.R;
 
 

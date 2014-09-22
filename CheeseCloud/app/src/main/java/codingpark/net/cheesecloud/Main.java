@@ -37,6 +37,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import codingpark.net.cheesecloud.handle.EventHandler;
+import codingpark.net.cheesecloud.view.HelpActivity;
 
 /**
  * This is the main activity. The activity that is presented to the user
@@ -831,7 +832,7 @@ public final class Main extends ListActivity implements FileOperateCallbacks{
                 finish();
                 return true;
             case R.id.action_help:
-                Intent intent = new Intent(this, HelpManager.class);
+                Intent intent = new Intent(this, HelpActivity.class);
                 this.startActivity(intent);
                 return true;
         }

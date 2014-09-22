@@ -31,12 +31,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import codingpark.net.cheesecloud.ApplicationBackup;
 import codingpark.net.cheesecloud.CatalogList;
 import codingpark.net.cheesecloud.DevicePath;
 import codingpark.net.cheesecloud.FileManager;
 import codingpark.net.cheesecloud.FileOperateCallbacks;
-import codingpark.net.cheesecloud.ProcessManager;
 import codingpark.net.cheesecloud.R;
 import codingpark.net.cheesecloud.ThumbnailCreator;
 import codingpark.net.cheesecloud.TypeFilter;
@@ -483,8 +481,6 @@ public class EventHandler implements OnClickListener, OnItemLongClickListener{
                 break;
 
             case R.id.manage_button:
-                refreshFocus(preView,v);
-                display_dialog(MANAGE_DIALOG);
                 break;
 
             case R.id.multiselect_button:
@@ -711,48 +707,6 @@ public class EventHandler implements OnClickListener, OnItemLongClickListener{
 		 */
         mDelegate.clearThumbnail();
         mDelegate.notifyDataSetChanged();
-    }
-
-    /**
-     * This private method is used to display options the user can select when
-     * the tool box button is pressed. The WIFI option is commented out as it doesn't
-     * seem to fit with the overall idea of the application. However to display it, just
-     * uncomment the below code and the code in the AndroidManifest.xml file.
-     */
-    private void display_dialog(int type) {
-        AlertDialog.Builder builder;
-        AlertDialog dialog;
-
-        switch(type) {
-            case MANAGE_DIALOG:
-                //un-comment WIFI Info here and in the manifest file
-                //to display WIFI info. Also uncomment and change case number below
-                CharSequence[] options = {"Process Info", /*"Wifi Info",*/ "Application backup"};
-
-                builder = new AlertDialog.Builder(mContext);
-                builder.setTitle("Tool Box");
-                builder.setIcon(R.drawable.toolbox);
-                builder.setItems(options, new DialogInterface.OnClickListener() {
-
-                    public void onClick(DialogInterface dialog, int index) {
-                        Intent i;
-
-                        switch(index) {
-                            case 0:
-                                i = new Intent(mContext, ProcessManager.class);
-                                mContext.startActivity(i);
-                                break;
-                            case 1:
-                                i = new Intent(mContext, ApplicationBackup.class);
-                                mContext.startActivity(i);
-                                break;
-                        }
-                    }
-                });
-                dialog = builder.create();
-                dialog.show();
-                break;
-        }
     }
 
     private static class ViewHolder {

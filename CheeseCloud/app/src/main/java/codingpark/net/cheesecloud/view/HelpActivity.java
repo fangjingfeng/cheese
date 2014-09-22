@@ -1,4 +1,4 @@
-package codingpark.net.cheesecloud;
+package codingpark.net.cheesecloud.view;
 
 import android.net.Uri;
 import android.os.Bundle;
@@ -12,7 +12,9 @@ import android.widget.TextView;
 import android.widget.Button;
 import android.widget.Toast;
 
-public class HelpManager extends Activity implements OnClickListener {
+import codingpark.net.cheesecloud.R;
+
+public class HelpActivity extends Activity implements OnClickListener {
     private static final String[] EMAIL = {"shan0xiao0xi@163.com"};
     private static final String WEB = "http://codingpark.net/blog";
 

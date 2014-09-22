@@ -1,19 +1,15 @@
 package codingpark.net.cheesecloud.view;
 
 import android.app.Activity;
-import android.content.Context;
-import android.os.Bundle;
 import android.app.ListFragment;
-import android.view.LayoutInflater;
+import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
 import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.ListView;
 
-
-import codingpark.net.cheesecloud.R;
+import codingpark.net.cheesecloud.Main;
 import codingpark.net.cheesecloud.handle.OnFragmentInteractionListener;
-import codingpark.net.cheesecloud.dummy.DummyContent;
 import codingpark.net.cheesecloud.model.HomeListAdapter;
 
 /**
@@ -26,13 +22,24 @@ import codingpark.net.cheesecloud.model.HomeListAdapter;
 public class FragmentHome extends ListFragment {
 
     // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
     private static Context mContext                 = null;
-    private static String[] values                  = null;
     private String mParam2;
+
+    public static final String TAB_HOME_ITEM_NEWS               = "news";
+    public static final String TAB_HOME_ITEM_CLOUD_DISK         = "cloud_disk";
+    public static final String TAB_HOME_ITEM_RESOURCE_LIBRARY   = "resource_library";
+    public static final String TAB_HOME_ITEM_SMALL_CLASS        = "small_class";
+    public static final String TAB_HOME_ITEM_TEMP_SCREEN        = "temp_screen";
+
+    private static final String[] values = new String[] {
+            TAB_HOME_ITEM_NEWS,
+            TAB_HOME_ITEM_CLOUD_DISK,
+            TAB_HOME_ITEM_RESOURCE_LIBRARY,
+            TAB_HOME_ITEM_SMALL_CLASS,
+            TAB_HOME_ITEM_TEMP_SCREEN
+    };
 
     private OnFragmentInteractionListener mListener;
 
@@ -60,7 +67,6 @@ public class FragmentHome extends ListFragment {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
 
-        values = mContext.getResources().getStringArray(R.array.home_tab_itmes_array);
         setListAdapter(new HomeListAdapter(mContext, values));
     }
 
@@ -90,10 +96,15 @@ public class FragmentHome extends ListFragment {
         if (null != mListener) {
             // Notify the active callbacks interface (the activity, if the
             // fragment is attached to one) that an item has been selected.
-            mListener.onFragmentInteraction(values[position]);
+            String action_item = values[position];
+            mListener.onFragmentInteraction(action_item);
+            // TODO Current just resolve tab_home_item_resource_library
+            if (action_item.equals(TAB_HOME_ITEM_RESOURCE_LIBRARY)) {
+                Intent i = new Intent(mContext, Main.class);
+                mContext.startActivity(i);
+
+            }
         }
     }
-
-
 
 }
