@@ -39,7 +39,7 @@ public class WelcomeActivity extends Activity {
         setContentView(R.layout.activity_welcome);
 
         // Initial sign in and login in button
-        signin_bt = (ImageButton)findViewById(R.id.welcom_sign_bt);
+        signin_bt = (ImageButton)findViewById(R.id.welcome_sign_bt);
         loginin_bt = (ImageButton)findViewById(R.id.welcome_login_bt);
 
         // Set sign in button click listener

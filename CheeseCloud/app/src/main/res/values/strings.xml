@@ -122,9 +122,20 @@
     <string name="title_section3">Section 3</string>
 
     <!--Home tab-->
-    <string name="home_tab_news_item">News</string>
     <string-array name="home_tab_itmes_array">
         <item>news</item>
+        <item>cloud_disk</item>
+        <item>resource_library</item>
+        <item>small_class</item>
+        <item>temp_screen</item>
+    </string-array>
+
+    <!--Contact tab-->
+    <string-array name="contact_tab_itmes_array">
+        <item>old_friends</item>
+        <item>new_friends</item>
+        <item>group_chat</item>
+        <item>circle_of_friends</item>
     </string-array>
 
 </resources>

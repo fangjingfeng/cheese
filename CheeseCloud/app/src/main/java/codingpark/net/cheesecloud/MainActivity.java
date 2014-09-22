@@ -229,7 +229,7 @@ public class MainActivity extends Activity implements OnFragmentInteractionListe
                 case 0:
                     return FragmentHome.newInstance(MainActivity.this, "");
                 case 1:
-                    return FragmentContact.newInstance("", "");
+                    return FragmentContact.newInstance(MainActivity.this, "");
                 case 2:
                     return FragmentSetting.newInstance("", "");
                 default:

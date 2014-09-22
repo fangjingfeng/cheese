@@ -42,8 +42,14 @@ public class HomeListAdapter extends ArrayAdapter<String>{
         String s = values[position];
         if (s.equals("news")) {
             imageView.setImageResource(R.drawable.tab_home_news_items_normal);
-        } else {
-            imageView.setImageResource(R.drawable.tab_home_news_items_normal);
+        } else if (s.equals("cloud_disk")){
+            imageView.setImageResource(R.drawable.tab_home_cloud_disk_itmes_normal);
+        } else if (s.equals("resource_library")) {
+            imageView.setImageResource(R.drawable.tab_home_resource_library_item_normal);
+        } else if (s.equals("small_class")) {
+            imageView.setImageResource(R.drawable.tab_home_small_class_item_normal);
+        } else if (s.equals("temp_screen")) {
+            imageView.setImageResource(R.drawable.tab_home_temp_screen_item_normal);
         }
         return v;
     }

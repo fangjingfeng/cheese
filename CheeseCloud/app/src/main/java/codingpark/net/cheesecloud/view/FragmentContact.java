@@ -1,6 +1,7 @@
 package codingpark.net.cheesecloud.view;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.app.ListFragment;
 import android.view.View;
@@ -8,8 +9,10 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 
+import codingpark.net.cheesecloud.R;
 import codingpark.net.cheesecloud.handle.OnFragmentInteractionListener;
 import codingpark.net.cheesecloud.dummy.DummyContent;
+import codingpark.net.cheesecloud.model.ContactListAdapter;
 
 /**
  * A fragment representing a list of Items.
@@ -19,6 +22,9 @@ import codingpark.net.cheesecloud.dummy.DummyContent;
  * interface.
  */
 public class FragmentContact extends ListFragment {
+
+    private static Context mContext             = null;
+    private static String[] values              = null;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -31,13 +37,13 @@ public class FragmentContact extends ListFragment {
 
     private OnFragmentInteractionListener mListener;
 
-    // TODO: Rename and change types of parameters
-    public static FragmentContact newInstance(String param1, String param2) {
+    public static FragmentContact newInstance(Context context, String param2) {
         FragmentContact fragment = new FragmentContact();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
+
+        mContext = context;
         return fragment;
     }
 
@@ -57,9 +63,8 @@ public class FragmentContact extends ListFragment {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
 
-        // TODO: Change Adapter to display your content
-        setListAdapter(new ArrayAdapter<DummyContent.DummyItem>(getActivity(),
-                android.R.layout.simple_list_item_1, android.R.id.text1, DummyContent.ITEMS));
+        values = mContext.getResources().getStringArray(R.array.contact_tab_itmes_array);
+        setListAdapter(new ContactListAdapter(mContext, R.layout.home_item_layout, values));
     }
 
 
@@ -88,7 +93,7 @@ public class FragmentContact extends ListFragment {
         if (null != mListener) {
             // Notify the active callbacks interface (the activity, if the
             // fragment is attached to one) that an item has been selected.
-            mListener.onFragmentInteraction(DummyContent.ITEMS.get(position).id);
+            mListener.onFragmentInteraction(values[position]);
         }
     }
 

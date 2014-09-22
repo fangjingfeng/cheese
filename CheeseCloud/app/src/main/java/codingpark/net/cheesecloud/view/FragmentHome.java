@@ -30,13 +30,12 @@ public class FragmentHome extends ListFragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
-    private static Context mContext               = null;
+    private static Context mContext                 = null;
+    private static String[] values                  = null;
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
 
-    // TODO: Rename and change types of parameters
     public static FragmentHome newInstance(Context context, String param2) {
         FragmentHome fragment = new FragmentHome();
         Bundle args = new Bundle();
@@ -61,10 +60,8 @@ public class FragmentHome extends ListFragment {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
 
-        // TODO: Change Adapter to display your content
-//        setListAdapter(new ArrayAdapter<DummyContent.DummyItem>(getActivity(),
-//                android.R.layout.simple_list_item_1, android.R.id.text1, DummyContent.ITEMS));
-        setListAdapter(new HomeListAdapter(mContext, mContext.getResources().getStringArray(R.array.home_tab_itmes_array)));
+        values = mContext.getResources().getStringArray(R.array.home_tab_itmes_array);
+        setListAdapter(new HomeListAdapter(mContext, values));
     }
 
 
@@ -93,7 +90,7 @@ public class FragmentHome extends ListFragment {
         if (null != mListener) {
             // Notify the active callbacks interface (the activity, if the
             // fragment is attached to one) that an item has been selected.
-            mListener.onFragmentInteraction(DummyContent.ITEMS.get(position).id);
+            mListener.onFragmentInteraction(values[position]);
         }
     }
 
