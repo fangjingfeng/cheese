@@ -1,4 +1,4 @@
-package codingpark.net.cheesecloud;
+package codingpark.net.cheesecloud.model;
 
 import java.io.File;
 import java.util.Date;
@@ -13,6 +13,9 @@ import android.view.View.OnClickListener;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Button;
+
+import codingpark.net.cheesecloud.R;
+import codingpark.net.cheesecloud.handle.FileManager;
 
 public class DirectoryInfo extends Activity {
     private static final int KB = 1024;

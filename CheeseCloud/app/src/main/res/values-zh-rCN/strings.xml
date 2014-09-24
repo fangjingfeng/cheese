@@ -104,7 +104,7 @@
     <string name="Blue">"蓝色"</string>
     <string name="Green">"绿色"</string>
     <string name="Change_text_color">"改变文本颜色"</string>
-    <string name="Sort_by">"整理通过..."</string>
+    <string name="Sort_by">"排序.."</string>
     <string name="None">"无"</string>
     <string name="Alphabetical">"按字母"</string>
     <string name="Type">"按类型"</string>

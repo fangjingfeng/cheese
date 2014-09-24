@@ -9,10 +9,6 @@
         android:title="@string/Search"
         android:orderInCategory="100"
         android:showAsAction="never" />
-    <item android:id="@+id/action_settings"
-        android:title="@string/Settings"
-        android:orderInCategory="100"
-        android:showAsAction="never" />
     <item android:id="@+id/action_logout"
         android:title="@string/Quit"
         android:orderInCategory="100"

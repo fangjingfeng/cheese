@@ -31,9 +31,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import codingpark.net.cheesecloud.CatalogList;
+import codingpark.net.cheesecloud.model.CatalogList;
 import codingpark.net.cheesecloud.DevicePath;
-import codingpark.net.cheesecloud.FileManager;
 import codingpark.net.cheesecloud.FileOperateCallbacks;
 import codingpark.net.cheesecloud.R;
 import codingpark.net.cheesecloud.ThumbnailCreator;
@@ -95,17 +94,14 @@ public class EventHandler implements OnClickListener, OnItemLongClickListener{
     public static final int DISABLE_TOOLBTN = 2;
     public void UpdateButtons(int mode)
     {
-        ImageButton toolbox = (ImageButton)((Activity) mContext).findViewById(R.id.manage_button);
         ImageButton multi = (ImageButton)((Activity) mContext).findViewById(R.id.multiselect_button);
 
         switch(mode)
         {
             case ENABLE_TOOLBTN:
-                toolbox.setEnabled(true);
                 multi.setEnabled(true);
                 break;
             case DISABLE_TOOLBTN:
-                toolbox.setEnabled(false);
                 multi.setEnabled(false);
                 break;
         }
@@ -480,9 +476,6 @@ public class EventHandler implements OnClickListener, OnItemLongClickListener{
                     mPathLabel.setText(mFileMang.getCurrentDir());
                 break;
 
-            case R.id.manage_button:
-                break;
-
             case R.id.multiselect_button:
                 refreshFocus(preView,v);
                 if(getMode() != TREEVIEW_MODE)
@@ -549,8 +542,7 @@ public class EventHandler implements OnClickListener, OnItemLongClickListener{
 
                 mDelegate.killMultiSelect(true);
                 break;
-			/* add by chenjd,chenjd@allwinnertech.com,20120313
-			 * add function:paste to current dir */
+			 /* add function:paste to current dir */
             case R.id.hidden_paste:
                 String des = mFileMang.getCurrentDir();
                 mCallbacks.paste(des);

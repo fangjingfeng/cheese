@@ -1,4 +1,4 @@
-package codingpark.net.cheesecloud;
+package codingpark.net.cheesecloud.model;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -9,6 +9,8 @@ import java.util.Comparator;
 import android.content.Context;
 import android.os.Environment;
 
+import codingpark.net.cheesecloud.DevicePath;
+import codingpark.net.cheesecloud.TypeFilter;
 
 
 public class CatalogList {

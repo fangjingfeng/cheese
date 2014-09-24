@@ -117,14 +117,6 @@
         <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/toolbox_1"
-            android:paddingRight="3dp"
-            android:background="@drawable/bg_1"
-            android:id="@+id/manage_button"
-            android:layout_weight="1" />
-        <ImageButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:src="@drawable/multiselect_1"
             android:paddingRight="3dp"
             android:background="@drawable/bg_1"

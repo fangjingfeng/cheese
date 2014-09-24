@@ -1,4 +1,4 @@
-package codingpark.net.cheesecloud;
+package codingpark.net.cheesecloud.handle;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -18,6 +18,10 @@ import java.util.zip.ZipOutputStream;
 import android.content.Context;
 import android.os.StatFs;
 import android.util.Log;
+
+import codingpark.net.cheesecloud.DevicePath;
+import codingpark.net.cheesecloud.R;
+import codingpark.net.cheesecloud.RefreshMedia;
 
 /**
  * This class is completely modular, which is to say that it has

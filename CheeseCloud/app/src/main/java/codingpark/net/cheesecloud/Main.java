@@ -37,6 +37,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import codingpark.net.cheesecloud.handle.EventHandler;
+import codingpark.net.cheesecloud.handle.FileManager;
+import codingpark.net.cheesecloud.model.CatalogList;
 import codingpark.net.cheesecloud.view.HelpActivity;
 
 /**
@@ -203,7 +205,6 @@ public final class Main extends ListActivity implements FileOperateCallbacks{
                 R.id.home_sdcard_button,
                 R.id.home_usbhost_button,
                 R.id.back_button,
-                R.id.manage_button,
                 R.id.multiselect_button,
                 R.id.image_button,
                 R.id.movie_button};
@@ -817,15 +818,6 @@ public final class Main extends ListActivity implements FileOperateCallbacks{
 
             case R.id.action_search:
                 showDialog(R.id.action_search);
-                return true;
-
-            case R.id.action_settings:
-                Intent settings_int = new Intent(this, Settings.class);
-                settings_int.putExtra("COLOR", mSettings.getInt(PREFS_COLOR, -1));
-                settings_int.putExtra("HIDDEN", mSettings.getBoolean(PREFS_HIDDEN, false));
-                settings_int.putExtra("THUMBNAIL", mSettings.getBoolean(PREFS_THUMBNAIL, true));
-                settings_int.putExtra("SORT", mSettings.getInt(PREFS_SORT, 1));
-                startActivityForResult(settings_int, SETTING_REQ);
                 return true;
 
             case R.id.action_logout:
