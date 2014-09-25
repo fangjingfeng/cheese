@@ -1,4 +1,4 @@
-package codingpark.net.cheesecloud;
+package codingpark.net.cheesecloud.utils;
 
 import android.content.Context;
 import android.content.Intent;

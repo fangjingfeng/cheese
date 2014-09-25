@@ -6,7 +6,8 @@
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:orientation="horizontal"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="#ff3098fa">
         <ImageView
             android:id="@+id/tab_home"
             android:layout_width="wrap_content"
@@ -36,49 +37,51 @@
         android:id="@+id/pager"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_weight="4"
+        android:layout_weight="2"
         tools:context="codingpark.net.cheesecloud.view.MainActivity" />
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="#96242424" />
 
+    <!--  Footer for shortcut buttons -->
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:orientation="horizontal"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
         android:layout_alignParentBottom="true"
         android:baselineAligned="false"
-        android:divider="@color/black">
+        android:divider="@color/black"
+        android:layout_weight="1">
         <Button
             android:id="@+id/menu_bottom_upload_bt"
-            android:layout_width="wrap_content"
+            android:layout_width="0px"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@drawable/menu_bottom_upload_bt_normal"
             android:adjustViewBounds="true" />
         <Button
             android:id="@+id/menu_bottom_copy_bt"
-            android:layout_width="wrap_content"
+            android:layout_width="0px"
             android:layout_height="wrap_content"
             android:background="@drawable/menu_bottom_copy_bt_normal"
             android:layout_weight="1"
             android:adjustViewBounds="true" />
         <Button
-            android:id="@+id/menu_bottom_paste_normal"
-            android:layout_width="wrap_content"
+            android:id="@+id/menu_bottom_paste_bt"
+            android:layout_width="0px"
             android:layout_height="wrap_content"
             android:background="@drawable/menu_bottom_paste_bt_normal"
             android:layout_weight="1"
             android:adjustViewBounds="true" />
         <Button
-            android:id="@+id/menu_bottom_more_normal"
-            android:layout_width="wrap_content"
+            android:id="@+id/menu_bottom_more_bt"
+            android:layout_width="0px"
             android:layout_height="wrap_content"
             android:background="@drawable/menu_bottom_more_bt_normal"
             android:layout_weight="1"
             android:adjustViewBounds="true" />
     </LinearLayout>
+
 
 </LinearLayout>

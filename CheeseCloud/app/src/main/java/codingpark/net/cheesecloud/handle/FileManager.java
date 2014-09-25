@@ -21,7 +21,7 @@ import android.util.Log;
 
 import codingpark.net.cheesecloud.DevicePath;
 import codingpark.net.cheesecloud.R;
-import codingpark.net.cheesecloud.RefreshMedia;
+import codingpark.net.cheesecloud.utils.RefreshMedia;
 
 /**
  * This class is completely modular, which is to say that it has

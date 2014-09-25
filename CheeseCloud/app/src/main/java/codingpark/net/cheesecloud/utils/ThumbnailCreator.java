@@ -1,4 +1,4 @@
-package codingpark.net.cheesecloud;
+package codingpark.net.cheesecloud.utils;
 
 import java.io.File;
 
@@ -10,6 +10,8 @@ import android.media.ExifInterface;
 import android.util.Log;
 import android.widget.ImageView;
 import android.graphics.Matrix;
+
+import codingpark.net.cheesecloud.model.MessageCache;
 
 public class ThumbnailCreator {
     private int width;

@@ -33,10 +33,10 @@ import android.widget.Toast;
 
 import codingpark.net.cheesecloud.model.CatalogList;
 import codingpark.net.cheesecloud.DevicePath;
-import codingpark.net.cheesecloud.FileOperateCallbacks;
+import codingpark.net.cheesecloud.utils.FileOperateCallbacks;
 import codingpark.net.cheesecloud.R;
-import codingpark.net.cheesecloud.ThumbnailCreator;
-import codingpark.net.cheesecloud.TypeFilter;
+import codingpark.net.cheesecloud.utils.ThumbnailCreator;
+import codingpark.net.cheesecloud.utils.TypeFilter;
 
 /**
  * This class sits between the Main activity and the FileManager class. 
@@ -358,7 +358,8 @@ public class EventHandler implements OnClickListener, OnItemLongClickListener{
             else{
                 multi_select_flag = false;
                 mMultiSelectData.clear();
-                mInfoLabel.setText("");
+                if (mInfoLabel != null)
+                    mInfoLabel.setText("");
                 delete_after_copy = false;
             }
         }
@@ -560,8 +561,8 @@ public class EventHandler implements OnClickListener, OnItemLongClickListener{
                     delete_after_copy = false;
                 }
 
-                mInfoLabel.setText("Holding " + mMultiSelectData.size() +
-                        " file(s)");
+                //mInfoLabel.setText("Holding " + mMultiSelectData.size() +
+                        //" file(s)");
 
                 mDelegate.killMultiSelect(false);
                 break;
@@ -1329,7 +1330,8 @@ public class EventHandler implements OnClickListener, OnItemLongClickListener{
                         Toast.makeText(mContext, R.string.paste_fail, Toast.LENGTH_SHORT).show();
                     updateDirectory(mFileMang.getNextDir(mFileMang.getCurrentDir()));
                     pr_dialog.dismiss();
-                    mInfoLabel.setText("");
+                    if (mInfoLabel != null)
+                        mInfoLabel.setText("");
                     break;
 
                 case UNZIP_TYPE:
@@ -1355,7 +1357,8 @@ public class EventHandler implements OnClickListener, OnItemLongClickListener{
 
                     updateDirectory(mFileMang.getNextDir(mFileMang.getCurrentDir()));
                     pr_dialog.dismiss();
-                    mInfoLabel.setText("");
+                    if (mInfoLabel != null)
+                        mInfoLabel.setText("");
                     break;
             }
         }

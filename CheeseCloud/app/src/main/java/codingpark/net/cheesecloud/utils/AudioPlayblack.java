@@ -16,7 +16,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-package codingpark.net.cheesecloud;
+package codingpark.net.cheesecloud.utils;
 
 import java.io.IOException;
 import android.os.Bundle;
@@ -27,6 +27,8 @@ import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
+
+import codingpark.net.cheesecloud.R;
 
 public class AudioPlayblack extends Activity {
     private String music_path;

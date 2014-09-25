@@ -1,4 +1,4 @@
-package codingpark.net.cheesecloud;
+package codingpark.net.cheesecloud.model;
 
 import java.lang.ref.WeakReference;
 import java.util.HashMap;

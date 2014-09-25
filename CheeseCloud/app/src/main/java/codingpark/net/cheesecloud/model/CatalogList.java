@@ -10,7 +10,7 @@ import android.content.Context;
 import android.os.Environment;
 
 import codingpark.net.cheesecloud.DevicePath;
-import codingpark.net.cheesecloud.TypeFilter;
+import codingpark.net.cheesecloud.utils.TypeFilter;
 
 
 public class CatalogList {
@@ -170,7 +170,7 @@ public class CatalogList {
         File[] filelist = file.listFiles(mfilter);
 		
 		/*
-		 * add by chenjd,chenjd@allwinnertech 2011-09-14
+		 *
 		 * other application:mediaScanner will save its thumbnail data here, so 
 		 * I must not scan this area for 'picture'. 
 		 */

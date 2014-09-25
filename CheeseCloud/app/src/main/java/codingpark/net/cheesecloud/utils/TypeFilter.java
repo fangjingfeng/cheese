@@ -2,7 +2,7 @@
  this file written by dhm,for get file type by file extend name
  */
 
-package codingpark.net.cheesecloud;
+package codingpark.net.cheesecloud.utils;
 
 
 public final class TypeFilter{

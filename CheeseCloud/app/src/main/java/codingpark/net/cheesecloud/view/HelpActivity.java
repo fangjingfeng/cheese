@@ -24,9 +24,7 @@ public class HelpActivity extends Activity implements OnClickListener {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.help_layout);
 
-        String text = "CheeseCloud: If you have any questions or "
-                +"comments, please email the developer or visit "
-                +"the Cheese Cloud web page.\n\nThank you\n\n";
+        String text = this.getResources().getString(R.string.product_info);
 
         TextView label = (TextView)findViewById(R.id.help_top_label);
         label.setText(text);

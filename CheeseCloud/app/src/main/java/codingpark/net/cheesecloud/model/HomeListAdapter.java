@@ -43,14 +43,19 @@ public class HomeListAdapter extends ArrayAdapter<String>{
         String s = values[position];
         if (s.equals(FragmentHome.TAB_HOME_ITEM_NEWS)) {
             imageView.setImageResource(R.drawable.tab_home_news_items_normal);
+            v.setTag(FragmentHome.TAB_HOME_ITEM_NEWS);
         } else if (s.equals(FragmentHome.TAB_HOME_ITEM_CLOUD_DISK)){
             imageView.setImageResource(R.drawable.tab_home_cloud_disk_itmes_normal);
+            v.setTag(FragmentHome.TAB_HOME_ITEM_CLOUD_DISK);
         } else if (s.equals(FragmentHome.TAB_HOME_ITEM_RESOURCE_LIBRARY)) {
             imageView.setImageResource(R.drawable.tab_home_resource_library_item_normal);
+            v.setTag(FragmentHome.TAB_HOME_ITEM_RESOURCE_LIBRARY);
         } else if (s.equals(FragmentHome.TAB_HOME_ITEM_SMALL_CLASS)) {
             imageView.setImageResource(R.drawable.tab_home_small_class_item_normal);
+            v.setTag(FragmentHome.TAB_HOME_ITEM_SMALL_CLASS);
         } else if (s.equals(FragmentHome.TAB_HOME_ITEM_TEMP_SCREEN)) {
             imageView.setImageResource(R.drawable.tab_home_temp_screen_item_normal);
+            v.setTag(FragmentHome.TAB_HOME_ITEM_TEMP_SCREEN);
         }
         return v;
     }

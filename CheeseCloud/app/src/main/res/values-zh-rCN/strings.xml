@@ -9,7 +9,7 @@
     <string name="Close">"关闭"</string>
     <string name="Backup_all">"备份全部"</string>
     <string name="Email_Developer">"电子邮件"</string>
-    <string name="Website">"网址"</string>
+    <string name="Website">"官网"</string>
     <string name="Number_of_folders">"文件夹的数量:"</string>
     <string name="Number_of_files">"文件的数量:"</string>
     <string name="Last_Modified">"最后一次修改:"</string>
@@ -128,4 +128,8 @@
     <string name="paste_fail">"粘贴失败"</string>
 
     <string name="home_tab_news_item">新闻通知</string>
+
+    <!--Help page-->
+    <string name="product_info">"Cheese 资源管理系统移动客户端,功能稳定,易用, 是您管理多媒体资源的好帮手.\n\n"</string>
+    <string name="version_info">版本: 1.0 beta</string>
 </resources>

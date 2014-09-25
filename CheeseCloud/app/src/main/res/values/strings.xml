@@ -138,4 +138,8 @@
         <item>circle_of_friends</item>
     </string-array>
 
+    <!--Help page-->
+    <string name="product_info">Cheese Cloud description</string>
+    <string name="version_info">Version: 1.0 beta</string>
+
 </resources>

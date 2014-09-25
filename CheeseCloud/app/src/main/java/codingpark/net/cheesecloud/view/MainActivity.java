@@ -1,10 +1,14 @@
 package codingpark.net.cheesecloud.view;
 
+import java.io.File;
 import java.util.Locale;
 
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.content.BroadcastReceiver;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v13.app.FragmentPagerAdapter;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
@@ -14,15 +18,37 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 
+import codingpark.net.cheesecloud.DevicePath;
 import codingpark.net.cheesecloud.R;
+import codingpark.net.cheesecloud.UploadActivity;
+import codingpark.net.cheesecloud.handle.EventHandler;
+import codingpark.net.cheesecloud.handle.FileManager;
 import codingpark.net.cheesecloud.handle.OnFragmentInteractionListener;
+import codingpark.net.cheesecloud.model.CatalogList;
 
 
 public class MainActivity extends Activity implements OnFragmentInteractionListener {
 
     private static final String TAG     = "MainActivity";
+
+    // Application preferences key
+    public static final String PREFS_NAME              = "ManagerPrefsFile";	//user preference file name
+    public static final String PREFS_HIDDEN            = "hidden";
+    public static final String PREFS_COLOR             = "color";
+    public static final String PREFS_THUMBNAIL         = "thumbnail";
+    public static final String PREFS_SORT              = "sort";
+
+    // Bottom tab button
+    private Button upload_bt            = null;
+    private Button copy_bt              = null;
+    private Button paste_bt             = null;
+    private Button more_bt              = null;
+
+
     // Tab activity headers
     /**
      * Tab 0    -->     home
@@ -90,8 +116,22 @@ public class MainActivity extends Activity implements OnFragmentInteractionListe
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        return super.onOptionsItemSelected(item);
+        switch(item.getItemId()) {
+            case R.id.action_new_dir:
+                return true;
+
+            case R.id.action_search:
+                return true;
+
+            case R.id.action_logout:
+                finish();
+                return true;
+            case R.id.action_help:
+                Intent intent = new Intent(this, HelpActivity.class);
+                this.startActivity(intent);
+                return true;
+        }
+        return false;
     }
 
     private void initUI() {
@@ -101,6 +141,13 @@ public class MainActivity extends Activity implements OnFragmentInteractionListe
 
         // Begin, home tab selected
         tab_home_iv.setSelected(true);
+
+        // Initial bottom bar button
+        upload_bt = (Button)findViewById(R.id.menu_bottom_upload_bt);
+        copy_bt = (Button)findViewById(R.id.menu_bottom_copy_bt);
+        paste_bt = (Button)findViewById(R.id.menu_bottom_paste_bt);
+        more_bt = (Button)findViewById(R.id.menu_bottom_more_bt);
+
     }
 
     private void initHandler() {
@@ -114,47 +161,56 @@ public class MainActivity extends Activity implements OnFragmentInteractionListe
          * Action:
          *      1. Update tab header state
          */
-        mViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-                                               @Override
-                                               public void onPageScrolled(int i, float v, int i2) {
+        mViewPager.setOnPageChangeListener(
+                new ViewPager.OnPageChangeListener() {
+                    @Override
+                    public void onPageScrolled(int i, float v, int i2) {
 
-                                               }
+                    }
 
-                                               @Override
-                                               public void onPageSelected(int i) {
-                                                   switch (i) {
-                                                       case 0:
-                                                           Log.d(TAG, "Switch to home tab!");
-                                                           tab_home_iv.setSelected(true);
-                                                           tab_contact_iv.setSelected(false);
-                                                           tab_setting_iv.setSelected(false);
-                                                           break;
-                                                       case 1:
-                                                           Log.d(TAG, "Switch to contact tab!");
-                                                           tab_home_iv.setSelected(false);
-                                                           tab_contact_iv.setSelected(true);
-                                                           tab_setting_iv.setSelected(false);
-                                                           break;
-                                                       case 2:
-                                                           Log.d(TAG, "Switch to setting tab!");
-                                                           tab_home_iv.setSelected(false);
-                                                           tab_contact_iv.setSelected(false);
-                                                           tab_setting_iv.setSelected(true);
-                                                           break;
-                                                       default:
-                                                           return;
-                                                   }
+                    @Override
+                    public void onPageSelected(int i) {
+                        switch (i) {
+                            case 0:
+                                Log.d(TAG, "Switch to home tab!");
+                                tab_home_iv.setSelected(true);
+                                tab_contact_iv.setSelected(false);
+                                tab_setting_iv.setSelected(false);
+                                break;
+                            case 1:
+                                Log.d(TAG, "Switch to contact tab!");
+                                tab_home_iv.setSelected(false);
+                                tab_contact_iv.setSelected(true);
+                                tab_setting_iv.setSelected(false);
+                                break;
+                            case 2:
+                                Log.d(TAG, "Switch to setting tab!");
+                                tab_home_iv.setSelected(false);
+                                tab_contact_iv.setSelected(false);
+                                tab_setting_iv.setSelected(true);
+                                break;
+                            default:
+                                return;
+                        }
 
-                                               }
+                    }
 
-                                               @Override
-                                               public void onPageScrollStateChanged(int i) {
+                    @Override
+                    public void onPageScrollStateChanged(int i) {
 
-                                               }
-                                           }
-
-
+                    }
+                }
         );
+
+        // Set upload_bt click listener, start local filesystem browser activity
+        upload_bt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(MainActivity.this, UploadActivity.class);
+                MainActivity.this.startActivityForResult(i, 0);
+            }
+        });
+
     }
 
     @Override

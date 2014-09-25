@@ -2,15 +2,24 @@ package codingpark.net.cheesecloud.view;
 
 import android.app.Activity;
 import android.app.ListFragment;
+import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
+import android.widget.TextView;
 
-import codingpark.net.cheesecloud.Main;
+import java.io.File;
+
+import codingpark.net.cheesecloud.DevicePath;
+import codingpark.net.cheesecloud.handle.EventHandler;
+import codingpark.net.cheesecloud.handle.FileManager;
 import codingpark.net.cheesecloud.handle.OnFragmentInteractionListener;
+import codingpark.net.cheesecloud.model.CatalogList;
 import codingpark.net.cheesecloud.model.HomeListAdapter;
+import codingpark.net.cheesecloud.utils.FileOperateCallbacks;
 
 /**
  * A fragment representing a list of Items.
@@ -19,8 +28,8 @@ import codingpark.net.cheesecloud.model.HomeListAdapter;
  * Activities containing this fragment MUST implement the {@link }
  * interface.
  */
-public class FragmentHome extends ListFragment {
-
+public class FragmentHome extends ListFragment implements FileOperateCallbacks {
+    private static final String TAG         = "FragmentHome";
     // TODO: Rename parameter arguments, choose names that match
     private static final String ARG_PARAM2 = "param2";
 
@@ -42,6 +51,30 @@ public class FragmentHome extends ListFragment {
     };
 
     private OnFragmentInteractionListener mListener;
+
+    private FileManager mFileMgr                        = null;
+    private EventHandler mHandler                       = null;
+    private EventHandler.TableRow mTable                = null;
+    private CatalogList mCataList                       = null;
+    private DevicePath mDevicePath                      = null;
+
+    private SharedPreferences mSettings                 = null;
+    private boolean mReturnIntent                       = false;
+    private boolean mHoldingFile                        = false;
+    private boolean mHoldingZip                         = false;
+    private boolean mHoldingMkdir                       = false;
+    private boolean mHoldingSearch                      = false;
+    private boolean mUseBackKey                         = true;
+    private String mCopiedTarget                        = "";
+    private String mZippedTarget                        = "";
+    private String mSelectedListItem                    = "";				//item from context menu
+    private TextView mPathLabel, mDetailLabel;
+
+    private BroadcastReceiver mReceiver;
+
+
+    private String openType;
+    private File openFile;
 
     public static FragmentHome newInstance(Context context, String param2) {
         FragmentHome fragment = new FragmentHome();
@@ -96,15 +129,17 @@ public class FragmentHome extends ListFragment {
         if (null != mListener) {
             // Notify the active callbacks interface (the activity, if the
             // fragment is attached to one) that an item has been selected.
-            String action_item = values[position];
+            String action_item = v.getTag().toString();
+            Log.d(TAG, "action_item:" + action_item);
             mListener.onFragmentInteraction(action_item);
             // TODO Current just resolve tab_home_item_resource_library
-            if (action_item.equals(TAB_HOME_ITEM_RESOURCE_LIBRARY)) {
-                Intent i = new Intent(mContext, Main.class);
-                mContext.startActivity(i);
-
-            }
         }
     }
 
+
+    @Override
+    public void paste(String destination) {
+
+    }
 }
+

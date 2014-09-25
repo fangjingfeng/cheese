@@ -1,4 +1,4 @@
-package codingpark.net.cheesecloud;
+package codingpark.net.cheesecloud.utils;
 
 public interface FileOperateCallbacks {
     void paste(String destination);

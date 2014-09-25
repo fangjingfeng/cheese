@@ -39,6 +39,9 @@ import android.widget.Toast;
 import codingpark.net.cheesecloud.handle.EventHandler;
 import codingpark.net.cheesecloud.handle.FileManager;
 import codingpark.net.cheesecloud.model.CatalogList;
+import codingpark.net.cheesecloud.utils.CropImage;
+import codingpark.net.cheesecloud.utils.FileOperateCallbacks;
+import codingpark.net.cheesecloud.utils.TypeFilter;
 import codingpark.net.cheesecloud.view.HelpActivity;
 
 /**
@@ -60,7 +63,7 @@ import codingpark.net.cheesecloud.view.HelpActivity;
  * supporting classes to do the heavy task.
  *
  */
-public final class Main extends ListActivity implements FileOperateCallbacks{
+public final class UploadActivity extends ListActivity implements FileOperateCallbacks {
     private static final String PREFS_NAME              = "ManagerPrefsFile";	//user preference file name
     private static final String PREFS_HIDDEN            = "hidden";
     private static final String PREFS_COLOR             = "color";
@@ -124,7 +127,7 @@ public final class Main extends ListActivity implements FileOperateCallbacks{
 
         setContentView(R.layout.main);
 
-        /*read settings*/
+        /*read fragment_settings*/
         mSettings = getSharedPreferences(PREFS_NAME, 0);
         boolean hide = mSettings.getBoolean(PREFS_HIDDEN, false);
         boolean thumb = mSettings.getBoolean(PREFS_THUMBNAIL, true);
@@ -138,7 +141,7 @@ public final class Main extends ListActivity implements FileOperateCallbacks{
         mCataList = new CatalogList(this);
         mDevicePath = new DevicePath(this);
 
-        mHandler = new EventHandler(Main.this, this, mFileMag, mCataList);
+        mHandler = new EventHandler(UploadActivity.this, this, mFileMag, mCataList);
         mHandler.setTextColor(color);
         mHandler.setShowThumbnails(thumb);
         mTable = mHandler.new TableRow();
@@ -699,15 +702,15 @@ public final class Main extends ListActivity implements FileOperateCallbacks{
     }
 
     private void selectFileType_dialog() {
-        String mFile = Main.this.getResources().getString(R.string.open_file);
-        String mText = Main.this.getResources().getString(R.string.text);
-        String mAudio = Main.this.getResources().getString(R.string.audio);
-        String mVideo = Main.this.getResources().getString(R.string.video);
-        String mImage = Main.this.getResources().getString(R.string.image);
+        String mFile = UploadActivity.this.getResources().getString(R.string.open_file);
+        String mText = UploadActivity.this.getResources().getString(R.string.text);
+        String mAudio = UploadActivity.this.getResources().getString(R.string.audio);
+        String mVideo = UploadActivity.this.getResources().getString(R.string.video);
+        String mImage = UploadActivity.this.getResources().getString(R.string.image);
         CharSequence[] FileType = {mText,mAudio,mVideo,mImage};
         AlertDialog.Builder builder;
         AlertDialog dialog;
-        builder = new AlertDialog.Builder(Main.this);
+        builder = new AlertDialog.Builder(UploadActivity.this);
         builder.setTitle(mFile);
         builder.setIcon(R.drawable.help);
         builder.setItems(FileType, new DialogInterface.OnClickListener() {
@@ -734,7 +737,7 @@ public final class Main extends ListActivity implements FileOperateCallbacks{
                 try {
                     startActivity(mIntent);
                 } catch(ActivityNotFoundException e) {
-                    Toast.makeText(Main.this, "Sorry, couldn't find anything " +
+                    Toast.makeText(UploadActivity.this, "Sorry, couldn't find anything " +
                                     "to open " + openFile.getName(),
                             Toast.LENGTH_SHORT).show();
                 }
@@ -1016,7 +1019,7 @@ public final class Main extends ListActivity implements FileOperateCallbacks{
     }
     @Override
     protected Dialog onCreateDialog(int id) {
-        final Dialog dialog = new Dialog(Main.this);
+        final Dialog dialog = new Dialog(UploadActivity.this);
 
         switch(id) {
             case R.id.action_new_dir:
@@ -1038,14 +1041,14 @@ public final class Main extends ListActivity implements FileOperateCallbacks{
                     public void onClick (View v) {
                         if (input.getText().length() >= 1) {
                             if (mFileMag.createDir(mFileMag.getCurrentDir() + "/", input.getText().toString()) == 0){
-                                Toast.makeText(Main.this,
+                                Toast.makeText(UploadActivity.this,
                                         "Folder " + input.getText().toString() + " created",
                                         Toast.LENGTH_LONG).show();
 
                                 input.setText("");
                             }
                             else{
-                                Toast.makeText(Main.this, getResources().getString(R.string.not_created), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(UploadActivity.this, getResources().getString(R.string.not_created), Toast.LENGTH_SHORT).show();
                             }
                         }
 
@@ -1086,15 +1089,15 @@ public final class Main extends ListActivity implements FileOperateCallbacks{
                         int ret = mFileMag.renameTarget(mFileMag.getCurrentDir() +"/"+ mSelectedListItem, rename_input.getText().toString());
                         switch(ret){
                             case -1:
-                                Toast.makeText(Main.this, mSelectedListItem + getResources().getString(R.string.renamed_to_exist_file), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(UploadActivity.this, mSelectedListItem + getResources().getString(R.string.renamed_to_exist_file), Toast.LENGTH_SHORT).show();
                                 break;
                             case 0:
-                                Toast.makeText(Main.this, mSelectedListItem + getResources().getString(R.string.be_renamed) +rename_input.getText().toString(),
+                                Toast.makeText(UploadActivity.this, mSelectedListItem + getResources().getString(R.string.be_renamed) +rename_input.getText().toString(),
                                         Toast.LENGTH_SHORT).show();
                                 break;
                             case -2:
                             default:
-                                Toast.makeText(Main.this, mSelectedListItem + getResources().getString(R.string.not_renamed), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(UploadActivity.this, mSelectedListItem + getResources().getString(R.string.not_renamed), Toast.LENGTH_SHORT).show();
                                 break;
                         }
                         dialog.dismiss();
@@ -1143,7 +1146,6 @@ public final class Main extends ListActivity implements FileOperateCallbacks{
     }
 
     /*
-     * (non-Javadoc)
      * This will check if the user is at root directory. If so, if they press back
      * again, it will close the application. 
      * @see android.app.Activity#onKeyDown(int, android.view.KeyEvent)
@@ -1166,7 +1168,7 @@ public final class Main extends ListActivity implements FileOperateCallbacks{
                 !(mFileMag.isRoot()) ) {
             if(mHandler.isMultiSelected()) {
                 mTable.killMultiSelect(true);
-                Toast.makeText(Main.this, getResources().getString(R.string.Multi_select_off), Toast.LENGTH_SHORT).show();
+                Toast.makeText(UploadActivity.this, getResources().getString(R.string.Multi_select_off), Toast.LENGTH_SHORT).show();
             }
 
             mHandler.updateDirectory(mFileMag.getPreviousDir());
@@ -1181,7 +1183,7 @@ public final class Main extends ListActivity implements FileOperateCallbacks{
         } else if(keycode == KeyEvent.KEYCODE_BACK && mUseBackKey &&
                 mFileMag.isRoot() )
         {
-            Toast.makeText(Main.this, getResources().getString(R.string.Press_back), Toast.LENGTH_SHORT).show();
+            Toast.makeText(UploadActivity.this, getResources().getString(R.string.Press_back), Toast.LENGTH_SHORT).show();
             mUseBackKey = false;
             mPathLabel.setText(mFileMag.getCurrentDir());
 

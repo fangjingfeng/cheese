@@ -2,7 +2,7 @@
  * when a file is created,modify or delete,it will used this class to notify the MediaScanner to refresh the media database
  */
 
-package codingpark.net.cheesecloud;
+package codingpark.net.cheesecloud.utils;
 
 import java.io.File;
 
