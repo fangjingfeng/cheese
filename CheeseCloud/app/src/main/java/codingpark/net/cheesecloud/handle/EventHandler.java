@@ -113,7 +113,7 @@ public class EventHandler implements OnClickListener, OnItemLongClickListener{
      * Creates an EventHandler object. This object is used to communicate
      * most work from the Main activity to the FileManager class.
      *
-     * @param context	The context of the main activity e.g  Main
+     * @param context	The context of the activity_upload activity e.g  Main
      * @param manager	The FileManager object that was instantiated from Main
      */
     public EventHandler(Context context, FileOperateCallbacks callbacks, final FileManager manager,final CatalogList CataList) {
@@ -459,95 +459,6 @@ public class EventHandler implements OnClickListener, OnItemLongClickListener{
                 refreshFocus(preView,v);
                 break;
 			
-			/* 
-			 * three hidden buttons for multiselect
-			 */
-
-            case R.id.hidden_attach:
-				/* check if user selected objects before going further */
-                if(mMultiSelectData == null || mMultiSelectData.isEmpty()) {
-                    mDelegate.killMultiSelect(true);
-                    break;
-                }
-
-                ArrayList<Uri> uris = new ArrayList<Uri>();
-                int length = mMultiSelectData.size();
-                Intent mail_int = new Intent();
-
-                mail_int.setAction(android.content.Intent.ACTION_SEND_MULTIPLE);
-                mail_int.setType("application/mail");
-                mail_int.putExtra(Intent.EXTRA_BCC, "");
-                mail_int.putExtra(Intent.EXTRA_SUBJECT, " ");
-
-                for(int i = 0; i < length; i++) {
-                    File file = new File(mMultiSelectData.get(i));
-                    uris.add(Uri.fromFile(file));
-                }
-
-                mail_int.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris);
-                mContext.startActivity(Intent.createChooser(mail_int,
-                        "Email using..."));
-
-                mDelegate.killMultiSelect(true);
-                break;
-			 /* add function:paste to current dir */
-            case R.id.hidden_paste:
-                String des = mFileMang.getCurrentDir();
-                mCallbacks.paste(des);
-            case R.id.hidden_move:
-            case R.id.hidden_copy:
-				/* check if user selected objects before going further */
-                if(mMultiSelectData == null || mMultiSelectData.isEmpty()) {
-                    mDelegate.killMultiSelect(true);
-                    break;
-                }
-
-                if(v.getId() == R.id.hidden_move){
-                    delete_after_copy = true;
-                }else{
-                    delete_after_copy = false;
-                }
-
-                //mInfoLabel.setText("Holding " + mMultiSelectData.size() +
-                        //" file(s)");
-
-                mDelegate.killMultiSelect(false);
-                break;
-
-            case R.id.hidden_delete:
-				/* check if user selected objects before going further */
-                if(mMultiSelectData == null || mMultiSelectData.isEmpty()) {
-                    mDelegate.killMultiSelect(true);
-                    break;
-                }
-
-                final String[] data = new String[mMultiSelectData.size()];
-                int at = 0;
-
-                for(String string : mMultiSelectData)
-                    data[at++] = string;
-
-                AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-                builder.setMessage(mContext.getResources().getString(R.string.Deleting_warning_pre) +
-                        data.length + mContext.getResources().getString(R.string.Deleting_warning_suf));
-                builder.setCancelable(false);
-                builder.setPositiveButton(R.string.Delete, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        new BackgroundWork(DELETE_TYPE).execute(data);
-                        mDelegate.killMultiSelect(true);
-                    }
-                });
-                builder.setNegativeButton(R.string.Cancel, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        mDelegate.killMultiSelect(true);
-                        dialog.cancel();
-                    }
-                });
-
-                builder.create().show();
-                break;
         }
         switch(getMode()){
             case CATALOG_MODE:
@@ -714,6 +625,8 @@ public class EventHandler implements OnClickListener, OnItemLongClickListener{
          * 					so we can later paste it to another folder.
          */
         public void killMultiSelect(boolean clearData) {
+            // TODO Handle multiple select
+            /*
             hidden_layout = (LinearLayout)((Activity)mContext).findViewById(R.id.hidden_buttons);
             hidden_layout.setVisibility(LinearLayout.GONE);
             multi_select_flag = false;
@@ -726,6 +639,7 @@ public class EventHandler implements OnClickListener, OnItemLongClickListener{
                     mMultiSelectData.clear();
 
             notifyDataSetChanged();
+            */
         }
 
         public String getFilePermissions(File file) {

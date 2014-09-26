@@ -30,6 +30,7 @@
         style="@style/AppTheme" />
 
     <!--  Footer for Multi-select buttons -->
+    <!--
     <LinearLayout
         android:id="@+id/hidden_buttons"
         android:orientation="horizontal"
@@ -69,6 +70,7 @@
             android:layout_weight="1"
             android:text="@string/Move" />
     </LinearLayout>
+    -->
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="fill_parent"

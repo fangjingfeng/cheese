@@ -67,7 +67,7 @@ public final class UploadActivity extends ListActivity implements FileOperateCal
         }
         */
 
-        setContentView(R.layout.main);
+        setContentView(R.layout.activity_upload);
 
         /* Get system preferences: hide/thumb/color/sort */
         mSettings           = getSharedPreferences(Configs.PREFS_NAME, 0);
