@@ -85,22 +85,6 @@
         <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/sdcard_1"
-            android:paddingRight="3dp"
-            android:background="@drawable/bg_1"
-            android:id="@+id/home_sdcard_button"
-            android:layout_weight="1" />
-        <ImageButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/usbhost_1"
-            android:paddingRight="3dp"
-            android:background="@drawable/bg_1"
-            android:id="@+id/home_usbhost_button"
-            android:layout_weight="1" />
-        <ImageButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:src="@drawable/picture_1"
             android:paddingRight="3dp"
             android:background="@drawable/bg_1"
@@ -113,14 +97,6 @@
             android:paddingRight="3dp"
             android:background="@drawable/bg_1"
             android:id="@+id/movie_button"
-            android:layout_weight="1" />
-        <ImageButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/multiselect_1"
-            android:paddingRight="3dp"
-            android:background="@drawable/bg_1"
-            android:id="@+id/multiselect_button"
             android:layout_weight="1" />
         <ImageButton
             android:layout_width="wrap_content"

@@ -113,10 +113,7 @@ public final class UploadActivity extends ListActivity implements FileOperateCal
 
 		/* setup buttons */
         int[] img_button_id = {R.id.home_flash_button,
-                R.id.home_sdcard_button,
-                R.id.home_usbhost_button,
                 R.id.back_button,
-                R.id.multiselect_button,
                 R.id.image_button,
                 R.id.movie_button};
 

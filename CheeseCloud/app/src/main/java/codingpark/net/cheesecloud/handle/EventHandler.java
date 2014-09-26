@@ -94,6 +94,7 @@ public class EventHandler implements OnClickListener, OnItemLongClickListener{
     public static final int DISABLE_TOOLBTN = 2;
     public void UpdateButtons(int mode)
     {
+        /*
         ImageButton multi = (ImageButton)((Activity) mContext).findViewById(R.id.multiselect_button);
 
         switch(mode)
@@ -105,6 +106,7 @@ public class EventHandler implements OnClickListener, OnItemLongClickListener{
                 multi.setEnabled(false);
                 break;
         }
+        */
     }
 
     /**
@@ -423,42 +425,6 @@ public class EventHandler implements OnClickListener, OnItemLongClickListener{
                 }
                 break;
 
-            case R.id.home_sdcard_button:
-                refreshFocus(preView,v);
-                if(mFileMang.whichRoot() == FileManager.ROOT_SDCARD &&
-                        mlistmode == TREEVIEW_MODE)
-                {
-                    break;
-                }
-                mlistmode = TREEVIEW_MODE;
-                if(multi_select_flag) {
-                    mDelegate.killMultiSelect(true);
-                    Toast.makeText(mContext, R.string.Multi_select_off,
-                            Toast.LENGTH_SHORT).show();
-                }
-                updateDirectory(mFileMang.getHomeDir(FileManager.ROOT_SDCARD));
-                if(mPathLabel != null)
-                    mPathLabel.setText(mFileMang.getCurrentDir());
-                break;
-
-            case R.id.home_usbhost_button:
-                refreshFocus(preView,v);
-                if(mFileMang.whichRoot() == FileManager.ROOT_USBHOST &&
-                        mlistmode == TREEVIEW_MODE)
-                {
-                    break;
-                }
-                mlistmode = TREEVIEW_MODE;
-                if(multi_select_flag) {
-                    mDelegate.killMultiSelect(true);
-                    Toast.makeText(mContext, R.string.Multi_select_off,
-                            Toast.LENGTH_SHORT).show();
-                }
-                updateDirectory(mFileMang.getHomeDir(FileManager.ROOT_USBHOST));
-                if(mPathLabel != null)
-                    mPathLabel.setText(mFileMang.getCurrentDir());
-                break;
-
             case R.id.home_flash_button:
                 refreshFocus(preView,v);
                 if(mFileMang.whichRoot() == FileManager.ROOT_FLASH &&
@@ -475,25 +441,6 @@ public class EventHandler implements OnClickListener, OnItemLongClickListener{
                 updateDirectory(mFileMang.getHomeDir(FileManager.ROOT_FLASH));
                 if(mPathLabel != null)
                     mPathLabel.setText(mFileMang.getCurrentDir());
-                break;
-
-            case R.id.multiselect_button:
-                refreshFocus(preView,v);
-                if(getMode() != TREEVIEW_MODE)
-                {
-                    break;
-                }
-
-                if(multi_select_flag) {
-                    mDelegate.killMultiSelect(true);
-
-                } else {
-                    LinearLayout hidden_lay =
-                            (LinearLayout)((Activity) mContext).findViewById(R.id.hidden_buttons);
-
-                    multi_select_flag = true;
-                    hidden_lay.setVisibility(LinearLayout.VISIBLE);
-                }
                 break;
 
             case R.id.image_button:
