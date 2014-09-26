@@ -15,7 +15,7 @@
             android:layout_height="wrap_content"
             android:text="@string/Display"
             android:textStyle="bold"
-            android:background="#ff3098fa" />
+            android:background="@color/themeBlue" />
         <View
             android:layout_width="fill_parent"
             android:layout_height="5dip"
@@ -24,7 +24,7 @@
         <View
             android:layout_width="fill_parent"
             android:layout_height="3dip"
-            android:background="#ff3098fa" />
+            android:background="@color/themeBlue" />
 
         <TableRow>
             <LinearLayout
@@ -90,22 +90,22 @@
         <View
             android:layout_width="fill_parent"
             android:layout_height="3dip"
-            android:background="#ff3098fa" />
+            android:background="@color/themeBlue" />
 
         <View
             android:layout_width="fill_parent"
             android:layout_height="5dip"
-            android:background="#ff3098fa" />
+            android:background="@color/themeBlue" />
         <TextView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:textStyle="bold"
             android:text="@string/Sorting"
-            android:background="#ff3098fa" />
+            android:background="@color/themeBlue" />
         <View
             android:layout_width="fill_parent"
             android:layout_height="5dip"
-            android:background="#ff3098fa" />
+            android:background="@color/themeBlue" />
 
         <TableRow>
             <LinearLayout

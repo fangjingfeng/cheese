@@ -81,7 +81,7 @@ public class EventHandler implements OnClickListener, OnItemLongClickListener{
     private boolean multi_select_flag = false;
     private boolean delete_after_copy = false;
     private boolean thumbnail_flag = true;
-    private int mColor = Color.WHITE;
+    private int mColor = Color.BLACK;
 
     //the list used to feed info into the array adapter and when multi-select is on
     private ArrayList<String> mDataSource, mMultiSelectData;

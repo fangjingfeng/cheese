@@ -1,14 +1,11 @@
 package codingpark.net.cheesecloud.view;
 
-import java.io.File;
 import java.util.Locale;
 
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
-import android.content.BroadcastReceiver;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.support.v13.app.FragmentPagerAdapter;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
@@ -20,15 +17,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.TextView;
 
-import codingpark.net.cheesecloud.DevicePath;
 import codingpark.net.cheesecloud.R;
-import codingpark.net.cheesecloud.UploadActivity;
-import codingpark.net.cheesecloud.handle.EventHandler;
-import codingpark.net.cheesecloud.handle.FileManager;
 import codingpark.net.cheesecloud.handle.OnFragmentInteractionListener;
-import codingpark.net.cheesecloud.model.CatalogList;
 
 
 public class MainActivity extends Activity implements OnFragmentInteractionListener {
@@ -58,6 +49,7 @@ public class MainActivity extends Activity implements OnFragmentInteractionListe
     private ImageView tab_home_iv       = null;
     private ImageView tab_contact_iv    = null;
     private ImageView tab_setting_iv    = null;
+
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
      * fragments for each of the sections. We use a

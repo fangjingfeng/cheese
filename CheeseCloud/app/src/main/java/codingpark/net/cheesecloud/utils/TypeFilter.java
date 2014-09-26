@@ -1,10 +1,10 @@
-/*
- this file written by dhm,for get file type by file extend name
- */
 
 package codingpark.net.cheesecloud.utils;
 
 
+/**
+ * For get file type by file extend name
+ */
 public final class TypeFilter{
 	
 	static private TypeFilter sInstance;

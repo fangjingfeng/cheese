@@ -9,5 +9,6 @@
     <color name="brightGreen">#00FF00</color>
     <color name="brightBlue">#0000FF</color>
     <color name="darkBlue">#880000FF</color>
+    <color name="themeBlue">#ff3098fa</color>
     <color name="transparent">#000000FF</color>
 </resources>
