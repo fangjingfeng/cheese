@@ -30,16 +30,6 @@
             android:label="@string/media_dialog"
             android:theme="@android:style/Theme.Dialog" />
         <activity
-            android:name=".model.DirectoryInfo"
-            android:enabled="true"
-            android:label="@string/dir_info" >
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <data android:mimeType="application/manager" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-        <activity
             android:name=".view.HelpActivity"
             android:label="About Open Manager"
             android:theme="@android:style/Theme.Dialog" />
