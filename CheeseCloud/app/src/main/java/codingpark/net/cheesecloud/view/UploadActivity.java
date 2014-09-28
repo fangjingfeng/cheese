@@ -213,41 +213,7 @@ public final class UploadActivity extends ListActivity implements FileOperateCal
                     startActivity(movieIntent);
                 }
             }
-	    	
-	    	/*zip file */
-            else if(TypeFilter.getInstance().isZipFile(item_ext)) {
 
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                AlertDialog alert;
-                CharSequence[] option = {"Extract here", "Extract to..."};
-
-                builder.setTitle("Extract");
-                builder.setItems(option, new DialogInterface.OnClickListener() {
-
-                    public void onClick(DialogInterface dialog, int which) {
-                        switch(which) {
-                            case 0:
-                                String dir = mFileMag.getCurrentDir();
-                                mHandler.unZipFile(item, dir + "/");
-                                break;
-
-                            case 1:
-                                mDetailLabel.setText("Holding " + item +
-                                        " to extract");
-                                break;
-                        }
-                    }
-                });
-
-                alert = builder.create();
-                alert.show();
-            }
-	    	
-	    	/* gzip files, this will be implemented later */
-            else if(TypeFilter.getInstance().isGZipFile(item_ext)) {
-
-            }
-	    	
 	    	/*pdf file selected*/
             else if(TypeFilter.getInstance().isPdfFile(item_ext)) {
 

@@ -34,6 +34,7 @@ public class DevicePath{
         String flash = Environment.getExternalStorageDirectory().getAbsolutePath();
         stmg = (StorageManager) context.getSystemService(context.STORAGE_SERVICE);
         String[] list = new String[0];//stmg.getVolumePaths();
+        // Call StorageManager.getVolumePaths by reflect
         try {
             mMethodGetPaths = (Method)stmg.getClass().getMethod("getVolumePaths");
             list = (String[])mMethodGetPaths.invoke(stmg);

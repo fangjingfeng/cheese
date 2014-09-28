@@ -58,27 +58,27 @@
             android:layout_width="0px"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@drawable/menu_bottom_upload_bt_normal"
+            android:background="@drawable/bottom_menu_bar_upload"
             android:adjustViewBounds="true" />
         <Button
             android:id="@+id/menu_bottom_copy_bt"
             android:layout_width="0px"
             android:layout_height="wrap_content"
-            android:background="@drawable/menu_bottom_copy_bt_normal"
+            android:background="@drawable/bottom_menu_bar_copy"
             android:layout_weight="1"
             android:adjustViewBounds="true" />
         <Button
             android:id="@+id/menu_bottom_paste_bt"
             android:layout_width="0px"
             android:layout_height="wrap_content"
-            android:background="@drawable/menu_bottom_paste_bt_normal"
+            android:background="@drawable/bottom_menu_bar_paste"
             android:layout_weight="1"
             android:adjustViewBounds="true" />
         <Button
             android:id="@+id/menu_bottom_more_bt"
             android:layout_width="0px"
             android:layout_height="wrap_content"
-            android:background="@drawable/menu_bottom_more_bt_normal"
+            android:background="@drawable/bottom_menu_bar_more"
             android:layout_weight="1"
             android:adjustViewBounds="true" />
     </LinearLayout>

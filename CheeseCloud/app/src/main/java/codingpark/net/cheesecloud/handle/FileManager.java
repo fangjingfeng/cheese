@@ -37,22 +37,61 @@ import codingpark.net.cheesecloud.utils.RefreshMedia;
  *
  */
 public class FileManager {
-    private static final String TAG = FileManager.class.getSimpleName();
-    public  static final int ROOT_FLASH = 0;
-    public  static final int ROOT_SDCARD = 1;
-    public  static final int ROOT_USBHOST = 2;
-    public	static final int ROOT_UNKNOWN = 3;
+    private static final String TAG = "FileManager";
+    /**
+     * Internal storage type
+     */
+    public  static final int ROOT_FLASH         = 0;
+    /**
+     * Sdcard storeage type
+     */
+    public  static final int ROOT_SDCARD        = 1;
+    /**
+     * External usb storage type
+     */
+    public  static final int ROOT_USBHOST       = 2;
+    /**
+     * Unknown storage type
+     */
+    public	static final int ROOT_UNKNOWN       = 3;
 
+    // TODO comment BUFFER
     private static final int BUFFER = 		2048;
+
+    /**
+     * No sort
+     */
     private static final int SORT_NONE = 	0;
+    /**
+     * Sort by alpha of file name
+     */
     private static final int SORT_ALPHA = 	1;
+    /**
+     * Sort by file type
+     */
     private static final int SORT_TYPE = 	2;
 
+    /**
+     * ArrayList store all internal flash storage disk path of system
+     */
     private ArrayList<String> flashPath;
+    /**
+     * ArrayList store all sdcard storage disk path of system
+     */
     private ArrayList<String> sdcardPath;
+    /**
+     * ArrayList store all external usb storage disk path of system
+     */
     private ArrayList<String> usbPath;
+
+    /**
+     * Root paths of flash/sdcard/usb
+     */
     private DevicePath mDevices;
 
+    /**
+     *
+     */
     private boolean mShowHiddenFiles = false;
     private int mSortType = SORT_ALPHA;
     private long mDirSize = 0;

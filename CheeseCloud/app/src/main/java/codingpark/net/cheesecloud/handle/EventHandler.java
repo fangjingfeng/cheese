@@ -1,9 +1,5 @@
 package codingpark.net.cheesecloud.handle;
 
-import java.io.File;
-import java.util.ArrayList;
-
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
@@ -25,16 +21,18 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ArrayAdapter;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import codingpark.net.cheesecloud.model.CatalogList;
+import java.io.File;
+import java.util.ArrayList;
+
 import codingpark.net.cheesecloud.DevicePath;
-import codingpark.net.cheesecloud.utils.FileOperateCallbacks;
 import codingpark.net.cheesecloud.R;
+import codingpark.net.cheesecloud.model.CatalogList;
+import codingpark.net.cheesecloud.utils.FileOperateCallbacks;
 import codingpark.net.cheesecloud.utils.ThumbnailCreator;
 import codingpark.net.cheesecloud.utils.TypeFilter;
 
@@ -61,12 +59,6 @@ public class EventHandler implements OnClickListener, OnItemLongClickListener{
      * performed in the background
      */
     private static final int SEARCH_TYPE =		0x00;
-    private static final int COPY_TYPE =		0x01;
-    private static final int UNZIP_TYPE =		0x02;
-    private static final int UNZIPTO_TYPE =		0x03;
-    private static final int ZIP_TYPE =			0x04;
-    private static final int DELETE_TYPE = 		0x05;
-    private static final int MANAGE_DIALOG =	 0x06;
 
     public static final int TREEVIEW_MODE = 1;
     public static final int CATALOG_MODE = 2;
@@ -79,7 +71,6 @@ public class EventHandler implements OnClickListener, OnItemLongClickListener{
     private final CatalogList mCataList;
     private TableRow mDelegate;
     private boolean multi_select_flag = false;
-    private boolean delete_after_copy = false;
     private boolean thumbnail_flag = true;
     private int mColor = Color.BLACK;
 
@@ -140,8 +131,6 @@ public class EventHandler implements OnClickListener, OnItemLongClickListener{
      * This method is called from the Main activity and this has the same
      * reference to the same object so when changes are made here or there
      * they will display in the same way.
-     *
-     * @param adapter	The TableRow object
      */
     public int getMode() {
         return mlistmode;
@@ -178,16 +167,6 @@ public class EventHandler implements OnClickListener, OnItemLongClickListener{
     }
 
     /**
-     * If you want to move a file (cut/paste) and not just copy/paste use this method to
-     * tell the file manager to delete the old reference of the file.
-     *
-     * @param delete true if you want to move a file, false to copy the file
-     */
-    public void setDeleteAfterCopy(boolean delete) {
-        delete_after_copy = delete;
-    }
-
-    /**
      * Indicates whether the user wants to select
      * multiple files or folders at a time.
      * <br><br>
@@ -216,186 +195,6 @@ public class EventHandler implements OnClickListener, OnItemLongClickListener{
      */
     public void searchForFile(String name) {
         new BackgroundWork(SEARCH_TYPE).execute(name);
-    }
-
-    /**
-     * Will delete the file name that is passed on a background
-     * thread.
-     *
-     * @param name
-     */
-    public void deleteFile(String name) {
-        new BackgroundWork(DELETE_TYPE).execute(name);
-    }
-
-    /**
-     * Will copy a file or folder to another location.
-     *
-     * @param oldLocation	from location
-     * @param newLocation	to location
-     */
-    public void copyFile(String oldLocation, String newLocation) {
-        String msg = "";
-        final String[] data = {oldLocation, newLocation};
-        File oldFile = new File(oldLocation);
-        String name = oldFile.getName();
-        File newDir = new File(newLocation);
-        if(oldFile.getParent().equals(newLocation) && delete_after_copy){
-            return;
-        }
-        if(newLocation.contains(oldLocation)){
-            if(delete_after_copy){
-                msg = mContext.getResources().getString(R.string.can_not_paste) + name;
-            }else{
-                msg = mContext.getResources().getString(R.string.can_not_copy) + name;
-            }
-            if(newLocation.equals(oldLocation)){
-                msg = msg + mContext.getResources().getString(R.string.target_equals_src);
-            }else{
-                msg = msg + mContext.getResources().getString(R.string.target_is_child);
-            }
-            Toast.makeText(mContext, msg, Toast.LENGTH_SHORT).show();
-            return;
-        }
-        File newFile = new File(newDir, name);
-        if(newFile.exists() &&
-                !newFile.getAbsolutePath().equals(oldLocation) &&
-                ((newFile.isDirectory() && oldFile.isDirectory()) || (newFile.isFile() && oldFile.isFile()))){
-            AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-            builder.setTitle(mContext.getResources().getString(R.string.Warning));
-            builder.setIcon(R.drawable.warning);
-            builder.setMessage(mContext.getResources().getString(R.string.sure_cover_file) + name);
-            builder.setCancelable(false);
-
-            builder.setNegativeButton(mContext.getResources().getString(R.string.Cancel), new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.dismiss();
-                }
-            });
-            String convice = "";
-            if(delete_after_copy){
-                convice = mContext.getResources().getString(R.string.Paste);
-            }else{
-                convice = mContext.getResources().getString(R.string.Copy);
-            }
-            builder.setPositiveButton(convice, new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int which) {
-                    new BackgroundWork(COPY_TYPE).execute(data);
-                }
-            });
-            AlertDialog alert_d = builder.create();
-            alert_d.show();
-            return;
-        }
-
-        new BackgroundWork(COPY_TYPE).execute(data);
-    }
-
-    /**
-     *
-     * @param newLocation
-     */
-    public void copyFileMultiSelect(String newLocation) {
-        final String[] data;
-        int index = 1;
-        int cover = 0;
-        if (mMultiSelectData.size() > 0) {
-            ArrayList<String> datas = (ArrayList<String>) mMultiSelectData.clone();
-            for(String oldLocation:datas){
-                File oldFile = new File(oldLocation);
-                if(oldFile.getParent().equals(newLocation) && delete_after_copy){
-                    mMultiSelectData.remove(oldLocation);
-                    continue;
-                }
-                if(newLocation.contains(oldLocation)){
-                    mMultiSelectData.remove(oldLocation);
-                    continue;
-                }
-                String name = oldFile.getName();
-                File newFile = new File(newLocation, name);
-                if(newFile.exists() &&
-                        !newFile.getAbsolutePath().equals(oldLocation) &&
-                        ((newFile.isDirectory() && oldFile.isDirectory()) || (newFile.isFile() && oldFile.isFile()))){
-                    cover++;
-                    continue;
-                }
-            }
-            if(mMultiSelectData.size() > 0){
-                data = new String[mMultiSelectData.size() + 1];
-                data[0] = newLocation;
-                for(String s : mMultiSelectData){
-                    data[index++] = s;
-                }
-                if(cover > 0){
-                    AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-                    builder.setTitle(mContext.getResources().getString(R.string.Warning));
-                    builder.setIcon(R.drawable.warning);
-                    builder.setMessage(mContext.getResources().getString(R.string.sure_cover_files) + cover +
-                            mContext.getResources().getString(R.string.file_num));
-                    builder.setCancelable(false);
-
-                    builder.setNegativeButton(mContext.getResources().getString(R.string.Cancel), new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    });
-                    String convice = "";
-                    if(delete_after_copy){
-                        convice = mContext.getResources().getString(R.string.Paste);
-                    }else{
-                        convice = mContext.getResources().getString(R.string.Copy);
-                    }
-                    builder.setPositiveButton(convice, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            new BackgroundWork(COPY_TYPE).execute(data);
-                        }
-                    });
-                    AlertDialog alert_d = builder.create();
-                    alert_d.show();
-                }
-                else{
-                    new BackgroundWork(COPY_TYPE).execute(data);
-                }
-            }
-            else{
-                multi_select_flag = false;
-                mMultiSelectData.clear();
-                if (mInfoLabel != null)
-                    mInfoLabel.setText("");
-                delete_after_copy = false;
-            }
-        }
-    }
-
-    /**
-     * This will extract a zip file to the same directory.
-     *
-     * @param file	the zip file name
-     * @param path	the path were the zip file will be extracted (the current directory)
-     */
-    public void unZipFile(String file, String path) {
-        new BackgroundWork(UNZIP_TYPE).execute(file, path);
-    }
-
-    /**
-     * This method will take a zip file and extract it to another
-     * location
-     *
-     * @param name		the name of the of the new file (the dir name is used)
-     * @param newDir	the dir where to extract to
-     * @param oldDir	the dir where the zip file is
-     */
-    public void unZipFileToDir(String name, String newDir, String oldDir) {
-        new BackgroundWork(UNZIPTO_TYPE).execute(name, newDir, oldDir);
-    }
-
-    /**
-     * Creates a zip file
-     *
-     * @param zipPath	the path to the directory you want to zip
-     */
-    public void zipFile(String zipPath) {
-        new BackgroundWork(ZIP_TYPE).execute(zipPath);
     }
 
     /**
@@ -943,8 +742,6 @@ public class EventHandler implements OnClickListener, OnItemLongClickListener{
      *
      * (note): this class will eventually be changed from using AsyncTask to using
      * Handlers and messages to perform background operations. 
-     *
-     * @author Joe Berria
      */
     private class BackgroundWork extends AsyncTask<String, Void, ArrayList<String>> {
         private String file_name;
@@ -964,8 +761,9 @@ public class EventHandler implements OnClickListener, OnItemLongClickListener{
          */
         @Override
         protected void onPreExecute() {
-    		/* add by chenjd,chenjd@allwinnertech.com,20120506
-    		 * lock standby when it is in file operation*/
+    		/*
+    		 * lock standby when it is in file operation
+    		 * */
             PowerManager pm = (PowerManager) mContext.getSystemService(Context.POWER_SERVICE);
             wl = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, WAKE_LOCK);
             wl.acquire();
@@ -977,35 +775,6 @@ public class EventHandler implements OnClickListener, OnItemLongClickListener{
                             true, true);
                     break;
 
-                case COPY_TYPE:
-                    pr_dialog = ProgressDialog.show(mContext, "Copying",
-                            "Copying file...",
-                            true, false);
-                    break;
-
-                case UNZIP_TYPE:
-                    pr_dialog = ProgressDialog.show(mContext, "Unzipping",
-                            "Unpacking zip file please wait...",
-                            true, false);
-                    break;
-
-                case UNZIPTO_TYPE:
-                    pr_dialog = ProgressDialog.show(mContext, "Unzipping",
-                            "Unpacking zip file please wait...",
-                            true, false);
-                    break;
-
-                case ZIP_TYPE:
-                    pr_dialog = ProgressDialog.show(mContext, "Zipping",
-                            "Zipping folder...",
-                            true, false);
-                    break;
-
-                case DELETE_TYPE:
-                    pr_dialog = ProgressDialog.show(mContext, "Deleting",
-                            "Deleting files...",
-                            true, false);
-                    break;
             }
         }
 
@@ -1021,48 +790,10 @@ public class EventHandler implements OnClickListener, OnItemLongClickListener{
                     ArrayList<String> found = mFileMang.searchInDirectory(mFileMang.getCurrentDir(),
                             file_name);
                     return found;
-
-                case COPY_TYPE:
-                    int len = params.length;
-
-                    if(mMultiSelectData != null && !mMultiSelectData.isEmpty()) {
-                        for(int i = 1; i < len; i++) {
-                            copy_rtn = mFileMang.copyToDirectory(params[i], params[0]);
-
-                            if(delete_after_copy)
-                                mFileMang.deleteTarget(params[i]);
-                        }
-                    } else {
-                        copy_rtn = mFileMang.copyToDirectory(params[0], params[1]);
-
-                        if(delete_after_copy)
-                            mFileMang.deleteTarget(params[0]);
-                    }
-
-                    delete_after_copy = false;
+                default:
                     return null;
 
-                case UNZIP_TYPE:
-                    mFileMang.extractZipFiles(params[0], params[1]);
-                    return null;
-
-                case UNZIPTO_TYPE:
-                    mFileMang.extractZipFilesFromDir(params[0], params[1], params[2]);
-                    return null;
-
-                case ZIP_TYPE:
-                    mFileMang.createZipFile(params[0]);
-                    return null;
-
-                case DELETE_TYPE:
-                    int size = params.length;
-
-                    for(int i = 0; i < size; i++)
-                        mFileMang.deleteTarget(params[i]);
-
-                    return null;
             }
-            return null;
         }
 
         /**
@@ -1074,7 +805,7 @@ public class EventHandler implements OnClickListener, OnItemLongClickListener{
             final CharSequence[] names;
             int len = file != null ? file.size() : 0;
 			
-			/* add by chenjd,chenjd@allwinnertech.com,20120506
+			/*
 			 * unlock standby
 			 */
             if(wl != null)
@@ -1102,8 +833,9 @@ public class EventHandler implements OnClickListener, OnItemLongClickListener{
                                 String path = file.get(position);
 //								updateDirectory(mFileMang.getNextDir(path.
 //													substring(0, path.lastIndexOf("/")), true));
-								/* add by chenjd.chenjd@allwinnertech.com,20120213
-								 * when it is a directory, open it,otherwise play it*/
+								/*
+								 * when it is a directory, open it,otherwise play it
+								 * */
                                 File f = new File(path);
                                 String item_ext = null;
 
@@ -1178,49 +910,6 @@ public class EventHandler implements OnClickListener, OnItemLongClickListener{
                     pr_dialog.dismiss();
                     break;
 
-                case COPY_TYPE:
-                    if(mMultiSelectData != null && !mMultiSelectData.isEmpty()) {
-                        multi_select_flag = false;
-                        mMultiSelectData.clear();
-                    }
-
-                    if(copy_rtn == 0)
-                        Toast.makeText(mContext, R.string.paste_success,
-                                Toast.LENGTH_SHORT).show();
-                    else
-                        Toast.makeText(mContext, R.string.paste_fail, Toast.LENGTH_SHORT).show();
-                    updateDirectory(mFileMang.getNextDir(mFileMang.getCurrentDir()));
-                    pr_dialog.dismiss();
-                    if (mInfoLabel != null)
-                        mInfoLabel.setText("");
-                    break;
-
-                case UNZIP_TYPE:
-                    updateDirectory(mFileMang.getNextDir(mFileMang.getCurrentDir()));
-                    pr_dialog.dismiss();
-                    break;
-
-                case UNZIPTO_TYPE:
-                    updateDirectory(mFileMang.getNextDir(mFileMang.getCurrentDir()));
-                    pr_dialog.dismiss();
-                    break;
-
-                case ZIP_TYPE:
-                    updateDirectory(mFileMang.getNextDir(mFileMang.getCurrentDir()));
-                    pr_dialog.dismiss();
-                    break;
-
-                case DELETE_TYPE:
-                    if(mMultiSelectData != null && !mMultiSelectData.isEmpty()) {
-                        mMultiSelectData.clear();
-                        multi_select_flag = false;
-                    }
-
-                    updateDirectory(mFileMang.getNextDir(mFileMang.getCurrentDir()));
-                    pr_dialog.dismiss();
-                    if (mInfoLabel != null)
-                        mInfoLabel.setText("");
-                    break;
             }
         }
     }

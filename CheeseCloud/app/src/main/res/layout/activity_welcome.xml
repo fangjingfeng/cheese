@@ -25,7 +25,8 @@
             android:id="@+id/welcome_login_bt"
             android:src="@drawable/welcome_login_bt"
             android:layout_weight="1"
-            android:scaleType="fitCenter" />
+            android:scaleType="fitCenter"
+            android:background="#00000000" />
 
         <ImageButton
             android:layout_width="wrap_content"
@@ -36,6 +37,7 @@
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_weight="1"
-            android:scaleType="fitCenter" />
+            android:scaleType="fitCenter"
+            android:background="#00000000" />
     </LinearLayout>
 </RelativeLayout>
