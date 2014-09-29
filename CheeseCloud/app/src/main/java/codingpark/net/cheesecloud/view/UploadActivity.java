@@ -9,14 +9,8 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.util.Log;
-import android.view.ContextMenu;
-import android.view.ContextMenu.ContextMenuInfo;
 import android.view.KeyEvent;
-import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView.AdapterContextMenuInfo;
-import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -44,14 +38,14 @@ public final class UploadActivity extends ListActivity implements FileOperateCal
     private DevicePath mDevicePath                      = null;
 
     private SharedPreferences mSettings                 = null;
-    private String mSelectedListItem                    = null;				//item from context menu
+    // UI element to display current full path
     private TextView  mPathLabel                        = null;
+    // UI element to display current selected file name
     private TextView  mDetailLabel                      = null;
 
-    private String TAG = "UploadActivity";
-
-    private String openType;
-    private File openFile;
+    private String TAG                      = "UploadActivity";
+    private String openType                 = null;
+    private File openFile                   = null;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -76,13 +70,20 @@ public final class UploadActivity extends ListActivity implements FileOperateCal
         int color           = mSettings.getInt(Configs.PREFS_COLOR, -1);
         int sort            = mSettings.getInt(Configs.PREFS_SORT, 1);
 
+        // 1. Initial FileManager utility
+        // 2. Set FileManager utility work parameter
         mFileMag = new FileManager(this);
         mFileMag.setShowHiddenFiles(hide);
         mFileMag.setSortType(sort);
 
+        // Initial CatalogList
         mCataList = new CatalogList(this);
+        // Intial DevicePath
         mDevicePath = new DevicePath(this);
 
+        // 1. Initial EventHandler
+        // 2. Set EventHandler work parameter(text color/show thumbnail)
+        // 3. Create ListAdapter
         mHandler = new EventHandler(UploadActivity.this, this, mFileMag, mCataList);
         mHandler.setTextColor(color);
         mHandler.setShowThumbnails(thumb);
@@ -96,9 +97,6 @@ public final class UploadActivity extends ListActivity implements FileOperateCal
         setListAdapter(mTable);
         getListView().setOnItemLongClickListener(mHandler);
         
-        /* register context menu for our list view */
-        registerForContextMenu(getListView());
-
         mDetailLabel = (TextView)findViewById(R.id.detail_label);
         mPathLabel = (TextView)findViewById(R.id.path_label);
         mHandler.setUpdateLabels(mPathLabel, mDetailLabel);
@@ -111,7 +109,8 @@ public final class UploadActivity extends ListActivity implements FileOperateCal
         mHandler.updateDirectory(mFileMag.getHomeDir(FileManager.ROOT_FLASH));
         getFocusForButton(R.id.home_flash_button);
 
-		/* setup buttons */
+
+        /*
         int[] img_button_id = {
                 R.id.home_flash_button,
                 R.id.back_button,
@@ -120,6 +119,7 @@ public final class UploadActivity extends ListActivity implements FileOperateCal
 
 
         ImageButton[] bimg = new ImageButton[img_button_id.length];
+        */
     }
 
     private void getFocusForButton(int id)
@@ -205,8 +205,8 @@ public final class UploadActivity extends ListActivity implements FileOperateCal
                 if (file.exists()) {
                         Intent movieIntent = new Intent();
 
-                    //add by Bevis, for VideoPlayer to create playlist
-                    //movieIntent.putExtra(MediaStore.PLAYLIST_TYPE, MediaStore.PLAYLIST_TYPE_CUR_FOLDER);
+                    // for VideoPlayer to create playlist
+                    // movieIntent.putExtra(MediaStore.PLAYLIST_TYPE, MediaStore.PLAYLIST_TYPE_CUR_FOLDER);
 
                     movieIntent.putExtra(MediaStore.EXTRA_FINISH_ON_COMPLETION, false);
                     movieIntent.setAction(android.content.Intent.ACTION_VIEW);
@@ -335,38 +335,6 @@ public final class UploadActivity extends ListActivity implements FileOperateCal
         });
         dialog = builder.create();
         dialog.show();
-    }
-
-    @Override
-    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo info) {
-        super.onCreateContextMenu(menu, v, info);
-
-        boolean multi_data = mHandler.hasMultiSelectData();
-        AdapterContextMenuInfo _info = (AdapterContextMenuInfo)info;
-        if(info == null)
-        {
-            return;
-        }
-        mSelectedListItem = mHandler.getData(_info.position);
-
-        if(mHandler.getMode() != EventHandler.TREEVIEW_MODE)
-        {
-            return;
-        }
-    	/* is it a directory and is multi-select turned off */
-        if(mFileMag.isDirectory(mSelectedListItem) && !mHandler.isMultiSelected()) {
-            menu.setHeaderTitle(getResources().getString(R.string.Folder_operations));
-
-        /* is it a file and is multi-select turned off */
-        } else if(!mFileMag.isDirectory(mSelectedListItem) && !mHandler.isMultiSelected()) {
-            menu.setHeaderTitle(getResources().getString(R.string.File_Operations));
-        }
-    }
-
-    @Override
-    public boolean onContextItemSelected(MenuItem item) {
-        Log.d(TAG, "Select context item menu");
-        return false;
     }
 
 
