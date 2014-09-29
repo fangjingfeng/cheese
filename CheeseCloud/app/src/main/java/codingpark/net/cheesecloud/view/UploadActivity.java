@@ -20,20 +20,19 @@ import java.io.File;
 import codingpark.net.cheesecloud.Configs;
 import codingpark.net.cheesecloud.DevicePath;
 import codingpark.net.cheesecloud.R;
-import codingpark.net.cheesecloud.handle.EventHandler;
+import codingpark.net.cheesecloud.handle.UploadHandler;
 import codingpark.net.cheesecloud.handle.FileManager;
 import codingpark.net.cheesecloud.model.CatalogList;
-import codingpark.net.cheesecloud.utils.FileOperateCallbacks;
 import codingpark.net.cheesecloud.utils.TypeFilter;
 
 /**
  *
  */
-public final class UploadActivity extends ListActivity implements FileOperateCallbacks {
+public final class UploadActivity extends ListActivity {
 
     private FileManager mFileMag                        = null;
-    private EventHandler mHandler                       = null;
-    private EventHandler.TableRow mTable                = null;
+    private UploadHandler mHandler                       = null;
+    private UploadHandler.TableRow mTable                = null;
     private CatalogList mCataList                       = null;
     private DevicePath mDevicePath                      = null;
 
@@ -84,7 +83,7 @@ public final class UploadActivity extends ListActivity implements FileOperateCal
         // 1. Initial EventHandler
         // 2. Set EventHandler work parameter(text color/show thumbnail)
         // 3. Create ListAdapter
-        mHandler = new EventHandler(UploadActivity.this, this, mFileMag, mCataList);
+        mHandler = new UploadHandler(UploadActivity.this, mFileMag, mCataList);
         mHandler.setTextColor(color);
         mHandler.setShowThumbnails(thumb);
         mTable = mHandler.new TableRow();
@@ -127,7 +126,7 @@ public final class UploadActivity extends ListActivity implements FileOperateCal
         View v = findViewById(id);
         mHandler.getInitView(v);
         v.setSelected(true);
-        mHandler.UpdateButtons(EventHandler.DISABLE_TOOLBTN);
+        mHandler.UpdateButtons(UploadHandler.DISABLE_TOOLBTN);
     }
 
     @Override
@@ -175,9 +174,9 @@ public final class UploadActivity extends ListActivity implements FileOperateCal
                             Toast.LENGTH_SHORT).show();
                 }
                 if(mFileMag.isRoot()){
-                    mHandler.UpdateButtons(EventHandler.DISABLE_TOOLBTN);
+                    mHandler.UpdateButtons(UploadHandler.DISABLE_TOOLBTN);
                 }else{
-                    mHandler.UpdateButtons(EventHandler.ENABLE_TOOLBTN);
+                    mHandler.UpdateButtons(UploadHandler.ENABLE_TOOLBTN);
                 }
             }
 	    	
@@ -357,9 +356,9 @@ public final class UploadActivity extends ListActivity implements FileOperateCal
             mHandler.updateDirectory(mFileMag.getPreviousDir());
             mPathLabel.setText(mFileMag.getCurrentDir());
             if(mFileMag.isRoot()){
-                mHandler.UpdateButtons(EventHandler.DISABLE_TOOLBTN);
+                mHandler.UpdateButtons(UploadHandler.DISABLE_TOOLBTN);
             }else{
-                mHandler.UpdateButtons(EventHandler.ENABLE_TOOLBTN);
+                mHandler.UpdateButtons(UploadHandler.ENABLE_TOOLBTN);
             }
             return true;
 
@@ -373,7 +372,4 @@ public final class UploadActivity extends ListActivity implements FileOperateCal
         return false;
     }
 
-    @Override
-    public void paste(String destination) {
-    }
 }

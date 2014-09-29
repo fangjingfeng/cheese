@@ -32,7 +32,6 @@ import java.util.ArrayList;
 import codingpark.net.cheesecloud.DevicePath;
 import codingpark.net.cheesecloud.R;
 import codingpark.net.cheesecloud.model.CatalogList;
-import codingpark.net.cheesecloud.utils.FileOperateCallbacks;
 import codingpark.net.cheesecloud.utils.ThumbnailCreator;
 import codingpark.net.cheesecloud.utils.TypeFilter;
 
@@ -53,22 +52,21 @@ import codingpark.net.cheesecloud.utils.TypeFilter;
  * class must be updated to display those changes. 
  *
  */
-public class EventHandler implements OnClickListener, OnItemLongClickListener{
+public class UploadHandler implements OnClickListener, OnItemLongClickListener{
+    private static final String TAG         = "EventHandler";
+
     /*
      * Unique types to control which file operation gets
      * performed in the background
      */
     private static final int SEARCH_TYPE    = 0x00;
 
-    private static final String TAG         = "EventHandler";
-
     public static final int TREEVIEW_MODE   = 1;
     public static final int CATALOG_MODE    = 2;
     private int	mlistmode                   = TREEVIEW_MODE;
 
     private final Context mContext;
-    private final FileOperateCallbacks mCallbacks;
-    private final FileManager mFileMang;
+    private final FileManager mFileMgr;
     private final CatalogList mCataList;
     private TableRow mDelegate              = null;
     private boolean multi_select_flag       = false;
@@ -108,13 +106,12 @@ public class EventHandler implements OnClickListener, OnItemLongClickListener{
      * @param context	The context of the activity_upload activity e.g  Main
      * @param manager	The FileManager object that was instantiated from Main
      */
-    public EventHandler(Context context, FileOperateCallbacks callbacks, final FileManager manager,final CatalogList CataList) {
+    public UploadHandler(Context context, final FileManager manager, final CatalogList CataList) {
         mContext = context;
-        mFileMang = manager;
+        mFileMgr = manager;
         mCataList = CataList;
-        mCallbacks = callbacks;
 
-        mDataSource = new ArrayList<String>(mFileMang.getHomeDir(FileManager.ROOT_FLASH));
+        mDataSource = new ArrayList<String>(mFileMgr.getHomeDir(FileManager.ROOT_FLASH));
     }
 
     /**
@@ -213,21 +210,21 @@ public class EventHandler implements OnClickListener, OnItemLongClickListener{
                     break;
                 }
 
-                if (!mFileMang.isRoot()) {
+                if (!mFileMgr.isRoot()) {
                     if(multi_select_flag) {
                         mDelegate.killMultiSelect(true);
                         Toast.makeText(mContext, R.string.Multi_select_off,
                                 Toast.LENGTH_SHORT).show();
                     }
-                    updateDirectory(mFileMang.getPreviousDir());
+                    updateDirectory(mFileMgr.getPreviousDir());
                     if(mPathLabel != null)
-                        mPathLabel.setText(mFileMang.getCurrentDir());
+                        mPathLabel.setText(mFileMgr.getCurrentDir());
                 }
                 break;
 
             case R.id.home_flash_button:
                 refreshFocus(preView,v);
-                if(mFileMang.whichRoot() == FileManager.ROOT_FLASH &&
+                if(mFileMgr.whichRoot() == FileManager.ROOT_FLASH &&
                         mlistmode == TREEVIEW_MODE)
                 {
                     break;
@@ -238,9 +235,9 @@ public class EventHandler implements OnClickListener, OnItemLongClickListener{
                     Toast.makeText(mContext, R.string.Multi_select_off,
                             Toast.LENGTH_SHORT).show();
                 }
-                updateDirectory(mFileMang.getHomeDir(FileManager.ROOT_FLASH));
+                updateDirectory(mFileMgr.getHomeDir(FileManager.ROOT_FLASH));
                 if(mPathLabel != null)
-                    mPathLabel.setText(mFileMang.getCurrentDir());
+                    mPathLabel.setText(mFileMgr.getCurrentDir());
                 break;
 
             case R.id.image_button:
@@ -265,7 +262,7 @@ public class EventHandler implements OnClickListener, OnItemLongClickListener{
                 UpdateButtons(DISABLE_TOOLBTN);
                 break;
             case TREEVIEW_MODE:
-                if(mFileMang.isRoot()){
+                if(mFileMgr.isRoot()){
                     UpdateButtons(DISABLE_TOOLBTN);
                 }else{
                     UpdateButtons(ENABLE_TOOLBTN);
@@ -307,16 +304,16 @@ public class EventHandler implements OnClickListener, OnItemLongClickListener{
     public String getCurrentFilePath(int position){
         final String item = getData(position);
         Log.d(TAG,"item  " + item);
-        if(getMode() == EventHandler.TREEVIEW_MODE)
+        if(getMode() == UploadHandler.TREEVIEW_MODE)
         {
-            String curDir = mFileMang.getCurrentDir();
-            if(curDir.equals(mFileMang.flashList) ||
-                    curDir.equals(mFileMang.sdcardList) ||
-                    curDir.equals(mFileMang.usbhostList)){
+            String curDir = mFileMgr.getCurrentDir();
+            if(curDir.equals(mFileMgr.flashList) ||
+                    curDir.equals(mFileMgr.sdcardList) ||
+                    curDir.equals(mFileMgr.usbhostList)){
                 return item;
             }
             else {
-                return (mFileMang.getCurrentDir() + "/" + item);
+                return (mFileMgr.getCurrentDir() + "/" + item);
             }
         }
         return item;
@@ -389,7 +386,7 @@ public class EventHandler implements OnClickListener, OnItemLongClickListener{
             super(mContext, R.layout.tablerow, mDataSource);
 
             thumbnail = new ThumbnailCreator(mContext, 32, 32);
-            dir_name = mFileMang.getCurrentDir();
+            dir_name = mFileMgr.getCurrentDir();
             mDevices = new DevicePath(mContext);
         }
 
@@ -574,7 +571,7 @@ public class EventHandler implements OnClickListener, OnItemLongClickListener{
         private View getView_tree(int position, View convertView, ViewGroup parent) {
             ViewHolder holder;
             int num_items = 0;
-            String temp = mFileMang.getCurrentDir();
+            String temp = mFileMgr.getCurrentDir();
             File file = new File(getCurrentFilePath(position));
             String filePath = file.getAbsolutePath();
 
@@ -788,7 +785,7 @@ public class EventHandler implements OnClickListener, OnItemLongClickListener{
             switch(type) {
                 case SEARCH_TYPE:
                     file_name = params[0];
-                    ArrayList<String> found = mFileMang.searchInDirectory(mFileMang.getCurrentDir(),
+                    ArrayList<String> found = mFileMgr.searchInDirectory(mFileMgr.getCurrentDir(),
                             file_name);
                     return found;
                 default:
@@ -832,7 +829,7 @@ public class EventHandler implements OnClickListener, OnItemLongClickListener{
 
                             public void onClick(DialogInterface dialog, int position) {
                                 String path = file.get(position);
-//								updateDirectory(mFileMang.getNextDir(path.
+//								updateDirectory(mFileMgr.getNextDir(path.
 //													substring(0, path.lastIndexOf("/")), true));
 								/*
 								 * when it is a directory, open it,otherwise play it
@@ -851,8 +848,8 @@ public class EventHandler implements OnClickListener, OnItemLongClickListener{
                                     if(f.isDirectory())
                                     {
                                         if(f.canRead()) {
-                                            updateDirectory(mFileMang.getNextDir(path));
-                                            mPathLabel.setText(mFileMang.getCurrentDir());
+                                            updateDirectory(mFileMgr.getNextDir(path));
+                                            mPathLabel.setText(mFileMgr.getCurrentDir());
                                         }
                                     }
                                     else if (TypeFilter.getInstance().isMusicFile(item_ext)) {
@@ -918,9 +915,9 @@ public class EventHandler implements OnClickListener, OnItemLongClickListener{
     @Override
     public boolean onItemLongClick(AdapterView<?> arg0, View arg1, int arg2,
                                    long arg3) {
-        if(mFileMang.getCurrentDir().equals(mFileMang.sdcardList) ||
-                mFileMang.getCurrentDir().equals(mFileMang.usbhostList) ||
-                mFileMang.getCurrentDir().equals(mFileMang.flashList)){
+        if(mFileMgr.getCurrentDir().equals(mFileMgr.sdcardList) ||
+                mFileMgr.getCurrentDir().equals(mFileMgr.usbhostList) ||
+                mFileMgr.getCurrentDir().equals(mFileMgr.flashList)){
             return true; //do not respond when in storage list mode
         }
         return false;

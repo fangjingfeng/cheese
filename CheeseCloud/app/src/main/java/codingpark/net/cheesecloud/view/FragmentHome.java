@@ -14,12 +14,11 @@ import android.widget.TextView;
 import java.io.File;
 
 import codingpark.net.cheesecloud.DevicePath;
-import codingpark.net.cheesecloud.handle.EventHandler;
+import codingpark.net.cheesecloud.handle.UploadHandler;
 import codingpark.net.cheesecloud.handle.FileManager;
 import codingpark.net.cheesecloud.handle.OnFragmentInteractionListener;
 import codingpark.net.cheesecloud.model.CatalogList;
 import codingpark.net.cheesecloud.model.HomeListAdapter;
-import codingpark.net.cheesecloud.utils.FileOperateCallbacks;
 
 /**
  * A fragment representing a list of Items.
@@ -28,7 +27,7 @@ import codingpark.net.cheesecloud.utils.FileOperateCallbacks;
  * Activities containing this fragment MUST implement the {@link }
  * interface.
  */
-public class FragmentHome extends ListFragment implements FileOperateCallbacks {
+public class FragmentHome extends ListFragment {
     private static final String TAG         = "FragmentHome";
     // TODO: Rename parameter arguments, choose names that match
     private static final String ARG_PARAM2 = "param2";
@@ -53,8 +52,8 @@ public class FragmentHome extends ListFragment implements FileOperateCallbacks {
     private OnFragmentInteractionListener mListener;
 
     private FileManager mFileMgr                        = null;
-    private EventHandler mHandler                       = null;
-    private EventHandler.TableRow mTable                = null;
+    private UploadHandler mHandler                       = null;
+    private UploadHandler.TableRow mTable                = null;
     private CatalogList mCataList                       = null;
     private DevicePath mDevicePath                      = null;
 
@@ -137,9 +136,5 @@ public class FragmentHome extends ListFragment implements FileOperateCallbacks {
     }
 
 
-    @Override
-    public void paste(String destination) {
-
-    }
 }
 
