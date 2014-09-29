@@ -53,7 +53,7 @@ public class FragmentHome extends ListFragment {
 
     private FileManager mFileMgr                        = null;
     private UploadHandler mHandler                       = null;
-    private UploadHandler.TableRow mTable                = null;
+    private UploadHandler.UploadListAdapter mTable                = null;
     private CatalogList mCataList                       = null;
     private DevicePath mDevicePath                      = null;
 

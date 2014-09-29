@@ -68,7 +68,7 @@ public class UploadHandler implements OnClickListener, OnItemLongClickListener{
     private final Context mContext;
     private final FileManager mFileMgr;
     private final CatalogList mCataList;
-    private TableRow mDelegate              = null;
+    private UploadListAdapter mDelegate              = null;
     private boolean multi_select_flag       = false;
     private boolean thumbnail_flag          = true;
     private int mColor                      = Color.BLACK;
@@ -121,7 +121,7 @@ public class UploadHandler implements OnClickListener, OnItemLongClickListener{
      *
      * @param adapter	The TableRow object
      */
-    public void setListAdapter(TableRow adapter) {
+    public void setListAdapter(UploadListAdapter adapter) {
         mDelegate = adapter;
     }
 
@@ -371,7 +371,7 @@ public class UploadHandler implements OnClickListener, OnItemLongClickListener{
      * be implemented in the getView method. This class is instantiated once in Main
      * and has no reason to be instantiated again.
      */
-    public class TableRow extends ArrayAdapter<String> {
+    public class UploadListAdapter extends ArrayAdapter<String> {
         private final int KB = 1024;
         private final int MG = KB * KB;
         private final int GB = MG * KB;
@@ -382,7 +382,7 @@ public class UploadHandler implements OnClickListener, OnItemLongClickListener{
         private ThumbnailCreator thumbnail;
         private DevicePath mDevices;
 
-        public TableRow() {
+        public UploadListAdapter() {
             super(mContext, R.layout.tablerow, mDataSource);
 
             thumbnail = new ThumbnailCreator(mContext, 32, 32);
@@ -915,11 +915,12 @@ public class UploadHandler implements OnClickListener, OnItemLongClickListener{
     @Override
     public boolean onItemLongClick(AdapterView<?> arg0, View arg1, int arg2,
                                    long arg3) {
+        Log.d(TAG, "Long clicked!");
         if(mFileMgr.getCurrentDir().equals(mFileMgr.sdcardList) ||
                 mFileMgr.getCurrentDir().equals(mFileMgr.usbhostList) ||
                 mFileMgr.getCurrentDir().equals(mFileMgr.flashList)){
             return true; //do not respond when in storage list mode
         }
-        return false;
+        return true;
     }
 }

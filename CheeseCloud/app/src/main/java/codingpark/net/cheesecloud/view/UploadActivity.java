@@ -32,7 +32,7 @@ public final class UploadActivity extends ListActivity {
 
     private FileManager mFileMag                        = null;
     private UploadHandler mHandler                       = null;
-    private UploadHandler.TableRow mTable                = null;
+    private UploadHandler.UploadListAdapter mTable                = null;
     private CatalogList mCataList                       = null;
     private DevicePath mDevicePath                      = null;
 
@@ -86,7 +86,7 @@ public final class UploadActivity extends ListActivity {
         mHandler = new UploadHandler(UploadActivity.this, mFileMag, mCataList);
         mHandler.setTextColor(color);
         mHandler.setShowThumbnails(thumb);
-        mTable = mHandler.new TableRow();
+        mTable = mHandler.new UploadListAdapter();
 
         /**
          * sets the ListAdapter for our ListActivity and
