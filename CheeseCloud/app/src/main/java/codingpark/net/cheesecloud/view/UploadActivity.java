@@ -288,6 +288,9 @@ public final class UploadActivity extends ListActivity implements FileOperateCal
         }
     }
 
+    /**
+     * Show dialog to select which type the selected file is
+     */
     private void selectFileType_dialog() {
         String mFile = UploadActivity.this.getResources().getString(R.string.open_file);
         String mText = UploadActivity.this.getResources().getString(R.string.text);
