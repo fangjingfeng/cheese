@@ -50,14 +50,6 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_weight="0"/>
-    <!--Use to display current select/hold file info-->
-    <TextView
-        android:id="@+id/detail_label"
-        android:textColor="@color/brightRed"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:layout_weight="0"/>
     <ListView
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"

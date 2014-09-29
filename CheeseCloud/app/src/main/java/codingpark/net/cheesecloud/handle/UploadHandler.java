@@ -61,22 +61,28 @@ public class UploadHandler implements OnClickListener, OnItemLongClickListener{
      */
     private static final int SEARCH_TYPE    = 0x00;
 
+    // Common list mode: list all files and folders
     public static final int TREEVIEW_MODE   = 1;
+    // Catalog list mode: just list the specified type files
     public static final int CATALOG_MODE    = 2;
+    // Current selected list mode: default mode is TREEVIEW_MODE
     private int	mlistmode                   = TREEVIEW_MODE;
 
     private final Context mContext;
     private final FileManager mFileMgr;
     private final CatalogList mCataList;
-    private UploadListAdapter mDelegate              = null;
+    private UploadListAdapter mDelegate     = null;
+    // Enable/Disable multiple select mode
     private boolean multi_select_flag       = false;
+    // Enable/disable show pictures/videos thumbnail
     private boolean thumbnail_flag          = true;
+    // Text display color
     private int mColor                      = Color.BLACK;
 
     //the list used to feed info into the array adapter and when multi-select is on
     private ArrayList<String> mDataSource, mMultiSelectData;
+    // Display current directory path
     private TextView mPathLabel             = null;
-    private TextView mInfoLabel             = null;
 
     private View preView                    = null;
 
@@ -139,11 +145,9 @@ public class UploadHandler implements OnClickListener, OnItemLongClickListener{
      * so the user knows which folder they are in.
      *
      * @param path	The label to update as the directory changes
-     * @param label	the label to update information
      */
-    public void setUpdateLabels(TextView path, TextView label) {
+    public void setUpdateLabels(TextView path) {
         mPathLabel = path;
-        mInfoLabel = label;
     }
 
     /**

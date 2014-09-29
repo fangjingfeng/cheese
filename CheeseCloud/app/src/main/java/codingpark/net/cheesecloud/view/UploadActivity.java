@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.KeyEvent;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -39,12 +40,15 @@ public final class UploadActivity extends ListActivity {
     private SharedPreferences mSettings                 = null;
     // UI element to display current full path
     private TextView  mPathLabel                        = null;
-    // UI element to display current selected file name
-    private TextView  mDetailLabel                      = null;
 
     private String TAG                      = "UploadActivity";
     private String openType                 = null;
     private File openFile                   = null;
+
+    private ImageButton upload_disk_bt      = null;
+    private ImageButton upload_image_bt     = null;
+    private ImageButton upload_movie_bt     = null;
+    private ImageButton upload_back_bt      = null;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -88,7 +92,7 @@ public final class UploadActivity extends ListActivity {
         mHandler.setShowThumbnails(thumb);
         mTable = mHandler.new UploadListAdapter();
 
-        /**
+        /*
          * sets the ListAdapter for our ListActivity and
          * gives our EventHandler class the same adapter
          */
@@ -96,9 +100,8 @@ public final class UploadActivity extends ListActivity {
         setListAdapter(mTable);
         getListView().setOnItemLongClickListener(mHandler);
         
-        mDetailLabel = (TextView)findViewById(R.id.detail_label);
         mPathLabel = (TextView)findViewById(R.id.path_label);
-        mHandler.setUpdateLabels(mPathLabel, mDetailLabel);
+        mHandler.setUpdateLabels(mPathLabel);
 		
         /*
          * Start refresh list
@@ -109,16 +112,29 @@ public final class UploadActivity extends ListActivity {
         getFocusForButton(R.id.home_flash_button);
 
 
-        /*
-        int[] img_button_id = {
-                R.id.home_flash_button,
-                R.id.back_button,
-                R.id.image_button,
-                R.id.movie_button};
+        initUI();
+        initHandler();
+    }
 
+    /**
+     * Initial UploadActivity UI elements
+      */
+    private void initUI() {
+        // Initial UploadActivity header tool bar UI elements(ImageButton)
+        upload_disk_bt = (ImageButton)findViewById(R.id.home_flash_button);
+        upload_image_bt = (ImageButton)findViewById(R.id.image_button);
+        upload_movie_bt = (ImageButton)findViewById(R.id.movie_button);
+        upload_back_bt = (ImageButton)findViewById(R.id.back_button);
+    }
 
-        ImageButton[] bimg = new ImageButton[img_button_id.length];
-        */
+    /**
+     * Initial UploadActivity UI elements event handler
+     */
+    private void initHandler() {
+        upload_disk_bt.setOnClickListener(mHandler);
+        upload_image_bt.setOnClickListener(mHandler);
+        upload_movie_bt.setOnClickListener(mHandler);
+        upload_back_bt.setOnClickListener(mHandler);
     }
 
     private void getFocusForButton(int id)
@@ -137,6 +153,7 @@ public final class UploadActivity extends ListActivity {
     private String getCurrentFileName(int position){
         return mHandler.getCurrentFilePath(position);
     }
+
     /**
      *  To add more functionality and let the user interact with more
      *  file types, this is the function to add the ability.
