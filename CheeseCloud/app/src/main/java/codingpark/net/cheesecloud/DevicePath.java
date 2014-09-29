@@ -33,7 +33,7 @@ public class DevicePath{
         usbList = new ArrayList<String>();
         String flash = Environment.getExternalStorageDirectory().getAbsolutePath();
         stmg = (StorageManager) context.getSystemService(context.STORAGE_SERVICE);
-        String[] list = new String[0];//stmg.getVolumePaths();
+        String[] list = new String[0];
         // Call StorageManager.getVolumePaths by reflect
         try {
             mMethodGetPaths = (Method)stmg.getClass().getMethod("getVolumePaths");
@@ -59,14 +59,28 @@ public class DevicePath{
         }
     }
 
+    /**
+     * Get external storage disk (sdcard) path
+     * @return
+     *  ArrayList<String>: stored all sdcard path
+     */
     public ArrayList<String> getSdStoragePath(){
         return (ArrayList<String>) sdcardList.clone();
     }
 
+    /**
+     * System sdcard/usb disk maybe not mounted on local file system, this
+     * function judge the gave storage device weather mounted, and return the
+     * mounted device path.
+     * @param storages
+     * @return
+     *  ArrayList<String>: Mounted storage path list
+     */
     public ArrayList<String> getMountedPath(ArrayList<String> storages){
         ArrayList<String> mounted = new ArrayList<String>();
         for(String dev:storages){
             try {
+                // Use reflection to call StorageManagement.getVolumeState function
                 mMethodGetPathsState = (Method)stmg.getClass().getMethod("getVolumeState", String.class);
 
                 String state = (String)mMethodGetPathsState.invoke(stmg, dev);
@@ -84,18 +98,30 @@ public class DevicePath{
         return mounted;
     }
 
+    /**
+     * Get internal storage disk path(Flash)
+     * @return
+     *  ArrayList<String>: Internal storage disk path list
+     */
     public ArrayList<String> getInterStoragePath()
     {
         return (ArrayList<String>) flashList.clone();
     }
 
+    /**
+     * Get usb storage disk path(USB)
+     * @return
+     *  ArrayList<String>: Usb storage disk path list
+     */
     public ArrayList<String> getUsbStoragePath()
     {
         return (ArrayList<String>) usbList.clone();
     }
 
     /**
+     * Get flash/sdcard/usb storage disk path list
      * @return
+     *  ArrayList<String>: Flash/sdcard/usb storage disk path list
      */
     public ArrayList<String> getTotalDevicesList()
     {
@@ -110,7 +136,7 @@ public class DevicePath{
                 for(int i = 0; i < fList.length; i++){
                     try{
                         StatFs statFs = new StatFs(fList[i].getAbsolutePath());
-                        int count = statFs.getBlockCount();
+                        long count = statFs.getBlockCountLong();
                         if(count == 0){
                             continue;
                         }

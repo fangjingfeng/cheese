@@ -112,7 +112,8 @@ public final class UploadActivity extends ListActivity implements FileOperateCal
         getFocusForButton(R.id.home_flash_button);
 
 		/* setup buttons */
-        int[] img_button_id = {R.id.home_flash_button,
+        int[] img_button_id = {
+                R.id.home_flash_button,
                 R.id.back_button,
                 R.id.image_button,
                 R.id.movie_button};

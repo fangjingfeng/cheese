@@ -37,7 +37,7 @@ import codingpark.net.cheesecloud.utils.ThumbnailCreator;
 import codingpark.net.cheesecloud.utils.TypeFilter;
 
 /**
- * This class sits between the Main activity and the FileManager class. 
+ * This class sits between the Upload activity and the FileManager class.
  * To keep the FileManager class modular, this class exists to handle 
  * UI events and communicate that information to the FileManger class
  *
@@ -58,30 +58,31 @@ public class EventHandler implements OnClickListener, OnItemLongClickListener{
      * Unique types to control which file operation gets
      * performed in the background
      */
-    private static final int SEARCH_TYPE =		0x00;
+    private static final int SEARCH_TYPE    = 0x00;
 
-    public static final int TREEVIEW_MODE = 1;
-    public static final int CATALOG_MODE = 2;
+    private static final String TAG         = "EventHandler";
 
-    private int	mlistmode = TREEVIEW_MODE;
+    public static final int TREEVIEW_MODE   = 1;
+    public static final int CATALOG_MODE    = 2;
+    private int	mlistmode                   = TREEVIEW_MODE;
 
     private final Context mContext;
     private final FileOperateCallbacks mCallbacks;
     private final FileManager mFileMang;
     private final CatalogList mCataList;
-    private TableRow mDelegate;
-    private boolean multi_select_flag = false;
-    private boolean thumbnail_flag = true;
-    private int mColor = Color.BLACK;
+    private TableRow mDelegate              = null;
+    private boolean multi_select_flag       = false;
+    private boolean thumbnail_flag          = true;
+    private int mColor                      = Color.BLACK;
 
     //the list used to feed info into the array adapter and when multi-select is on
     private ArrayList<String> mDataSource, mMultiSelectData;
-    private TextView mPathLabel;
-    private TextView mInfoLabel;
+    private TextView mPathLabel             = null;
+    private TextView mInfoLabel             = null;
 
-    private View preView;
+    private View preView                    = null;
 
-    public static final int ENABLE_TOOLBTN = 1;
+    public static final int ENABLE_TOOLBTN  = 1;
     public static final int DISABLE_TOOLBTN = 2;
     public void UpdateButtons(int mode)
     {
@@ -149,7 +150,7 @@ public class EventHandler implements OnClickListener, OnItemLongClickListener{
     }
 
     /**
-     *
+     * Set the list text display color
      * @param color
      */
     public void setTextColor(int color) {
@@ -305,7 +306,7 @@ public class EventHandler implements OnClickListener, OnItemLongClickListener{
 
     public String getCurrentFilePath(int position){
         final String item = getData(position);
-        Log.d("chen","item  " + item);
+        Log.d(TAG,"item  " + item);
         if(getMode() == EventHandler.TREEVIEW_MODE)
         {
             String curDir = mFileMang.getCurrentDir();

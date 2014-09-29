@@ -90,16 +90,38 @@ public class FileManager {
     private DevicePath mDevices;
 
     /**
-     *
+     * Switch of weather show hidden files, exp: .profile/.git...
      */
     private boolean mShowHiddenFiles = false;
+    /**
+     * Setting of the sort type, which display files and directory
+     * Default: sort by alpha
+     */
     private int mSortType = SORT_ALPHA;
+    /**
+     * TODO comment mDirSize
+     */
     private long mDirSize = 0;
+    /**
+     * The stack data structure, which store current directory path
+     */
     private Stack<String> mPathStack;
+    /**
+     * A list store current directory's files and dir name
+     */
     private ArrayList<String> mDirContent;
 
+    /**
+     * The UI display text name of flash(Internal Storage)
+     */
     public String flashList = "Sdcard";
+    /**
+     * The UI display text name of sdcard(External Storage);
+     */
     public String sdcardList = "External Sdcard";
+    /**
+     * The UI display text name of usb(USB external storage disk)
+     */
     public String usbhostList = "Usb";
 
     private Context mContext ;
@@ -114,14 +136,17 @@ public class FileManager {
         mPathStack = new Stack<String>();
         mContext = context;
 
+        // Initial flash/sdcard/usb storage display name from resources
         flashList = mContext.getResources().getString(R.string.flash);
         sdcardList = mContext.getResources().getString(R.string.extsd);
         usbhostList = mContext.getResources().getString(R.string.usbhost);
 
+        // Initial flash/sdcard/usb storage disk mounted path
         mDevices = new DevicePath(context);
         flashPath = mDevices.getInterStoragePath();
         sdcardPath = mDevices.getSdStoragePath();
         usbPath = mDevices.getUsbStoragePath();
+        // Initial file path stack with flash path
         mPathStack.push("/");
         mPathStack.push(flashList);
     }
@@ -214,14 +239,15 @@ public class FileManager {
     /**
      * This will determine if hidden files and folders will be visible to the
      * user.
-     * @param choice	true if user is veiwing hidden files, false otherwise
+     * @param
+     *  choice	true if user is viewing hidden files, false otherwise
      */
     public void setShowHiddenFiles(boolean choice) {
         mShowHiddenFiles = choice;
     }
 
     /**
-     *
+     * Set list file order
      * @param type
      */
     public void setSortType(int type) {
@@ -254,10 +280,12 @@ public class FileManager {
     }
 
     /**
-     *
+     * Update current directory to path, and
+     * return the path dir content
      * @param path
-     * @param isFullPath
+     *  The directory
      * @return
+     *  The directory contents
      */
     public ArrayList<String> getNextDir(String path) {
         if(!path.equals(mPathStack.peek())) {
@@ -275,10 +303,12 @@ public class FileManager {
     }
 
     /**
-     *
+     * Copy the old path file to the newDir
      * @param old		the file to be copied
      * @param newDir	the directory to move the file to
      * @return
+     *  -1: Copy failed
+     *  -: Copy success
      */
     public int copyToDirectory(String old, String newDir) {
         File old_file = new File(old);
@@ -288,7 +318,6 @@ public class FileManager {
         String copyName = mContext.getResources().getString(R.string.Copied);
 
         if(old_file.isFile() && temp_dir.isDirectory() && temp_dir.canWrite()){
-            //����Ƶ��Լ��ĸ�Ŀ¼,��
             String new_name = "";
             if(old_file.getParent().equals(temp_dir.getAbsolutePath())){
                 new_name = newDir + "/" + copyName + old.substring(old.lastIndexOf("/") + 1, old.length());
@@ -330,7 +359,6 @@ public class FileManager {
         }else if(old_file.isDirectory() && temp_dir.isDirectory() && temp_dir.canWrite()) {
             String files[] = old_file.list();
             String dir = "copyFile";
-            //����Ƶ��Լ��ĸ�Ŀ¼,��
             if(old_file.getParent().equals(temp_dir.getAbsolutePath())){
                 dir = newDir + "/" + copyName + old.substring(old.lastIndexOf("/") + 1, old.length());
                 int n = 2;
@@ -358,9 +386,11 @@ public class FileManager {
     }
 
     /**
-     *
+     * Extract zip compressed file from the fromDir to the toDir
      * @param toDir
+     *  Destination directory
      * @param fromDir
+     *  Source directory
      */
     public void extractZipFilesFromDir(String zipName, String toDir, String fromDir) {
         byte[] data = new byte[BUFFER];
@@ -406,11 +436,11 @@ public class FileManager {
     }
 
     /**
-     *
+     * Extract zip format file to it's directory
      * @param zip_file
-     * @param directory
+     *  Zip format file absolute path
      */
-    public void extractZipFiles(String zip_file, String directory) {
+    public void extractZipFiles(String zip_file) {
         byte[] data = new byte[BUFFER];
         ZipEntry entry;
         ZipInputStream zipstream;
@@ -455,8 +485,9 @@ public class FileManager {
     }
 
     /**
-     *
+     * Compress the path dir to zip file
      * @param path
+     *  Compress directory
      */
     public void createZipFile(String path) {
         File dir = new File(path);
@@ -493,7 +524,7 @@ public class FileManager {
     }
 
     /**
-     *
+     * Rename the filePath(file or directory) to newName
      * @param filePath
      * @param newName
      * @return -1:newName file is exist; -2:rename fail; 0:rename success;
@@ -533,10 +564,14 @@ public class FileManager {
     }
 
     /**
-     *
+     * Create the subdirectory named name at the path directory
      * @param path
+     *  The directory path
      * @param name
+     *  The being created directory name
      * @return
+     *  -1: Create directory failed
+     *  0 : Create directory success
      */
     public int createDir(String path, String name) {
         int len = path.length();
@@ -554,10 +589,12 @@ public class FileManager {
     }
 
     /**
-     * The full path name of the file to delete.
-     *
-     * @param path name
+     * Delete the file/directory named path
+     * @param path
+     *  The full path name of the file to delete.
      * @return
+     *  0: Delete success
+     *  -1: Delete failed
      */
     public int deleteTarget(String path) {
         File target = new File(path);
@@ -629,25 +666,6 @@ public class FileManager {
         return new File(mPathStack.peek() + "/" + name).isDirectory();
     }
 
-    /**
-     * converts integer from wifi manager to an IP address.
-     *
-     * @param des
-     * @return
-     */
-    public static String integerToIPAddress(int ip) {
-        String ascii_address = "";
-        int[] num = new int[4];
-
-        num[0] = (ip & 0xff000000) >> 24;
-        num[1] = (ip & 0x00ff0000) >> 16;
-        num[2] = (ip & 0x0000ff00) >> 8;
-        num[3] = ip & 0x000000ff;
-
-        ascii_address = num[0] + "." + num[1] + "." + num[2] + "." + num[3];
-
-        return ascii_address;
-    }
 
     /**
      *
@@ -674,6 +692,9 @@ public class FileManager {
     }
 
 
+    /**
+     * Alph comparator, use to compare the filename
+     */
     private static final Comparator alph = new Comparator<String>() {
         @Override
         public int compare(String arg0, String arg1) {
@@ -681,6 +702,9 @@ public class FileManager {
         }
     };
 
+    /**
+     * Extension comparator, use to compare the file extension
+     */
     private static final Comparator type = new Comparator<String>() {
         @Override
         public int compare(String arg0, String arg1) {
@@ -699,7 +723,7 @@ public class FileManager {
         }
     };
 
-    /* (non-Javadoc)
+    /*
      * this function will take the string from the top of the directory stack
      * and list all files/folders that are in it and return that list so
      * it can be displayed. Since this function is called every time we need
@@ -722,7 +746,7 @@ public class FileManager {
                 File[] fList = file.listFiles();
                 boolean isPartition = false;
                 if(mDevices.hasMultiplePartition(path)){
-                    Log.d("chen",path + " has multi partition");
+                    Log.d(TAG,path + " has multi partition");
                     isPartition = true;
                 }
                 if(fList != null)
@@ -734,8 +758,8 @@ public class FileManager {
                         if(isPartition){
                             try{
                                 StatFs statFs = new StatFs(fList[i].getAbsolutePath());
-                                int count = statFs.getBlockCount();
-                                Log.d("chen",fList[i].getName() + "  " + count);
+                                long count = statFs.getBlockCount();
+                                Log.d(TAG,fList[i].getName() + "  " + count);
                                 if(count == 0){
                                     continue;
                                 }
@@ -856,7 +880,6 @@ public class FileManager {
     }
 
     /*
-     * (non-JavaDoc)
      * I dont like this method, it needs to be rewritten. Its hacky in that
      * if you are searching in the root dir (/) then it is not going to be treated
      * as a recursive method so the user dosen't have to sit forever and wait.

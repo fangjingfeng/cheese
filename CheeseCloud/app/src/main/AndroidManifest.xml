@@ -26,10 +26,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".utils.AudioPlayblack"
-            android:label="@string/media_dialog"
-            android:theme="@android:style/Theme.Dialog" />
-        <activity
             android:name=".view.HelpActivity"
             android:label="About Open Manager"
             android:theme="@android:style/Theme.Dialog" />
