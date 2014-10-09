@@ -5,17 +5,17 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <!-- <uses-permission android:name="android.permission.WRITE_MEDIA_STORAGE"/> -->
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+
     <!-- <uses-permission android:name="android.permission.DEVICE_POWER"/> -->
     <application
         android:allowBackup="true"
-        android:icon="@drawable/cheeseyun_icon"
+        android:icon="@drawable/cheesecloud_icon"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name=".view.UploadActivity"
+            android:name="codingpark.net.cheesecloud.view.UploadActivity"
             android:configChanges="orientation|keyboardHidden|screenSize|screenLayout"
             android:label="@string/app_name" >
-
             <intent-filter>
                 <action android:name="android.intent.action.GET_CONTENT" />
 
@@ -26,11 +26,11 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".view.HelpActivity"
+            android:name="codingpark.net.cheesecloud.view.HelpActivity"
             android:label="About Open Manager"
             android:theme="@android:style/Theme.Dialog" />
         <activity
-            android:name=".view.WelcomeActivity"
+            android:name="codingpark.net.cheesecloud.view.WelcomeActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -39,9 +39,17 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".view.MainActivity"
+            android:name="codingpark.net.cheesecloud.view.MainActivity"
             android:label="@string/title_activity_main"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="codingpark.net.cheesecloud.view.SelectPathActivity"
+            android:label="@string/title_activity_select_path"
+            android:parentActivityName="android.app.ListActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="android.app.ListActivity" />
         </activity>
     </application>
 

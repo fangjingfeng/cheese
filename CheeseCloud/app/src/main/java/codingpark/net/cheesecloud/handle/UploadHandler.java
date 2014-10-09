@@ -361,6 +361,9 @@ public class UploadHandler implements OnClickListener, OnItemLongClickListener{
         mDelegate.notifyDataSetChanged();
     }
 
+    /**
+     * File/Directory list item view encapsulate
+     */
     private static class ViewHolder {
         TextView topView;
         TextView bottomView;
@@ -387,7 +390,7 @@ public class UploadHandler implements OnClickListener, OnItemLongClickListener{
         private DevicePath mDevices;
 
         public UploadListAdapter() {
-            super(mContext, R.layout.tablerow, mDataSource);
+            super(mContext, R.layout.upload_item_layout, mDataSource);
 
             thumbnail = new ThumbnailCreator(mContext, 32, 32);
             dir_name = mFileMgr.getCurrentDir();
@@ -483,7 +486,7 @@ public class UploadHandler implements OnClickListener, OnItemLongClickListener{
             if(convertView == null) {
                 LayoutInflater inflater = (LayoutInflater) mContext.
                         getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                convertView = inflater.inflate(R.layout.tablerow, parent, false);
+                convertView = inflater.inflate(R.layout.upload_item_layout, parent, false);
 
                 holder = new ViewHolder();
                 holder.topView = (TextView)convertView.findViewById(R.id.top_view);
@@ -564,7 +567,6 @@ public class UploadHandler implements OnClickListener, OnItemLongClickListener{
                     holder.bottomView.setText("(hidden) | " + display_size +" | "+ permission);
                 else
                     holder.bottomView.setText(display_size +" | "+ permission);
-
             }
 
             holder.topView.setText(file.getName());
@@ -572,6 +574,14 @@ public class UploadHandler implements OnClickListener, OnItemLongClickListener{
             return convertView;
         }
 
+        /**
+         * Get view on TreeView mode
+         * @param position
+         *      Current view position in the list view
+         * @param convertView
+         * @param parent
+         * @return
+         */
         private View getView_tree(int position, View convertView, ViewGroup parent) {
             ViewHolder holder;
             int num_items = 0;
@@ -589,7 +599,7 @@ public class UploadHandler implements OnClickListener, OnItemLongClickListener{
             if(convertView == null) {
                 LayoutInflater inflater = (LayoutInflater) mContext.
                         getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                convertView = inflater.inflate(R.layout.tablerow, parent, false);
+                convertView = inflater.inflate(R.layout.upload_item_layout, parent, false);
 
                 holder = new ViewHolder();
                 holder.topView = (TextView)convertView.findViewById(R.id.top_view);

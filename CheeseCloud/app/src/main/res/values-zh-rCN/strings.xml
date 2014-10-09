@@ -9,6 +9,13 @@
     <string name="path_is">"路径为"</string>
     <string name="Multi_select_off">"多选关闭"</string>
     <string name="upload_activity_action_bar_title">上传</string>
+    <string name="upload_activity_bottom_bar_title">选择上传目录</string>
+    <string name="upload_activity_bottom_bar_select_path_bt">我的云盘</string>
+    <string name="upload_activity_bottom_bar_upload_bt">上传</string>
+
+    <!-- SelectPathActivity -->
+    <string name="select_path_activity_action_bar_title">选择上传路径</string>
+    <string name="action_create_directory">创建文件夹</string>
 
     <!-- select type dialog -->
     <string name="open_file">"选择文件类型"</string>

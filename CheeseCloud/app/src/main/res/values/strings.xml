@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <string name="app_name">CheeseCloud</string>
 
     <!-- UploadActivity -->
@@ -9,6 +10,13 @@
     <string name="path_is">path is</string>
     <string name="Multi_select_off">Multi-select off</string>
     <string name="upload_activity_action_bar_title">Upload</string>
+    <string name="upload_activity_bottom_bar_title">Select upload folder</string>
+    <string name="upload_activity_bottom_bar_select_path_bt">My Cloud</string>
+    <string name="upload_activity_bottom_bar_upload_bt">Upload</string>
+
+    <!-- SelectPathActivity -->
+    <string name="select_path_activity_action_bar_title">Select upload folder</string>
+    <string name="action_create_directory">Create directory</string>
 
     <!-- select type dialog -->
     <string name="open_file">Select the type of file</string>
@@ -43,8 +51,7 @@
     <string name="Alphabetical">Alphabetical</string>
     <string name="Type">Type</string>
 
-
-    <!--MainActivity title bar-->
+    <!-- MainActivity title bar -->
     <string name="title_activity_main">Cheese Cloud</string>
 
     <!-- Used by pager -->
@@ -52,10 +59,13 @@
     <string name="title_section2">Section 2</string>
     <string name="title_section3">Section 3</string>
 
-    <!--Help page-->
+    <!-- Help page -->
     <string name="product_info">Cheese Cloud description</string>
     <string name="version_info">Version: 1.0 beta</string>
     <string name="Email_Developer">Email Developer</string>
     <string name="Website">Website</string>
+    <string name="title_activity_select_path">SelectPathActivity</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
 
 </resources>

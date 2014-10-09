@@ -9,9 +9,11 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -33,8 +35,8 @@ import codingpark.net.cheesecloud.utils.TypeFilter;
 public final class UploadActivity extends ListActivity {
 
     private FileManager mFileMag                        = null;
-    private UploadHandler mHandler                       = null;
-    private UploadHandler.UploadListAdapter mTable                = null;
+    private UploadHandler mHandler                      = null;
+    private UploadHandler.UploadListAdapter mTable      = null;
     private CatalogList mCataList                       = null;
     private DevicePath mDevicePath                      = null;
 
@@ -46,10 +48,15 @@ public final class UploadActivity extends ListActivity {
     private String openType                 = null;
     private File openFile                   = null;
 
+    // Top bar items
     private ImageButton upload_disk_bt      = null;
     private ImageButton upload_image_bt     = null;
     private ImageButton upload_movie_bt     = null;
     private ImageButton upload_back_bt      = null;
+
+    // Bottom bar items
+    private Button select_upload_path_bt    = null;
+    private Button upload_bt                = null;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -118,7 +125,6 @@ public final class UploadActivity extends ListActivity {
         mHandler.updateDirectory(mFileMag.getHomeDir(FileManager.ROOT_FLASH));
         getFocusForButton(R.id.home_flash_button);
 
-
         initUI();
         initHandler();
     }
@@ -132,16 +138,37 @@ public final class UploadActivity extends ListActivity {
         upload_image_bt = (ImageButton)findViewById(R.id.image_button);
         upload_movie_bt = (ImageButton)findViewById(R.id.movie_button);
         upload_back_bt = (ImageButton)findViewById(R.id.back_button);
+
+        // Initial UploadActivity bottom bar UI elements(Button)
+        select_upload_path_bt = (Button)findViewById(R.id.select_upload_location_bt);
+        upload_bt = (Button)findViewById(R.id.upload_bt);
     }
 
     /**
      * Initial UploadActivity UI elements event handler
      */
     private void initHandler() {
+        // Initial UploadActivity top bar button click handler
         upload_disk_bt.setOnClickListener(mHandler);
         upload_image_bt.setOnClickListener(mHandler);
         upload_movie_bt.setOnClickListener(mHandler);
         upload_back_bt.setOnClickListener(mHandler);
+
+        // Initial UploadActivity bottom bar button click handler
+        select_upload_path_bt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG, "Select upload path button clicked!");
+                Intent r_intent = new Intent(UploadActivity.this, SelectPathActivity.class);
+                UploadActivity.this.startActivityForResult(r_intent, 0, null);
+            }
+        });
+        upload_bt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG, "Upload button clicked, start uploading!");
+            }
+        });
     }
 
     private void getFocusForButton(int id)

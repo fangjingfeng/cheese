@@ -51,29 +51,6 @@ public class FragmentHome extends ListFragment {
 
     private OnFragmentInteractionListener mListener;
 
-    private FileManager mFileMgr                        = null;
-    private UploadHandler mHandler                       = null;
-    private UploadHandler.UploadListAdapter mTable                = null;
-    private CatalogList mCataList                       = null;
-    private DevicePath mDevicePath                      = null;
-
-    private SharedPreferences mSettings                 = null;
-    private boolean mReturnIntent                       = false;
-    private boolean mHoldingFile                        = false;
-    private boolean mHoldingZip                         = false;
-    private boolean mHoldingMkdir                       = false;
-    private boolean mHoldingSearch                      = false;
-    private boolean mUseBackKey                         = true;
-    private String mCopiedTarget                        = "";
-    private String mZippedTarget                        = "";
-    private String mSelectedListItem                    = "";				//item from context menu
-    private TextView mPathLabel, mDetailLabel;
-
-    private BroadcastReceiver mReceiver;
-
-
-    private String openType;
-    private File openFile;
 
     public static FragmentHome newInstance(Context context, String param2) {
         FragmentHome fragment = new FragmentHome();
