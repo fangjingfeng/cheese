@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.KeyEvent;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ListView;
@@ -63,6 +64,12 @@ public final class UploadActivity extends ListActivity {
             actionBar.hide();
         }
         */
+
+        // Initial ActionBar
+        // 1. Show back arrow
+        getActionBar().setDisplayHomeAsUpEnabled(true);
+        // 2. Set the title
+        getActionBar().setTitle(R.string.upload_activity_action_bar_title);
 
         setContentView(R.layout.activity_upload);
 
@@ -152,6 +159,16 @@ public final class UploadActivity extends ListActivity {
 
     private String getCurrentFileName(int position){
         return mHandler.getCurrentFilePath(position);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                this.finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     /**

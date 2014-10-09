@@ -8,6 +8,7 @@
     <string name="usbhost">"USB Device"</string>
     <string name="path_is">path is</string>
     <string name="Multi_select_off">Multi-select off</string>
+    <string name="upload_activity_action_bar_title">Upload</string>
 
     <!-- select type dialog -->
     <string name="open_file">Select the type of file</string>

@@ -2,6 +2,7 @@ package codingpark.net.cheesecloud.view;
 
 import java.util.Locale;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
@@ -15,6 +16,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
 
@@ -70,14 +72,12 @@ public class MainActivity extends Activity implements OnFragmentInteractionListe
         super.onCreate(savedInstanceState);
 
         // Hide action bar
-        /*
         if(android.os.Build.VERSION.SDK_INT < 11) {
             requestWindowFeature(Window.FEATURE_NO_TITLE);
         } else {
             ActionBar actionBar = getActionBar();
             actionBar.hide();
         }
-        */
 
         setContentView(R.layout.activity_main);
 

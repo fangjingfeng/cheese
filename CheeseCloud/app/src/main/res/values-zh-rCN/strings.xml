@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">"Cheese云"</string>
+    <string name="app_name">"琦思云盘"</string>
 
     <!-- UploadActivity -->
     <string name="flash">"内部存储"</string>
@@ -8,6 +8,7 @@
     <string name="usbhost">"USB设备"</string>
     <string name="path_is">"路径为"</string>
     <string name="Multi_select_off">"多选关闭"</string>
+    <string name="upload_activity_action_bar_title">上传</string>
 
     <!-- select type dialog -->
     <string name="open_file">"选择文件类型"</string>
