@@ -58,7 +58,7 @@ public class UploadHandler implements OnClickListener, OnItemLongClickListener{
     private boolean thumbnail_flag          = true;
 
     //the list used to feed info into the array adapter and when multi-select is on
-    private ArrayList<String> mDataSource, mMultiSelectData;
+    private ArrayList<String> mFileList, mMultiSelectData;
     // Display current directory path
     private TextView mPathLabel             = null;
 
@@ -78,7 +78,7 @@ public class UploadHandler implements OnClickListener, OnItemLongClickListener{
         mFileMgr = manager;
         mCataList = CataList;
 
-        mDataSource = new ArrayList<String>(mFileMgr.getHomeDir(FileManager.ROOT_FLASH));
+        mFileList = new ArrayList<String>(mFileMgr.getHomeDir(FileManager.ROOT_FLASH));
     }
 
     /**
@@ -224,10 +224,10 @@ public class UploadHandler implements OnClickListener, OnItemLongClickListener{
      */
     public String getData(int position) {
 
-        if(position > mDataSource.size() - 1 || position < 0)
+        if(position > mFileList.size() - 1 || position < 0)
             return null;
 
-        return mDataSource.get(position);
+        return mFileList.get(position);
     }
 
     public String getCurrentFilePath(int position){
@@ -236,8 +236,8 @@ public class UploadHandler implements OnClickListener, OnItemLongClickListener{
         if(getMode() == UploadHandler.TREEVIEW_MODE)
         {
             String curDir = mFileMgr.getCurrentDir();
-            if(curDir.equals(mFileMgr.flashList) ||
-                    curDir.equals(mFileMgr.sdcardList)) {
+            if(curDir.equals(mFileMgr.flashName) ||
+                    curDir.equals(mFileMgr.sdcardName)) {
                 return item;
             }
             else {
@@ -254,11 +254,11 @@ public class UploadHandler implements OnClickListener, OnItemLongClickListener{
      * @param content	an ArrayList of the file/folders in the current directory.
      */
     public void updateDirectory(ArrayList<String> content) {
-        if(!mDataSource.isEmpty())
-            mDataSource.clear();
+        if(!mFileList.isEmpty())
+            mFileList.clear();
 
         for(String data : content)
-            mDataSource.add(data);
+            mFileList.add(data);
 
         mAdapter.notifyDataSetChanged();
     }
@@ -269,14 +269,14 @@ public class UploadHandler implements OnClickListener, OnItemLongClickListener{
      * @param content	an ArrayList of the file/folders in the current directory.
      */
     public void setFileList(ArrayList<String> content) {
-        if(mDataSource.equals(content))
+        if(mFileList.equals(content))
         {
             return;
         }
-        if(!mDataSource.isEmpty())
-            mDataSource.clear();
+        if(!mFileList.isEmpty())
+            mFileList.clear();
 
-        mDataSource.addAll(content);
+        mFileList.addAll(content);
 		
 		/*
 		 * File list have been change,so clear the thumbnail
@@ -314,7 +314,7 @@ public class UploadHandler implements OnClickListener, OnItemLongClickListener{
         private DevicePath mDevices;
 
         public UploadListAdapter() {
-            super(mContext, R.layout.upload_item_layout, mDataSource);
+            super(mContext, R.layout.upload_item_layout, mFileList);
 
             thumbnail = new ThumbnailCreator(mContext, 32, 32);
             dir_name = mFileMgr.getCurrentDir();
@@ -391,7 +391,7 @@ public class UploadHandler implements OnClickListener, OnItemLongClickListener{
 
         private View getView_catalog(int position, View convertView, ViewGroup parent){
             ViewHolder holder;
-            File file = new File(mDataSource.get(position));
+            File file = new File(mFileList.get(position));
 
             if(convertView == null) {
                 LayoutInflater inflater = (LayoutInflater) mContext.
@@ -834,8 +834,8 @@ public class UploadHandler implements OnClickListener, OnItemLongClickListener{
     public boolean onItemLongClick(AdapterView<?> arg0, View arg1, int arg2,
                                    long arg3) {
         Log.d(TAG, "Long clicked!");
-        if(mFileMgr.getCurrentDir().equals(mFileMgr.sdcardList) ||
-                mFileMgr.getCurrentDir().equals(mFileMgr.flashList)){
+        if(mFileMgr.getCurrentDir().equals(mFileMgr.sdcardName) ||
+                mFileMgr.getCurrentDir().equals(mFileMgr.flashName)){
             return true; //do not respond when in storage list mode
         }
         return true;

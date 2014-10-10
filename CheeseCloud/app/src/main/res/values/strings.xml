@@ -4,9 +4,9 @@
     <string name="app_name">CheeseCloud</string>
 
     <!-- UploadActivity -->
+    <string name="disk">Local Disk</string>
     <string name="flash">Internal Storage</string>
     <string name="extsd">"External SD"</string>
-    <string name="usbhost">"USB Device"</string>
     <string name="path_is">path is</string>
     <string name="Multi_select_off">Multi-select off</string>
     <string name="upload_activity_action_bar_title">Upload</string>

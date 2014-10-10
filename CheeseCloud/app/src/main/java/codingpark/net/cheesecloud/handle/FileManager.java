@@ -39,17 +39,21 @@ import codingpark.net.cheesecloud.utils.RefreshMedia;
 public class FileManager {
     private static final String TAG = "FileManager";
     /**
+     * The virtual directory, include ROOT_FLASH + ROOT_SDCARD path
+     */
+    public static final int ROOT_DISK           = 0;
+    /**
      * Internal storage type
      */
-    public  static final int ROOT_FLASH         = 0;
+    public  static final int ROOT_FLASH         = 1;
     /**
      * Sdcard storeage type
      */
-    public  static final int ROOT_SDCARD        = 1;
+    public  static final int ROOT_SDCARD        = 2;
     /**
      * Unknown storage type
      */
-    public	static final int ROOT_UNKNOWN       = 2;
+    public	static final int ROOT_UNKNOWN       = 3;
 
     // TODO comment BUFFER
     private static final int BUFFER = 		2048;
@@ -104,13 +108,18 @@ public class FileManager {
     private ArrayList<String> mDirContent;
 
     /**
+     * The UI display text name of Disk(Internal+External Storage)
+     */
+    public String diskName = "Disk";
+    /**
      * The UI display text name of flash(Internal Storage)
      */
-    public String flashList = "Sdcard";
+    public String flashName = "Sdcard";
     /**
      * The UI display text name of sdcard(External Storage);
      */
-    public String sdcardList = "External Sdcard";
+    public String sdcardName = "External Sdcard";
+
 
     private Context mContext ;
 
@@ -124,9 +133,10 @@ public class FileManager {
         mPathStack = new Stack<String>();
         mContext = context;
 
-        // Initial flash/sdcard storage display name from resources
-        flashList = mContext.getResources().getString(R.string.flash);
-        sdcardList = mContext.getResources().getString(R.string.extsd);
+        // Initial disk/flash/sdcard storage display name from resources
+        diskName = mContext.getResources().getString(R.string.disk);
+        flashName = mContext.getResources().getString(R.string.flash);
+        sdcardName = mContext.getResources().getString(R.string.extsd);
 
         // Initial flash/sdcard storage disk mounted path
         mDevices = new DevicePath(context);
@@ -134,7 +144,8 @@ public class FileManager {
         sdcardPath = mDevices.getSdStoragePath();
         // Initial file path stack with flash path
         mPathStack.push("/");
-        mPathStack.push(flashList);
+        mPathStack.push(flashName);
+        //mPathStack.push(diskName);
     }
 
     /**
@@ -153,15 +164,14 @@ public class FileManager {
         //This will eventually be placed as a settings item
         mPathStack.clear();
         mPathStack.push("/");
-        switch(root_type)
-        {
+        switch(root_type) {
             case ROOT_SDCARD:
-                mPathStack.push(sdcardList);
+                mPathStack.push(sdcardName);
                 return mDevices.getMountedPath(sdcardPath);
 
             case ROOT_FLASH:
             default:
-                mPathStack.push(flashList);
+                mPathStack.push(flashName);
                 return mDevices.getMountedPath(flashPath);
 
         }
@@ -175,8 +185,8 @@ public class FileManager {
         //This will eventually be placed as a settings item
         String tmp = mPathStack.peek();
 
-        if(tmp.equals(sdcardList) ||
-                tmp.equals(flashList))
+        if(tmp.equals(sdcardName) ||
+                tmp.equals(flashName))
         {
             return true;
         }
@@ -191,9 +201,9 @@ public class FileManager {
     public int whichRoot() {
         //This will eventually be placed as a settings item
         String tmp = mPathStack.peek();
-        if(tmp.equals(flashList)){
+        if(tmp.equals(flashName)){
             return ROOT_FLASH;
-        }else if(tmp.equals(sdcardList)){
+        }else if(tmp.equals(sdcardName)){
             return ROOT_SDCARD;
         }
         else{
@@ -240,12 +250,12 @@ public class FileManager {
             mPathStack.pop();
 
         else if(size == 0)
-            mPathStack.push(flashList);
+            mPathStack.push(flashName);
 
         String st = mPathStack.peek();
-        if(st.equals(flashList)){
+        if(st.equals(flashName)){
             return mDevices.getMountedPath(flashPath);
-        }else if(st.equals(sdcardList)){
+        }else if(st.equals(sdcardName)){
             return mDevices.getMountedPath(sdcardPath);
         }
         else{
@@ -265,9 +275,9 @@ public class FileManager {
         if(!path.equals(mPathStack.peek())) {
             mPathStack.push(path);
         }
-        if(flashList.equals(path)){
+        if(flashName.equals(path)){
             return mDevices.getMountedPath(flashPath);
-        }else if(sdcardList.equals(path)){
+        }else if(sdcardName.equals(path)){
             return mDevices.getMountedPath(sdcardPath);
         }
         else{
