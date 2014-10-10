@@ -35,23 +35,6 @@ import codingpark.net.cheesecloud.model.CatalogList;
 import codingpark.net.cheesecloud.utils.ThumbnailCreator;
 import codingpark.net.cheesecloud.utils.TypeFilter;
 
-/**
- * This class sits between the Upload activity and the FileManager class.
- * To keep the FileManager class modular, this class exists to handle 
- * UI events and communicate that information to the FileManger class
- *
- * This class is responsible for the buttons onClick method. If one needs
- * to change the functionality of the buttons found from the Main activity
- * or add button logic, this is the class that will need to be edited.
- *
- * This class is responsible for handling the information that is displayed
- * from the list view (the files and folder) with a a nested class TableRow.
- * The TableRow class is responsible for displaying which icon is shown for each
- * entry. For example a folder will display the folder icon, a Word doc will 
- * display a word icon and so on. If more icons are to be added, the TableRow 
- * class must be updated to display those changes. 
- *
- */
 public class UploadHandler implements OnClickListener, OnItemLongClickListener{
     private static final String TAG         = "EventHandler";
 
@@ -72,12 +55,8 @@ public class UploadHandler implements OnClickListener, OnItemLongClickListener{
     private final FileManager mFileMgr;
     private final CatalogList mCataList;
     private UploadListAdapter mDelegate     = null;
-    // Enable/Disable multiple select mode
-    private boolean multi_select_flag       = false;
     // Enable/disable show pictures/videos thumbnail
     private boolean thumbnail_flag          = true;
-    // Text display color
-    private int mColor                      = Color.BLACK;
 
     //the list used to feed info into the array adapter and when multi-select is on
     private ArrayList<String> mDataSource, mMultiSelectData;
@@ -86,24 +65,6 @@ public class UploadHandler implements OnClickListener, OnItemLongClickListener{
 
     private View preView                    = null;
 
-    public static final int ENABLE_TOOLBTN  = 1;
-    public static final int DISABLE_TOOLBTN = 2;
-    public void UpdateButtons(int mode)
-    {
-        /*
-        ImageButton multi = (ImageButton)((Activity) mContext).findViewById(R.id.multiselect_button);
-
-        switch(mode)
-        {
-            case ENABLE_TOOLBTN:
-                multi.setEnabled(true);
-                break;
-            case DISABLE_TOOLBTN:
-                multi.setEnabled(false);
-                break;
-        }
-        */
-    }
 
     /**
      * Creates an EventHandler object. This object is used to communicate
@@ -150,13 +111,6 @@ public class UploadHandler implements OnClickListener, OnItemLongClickListener{
         mPathLabel = path;
     }
 
-    /**
-     * Set the list text display color
-     * @param color
-     */
-    public void setTextColor(int color) {
-        mColor = color;
-    }
 
     /**
      * Set this true and thumbnails will be used as the icon for image files. False will
@@ -168,26 +122,6 @@ public class UploadHandler implements OnClickListener, OnItemLongClickListener{
         thumbnail_flag = show;
     }
 
-    /**
-     * Indicates whether the user wants to select
-     * multiple files or folders at a time.
-     * <br><br>
-     * false by default
-     *
-     * @return	true if the user has turned on multi selection
-     */
-    public boolean isMultiSelected() {
-        return multi_select_flag;
-    }
-
-    /**
-     * Use this method to determine if the user has selected multiple files/folders
-     *
-     * @return	returns true if the user is holding multiple objects (multi-select)
-     */
-    public boolean hasMultiSelectData() {
-        return (mMultiSelectData != null && mMultiSelectData.size() > 0);
-    }
 
     /**
      * Will search for a file then display all files with the
@@ -215,11 +149,13 @@ public class UploadHandler implements OnClickListener, OnItemLongClickListener{
                 }
 
                 if (!mFileMgr.isRoot()) {
+                    /*
                     if(multi_select_flag) {
                         mDelegate.killMultiSelect(true);
                         Toast.makeText(mContext, R.string.Multi_select_off,
                                 Toast.LENGTH_SHORT).show();
                     }
+                    */
                     updateDirectory(mFileMgr.getPreviousDir());
                     if(mPathLabel != null)
                         mPathLabel.setText(mFileMgr.getCurrentDir());
@@ -234,11 +170,13 @@ public class UploadHandler implements OnClickListener, OnItemLongClickListener{
                     break;
                 }
                 mlistmode = TREEVIEW_MODE;
+                /*
                 if(multi_select_flag) {
                     mDelegate.killMultiSelect(true);
                     Toast.makeText(mContext, R.string.Multi_select_off,
                             Toast.LENGTH_SHORT).show();
                 }
+                */
                 updateDirectory(mFileMgr.getHomeDir(FileManager.ROOT_FLASH));
                 if(mPathLabel != null)
                     mPathLabel.setText(mFileMgr.getCurrentDir());
@@ -263,17 +201,13 @@ public class UploadHandler implements OnClickListener, OnItemLongClickListener{
         }
         switch(getMode()){
             case CATALOG_MODE:
-                UpdateButtons(DISABLE_TOOLBTN);
                 break;
             case TREEVIEW_MODE:
                 if(mFileMgr.isRoot()){
-                    UpdateButtons(DISABLE_TOOLBTN);
                 }else{
-                    UpdateButtons(ENABLE_TOOLBTN);
                 }
                 break;
             default:
-                UpdateButtons(DISABLE_TOOLBTN);
                 break;
         }
     }
@@ -505,8 +439,6 @@ public class UploadHandler implements OnClickListener, OnItemLongClickListener{
             else
                 holder.mSelect.setVisibility(ImageView.GONE);
 
-            holder.topView.setTextColor(mColor);
-            holder.bottomView.setTextColor(mColor);
 
             if(file != null && file.isFile()) {
                 String ext = file.toString();
@@ -626,8 +558,6 @@ public class UploadHandler implements OnClickListener, OnItemLongClickListener{
             else
                 holder.mSelect.setVisibility(ImageView.GONE);
 
-            holder.topView.setTextColor(mColor);
-            holder.bottomView.setTextColor(mColor);
 
             if(file != null && file.isFile()) {
                 String ext = file.toString();

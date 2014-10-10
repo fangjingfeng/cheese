@@ -19,7 +19,7 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentBottom="true"
         android:layout_toRightOf="@id/row_image"
-        android:visibility="gone"/>
+        />
     <TextView
         android:id="@+id/top_view"
         android:layout_width="fill_parent"
@@ -28,7 +28,8 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
         android:textStyle="bold"
-        android:textColor="@color/white"/>
+        android:text="Text"
+        android:textColor="@color/lightGray"/>
     <TextView
         android:id="@+id/bottom_view"
         android:layout_width="fill_parent"
@@ -37,5 +38,6 @@
         android:layout_alignParentRight="true"
         android:layout_below="@id/top_view"
         android:gravity="right"
+        android:text="Text"
         android:textColor="@color/lightGray"/>
 </RelativeLayout>
