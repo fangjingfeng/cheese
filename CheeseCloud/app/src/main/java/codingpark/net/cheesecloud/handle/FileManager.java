@@ -91,7 +91,7 @@ public class FileManager {
      */
     private int mSortType = SORT_ALPHA;
     /**
-     * TODO comment mDirSize
+     * The directory contain files count
      */
     private long mDirSize = 0;
     /**

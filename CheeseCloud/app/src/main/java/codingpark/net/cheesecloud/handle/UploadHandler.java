@@ -153,7 +153,7 @@ public class UploadHandler implements OnClickListener, OnItemLongClickListener{
                 }
                 break;
 
-            case R.id.home_flash_button:
+            case R.id.header_disk_button:
                 refreshFocus(preView,v);
                 if(mFileMgr.whichRoot() == FileManager.ROOT_FLASH &&
                         mlistmode == TREEVIEW_MODE)

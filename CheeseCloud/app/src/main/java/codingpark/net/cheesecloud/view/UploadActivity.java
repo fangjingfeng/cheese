@@ -113,7 +113,7 @@ public final class UploadActivity extends ListActivity {
          */
         mPathLabel.setText(mFileMgr.getCurrentDir());
         mHandler.updateDirectory(mFileMgr.getHomeDir(FileManager.ROOT_FLASH));
-        getFocusForButton(R.id.home_flash_button);
+        getFocusForButton(R.id.header_disk_button);
 
         initUI();
         initHandler();
@@ -124,7 +124,7 @@ public final class UploadActivity extends ListActivity {
       */
     private void initUI() {
         // Initial UploadActivity header tool bar UI elements(ImageButton)
-        upload_disk_bt = (ImageButton)findViewById(R.id.home_flash_button);
+        upload_disk_bt = (ImageButton)findViewById(R.id.header_disk_button);
         upload_image_bt = (ImageButton)findViewById(R.id.image_button);
         upload_movie_bt = (ImageButton)findViewById(R.id.movie_button);
         upload_back_bt = (ImageButton)findViewById(R.id.back_button);

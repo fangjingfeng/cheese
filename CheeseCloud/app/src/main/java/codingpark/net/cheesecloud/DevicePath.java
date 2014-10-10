@@ -46,7 +46,6 @@ public class DevicePath{
 
         for(int i = 0; i < list.length; i++)
         {
-            Log.d(TAG, "Storage list " + i + " " + list[i]);
             totalDevicesList.add(list[i]);
             // Internal storage
             if(list[i].equals(flash)){
