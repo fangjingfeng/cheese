@@ -380,18 +380,6 @@ public class UploadHandler implements OnClickListener, OnItemLongClickListener{
             */
         }
 
-        public String getFilePermissions(File file) {
-            String per = "-";
-
-            if(file.isDirectory())
-                per += "d";
-            if(file.canRead())
-                per += "r";
-            if(file.canWrite())
-                per += "w";
-
-            return per;
-        }
 
         public void clearThumbnail() {
             if(thumbnail_flag) {
@@ -401,12 +389,10 @@ public class UploadHandler implements OnClickListener, OnItemLongClickListener{
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent){
-            if(mlistmode == CATALOG_MODE)
-            {
+            if(mlistmode == CATALOG_MODE) {
                 return getView_catalog(position,convertView,parent);
             }
-            else if (mlistmode == TREEVIEW_MODE)
-            {
+            else if (mlistmode == TREEVIEW_MODE) {
                 return getView_tree(position,convertView,parent);
             }
 
@@ -482,7 +468,6 @@ public class UploadHandler implements OnClickListener, OnItemLongClickListener{
                 }
             }
 
-            String permission = getFilePermissions(file);
 
             if(file.isFile()) {
                 double size = file.length();
@@ -496,9 +481,9 @@ public class UploadHandler implements OnClickListener, OnItemLongClickListener{
                     display_size = String.format("%.2f bytes ", (double)size);
 
                 if(file.isHidden())
-                    holder.bottomView.setText("(hidden) | " + display_size +" | "+ permission);
+                    holder.bottomView.setText("(hidden) | " + display_size);
                 else
-                    holder.bottomView.setText(display_size +" | "+ permission);
+                    holder.bottomView.setText(display_size);
             }
 
             holder.topView.setText(file.getName());
@@ -637,7 +622,6 @@ public class UploadHandler implements OnClickListener, OnItemLongClickListener{
                 holder.icon.setImageResource(R.drawable.folder);
             }
 
-            String permission = getFilePermissions(file);
 
             if(file.isFile()) {
                 double size = file.length();
@@ -651,15 +635,15 @@ public class UploadHandler implements OnClickListener, OnItemLongClickListener{
                     display_size = String.format("%.2f bytes ", (double)size);
 
                 if(file.isHidden())
-                    holder.bottomView.setText("(hidden) | " + display_size +" | "+ permission);
+                    holder.bottomView.setText("(hidden) | " + display_size);
                 else
-                    holder.bottomView.setText(display_size +" | "+ permission);
+                    holder.bottomView.setText(display_size);
 
             } else {
                 if(file.isHidden())
-                    holder.bottomView.setText("(hidden) | " + num_items + " items | " + permission);
+                    holder.bottomView.setText("(hidden) | " + num_items + " items");
                 else
-                    holder.bottomView.setText(num_items + " items | " + permission);
+                    holder.bottomView.setText(num_items + " items");
             }
 
             holder.topView.setText(file.getName());

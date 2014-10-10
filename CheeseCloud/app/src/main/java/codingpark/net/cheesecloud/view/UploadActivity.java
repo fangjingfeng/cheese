@@ -28,7 +28,7 @@ import codingpark.net.cheesecloud.model.CatalogList;
  */
 public final class UploadActivity extends ListActivity {
 
-    private FileManager mFileMag                        = null;
+    private FileManager mFileMgr = null;
     private UploadHandler mHandler                      = null;
     private UploadHandler.UploadListAdapter mTable      = null;
     private CatalogList mCataList                       = null;
@@ -82,9 +82,9 @@ public final class UploadActivity extends ListActivity {
 
         // 1. Initial FileManager utility
         // 2. Set FileManager utility work parameter
-        mFileMag = new FileManager(this);
-        mFileMag.setShowHiddenFiles(hide);
-        mFileMag.setSortType(sort);
+        mFileMgr = new FileManager(this);
+        mFileMgr.setShowHiddenFiles(hide);
+        mFileMgr.setSortType(sort);
 
         // Initial CatalogList
         mCataList = new CatalogList(this);
@@ -92,7 +92,7 @@ public final class UploadActivity extends ListActivity {
         // 1. Initial EventHandler
         // 2. Set EventHandler work parameter(text color/show thumbnail)
         // 3. Create ListAdapter
-        mHandler = new UploadHandler(UploadActivity.this, mFileMag, mCataList);
+        mHandler = new UploadHandler(UploadActivity.this, mFileMgr, mCataList);
         mHandler.setShowThumbnails(thumb);
         mTable = mHandler.new UploadListAdapter();
 
@@ -111,8 +111,8 @@ public final class UploadActivity extends ListActivity {
          * Start refresh list
          *      then: list storage list
          */
-        mPathLabel.setText(mFileMag.getCurrentDir());
-        mHandler.updateDirectory(mFileMag.getHomeDir(FileManager.ROOT_FLASH));
+        mPathLabel.setText(mFileMgr.getCurrentDir());
+        mHandler.updateDirectory(mFileMgr.getHomeDir(FileManager.ROOT_FLASH));
         getFocusForButton(R.id.home_flash_button);
 
         initUI();
@@ -176,12 +176,11 @@ public final class UploadActivity extends ListActivity {
         super.onDestroy();
     }
 
-    private String getCurrentFileName(int position){
-        return mHandler.getCurrentFilePath(position);
-    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar event
+        // 1. R.id.home: Action Bar up button clicked
         switch (item.getItemId()) {
             case android.R.id.home:
                 this.finish();
@@ -196,19 +195,19 @@ public final class UploadActivity extends ListActivity {
      */
     @Override
     public void onListItemClick(ListView parent, View view, int position, long id) {
-        final String item = getCurrentFileName(position);
+        final String item = mHandler.getCurrentFilePath(position);
         File file = new File(item);
 
         if (file.isDirectory()) {
             if(file.canRead()) {
-                mHandler.updateDirectory(mFileMag.getNextDir(item));
-                mPathLabel.setText(mFileMag.getCurrentDir());
+                mHandler.updateDirectory(mFileMgr.getNextDir(item));
+                mPathLabel.setText(mFileMgr.getCurrentDir());
 
             } else {
                 Toast.makeText(this, "Can't read folder due to permissions",
                         Toast.LENGTH_SHORT).show();
             }
-            if(mFileMag.isRoot()){
+            if(mFileMgr.isRoot()){
             }else{
             }
         } else if (file.isFile()) {
@@ -224,11 +223,11 @@ public final class UploadActivity extends ListActivity {
      */
     @Override
     public boolean onKeyDown(int keycode, KeyEvent event) {
-        String current = mFileMag.getCurrentDir();
+        String current = mFileMgr.getCurrentDir();
 
         // Current is not root directory, click back key indicate return up directory
         if(keycode == KeyEvent.KEYCODE_BACK &&
-                !(mFileMag.isRoot()) ) {
+                !(mFileMgr.isRoot()) ) {
             /*
             if(mHandler.isMultiSelected()) {
                 mTable.killMultiSelect(true);
@@ -236,10 +235,10 @@ public final class UploadActivity extends ListActivity {
             }
             */
 
-            mHandler.updateDirectory(mFileMag.getPreviousDir());
-            mPathLabel.setText(mFileMag.getCurrentDir());
+            mHandler.updateDirectory(mFileMgr.getPreviousDir());
+            mPathLabel.setText(mFileMgr.getCurrentDir());
             // TODO Judge current directory is root, refresh header bar button status
-            if(mFileMag.isRoot()){
+            if(mFileMgr.isRoot()){
             }else{
             }
             return true;
@@ -247,8 +246,8 @@ public final class UploadActivity extends ListActivity {
         }
         // Current is root directory, click back key indicate cancel selected and return home
         else if(keycode == KeyEvent.KEYCODE_BACK &&
-                mFileMag.isRoot() ) {
-            mPathLabel.setText(mFileMag.getCurrentDir());
+                mFileMgr.isRoot() ) {
+            mPathLabel.setText(mFileMgr.getCurrentDir());
             finish();
             return false;
 
