@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.PowerManager;
@@ -31,7 +30,7 @@ import java.util.ArrayList;
 
 import codingpark.net.cheesecloud.DevicePath;
 import codingpark.net.cheesecloud.R;
-import codingpark.net.cheesecloud.model.CatalogList;
+import codingpark.net.cheesecloud.utils.CatalogList;
 import codingpark.net.cheesecloud.utils.ThumbnailCreator;
 import codingpark.net.cheesecloud.utils.TypeFilter;
 
@@ -54,7 +53,7 @@ public class UploadHandler implements OnClickListener, OnItemLongClickListener{
     private final Context mContext;
     private final FileManager mFileMgr;
     private final CatalogList mCataList;
-    private UploadListAdapter mDelegate     = null;
+    private UploadListAdapter mAdapter = null;
     // Enable/disable show pictures/videos thumbnail
     private boolean thumbnail_flag          = true;
 
@@ -63,6 +62,7 @@ public class UploadHandler implements OnClickListener, OnItemLongClickListener{
     // Display current directory path
     private TextView mPathLabel             = null;
 
+    // The previous selected header tab
     private View preView                    = null;
 
 
@@ -89,11 +89,11 @@ public class UploadHandler implements OnClickListener, OnItemLongClickListener{
      * @param adapter	The TableRow object
      */
     public void setListAdapter(UploadListAdapter adapter) {
-        mDelegate = adapter;
+        mAdapter = adapter;
     }
 
     /**
-     * This method is called from the Main activity and this has the same
+     * This method is called from the upload activity and this has the same
      * reference to the same object so when changes are made here or there
      * they will display in the same way.
      */
@@ -101,7 +101,7 @@ public class UploadHandler implements OnClickListener, OnItemLongClickListener{
         return mlistmode;
     }
     /**
-     * This method is called from the Main activity and is passed
+     * This method is called from the upload activity and is passed
      * the TextView that should be updated as the directory changes
      * so the user knows which folder they are in.
      *
@@ -123,15 +123,6 @@ public class UploadHandler implements OnClickListener, OnItemLongClickListener{
     }
 
 
-    /**
-     * Will search for a file then display all files with the
-     * search parameter in its name
-     *
-     * @param name	the name to search for
-     */
-    public void searchForFile(String name) {
-        new BackgroundWork(SEARCH_TYPE).execute(name);
-    }
 
     /**
      *  This method, handles the button presses of the top buttons found
@@ -151,7 +142,7 @@ public class UploadHandler implements OnClickListener, OnItemLongClickListener{
                 if (!mFileMgr.isRoot()) {
                     /*
                     if(multi_select_flag) {
-                        mDelegate.killMultiSelect(true);
+                        mAdapter.killMultiSelect(true);
                         Toast.makeText(mContext, R.string.Multi_select_off,
                                 Toast.LENGTH_SHORT).show();
                     }
@@ -172,7 +163,7 @@ public class UploadHandler implements OnClickListener, OnItemLongClickListener{
                 mlistmode = TREEVIEW_MODE;
                 /*
                 if(multi_select_flag) {
-                    mDelegate.killMultiSelect(true);
+                    mAdapter.killMultiSelect(true);
                     Toast.makeText(mContext, R.string.Multi_select_off,
                             Toast.LENGTH_SHORT).show();
                 }
@@ -212,7 +203,7 @@ public class UploadHandler implements OnClickListener, OnItemLongClickListener{
         }
     }
 
-    public void getInitView(View v){
+    public void setInitView(View v){
         preView = v;
     }
 
@@ -246,8 +237,7 @@ public class UploadHandler implements OnClickListener, OnItemLongClickListener{
         {
             String curDir = mFileMgr.getCurrentDir();
             if(curDir.equals(mFileMgr.flashList) ||
-                    curDir.equals(mFileMgr.sdcardList) ||
-                    curDir.equals(mFileMgr.usbhostList)){
+                    curDir.equals(mFileMgr.sdcardList)) {
                 return item;
             }
             else {
@@ -270,7 +260,7 @@ public class UploadHandler implements OnClickListener, OnItemLongClickListener{
         for(String data : content)
             mDataSource.add(data);
 
-        mDelegate.notifyDataSetChanged();
+        mAdapter.notifyDataSetChanged();
     }
 
     /**
@@ -291,8 +281,8 @@ public class UploadHandler implements OnClickListener, OnItemLongClickListener{
 		/*
 		 * File list have been change,so clear the thumbnail
 		 */
-        mDelegate.clearThumbnail();
-        mDelegate.notifyDataSetChanged();
+        mAdapter.clearThumbnail();
+        mAdapter.notifyDataSetChanged();
     }
 
     /**
@@ -845,7 +835,6 @@ public class UploadHandler implements OnClickListener, OnItemLongClickListener{
                                    long arg3) {
         Log.d(TAG, "Long clicked!");
         if(mFileMgr.getCurrentDir().equals(mFileMgr.sdcardList) ||
-                mFileMgr.getCurrentDir().equals(mFileMgr.usbhostList) ||
                 mFileMgr.getCurrentDir().equals(mFileMgr.flashList)){
             return true; //do not respond when in storage list mode
         }

@@ -1,5 +1,5 @@
 /**
- * you can find the path of sdcard,flash and usbhost in here
+ * you can find the path of sdcard,flash in here
  */
 package codingpark.net.cheesecloud;
 
@@ -14,15 +14,14 @@ import android.os.StatFs;
 import android.os.storage.StorageManager;
 import android.util.Log;
 /**
- * define the root path of flash,sdcard,usbhost
+ * define the root path of flash,sdcard
  */
 public class DevicePath{
     private ArrayList<String> totalDevicesList;
     private ArrayList<String> flashList;
     private ArrayList<String> sdcardList;
-    private ArrayList<String> usbList;
     private StorageManager stmg;
-    private static final String TAG = DevicePath.class.getSimpleName();
+    private static final String TAG = "DevicePath";
     private Method mMethodGetPaths;
     private Method mMethodGetPathsState;
     public DevicePath(Context context)
@@ -30,7 +29,6 @@ public class DevicePath{
         totalDevicesList = new ArrayList<String>();
         flashList = new ArrayList<String>();
         sdcardList = new ArrayList<String>();
-        usbList = new ArrayList<String>();
         String flash = Environment.getExternalStorageDirectory().getAbsolutePath();
         stmg = (StorageManager) context.getSystemService(context.STORAGE_SERVICE);
         String[] list = new String[0];
@@ -48,13 +46,15 @@ public class DevicePath{
 
         for(int i = 0; i < list.length; i++)
         {
+            Log.d(TAG, "Storage list " + i + " " + list[i]);
             totalDevicesList.add(list[i]);
+            // Internal storage
             if(list[i].equals(flash)){
                 flashList.add(list[i]);
-            }else if(list[i].contains("extsd")){
+            }
+            // External SD card
+            else if(list[i].contains("extsd")){
                 sdcardList.add(list[i]);
-            }else if(list[i].contains("usb")){
-                usbList.add(list[i]);
             }
         }
     }
@@ -69,7 +69,7 @@ public class DevicePath{
     }
 
     /**
-     * System sdcard/usb disk maybe not mounted on local file system, this
+     * System sdcard maybe not mounted on local file system, this
      * function judge the gave storage device weather mounted, and return the
      * mounted device path.
      * @param storages
@@ -109,19 +109,9 @@ public class DevicePath{
     }
 
     /**
-     * Get usb storage disk path(USB)
+     * Get flash/sdcard storage disk path list
      * @return
-     *  ArrayList<String>: Usb storage disk path list
-     */
-    public ArrayList<String> getUsbStoragePath()
-    {
-        return (ArrayList<String>) usbList.clone();
-    }
-
-    /**
-     * Get flash/sdcard/usb storage disk path list
-     * @return
-     *  ArrayList<String>: Flash/sdcard/usb storage disk path list
+     *  ArrayList<String>: Flash/sdcard storage disk path list
      */
     public ArrayList<String> getTotalDevicesList()
     {

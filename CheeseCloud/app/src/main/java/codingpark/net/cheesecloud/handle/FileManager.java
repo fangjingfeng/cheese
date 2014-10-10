@@ -47,13 +47,9 @@ public class FileManager {
      */
     public  static final int ROOT_SDCARD        = 1;
     /**
-     * External usb storage type
-     */
-    public  static final int ROOT_USBHOST       = 2;
-    /**
      * Unknown storage type
      */
-    public	static final int ROOT_UNKNOWN       = 3;
+    public	static final int ROOT_UNKNOWN       = 2;
 
     // TODO comment BUFFER
     private static final int BUFFER = 		2048;
@@ -79,13 +75,9 @@ public class FileManager {
      * ArrayList store all sdcard storage disk path of system
      */
     private ArrayList<String> sdcardPath;
-    /**
-     * ArrayList store all external usb storage disk path of system
-     */
-    private ArrayList<String> usbPath;
 
     /**
-     * Root paths of flash/sdcard/usb
+     * Root paths of flash/sdcard
      */
     private DevicePath mDevices;
 
@@ -119,10 +111,6 @@ public class FileManager {
      * The UI display text name of sdcard(External Storage);
      */
     public String sdcardList = "External Sdcard";
-    /**
-     * The UI display text name of usb(USB external storage disk)
-     */
-    public String usbhostList = "Usb";
 
     private Context mContext ;
 
@@ -136,16 +124,14 @@ public class FileManager {
         mPathStack = new Stack<String>();
         mContext = context;
 
-        // Initial flash/sdcard/usb storage display name from resources
+        // Initial flash/sdcard storage display name from resources
         flashList = mContext.getResources().getString(R.string.flash);
         sdcardList = mContext.getResources().getString(R.string.extsd);
-        usbhostList = mContext.getResources().getString(R.string.usbhost);
 
-        // Initial flash/sdcard/usb storage disk mounted path
+        // Initial flash/sdcard storage disk mounted path
         mDevices = new DevicePath(context);
         flashPath = mDevices.getInterStoragePath();
         sdcardPath = mDevices.getSdStoragePath();
-        usbPath = mDevices.getUsbStoragePath();
         // Initial file path stack with flash path
         mPathStack.push("/");
         mPathStack.push(flashList);
@@ -173,10 +159,6 @@ public class FileManager {
                 mPathStack.push(sdcardList);
                 return mDevices.getMountedPath(sdcardPath);
 
-            case ROOT_USBHOST:
-                mPathStack.push(usbhostList);
-                return mDevices.getMountedPath(usbPath);
-
             case ROOT_FLASH:
             default:
                 mPathStack.push(flashList);
@@ -194,7 +176,6 @@ public class FileManager {
         String tmp = mPathStack.peek();
 
         if(tmp.equals(sdcardList) ||
-                tmp.equals(usbhostList) ||
                 tmp.equals(flashList))
         {
             return true;
@@ -214,9 +195,8 @@ public class FileManager {
             return ROOT_FLASH;
         }else if(tmp.equals(sdcardList)){
             return ROOT_SDCARD;
-        }else if(tmp.equals(usbhostList)){
-            return ROOT_USBHOST;
-        }else{
+        }
+        else{
             for(String st:sdcardPath){
                 if(tmp.startsWith(st)){
                     return ROOT_SDCARD;
@@ -225,11 +205,6 @@ public class FileManager {
             for(String st:flashPath){
                 if(tmp.startsWith(st)){
                     return ROOT_FLASH;
-                }
-            }
-            for(String st:usbPath){
-                if(tmp.startsWith(st)){
-                    return ROOT_USBHOST;
                 }
             }
         }
@@ -272,9 +247,8 @@ public class FileManager {
             return mDevices.getMountedPath(flashPath);
         }else if(st.equals(sdcardList)){
             return mDevices.getMountedPath(sdcardPath);
-        }else if(st.equals(usbhostList)){
-            return mDevices.getMountedPath(usbPath);
-        }else{
+        }
+        else{
             return populate_list();
         }
     }
@@ -295,9 +269,8 @@ public class FileManager {
             return mDevices.getMountedPath(flashPath);
         }else if(sdcardList.equals(path)){
             return mDevices.getMountedPath(sdcardPath);
-        }else if(usbhostList.equals(path)){
-            return mDevices.getMountedPath(usbPath);
-        }else{
+        }
+        else{
             return populate_list();
         }
     }

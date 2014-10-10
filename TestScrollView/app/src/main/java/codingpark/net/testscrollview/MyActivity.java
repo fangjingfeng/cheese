@@ -2,16 +2,22 @@ package codingpark.net.testscrollview;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.os.Environment;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
 
 public class MyActivity extends Activity {
+    private static final String TAG     = "MyActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.path_bar_layout);
+
+        Log.d(TAG, "External Directory: " + Environment.getExternalStorageDirectory().getPath());
+        Log.d(TAG, "Internal Directory: " + getFilesDir().getAbsolutePath());
     }
 
 

@@ -21,7 +21,7 @@ import codingpark.net.cheesecloud.Configs;
 import codingpark.net.cheesecloud.R;
 import codingpark.net.cheesecloud.handle.FileManager;
 import codingpark.net.cheesecloud.handle.UploadHandler;
-import codingpark.net.cheesecloud.model.CatalogList;
+import codingpark.net.cheesecloud.utils.CatalogList;
 
 /**
  *
@@ -167,7 +167,7 @@ public final class UploadActivity extends ListActivity {
     private void getFocusForButton(int id)
     {
         View v = findViewById(id);
-        mHandler.getInitView(v);
+        mHandler.setInitView(v);
         v.setSelected(true);
     }
 

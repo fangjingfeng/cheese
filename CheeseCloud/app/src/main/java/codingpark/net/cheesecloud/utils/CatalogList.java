@@ -1,4 +1,4 @@
-package codingpark.net.cheesecloud.model;
+package codingpark.net.cheesecloud.utils;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -16,22 +16,22 @@ import codingpark.net.cheesecloud.utils.TypeFilter;
 public class CatalogList {
     public final static int TYPE_MUSIC = 1;
     public final static int TYPE_MOVIE = 2;
-    public final static int TYPE_EBOOK = 3;
     public final static int TYPE_PICTURE = 4;
     public final static int TYPE_UNKNOWN = 0xff;
 
+    /*
     public final static int STORAGE_USBHOST = 1;
     public final static int STORAGE_SDCARD = 2;
     public final static int STORAGE_FLASH = 3;
     public final static int STORAGE_UNKNOWN = 4;
+    */
 
     private ArrayList<String> mlist = null;
-    private int m_filetype = TYPE_UNKNOWN;
+    //private int m_filetype = TYPE_UNKNOWN;
     private FileFilter mfilter = null;
 
     private ArrayList<String> flashpath;
     private ArrayList<String> sdcardpath;
-    private ArrayList<String> usbhostpath;
     private ArrayList<String> totalStoragePath;
     private DevicePath mDevices;
 
@@ -56,7 +56,7 @@ public class CatalogList {
             }
 
             String name = pathname.getAbsolutePath();
-            String item_ext = null;
+            String item_ext;
 
             try {
                 item_ext = name.substring(name.lastIndexOf(".") + 1, name.length());
@@ -101,33 +101,6 @@ public class CatalogList {
         }
     };
 
-    private static final FileFilter ebookfliter = new FileFilter() {
-
-        @Override
-        public boolean accept(File pathname) {
-            //keep all directions and needed files
-            if(pathname.isDirectory())
-            {
-                return true;
-            }
-
-            String name = pathname.getAbsolutePath();
-            String item_ext = null;
-
-            try {
-                item_ext = name.substring(name.lastIndexOf(".") + 1, name.length());
-
-            } catch(IndexOutOfBoundsException e) {
-                item_ext = "";
-            }
-            if(TypeFilter.getInstance().catalogEbookFile(item_ext))
-            {
-                return true;
-            }
-
-            return false;
-        }
-    };
 
     private static final FileFilter picturefliter = new FileFilter() {
 
@@ -162,7 +135,6 @@ public class CatalogList {
         mDevices = new DevicePath(context);
         flashpath = mDevices.getSdStoragePath();
         sdcardpath = mDevices.getInterStoragePath();
-        usbhostpath = mDevices.getUsbStoragePath();
         totalStoragePath = mDevices.getTotalDevicesList();
     }
 
@@ -188,7 +160,6 @@ public class CatalogList {
             if(filelist[i].isDirectory())
             {
                 String mPath = filelist[i].getPath();
-                //Log.d("CatalogList",mPath);
                 if(!mPath.equalsIgnoreCase(pathToIgnored))
                 {
                     attachPathToList(filelist[i]);
@@ -210,6 +181,7 @@ public class CatalogList {
         attachPathToList(file);
     }
 
+    /*
     public ArrayList<String> listSort()
     {
         Object[] tt = mlist.toArray();
@@ -222,9 +194,10 @@ public class CatalogList {
         }
         return mlist;
     }
+    */
 
     public ArrayList<String> SetFileTyp(int filetype){
-        m_filetype = filetype;
+        //m_filetype = filetype;
 
         mlist.clear();
         switch(filetype)
@@ -235,9 +208,6 @@ public class CatalogList {
             case TYPE_MOVIE:
                 mfilter = moviefliter;
                 break;
-            case TYPE_EBOOK:
-                mfilter = ebookfliter;
-                break;
             case TYPE_PICTURE:
                 mfilter = picturefliter;
                 break;
@@ -245,7 +215,6 @@ public class CatalogList {
                 return null;
         }
 
-        //we only need these three storage
         ArrayList<String> mounted = mDevices.getMountedPath(totalStoragePath);
         for(String st:mounted){
             attachPathToList(st);
@@ -262,12 +231,15 @@ public class CatalogList {
         return mlist;
     }
 
+    /*
     public ArrayList<String> AttachMediaStorage(String storagePath){
         //maybe sort?
         attachPathToList(storagePath);
         return mlist;
     }
+    */
 
+    /*
     public ArrayList<String> DisAttachMediaStorage(String storagePath){
         int i = mlist.size() - 1;
         for(;i >= 0; i--){
@@ -277,5 +249,6 @@ public class CatalogList {
         }
         return mlist;
     }
+    */
 }
 

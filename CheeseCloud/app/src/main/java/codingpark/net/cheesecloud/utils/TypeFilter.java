@@ -3,7 +3,7 @@ package codingpark.net.cheesecloud.utils;
 
 
 /**
- * For get file type by file extend name
+ * For get/judge file type by file extend name
  */
 public final class TypeFilter{
 	

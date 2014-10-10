@@ -2,22 +2,13 @@ package codingpark.net.cheesecloud.view;
 
 import android.app.Activity;
 import android.app.ListFragment;
-import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
-import android.widget.TextView;
 
-import java.io.File;
-
-import codingpark.net.cheesecloud.DevicePath;
-import codingpark.net.cheesecloud.handle.UploadHandler;
-import codingpark.net.cheesecloud.handle.FileManager;
 import codingpark.net.cheesecloud.handle.OnFragmentInteractionListener;
-import codingpark.net.cheesecloud.model.CatalogList;
 import codingpark.net.cheesecloud.model.HomeListAdapter;
 
 /**
