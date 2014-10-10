@@ -1,20 +1,16 @@
 package codingpark.net.cheesecloud.view;
 
-import android.app.AlertDialog;
 import android.app.ListActivity;
-import android.content.ActivityNotFoundException;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -22,10 +18,9 @@ import android.widget.Toast;
 import java.io.File;
 
 import codingpark.net.cheesecloud.Configs;
-import codingpark.net.cheesecloud.DevicePath;
 import codingpark.net.cheesecloud.R;
-import codingpark.net.cheesecloud.handle.UploadHandler;
 import codingpark.net.cheesecloud.handle.FileManager;
+import codingpark.net.cheesecloud.handle.UploadHandler;
 import codingpark.net.cheesecloud.model.CatalogList;
 
 /**
@@ -37,7 +32,6 @@ public final class UploadActivity extends ListActivity {
     private UploadHandler mHandler                      = null;
     private UploadHandler.UploadListAdapter mTable      = null;
     private CatalogList mCataList                       = null;
-    private DevicePath mDevicePath                      = null;
 
     private SharedPreferences mSettings                 = null;
     // UI element to display current full path
@@ -50,6 +44,9 @@ public final class UploadActivity extends ListActivity {
     private ImageButton upload_image_bt     = null;
     private ImageButton upload_movie_bt     = null;
     private ImageButton upload_back_bt      = null;
+
+    // Path bar, use to show current directory path
+    private LinearLayout path_bar_container = null;
 
     // Bottom bar items
     private Button select_upload_path_bt    = null;
@@ -91,8 +88,6 @@ public final class UploadActivity extends ListActivity {
 
         // Initial CatalogList
         mCataList = new CatalogList(this);
-        // Intial DevicePath
-        mDevicePath = new DevicePath(this);
 
         // 1. Initial EventHandler
         // 2. Set EventHandler work parameter(text color/show thumbnail)
@@ -137,6 +132,9 @@ public final class UploadActivity extends ListActivity {
         // Initial UploadActivity bottom bar UI elements(Button)
         select_upload_path_bt = (Button)findViewById(R.id.select_upload_location_bt);
         upload_bt = (Button)findViewById(R.id.upload_bt);
+
+        // Path bar
+        path_bar_container = (LinearLayout)findViewById(R.id.pathBarContainer);
     }
 
     /**

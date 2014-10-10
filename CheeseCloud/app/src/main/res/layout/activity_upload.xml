@@ -12,25 +12,25 @@
         <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/flash_1"
+            android:src="@drawable/upload_activity_header_flash_tab"
             android:paddingRight="3dp"
-            android:background="@drawable/bg_1"
+            android:background="@drawable/upload_activity_header_bg"
             android:id="@+id/home_flash_button"
             android:layout_weight="1" />
         <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/picture_1"
+            android:src="@drawable/upload_activity_header_picture_tab"
             android:paddingRight="3dp"
-            android:background="@drawable/bg_1"
+            android:background="@drawable/upload_activity_header_bg"
             android:id="@+id/image_button"
             android:layout_weight="1" />
         <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/movie_1"
+            android:src="@drawable/upload_activity_header_video_tab"
             android:paddingRight="3dp"
-            android:background="@drawable/bg_1"
+            android:background="@drawable/upload_activity_header_bg"
             android:id="@+id/movie_button"
             android:layout_weight="1" />
         <ImageButton
@@ -38,7 +38,7 @@
             android:layout_height="wrap_content"
             android:src="@drawable/back_1"
             android:paddingRight="3dp"
-            android:background="@drawable/bg_1"
+            android:background="@drawable/upload_activity_header_bg"
             android:id="@+id/back_button"
             android:layout_weight="1" />
     </LinearLayout>
