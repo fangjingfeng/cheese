@@ -50,6 +50,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_weight="0"/>
+    <include layout="@layout/path_bar_layout" />
     <ListView
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
@@ -69,6 +70,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="@color/white"
             android:text="@string/upload_activity_bottom_bar_title"
             android:id="@+id/textView"
             android:layout_alignParentTop="true" />
@@ -76,6 +78,7 @@
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="@color/white"
             android:text="@string/upload_activity_bottom_bar_select_path_bt"
             android:id="@+id/select_upload_location_bt"
             android:layout_below="@+id/textView"
@@ -85,6 +88,7 @@
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="@color/white"
             android:text="@string/upload_activity_bottom_bar_upload_bt"
             android:id="@+id/upload_bt"
             android:layout_alignParentEnd="true"
