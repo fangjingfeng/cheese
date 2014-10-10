@@ -11,7 +11,6 @@ import android.widget.ListView;
 
 import codingpark.net.cheesecloud.R;
 import codingpark.net.cheesecloud.handle.OnFragmentInteractionListener;
-import codingpark.net.cheesecloud.dummy.DummyContent;
 import codingpark.net.cheesecloud.model.ContactListAdapter;
 
 /**
@@ -71,7 +70,6 @@ public class FragmentContact extends ListFragment {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
 
-        //values = mContext.getResources().getStringArray(R.array.contact_tab_itmes_array);
         setListAdapter(new ContactListAdapter(mContext, R.layout.home_item_layout, values));
     }
 
