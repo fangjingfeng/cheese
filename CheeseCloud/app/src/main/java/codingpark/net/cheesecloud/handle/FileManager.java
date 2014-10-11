@@ -12,37 +12,8 @@ import java.util.Stack;
 
 import codingpark.net.cheesecloud.DevicePathUtils;
 
-/**
- * This class is completely modular, which is to say that it has
- * no reference to the any GUI activity. This class could be taken
- * and placed into in other java (not just Android) project and work.
- * <br>
- * <br>
- * This class handles all file and folder operations on the system.
- * This class dictates how files and folders are copied/pasted, (un)zipped
- * renamed and searched. The EventHandler class will generally call these
- * methods and have them performed in a background thread. Threading is not
- * done in this class.  
- *
- */
 public class FileManager {
     private static final String TAG = "FileManager";
-    /**
-     * The virtual directory, include ROOT_FLASH + ROOT_SDCARD path
-     */
-    public static final int ROOT_DISK           = 0;
-    /**
-     * Internal storage type
-     */
-    public  static final int ROOT_FLASH         = 1;
-    /**
-     * Sdcard storeage type
-     */
-    public  static final int ROOT_SDCARD        = 2;
-    /**
-     * Unknown storage type
-     */
-    public	static final int ROOT_UNKNOWN       = 3;
 
     // TODO comment BUFFER
     private static final int BUFFER = 		2048;
@@ -146,6 +117,30 @@ public class FileManager {
     }
 
     /**
+     * Switch to previous directory and return the subdirectories' list
+     * @return	returns the previous subdirectories' list
+     */
+    public ArrayList<String> switchToPreviousDir() {
+        int size = mPathStack.size();
+
+        if (size >= 2)
+            mPathStack.pop();
+
+        else if(size == 0)
+            mPathStack.push(diskName);
+
+        String st = mPathStack.peek();
+        if (st.equals(diskName)) {
+            ArrayList<String> r_list = new ArrayList<String>();
+            r_list.addAll(flashPathList);
+            r_list.addAll(sdcardPathList);
+            return r_list;
+        }
+        else{
+            return populate_list();
+        }
+    }
+    /**
      * This will tell if current path is root
      * @return	is root?
      */
@@ -178,30 +173,6 @@ public class FileManager {
         mSortType = type;
     }
 
-    /**
-     * Switch to previous directory and return the subdirectories' list
-     * @return	returns the previous subdirectories' list
-     */
-    public ArrayList<String> switchToPreviousDir() {
-        int size = mPathStack.size();
-
-        if (size >= 2)
-            mPathStack.pop();
-
-        else if(size == 0)
-            mPathStack.push(diskName);
-
-        String st = mPathStack.peek();
-        if (st.equals(diskName)) {
-            ArrayList<String> r_list = new ArrayList<String>();
-            r_list.addAll(flashPathList);
-            r_list.addAll(sdcardPathList);
-            return r_list;
-        }
-        else{
-            return populate_list();
-        }
-    }
 
     /**
      * Update current directory to path, and
@@ -259,49 +230,24 @@ public class FileManager {
     };
 
     /*
-     * this function will take the string from the top of the directory stack
-     * and list all files/folders that are in it and return that list so
-     * it can be displayed. Since this function is called every time we need
-     * to update the the list of files to be shown to the user, this is where
-     * we do our sorting (by type, alphabetical, etc).
-     *
+     * This function get the first item of mPathStack, and return the item subdirectories
+     * and files of the item(Directory) list.
      * @return
      */
     private ArrayList<String> populate_list() {
-
         if(!mDirContent.isEmpty())
             mDirContent.clear();
-        try
-        {
+        try {
             String path = mPathStack.peek();
             File file = new File(path);
 
             if(file.exists() && file.canRead() && file.isDirectory()) {
                 File[] fList = file.listFiles();
-                boolean isPartition = false;
-                if(mDevices.hasMultiplePartition(path)){
-                    Log.d(TAG,path + " has multi partition");
-                    isPartition = true;
-                }
-                if(fList != null)
-                {
+                if(fList != null) {
                     int len = fList.length;
 					
 					/* add files/folder to arraylist depending on hidden status */
                     for (int i = 0; i < len; i++) {
-                        if(isPartition){
-                            try{
-                                StatFs statFs = new StatFs(fList[i].getAbsolutePath());
-                                long count = statFs.getBlockCount();
-                                Log.d(TAG,fList[i].getName() + "  " + count);
-                                if(count == 0){
-                                    continue;
-                                }
-                            }catch(Exception e){
-                                Log.d(TAG,fList[i].getName() + "  exception");
-                                continue;
-                            }
-                        }
                         String name = fList[i].getName();
                         if(!mShowHiddenFiles) {
                             if(name.charAt(0) != '.')
@@ -313,8 +259,7 @@ public class FileManager {
                     }
 			
 					/* sort the arraylist that was made from above for loop */
-                    switch(mSortType)
-                    {
+                    switch(mSortType) {
                         case SORT_NONE:
                             //no sorting needed
                             break;
@@ -338,7 +283,7 @@ public class FileManager {
                             mDirContent.clear();
 
                             for (Object a : t){
-                                if(new File(dir + "/" + (String)a).isDirectory())
+                                if(new File(dir + "/" + a).isDirectory())
                                     mDirContent.add(0, (String)a);
                                 else
                                     mDirContent.add((String)a);
@@ -347,8 +292,7 @@ public class FileManager {
                     }
                 }
             }
-        }catch(Exception e)
-        {
+        }catch(Exception e) {
 			/* clear any operate made above */
             Log.e("FileManager", "unknow exception");
             mDirContent.clear();
@@ -364,6 +308,7 @@ public class FileManager {
      *
      * @param path
      */
+    /*
     private void get_dir_size(File path) {
         File[] list = path.listFiles();
         int len;
@@ -381,5 +326,6 @@ public class FileManager {
             }
         }
     }
+    */
 
 }
