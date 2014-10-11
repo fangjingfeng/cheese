@@ -151,6 +151,8 @@ public final class UploadActivity extends ListActivity {
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "Upload button clicked, start uploading!");
+                Toast.makeText(UploadActivity.this, "开始上传", Toast.LENGTH_SHORT).show();
+                finish();
             }
         });
     }
