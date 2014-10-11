@@ -12,7 +12,6 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
@@ -34,8 +33,6 @@ public final class UploadActivity extends ListActivity {
     private CatalogList mCataList                       = null;
 
     private SharedPreferences mSettings                 = null;
-    // UI element to display current full path
-    private TextView  mPathLabel                        = null;
 
     private String TAG                      = "UploadActivity";
 
@@ -104,14 +101,10 @@ public final class UploadActivity extends ListActivity {
         setListAdapter(mTable);
         getListView().setOnItemLongClickListener(mHandler);
         
-        mPathLabel = (TextView)findViewById(R.id.path_label);
-        mHandler.setUpdateLabels(mPathLabel);
-		
-        /*
-         * Start refresh list
-         *      then: list storage list
-         */
-        mPathLabel.setText(mFileMgr.getCurrentDir());
+        // Initial Path bar
+        path_bar_container = (LinearLayout)findViewById(R.id.pathBarContainer);
+        mHandler.setUpdatePathBar(path_bar_container);
+
         mHandler.updateContent(mFileMgr.switchToRoot());
         getFocusForButton(R.id.header_disk_button);
 
@@ -133,8 +126,6 @@ public final class UploadActivity extends ListActivity {
         select_upload_path_bt = (Button)findViewById(R.id.select_upload_location_bt);
         upload_bt = (Button)findViewById(R.id.upload_bt);
 
-        // Path bar
-        path_bar_container = (LinearLayout)findViewById(R.id.pathBarContainer);
     }
 
     /**
@@ -201,14 +192,13 @@ public final class UploadActivity extends ListActivity {
         if (file.isDirectory()) {
             if(file.canRead()) {
                 mHandler.updateContent(mFileMgr.switchToNextDir(item));
-                mPathLabel.setText(mFileMgr.getCurrentDir());
 
             } else {
                 Toast.makeText(this, "Can't read folder due to permissions",
                         Toast.LENGTH_SHORT).show();
             }
-            if(mFileMgr.isRoot()){
-            }else{
+            if(mFileMgr.isRoot()) {
+            }else {
             }
         } else if (file.isFile()) {
             Log.d(TAG, "Select file: " + item);
@@ -236,7 +226,6 @@ public final class UploadActivity extends ListActivity {
             */
 
             mHandler.updateContent(mFileMgr.switchToPreviousDir());
-            mPathLabel.setText(mFileMgr.getCurrentDir());
             // TODO Judge current directory is root, refresh header bar button status
             if(mFileMgr.isRoot()){
             }else{
@@ -247,7 +236,6 @@ public final class UploadActivity extends ListActivity {
         // Current is root directory, click back key indicate cancel selected and return home
         else if(keycode == KeyEvent.KEYCODE_BACK &&
                 mFileMgr.isRoot() ) {
-            mPathLabel.setText(mFileMgr.getCurrentDir());
             finish();
             return false;
 

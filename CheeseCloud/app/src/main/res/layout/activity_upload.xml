@@ -43,13 +43,6 @@
             android:layout_weight="1" />
     </LinearLayout>
     <!--Use to show current path-->
-    <TextView
-        android:id="@+id/path_label"
-        android:text="@string/path_is"
-        android:maxLines="1"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="0"/>
     <include layout="@layout/path_bar_layout" />
     <ListView
         android:layout_width="fill_parent"

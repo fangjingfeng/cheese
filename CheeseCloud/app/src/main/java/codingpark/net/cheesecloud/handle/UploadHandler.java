@@ -44,7 +44,8 @@ public class UploadHandler implements OnClickListener, OnItemLongClickListener{
     //the list used to feed info into the array adapter and when multi-select is on
     private ArrayList<String> mFileList, mMultiSelectData;
     // Display current directory path
-    private TextView mPathLabel             = null;
+    //private TextView mPathLabel             = null;
+    private LinearLayout mPathBar           = null;
 
     // The previous selected header tab
     private View preView                    = null;
@@ -85,15 +86,20 @@ public class UploadHandler implements OnClickListener, OnItemLongClickListener{
     public int getMode() {
         return mlistmode;
     }
+
     /**
      * This method is called from the upload activity and is passed
-     * the TextView that should be updated as the directory changes
+     * the LinearLayout that should be updated as the directory changes
      * so the user knows which folder they are in.
      *
      * @param path	The label to update as the directory changes
      */
-    public void setUpdateLabels(TextView path) {
-        mPathLabel = path;
+    public void setUpdatePathBar(LinearLayout pathBar) {
+        mPathBar = pathBar;
+    }
+
+    private void refreshPathBar() {
+        Log.d(TAG, "Start refresh path bar");
     }
 
 
@@ -133,8 +139,8 @@ public class UploadHandler implements OnClickListener, OnItemLongClickListener{
                     }
                     */
                     updateContent(mFileMgr.switchToPreviousDir());
-                    if(mPathLabel != null)
-                        mPathLabel.setText(mFileMgr.getCurrentDir());
+                    if(mPathBar != null)
+                        refreshPathBar();
                 }
                 break;
 
@@ -145,23 +151,23 @@ public class UploadHandler implements OnClickListener, OnItemLongClickListener{
                 }
                 mlistmode = TREEVIEW_MODE;
                 updateContent(mFileMgr.switchToRoot());
-                if(mPathLabel != null)
-                    mPathLabel.setText(mFileMgr.getCurrentDir());
+                if(mPathBar != null)
+                    refreshPathBar();
                 break;
 
             case R.id.image_button:
                 mlistmode = CATALOG_MODE;
                 updateContent(mCataList.SetFileTyp(CatalogList.TYPE_PICTURE));
-                if(mPathLabel != null)
-                    mPathLabel.setText(mContext.getResources().getString(R.string.image));
+                if(mPathBar != null)
+                    refreshPathBar();
                 refreshFocus(preView,v);
                 break;
 
             case R.id.movie_button:
                 mlistmode = CATALOG_MODE;
                 updateContent(mCataList.SetFileTyp(CatalogList.TYPE_MOVIE));
-                if(mPathLabel != null)
-                    mPathLabel.setText(mContext.getResources().getString(R.string.video));
+                if(mPathBar != null)
+                    refreshPathBar();
                 refreshFocus(preView,v);
                 break;
 			
