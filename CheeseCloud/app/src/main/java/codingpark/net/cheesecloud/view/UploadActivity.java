@@ -112,7 +112,7 @@ public final class UploadActivity extends ListActivity {
          *      then: list storage list
          */
         mPathLabel.setText(mFileMgr.getCurrentDir());
-        mHandler.updateDirectory(mFileMgr.switchToRoot());
+        mHandler.updateContent(mFileMgr.switchToRoot());
         getFocusForButton(R.id.header_disk_button);
 
         initUI();
@@ -200,7 +200,7 @@ public final class UploadActivity extends ListActivity {
 
         if (file.isDirectory()) {
             if(file.canRead()) {
-                mHandler.updateDirectory(mFileMgr.switchToNextDir(item));
+                mHandler.updateContent(mFileMgr.switchToNextDir(item));
                 mPathLabel.setText(mFileMgr.getCurrentDir());
 
             } else {
@@ -235,7 +235,7 @@ public final class UploadActivity extends ListActivity {
             }
             */
 
-            mHandler.updateDirectory(mFileMgr.switchToPreviousDir());
+            mHandler.updateContent(mFileMgr.switchToPreviousDir());
             mPathLabel.setText(mFileMgr.getCurrentDir());
             // TODO Judge current directory is root, refresh header bar button status
             if(mFileMgr.isRoot()){

@@ -26,18 +26,13 @@ import codingpark.net.cheesecloud.utils.TypeFilter;
 public class UploadHandler implements OnClickListener, OnItemLongClickListener{
     private static final String TAG         = "EventHandler";
 
-    /*
-     * Unique types to control which file operation gets
-     * performed in the background
-     */
-    private static final int SEARCH_TYPE    = 0x00;
 
     // Common list mode: list all files and folders
-    public static final int TREEVIEW_MODE   = 1;
+    public static final int TREEVIEW_MODE           = 1;
     // Catalog list mode: just list the specified type files
-    public static final int CATALOG_MODE    = 2;
+    public static final int CATALOG_MODE            = 2;
     // Current selected list mode: default mode is TREEVIEW_MODE
-    private int	mlistmode                   = TREEVIEW_MODE;
+    private int	mlistmode                           = TREEVIEW_MODE;
 
     private final Context mContext;
     private final FileManager mFileMgr;
@@ -137,7 +132,7 @@ public class UploadHandler implements OnClickListener, OnItemLongClickListener{
                                 Toast.LENGTH_SHORT).show();
                     }
                     */
-                    updateDirectory(mFileMgr.switchToPreviousDir());
+                    updateContent(mFileMgr.switchToPreviousDir());
                     if(mPathLabel != null)
                         mPathLabel.setText(mFileMgr.getCurrentDir());
                 }
@@ -149,14 +144,14 @@ public class UploadHandler implements OnClickListener, OnItemLongClickListener{
                     break;
                 }
                 mlistmode = TREEVIEW_MODE;
-                updateDirectory(mFileMgr.switchToRoot());
+                updateContent(mFileMgr.switchToRoot());
                 if(mPathLabel != null)
                     mPathLabel.setText(mFileMgr.getCurrentDir());
                 break;
 
             case R.id.image_button:
                 mlistmode = CATALOG_MODE;
-                setFileList(mCataList.SetFileTyp(CatalogList.TYPE_PICTURE));
+                updateContent(mCataList.SetFileTyp(CatalogList.TYPE_PICTURE));
                 if(mPathLabel != null)
                     mPathLabel.setText(mContext.getResources().getString(R.string.image));
                 refreshFocus(preView,v);
@@ -164,7 +159,7 @@ public class UploadHandler implements OnClickListener, OnItemLongClickListener{
 
             case R.id.movie_button:
                 mlistmode = CATALOG_MODE;
-                setFileList(mCataList.SetFileTyp(CatalogList.TYPE_MOVIE));
+                updateContent(mCataList.SetFileTyp(CatalogList.TYPE_MOVIE));
                 if(mPathLabel != null)
                     mPathLabel.setText(mContext.getResources().getString(R.string.video));
                 refreshFocus(preView,v);
@@ -203,7 +198,7 @@ public class UploadHandler implements OnClickListener, OnItemLongClickListener{
      * @param position	the indext of the arraylist holding the dir content
      * @return the data in the arraylist at position (position)
      */
-    public String getData(int position) {
+    private String getData(int position) {
 
         if(position > mFileList.size() - 1 || position < 0)
             return null;
@@ -233,35 +228,11 @@ public class UploadHandler implements OnClickListener, OnItemLongClickListener{
      *
      * @param content	an ArrayList of the file/folders in the current directory.
      */
-    public void updateDirectory(ArrayList<String> content) {
-        if(!mFileList.isEmpty())
-            mFileList.clear();
-
-        for(String data : content)
-            mFileList.add(data);
-
-        mAdapter.notifyDataSetChanged();
-    }
-
-    /**
-     * called to refresh the file list
-     *
-     * @param content	an ArrayList of the file/folders in the current directory.
-     */
-    public void setFileList(ArrayList<String> content) {
-        if(mFileList.equals(content))
-        {
-            return;
-        }
+    public void updateContent(ArrayList<String> content) {
         if(!mFileList.isEmpty())
             mFileList.clear();
 
         mFileList.addAll(content);
-		
-		/*
-		 * File list have been change,so clear the thumbnail
-		 */
-        mAdapter.clearThumbnail();
         mAdapter.notifyDataSetChanged();
     }
 
@@ -301,6 +272,7 @@ public class UploadHandler implements OnClickListener, OnItemLongClickListener{
             mDevices = new DevicePathUtils(mContext);
         }
 
+        /*
         public void addMultiPosition(int index, String path) {
             if(positions == null)
                 positions = new ArrayList<Integer>();
@@ -322,33 +294,34 @@ public class UploadHandler implements OnClickListener, OnItemLongClickListener{
 
             notifyDataSetChanged();
         }
+        */
 
         /**
          * This will turn off multi-select and hide the multi-select buttons at the
          * bottom of the view.
          *
-         * @param clearData if this is true any files/folders the user selected for multi-select
+         * @param if this is true any files/folders the user selected for multi-select
          * 					will be cleared. If false, the data will be kept for later use. Note:
          * 					multi-select copy and move will usually be the only one to pass false,
          * 					so we can later paste it to another folder.
          */
-        public void killMultiSelect(boolean clearData) {
-            // TODO Handle multiple select
-            /*
-            hidden_layout = (LinearLayout)((Activity)mContext).findViewById(R.id.hidden_buttons);
-            hidden_layout.setVisibility(LinearLayout.GONE);
-            multi_select_flag = false;
-
-            if(positions != null && !positions.isEmpty())
-                positions.clear();
-
-            if(clearData)
-                if(mMultiSelectData != null && !mMultiSelectData.isEmpty())
-                    mMultiSelectData.clear();
-
-            notifyDataSetChanged();
-            */
-        }
+//        public void killMultiSelect(boolean clearData) {
+//            // TODO Handle multiple select
+//            /*
+//            hidden_layout = (LinearLayout)((Activity)mContext).findViewById(R.id.hidden_buttons);
+//            hidden_layout.setVisibility(LinearLayout.GONE);
+//            multi_select_flag = false;
+//
+//            if(positions != null && !positions.isEmpty())
+//                positions.clear();
+//
+//            if(clearData)
+//                if(mMultiSelectData != null && !mMultiSelectData.isEmpty())
+//                    mMultiSelectData.clear();
+//
+//            notifyDataSetChanged();
+//            */
+//        }
 
 
         public void clearThumbnail() {
@@ -621,12 +594,14 @@ public class UploadHandler implements OnClickListener, OnItemLongClickListener{
             return convertView;
         }
 
+        /*
         private void add_multiSelect_file(String src) {
             if(mMultiSelectData == null)
                 mMultiSelectData = new ArrayList<String>();
 
             mMultiSelectData.add(src);
         }
+        */
     }
 
 

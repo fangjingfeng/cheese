@@ -300,32 +300,4 @@ public class FileManager {
         return mDirContent;
     }
 
-    /*
-     * This function will be rewritten as there is a problem getting
-     * the directory size in certain folders from root. ex /sys, /proc.
-     * The app will continue until a stack overflow. get size is fine uder the
-     * sdcard folder.
-     *
-     * @param path
-     */
-    /*
-    private void get_dir_size(File path) {
-        File[] list = path.listFiles();
-        int len;
-
-        if(list != null) {
-            len = list.length;
-
-            for (int i = 0; i < len; i++) {
-                if(list[i].isFile() && list[i].canRead()) {
-                    mDirSize += list[i].length();
-
-                } else if(list[i].isDirectory() && list[i].canRead()) {
-                    get_dir_size(list[i]);
-                }
-            }
-        }
-    }
-    */
-
 }
