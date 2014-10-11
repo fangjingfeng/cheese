@@ -1,7 +1,6 @@
 package codingpark.net.cheesecloud.handle;
 
 import android.content.Context;
-import android.os.StatFs;
 import android.util.Log;
 
 import java.io.File;
@@ -14,9 +13,6 @@ import codingpark.net.cheesecloud.DevicePathUtils;
 
 public class FileManager {
     private static final String TAG = "FileManager";
-
-    // TODO comment BUFFER
-    private static final int BUFFER = 		2048;
 
     /**
      * No sort
@@ -55,10 +51,6 @@ public class FileManager {
      */
     private int mSortType = SORT_ALPHA;
     /**
-     * The directory contain files count
-     */
-    private long mDirSize = 0;
-    /**
      * The stack data structure, which store current directory path
      */
     private Stack<String> mPathStack;
@@ -92,6 +84,10 @@ public class FileManager {
 
         // Initial file path stack with root path
         mPathStack.push(diskName);
+    }
+
+    public Stack<String> getPathStack() {
+        return (Stack<String>)mPathStack.clone();
     }
 
     /**

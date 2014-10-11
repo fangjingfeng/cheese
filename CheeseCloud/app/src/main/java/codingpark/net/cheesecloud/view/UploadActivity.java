@@ -27,6 +27,8 @@ import codingpark.net.cheesecloud.utils.CatalogList;
  */
 public final class UploadActivity extends ListActivity {
 
+    private static final String TAG                     = "UploadActivity";
+
     private FileManager mFileMgr = null;
     private UploadHandler mHandler                      = null;
     private UploadHandler.UploadListAdapter mTable      = null;
@@ -34,7 +36,6 @@ public final class UploadActivity extends ListActivity {
 
     private SharedPreferences mSettings                 = null;
 
-    private String TAG                      = "UploadActivity";
 
     // Top bar items
     private ImageButton upload_disk_bt      = null;
@@ -168,7 +169,6 @@ public final class UploadActivity extends ListActivity {
     protected void onDestroy() {
         super.onDestroy();
     }
-
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

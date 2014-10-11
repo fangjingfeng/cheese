@@ -16,6 +16,8 @@ import android.widget.TextView;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Stack;
+import java.util.zip.Inflater;
 
 import codingpark.net.cheesecloud.DevicePathUtils;
 import codingpark.net.cheesecloud.R;
@@ -29,8 +31,10 @@ public class UploadHandler implements OnClickListener, OnItemLongClickListener{
 
     // Common list mode: list all files and folders
     public static final int TREEVIEW_MODE           = 1;
+
     // Catalog list mode: just list the specified type files
     public static final int CATALOG_MODE            = 2;
+
     // Current selected list mode: default mode is TREEVIEW_MODE
     private int	mlistmode                           = TREEVIEW_MODE;
 
@@ -92,7 +96,7 @@ public class UploadHandler implements OnClickListener, OnItemLongClickListener{
      * the LinearLayout that should be updated as the directory changes
      * so the user knows which folder they are in.
      *
-     * @param path	The label to update as the directory changes
+     * @param pathBar	The label to update as the directory changes
      */
     public void setUpdatePathBar(LinearLayout pathBar) {
         mPathBar = pathBar;
@@ -100,6 +104,31 @@ public class UploadHandler implements OnClickListener, OnItemLongClickListener{
 
     private void refreshPathBar() {
         Log.d(TAG, "Start refresh path bar");
+        //String[] pathStack = (String[])mFileMgr.getPathStack().;
+        Stack<String> pathStack = mFileMgr.getPathStack();
+        int pathBarCount = mPathBar.getChildCount();
+        int pathStackCount = pathStack.size();
+
+        LayoutInflater inflater = (LayoutInflater)mContext.getSystemService
+                (Context.LAYOUT_INFLATER_SERVICE);
+        if (pathBarCount < pathStackCount) {
+            // Add extra path to pathBar
+            for (int i = pathBarCount; i < pathStackCount; i++) {
+                TextView textView = (TextView)inflater.inflate(R.layout.path_bar_item_layout, null);
+                textView.setTag(i);
+                String path = pathStack.get(i);
+                path = path.substring(path.lastIndexOf("/") + 1, path.length());
+                Log.d(TAG, "path " + i + " is " + path);
+                textView.setText(path);
+                mPathBar.addView(textView);
+            }
+        } else if (pathBarCount > pathStackCount) {
+            // Remove extra path from pathBar
+            for (int i = pathBarCount; i > pathStackCount ; i--) {
+                mPathBar.removeViewAt(i - 1);
+            }
+
+        }
     }
 
 
@@ -139,8 +168,6 @@ public class UploadHandler implements OnClickListener, OnItemLongClickListener{
                     }
                     */
                     updateContent(mFileMgr.switchToPreviousDir());
-                    if(mPathBar != null)
-                        refreshPathBar();
                 }
                 break;
 
@@ -240,6 +267,9 @@ public class UploadHandler implements OnClickListener, OnItemLongClickListener{
 
         mFileList.addAll(content);
         mAdapter.notifyDataSetChanged();
+
+        if(mPathBar != null)
+            refreshPathBar();
     }
 
     /**
