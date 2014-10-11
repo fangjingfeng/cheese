@@ -1,17 +1,7 @@
 package codingpark.net.cheesecloud.handle;
 
-import android.app.AlertDialog;
-import android.app.ProgressDialog;
-import android.content.ActivityNotFoundException;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.graphics.Bitmap;
-import android.net.Uri;
-import android.os.AsyncTask;
-import android.os.PowerManager;
-import android.os.PowerManager.WakeLock;
-import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,12 +13,11 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.io.File;
 import java.util.ArrayList;
 
-import codingpark.net.cheesecloud.DevicePath;
+import codingpark.net.cheesecloud.DevicePathUtils;
 import codingpark.net.cheesecloud.R;
 import codingpark.net.cheesecloud.utils.CatalogList;
 import codingpark.net.cheesecloud.utils.ThumbnailCreator;
@@ -78,7 +67,8 @@ public class UploadHandler implements OnClickListener, OnItemLongClickListener{
         mFileMgr = manager;
         mCataList = CataList;
 
-        mFileList = new ArrayList<String>(mFileMgr.getHomeDir(FileManager.ROOT_FLASH));
+        // Initial as ROOT_DISK, ListView list all flash and sdcard
+        mFileList = new ArrayList<String>(mFileMgr.switchToRoot());
     }
 
     /**
@@ -147,7 +137,7 @@ public class UploadHandler implements OnClickListener, OnItemLongClickListener{
                                 Toast.LENGTH_SHORT).show();
                     }
                     */
-                    updateDirectory(mFileMgr.getPreviousDir());
+                    updateDirectory(mFileMgr.switchToPreviousDir());
                     if(mPathLabel != null)
                         mPathLabel.setText(mFileMgr.getCurrentDir());
                 }
@@ -155,20 +145,11 @@ public class UploadHandler implements OnClickListener, OnItemLongClickListener{
 
             case R.id.header_disk_button:
                 refreshFocus(preView,v);
-                if(mFileMgr.whichRoot() == FileManager.ROOT_FLASH &&
-                        mlistmode == TREEVIEW_MODE)
-                {
+                if(mlistmode == TREEVIEW_MODE) {
                     break;
                 }
                 mlistmode = TREEVIEW_MODE;
-                /*
-                if(multi_select_flag) {
-                    mAdapter.killMultiSelect(true);
-                    Toast.makeText(mContext, R.string.Multi_select_off,
-                            Toast.LENGTH_SHORT).show();
-                }
-                */
-                updateDirectory(mFileMgr.getHomeDir(FileManager.ROOT_FLASH));
+                updateDirectory(mFileMgr.switchToRoot());
                 if(mPathLabel != null)
                     mPathLabel.setText(mFileMgr.getCurrentDir());
                 break;
@@ -230,14 +211,13 @@ public class UploadHandler implements OnClickListener, OnItemLongClickListener{
         return mFileList.get(position);
     }
 
-    public String getCurrentFilePath(int position){
+    public String getFilePath(int position){
         final String item = getData(position);
         Log.d(TAG,"item  " + item);
         if(getMode() == UploadHandler.TREEVIEW_MODE)
         {
             String curDir = mFileMgr.getCurrentDir();
-            if(curDir.equals(mFileMgr.flashName) ||
-                    curDir.equals(mFileMgr.sdcardName)) {
+            if(curDir.equals(mFileMgr.diskName)) {
                 return item;
             }
             else {
@@ -311,14 +291,14 @@ public class UploadHandler implements OnClickListener, OnItemLongClickListener{
         private ArrayList<Integer> positions;
         private LinearLayout hidden_layout;
         private ThumbnailCreator thumbnail;
-        private DevicePath mDevices;
+        private DevicePathUtils mDevices;
 
         public UploadListAdapter() {
             super(mContext, R.layout.upload_item_layout, mFileList);
 
             thumbnail = new ThumbnailCreator(mContext, 32, 32);
             dir_name = mFileMgr.getCurrentDir();
-            mDevices = new DevicePath(mContext);
+            mDevices = new DevicePathUtils(mContext);
         }
 
         public void addMultiPosition(int index, String path) {
@@ -493,7 +473,7 @@ public class UploadHandler implements OnClickListener, OnItemLongClickListener{
             ViewHolder holder;
             int num_items = 0;
             String temp = mFileMgr.getCurrentDir();
-            File file = new File(getCurrentFilePath(position));
+            File file = new File(getFilePath(position));
             String filePath = file.getAbsolutePath();
 
             num_items = mDevices.getPartitions(filePath);
@@ -649,193 +629,12 @@ public class UploadHandler implements OnClickListener, OnItemLongClickListener{
         }
     }
 
-    /**
-     * A private inner class of EventHandler used to perform time extensive 
-     * operations. So the user does not think the the application has hung, 
-     * operations such as copy/past, search, unzip and zip will all be performed 
-     * in the background. This class extends AsyncTask in order to give the user
-     * a progress dialog to show that the app is working properly.
-     *
-     * (note): this class will eventually be changed from using AsyncTask to using
-     * Handlers and messages to perform background operations. 
-     */
-    private class BackgroundWork extends AsyncTask<String, Void, ArrayList<String>> {
-        private String file_name;
-        private ProgressDialog pr_dialog;
-        private int type;
-        private int copy_rtn;
-        private static final String WAKE_LOCK = "wakelock";
-        private WakeLock wl = null;
-
-        private BackgroundWork(int type) {
-            this.type = type;
-        }
-
-        /**
-         * This is done on the EDT thread. this is called before
-         * doInBackground is called
-         */
-        @Override
-        protected void onPreExecute() {
-    		/*
-    		 * lock standby when it is in file operation
-    		 * */
-            PowerManager pm = (PowerManager) mContext.getSystemService(Context.POWER_SERVICE);
-            wl = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, WAKE_LOCK);
-            wl.acquire();
-
-            switch(type) {
-                case SEARCH_TYPE:
-                    pr_dialog = ProgressDialog.show(mContext, "Searching",
-                            "Searching current file system...",
-                            true, true);
-                    break;
-
-            }
-        }
-
-        /**
-         * background thread here
-         */
-        @Override
-        protected ArrayList<String> doInBackground(String... params) {
-
-            switch(type) {
-                case SEARCH_TYPE:
-                    file_name = params[0];
-                    ArrayList<String> found = mFileMgr.searchInDirectory(mFileMgr.getCurrentDir(),
-                            file_name);
-                    return found;
-                default:
-                    return null;
-
-            }
-        }
-
-        /**
-         * This is called when the background thread is finished. Like onPreExecute, anything
-         * here will be done on the EDT thread.
-         */
-        @Override
-        protected void onPostExecute(final ArrayList<String> file) {
-            final CharSequence[] names;
-            int len = file != null ? file.size() : 0;
-			
-			/*
-			 * unlock standby
-			 */
-            if(wl != null)
-                wl.release();
-
-            switch(type) {
-                case SEARCH_TYPE:
-                    if(len == 0) {
-                        Toast.makeText(mContext, "Couldn't find " + file_name,
-                                Toast.LENGTH_SHORT).show();
-
-                    } else {
-                        names = new CharSequence[len];
-
-                        for (int i = 0; i < len; i++) {
-                            String entry = file.get(i);
-                            names[i] = entry.substring(entry.lastIndexOf("/") + 1, entry.length());
-                        }
-
-                        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-                        builder.setTitle("Found " + len + " file(s)");
-                        builder.setItems(names, new DialogInterface.OnClickListener() {
-
-                            public void onClick(DialogInterface dialog, int position) {
-                                String path = file.get(position);
-//								updateDirectory(mFileMgr.getNextDir(path.
-//													substring(0, path.lastIndexOf("/")), true));
-								/*
-								 * when it is a directory, open it,otherwise play it
-								 * */
-                                File f = new File(path);
-                                String item_ext = null;
-
-                                try {
-                                    item_ext = path.substring(path.lastIndexOf(".") + 1, path.length());
-
-                                } catch(IndexOutOfBoundsException e) {
-                                    item_ext = "";
-                                }
-                                if(f.exists())
-                                {
-                                    if(f.isDirectory())
-                                    {
-                                        if(f.canRead()) {
-                                            updateDirectory(mFileMgr.getNextDir(path));
-                                            mPathLabel.setText(mFileMgr.getCurrentDir());
-                                        }
-                                    }
-                                    else if (TypeFilter.getInstance().isMusicFile(item_ext)) {
-                                        Intent picIntent = new Intent();
-                                        picIntent.setAction(android.content.Intent.ACTION_VIEW);
-                                        picIntent.setDataAndType(Uri.fromFile(f), "audio/*");
-                                        try{
-                                            mContext.startActivity(picIntent);
-                                        }catch(ActivityNotFoundException e)
-                                        {
-                                            Log.e("EventHandler", "can not find activity to open it");
-                                        }
-                                    }
-                                    else if(TypeFilter.getInstance().isPictureFile(item_ext)) {
-                                        Intent picIntent = new Intent();
-                                        picIntent.setAction(android.content.Intent.ACTION_VIEW);
-                                        picIntent.setDataAndType(Uri.fromFile(f), "image/*");
-                                        try
-                                        {
-                                            mContext.startActivity(picIntent);
-                                        }catch(ActivityNotFoundException e)
-                                        {
-                                            Log.e("EventHandler", "can not find activity to open it");
-                                        }
-                                    }
-							    	/*video file selected--add more video formats*/
-                                    else if(TypeFilter.getInstance().isMovieFile(item_ext)) {
-                                        Intent movieIntent = new Intent();
-                                        movieIntent.putExtra(MediaStore.EXTRA_FINISH_ON_COMPLETION, false);
-                                        movieIntent.setAction(android.content.Intent.ACTION_VIEW);
-                                        movieIntent.setDataAndType(Uri.fromFile(f), "video/*");
-                                        try{
-                                            mContext.startActivity(movieIntent);
-                                        }catch(ActivityNotFoundException e)
-                                        {
-                                            Log.e("EventHandler", "can not find activity to open it");
-                                        }
-                                    }
-                                    else if(TypeFilter.getInstance().isApkFile(item_ext)){
-                                        Intent apkIntent = new Intent();
-                                        apkIntent.setAction(android.content.Intent.ACTION_VIEW);
-                                        apkIntent.setDataAndType(Uri.fromFile(f), "application/vnd.android.package-archive");
-                                        try {
-                                            mContext.startActivity(apkIntent);
-                                        } catch (ActivityNotFoundException e) {
-                                            Log.e("EventHandler", "can not find activity to open it");
-                                        }
-
-                                    }
-                                }
-                            }
-                        });
-                        AlertDialog dialog = builder.create();
-                        dialog.show();
-                    }
-                    pr_dialog.dismiss();
-                    break;
-
-            }
-        }
-    }
 
     @Override
     public boolean onItemLongClick(AdapterView<?> arg0, View arg1, int arg2,
                                    long arg3) {
         Log.d(TAG, "Long clicked!");
-        if(mFileMgr.getCurrentDir().equals(mFileMgr.sdcardName) ||
-                mFileMgr.getCurrentDir().equals(mFileMgr.flashName)){
+        if(mFileMgr.getCurrentDir().equals(mFileMgr.diskName)) {
             return true; //do not respond when in storage list mode
         }
         return true;

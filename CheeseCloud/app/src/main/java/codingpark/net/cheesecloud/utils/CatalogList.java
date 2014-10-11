@@ -9,8 +9,7 @@ import java.util.Comparator;
 import android.content.Context;
 import android.os.Environment;
 
-import codingpark.net.cheesecloud.DevicePath;
-import codingpark.net.cheesecloud.utils.TypeFilter;
+import codingpark.net.cheesecloud.DevicePathUtils;
 
 
 public class CatalogList {
@@ -33,7 +32,7 @@ public class CatalogList {
     private ArrayList<String> flashpath;
     private ArrayList<String> sdcardpath;
     private ArrayList<String> totalStoragePath;
-    private DevicePath mDevices;
+    private DevicePathUtils mDevices;
 
     private static final Comparator alph = new Comparator<String>() {
         @Override
@@ -132,7 +131,7 @@ public class CatalogList {
 
     public CatalogList(Context context){
         mlist = new ArrayList<String>();
-        mDevices = new DevicePath(context);
+        mDevices = new DevicePathUtils(context);
         flashpath = mDevices.getSdStoragePath();
         sdcardpath = mDevices.getInterStoragePath();
         totalStoragePath = mDevices.getTotalDevicesList();

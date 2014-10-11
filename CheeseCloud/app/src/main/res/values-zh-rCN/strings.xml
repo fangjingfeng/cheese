@@ -3,7 +3,6 @@
     <string name="app_name">"琦思云盘"</string>
 
     <!-- UploadActivity -->
-    <string name="disk">"本地存储"</string>
     <string name="flash">"内部存储"</string>
     <string name="extsd">"外部SD卡"</string>
     <string name="usbhost">"USB设备"</string>

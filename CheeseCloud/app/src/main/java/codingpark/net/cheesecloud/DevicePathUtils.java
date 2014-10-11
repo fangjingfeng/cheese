@@ -16,7 +16,7 @@ import android.util.Log;
 /**
  * define the root path of flash,sdcard
  */
-public class DevicePath{
+public class DevicePathUtils {
     private ArrayList<String> totalDevicesList;
     private ArrayList<String> flashList;
     private ArrayList<String> sdcardList;
@@ -24,7 +24,7 @@ public class DevicePath{
     private static final String TAG = "DevicePath";
     private Method mMethodGetPaths;
     private Method mMethodGetPathsState;
-    public DevicePath(Context context)
+    public DevicePathUtils(Context context)
     {
         totalDevicesList = new ArrayList<String>();
         flashList = new ArrayList<String>();
