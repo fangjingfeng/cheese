@@ -33,11 +33,11 @@ public class FragmentHome extends ListFragment {
     public static final String TAB_HOME_ITEM_TEMP_SCREEN        = "temp_screen";
 
     private static final String[] values = new String[] {
-            TAB_HOME_ITEM_NEWS,
+            //TAB_HOME_ITEM_NEWS,
             TAB_HOME_ITEM_CLOUD_DISK,
             TAB_HOME_ITEM_RESOURCE_LIBRARY,
-            TAB_HOME_ITEM_SMALL_CLASS,
-            TAB_HOME_ITEM_TEMP_SCREEN
+            //TAB_HOME_ITEM_SMALL_CLASS,
+            //TAB_HOME_ITEM_TEMP_SCREEN
     };
 
     private OnFragmentInteractionListener mListener;

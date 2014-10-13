@@ -545,11 +545,13 @@ public class UploadHandler implements OnClickListener, OnItemLongClickListener{
                 dir_name = temp;
             }
 
+
             if (positions != null && positions.contains(position))
                 holder.mSelect.setVisibility(ImageView.VISIBLE);
             else
                 holder.mSelect.setVisibility(ImageView.GONE);
 
+            holder.mSelect.setVisibility(ImageView.VISIBLE);
 
             if(file != null && file.isFile()) {
                 String ext = file.toString();
