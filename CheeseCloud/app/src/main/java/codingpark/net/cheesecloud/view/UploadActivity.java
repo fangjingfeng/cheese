@@ -125,7 +125,7 @@ public final class UploadActivity extends ListActivity {
 
         // Initial UploadActivity bottom bar UI elements(Button)
         select_upload_path_bt = (Button)findViewById(R.id.select_upload_location_bt);
-        upload_bt = (Button)findViewById(R.id.upload_bt);
+        upload_bt = (Button)findViewById(R.id.start_upload_bt);
 
     }
 
