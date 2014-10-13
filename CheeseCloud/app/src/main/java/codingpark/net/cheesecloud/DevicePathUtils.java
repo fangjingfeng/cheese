@@ -117,6 +117,7 @@ public class DevicePathUtils {
         return (ArrayList<String>) totalDevicesList.clone();
     }
 
+    /*
     public int getPartitions(String dPath){
         try{
             if(hasMultiplePartition(dPath)){
@@ -143,7 +144,9 @@ public class DevicePathUtils {
             return 0;
         }
     }
+    */
 
+    /*
     public boolean hasMultiplePartition(String dPath)
     {
         try
@@ -190,6 +193,7 @@ public class DevicePathUtils {
             return false;
         }
     }
+    */
 }
 
 

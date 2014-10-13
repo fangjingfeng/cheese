@@ -513,13 +513,13 @@ public class UploadHandler implements OnClickListener, OnItemLongClickListener{
             File file = new File(getFilePath(position));
             String filePath = file.getAbsolutePath();
 
-            num_items = mDevices.getPartitions(filePath);
-            if(num_items <= 0 ){
-                String[] list = file.list();
+            //num_items = mDevices.getPartitions(filePath);
+            //if(num_items <= 0 ){
+            String[] list = file.list();
 
-                if(list != null)
-                    num_items = list.length;
-            }
+            if(list != null)
+                num_items = list.length;
+            //}
             if(convertView == null) {
                 LayoutInflater inflater = (LayoutInflater) mContext.
                         getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -647,10 +647,11 @@ public class UploadHandler implements OnClickListener, OnItemLongClickListener{
                     holder.bottomView.setText(display_size);
 
             } else {
+                String count_unit = mContext.getString(R.string.upload_activity_list_item_count_unit_string);
                 if(file.isHidden())
-                    holder.bottomView.setText("(hidden) | " + num_items + " items");
+                    holder.bottomView.setText("(hidden) | " + num_items + " " + count_unit);
                 else
-                    holder.bottomView.setText(num_items + " items");
+                    holder.bottomView.setText(num_items + " " + count_unit);
             }
 
             holder.topView.setText(file.getName());

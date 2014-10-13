@@ -59,4 +59,5 @@
     <string name="Website">"官网"</string>
     <string name="action_settings">设置</string>
     <string name="upload_activity_bottom_bar_default_item_string">磁盘</string>
+    <string name="upload_activity_list_item_count_unit_string">个</string>
 </resources>
