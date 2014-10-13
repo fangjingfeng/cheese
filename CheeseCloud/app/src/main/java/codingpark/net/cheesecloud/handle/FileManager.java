@@ -87,7 +87,7 @@ public class FileManager {
     }
 
     public Stack<String> getPathStack() {
-        return (Stack<String>)mPathStack.clone();
+        return mPathStack;
     }
 
     /**
@@ -136,6 +136,27 @@ public class FileManager {
             return populate_list();
         }
     }
+
+    /**
+     * Switch to the index of {@link #mPathStack} directory and return the subdirectories' list
+     * @return	returns the previous subdirectories' list
+     */
+    public ArrayList<String> switchToDirByIndex(int index) {
+        while (index < (mPathStack.size() - 1))
+            mPathStack.pop();
+
+        String st = mPathStack.peek();
+        if (st.equals(diskName)) {
+            ArrayList<String> r_list = new ArrayList<String>();
+            r_list.addAll(flashPathList);
+            r_list.addAll(sdcardPathList);
+            return r_list;
+        }
+        else{
+            return populate_list();
+        }
+    }
+
     /**
      * This will tell if current path is root
      * @return	is root?

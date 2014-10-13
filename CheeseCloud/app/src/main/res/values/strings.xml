@@ -12,6 +12,7 @@
     <string name="upload_activity_bottom_bar_title">Select upload folder</string>
     <string name="upload_activity_bottom_bar_select_path_bt">My Cloud</string>
     <string name="upload_activity_bottom_bar_upload_bt">Upload</string>
+    <string name="upload_activity_bottom_bar_default_item_string">Disk</string>
 
     <!-- SelectPathActivity -->
     <string name="select_path_activity_action_bar_title">Select upload folder</string>

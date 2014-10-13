@@ -215,8 +215,6 @@ public final class UploadActivity extends ListActivity {
      */
     @Override
     public boolean onKeyDown(int keycode, KeyEvent event) {
-        String current = mFileMgr.getCurrentDir();
-
         // Current is not root directory, click back key indicate return up directory
         if(keycode == KeyEvent.KEYCODE_BACK &&
                 !(mFileMgr.isRoot()) ) {

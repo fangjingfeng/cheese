@@ -5,7 +5,6 @@
     <!-- UploadActivity -->
     <string name="flash">"内部存储"</string>
     <string name="extsd">"外部SD卡"</string>
-    <string name="usbhost">"USB设备"</string>
     <string name="path_is">"路径为"</string>
     <string name="Multi_select_off">"多选关闭"</string>
     <string name="upload_activity_action_bar_title">上传</string>
@@ -58,4 +57,6 @@
     <string name="version_info">版本: 1.0 beta</string>
     <string name="Email_Developer">"电子邮件"</string>
     <string name="Website">"官网"</string>
+    <string name="action_settings">设置</string>
+    <string name="upload_activity_bottom_bar_default_item_string">磁盘</string>
 </resources>

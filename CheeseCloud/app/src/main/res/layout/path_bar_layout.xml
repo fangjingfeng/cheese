@@ -12,6 +12,5 @@
         android:background="@drawable/path_bar_bg_img"
         android:id="@+id/pathBarContainer"
         >
-        <include layout="@layout/path_bar_item_layout"/>
     </LinearLayout>
 </HorizontalScrollView>

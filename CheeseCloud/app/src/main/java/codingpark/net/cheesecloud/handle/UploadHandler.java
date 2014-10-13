@@ -54,6 +54,8 @@ public class UploadHandler implements OnClickListener, OnItemLongClickListener{
     // The previous selected header tab
     private View preView                    = null;
 
+    private PathBarItemClickListener mPathBatItemListener   = null;
+
 
     /**
      * Creates an EventHandler object. This object is used to communicate
@@ -66,6 +68,8 @@ public class UploadHandler implements OnClickListener, OnItemLongClickListener{
         mContext = context;
         mFileMgr = manager;
         mCataList = CataList;
+
+        mPathBatItemListener = new PathBarItemClickListener();
 
         // Initial as ROOT_DISK, ListView list all flash and sdcard
         mFileList = new ArrayList<String>(mFileMgr.switchToRoot());
@@ -100,11 +104,19 @@ public class UploadHandler implements OnClickListener, OnItemLongClickListener{
      */
     public void setUpdatePathBar(LinearLayout pathBar) {
         mPathBar = pathBar;
+        // Initial path bar default item, Disk, this item is root.
+        LayoutInflater inflater = (LayoutInflater)mContext.getSystemService
+                (Context.LAYOUT_INFLATER_SERVICE);
+        TextView textView = (TextView)inflater.inflate(R.layout.path_bar_item_layout, null);
+        textView.setTag(0);
+        String path = mContext.getResources().getString(R.string.upload_activity_bottom_bar_default_item_string);
+        textView.setText(path);
+        textView.setOnClickListener(mPathBatItemListener);
+        mPathBar.addView(textView);
     }
 
     private void refreshPathBar() {
         Log.d(TAG, "Start refresh path bar");
-        //String[] pathStack = (String[])mFileMgr.getPathStack().;
         Stack<String> pathStack = mFileMgr.getPathStack();
         int pathBarCount = mPathBar.getChildCount();
         int pathStackCount = pathStack.size();
@@ -120,6 +132,7 @@ public class UploadHandler implements OnClickListener, OnItemLongClickListener{
                 path = path.substring(path.lastIndexOf("/") + 1, path.length());
                 Log.d(TAG, "path " + i + " is " + path);
                 textView.setText(path);
+                textView.setOnClickListener(mPathBatItemListener);
                 mPathBar.addView(textView);
             }
         } else if (pathBarCount > pathStackCount) {
@@ -280,6 +293,21 @@ public class UploadHandler implements OnClickListener, OnItemLongClickListener{
         TextView bottomView;
         ImageView icon;
         ImageView mSelect;	//multi-select check mark icon
+    }
+
+    /**
+     * This class listening path bar item click event.Path bar's item
+     * stand for a folder of current path. When user click one item,
+     * the current path should switch to the folder and clear the path
+     * bar's extra redundant item.
+     */
+    private class PathBarItemClickListener implements OnClickListener {
+
+        @Override
+        public void onClick(View v) {
+            int index = Integer.valueOf(v.getTag().toString());
+            updateContent(mFileMgr.switchToDirByIndex(index));
+        }
     }
 
 
