@@ -30,16 +30,6 @@
         android:layout_alignParentBottom="true"
         android:gravity="bottom|right"
         android:text="Text"
-        android:layout_toLeftOf="@+id/multiselect_icon" />
-
-    <ImageView
-        android:id="@+id/multiselect_icon"
-        android:src="@drawable/upload_activity_list_item_multiselected_img"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentBottom="true"
-        android:clickable="true"
         android:layout_toLeftOf="@+id/multiselect_checkbox" />
 
     <CheckBox
@@ -50,4 +40,5 @@
         android:layout_alignParentEnd="true"
         android:focusable="false"
         android:id="@+id/multiselect_checkbox" />
+
 </RelativeLayout>

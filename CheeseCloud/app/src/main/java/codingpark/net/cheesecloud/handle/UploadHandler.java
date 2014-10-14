@@ -10,6 +10,8 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -27,33 +29,32 @@ import codingpark.net.cheesecloud.utils.TypeFilter;
 public class UploadHandler implements OnClickListener, OnItemLongClickListener{
     private static final String TAG         = "EventHandler";
 
-
     // Common list mode: list all files and folders
     public static final int TREEVIEW_MODE           = 1;
-
     // Catalog list mode: just list the specified type files
     public static final int CATALOG_MODE            = 2;
-
     // Current selected list mode: default mode is TREEVIEW_MODE
     private int	mlistmode                           = TREEVIEW_MODE;
 
     private final Context mContext;
     private final FileManager mFileMgr;
     private final CatalogList mCataList;
-    private UploadListAdapter mAdapter = null;
-    // Enable/disable show pictures/videos thumbnail
-    private boolean thumbnail_flag          = true;
 
-    //the list used to feed info into the array adapter and when multi-select is on
-    private ArrayList<String> mFileList, mMultiSelectData;
-    // Display current directory path
-    //private TextView mPathLabel             = null;
-    private LinearLayout mPathBar           = null;
+    private UploadListAdapter mAdapter              = null;
+    // Enable/disable show pictures/videos thumbnail
+    private boolean thumbnail_flag                  = true;
+
+    //the list used to feed info into the array adapter
+    private ArrayList<String> mFileList             = null;
+    // Store user selected all file/folder path
+    private ArrayList<String> mSelectedPath = null;
+    private LinearLayout mPathBar                   = null;
 
     // The previous selected header tab
-    private View preView                    = null;
+    private View preView                            = null;
 
-    private PathBarItemClickListener mPathBatItemListener   = null;
+    private PathBarItemClickListener mPathBatItemListener       = null;
+    private SelectedChangedListener mSelectedChangedListener    = null;
 
 
     /**
@@ -72,6 +73,7 @@ public class UploadHandler implements OnClickListener, OnItemLongClickListener{
 
         // Initial as ROOT_DISK, ListView list all flash and sdcard
         mFileList = new ArrayList<String>(mFileMgr.switchToRoot());
+        mSelectedPath = new ArrayList<String>();
     }
 
     /**
@@ -83,6 +85,10 @@ public class UploadHandler implements OnClickListener, OnItemLongClickListener{
      */
     public void setListAdapter(UploadListAdapter adapter) {
         mAdapter = adapter;
+    }
+
+    public void setSelectedChangedListener(SelectedChangedListener listener) {
+        mSelectedChangedListener = listener;
     }
 
     /**
@@ -172,13 +178,9 @@ public class UploadHandler implements OnClickListener, OnItemLongClickListener{
                 }
 
                 if (!mFileMgr.isRoot()) {
-                    /*
-                    if(multi_select_flag) {
-                        mAdapter.killMultiSelect(true);
-                        Toast.makeText(mContext, R.string.Multi_select_off,
-                                Toast.LENGTH_SHORT).show();
+                    if (isMultiSelected()) {
+                        mAdapter.clearMultiSelect();
                     }
-                    */
                     updateContent(mFileMgr.switchToPreviousDir());
                 }
                 break;
@@ -291,7 +293,7 @@ public class UploadHandler implements OnClickListener, OnItemLongClickListener{
         TextView topView;
         TextView bottomView;
         ImageView icon;
-        ImageView mSelect;	//multi-select check mark icon
+        CheckBox mSelect;	//multi-select check mark icon
     }
 
     /**
@@ -310,6 +312,7 @@ public class UploadHandler implements OnClickListener, OnItemLongClickListener{
     }
 
 
+
     /**
      * A nested class to handle displaying a custom view in the ListView that
      * is used in the Main activity. If any icons are to be added, they must
@@ -317,47 +320,41 @@ public class UploadHandler implements OnClickListener, OnItemLongClickListener{
      * and has no reason to be instantiated again.
      */
     public class UploadListAdapter extends ArrayAdapter<String> {
-        private final int KB = 1024;
-        private final int MG = KB * KB;
-        private final int GB = MG * KB;
-        private String display_size;
-        private String dir_name;
-        private ArrayList<Integer> positions;
-        private LinearLayout hidden_layout;
-        private ThumbnailCreator thumbnail;
-        private DevicePathUtils mDevices;
+        private final int KB            = 1024;
+        private final int MG            = KB * KB;
+        private final int GB            = MG * KB;
+
+        private String display_size     = null;
+        private String dir_name         = null;
+        // Store user selected files index in the ListView
+        private ArrayList<Integer> mSelectedPositions = null;
+        //private LinearLayout hidden_layout;
+        private ThumbnailCreator thumbnail      = null;
+        private DevicePathUtils mDevices        = null;
+        private ItemCheckedListener mCheckedListener = null;
 
         public UploadListAdapter() {
             super(mContext, R.layout.upload_item_layout, mFileList);
 
-            thumbnail = new ThumbnailCreator(mContext, 32, 32);
+            thumbnail = new ThumbnailCreator(mContext, 64, 64);
             dir_name = mFileMgr.getCurrentDir();
             mDevices = new DevicePathUtils(mContext);
+
+            mCheckedListener = new ItemCheckedListener();
+            mSelectedPositions = new ArrayList<Integer>();
         }
 
-        /*
-        public void addMultiPosition(int index, String path) {
-            if(positions == null)
-                positions = new ArrayList<Integer>();
-
-            if(mMultiSelectData == null) {
-                positions.add(index);
-                add_multiSelect_file(path);
-
-            } else if(mMultiSelectData.contains(path)) {
-                if(positions.contains(index))
-                    positions.remove(new Integer(index));
-
-                mMultiSelectData.remove(path);
-
+        public void addMultiPosition(int index) {
+            String r_path = getFilePath(index);
+            if (mSelectedPositions.contains(index)) {
+                mSelectedPositions.remove(Integer.valueOf(index));
+                mSelectedPath.remove(r_path);
             } else {
-                positions.add(index);
-                add_multiSelect_file(path);
+                mSelectedPositions.add(index);
+                mSelectedPath.add(r_path);
             }
-
             notifyDataSetChanged();
         }
-        */
 
         /**
          * This will turn off multi-select and hide the multi-select buttons at the
@@ -368,23 +365,17 @@ public class UploadHandler implements OnClickListener, OnItemLongClickListener{
          * 					multi-select copy and move will usually be the only one to pass false,
          * 					so we can later paste it to another folder.
          */
-//        public void killMultiSelect(boolean clearData) {
-//            // TODO Handle multiple select
-//            /*
-//            hidden_layout = (LinearLayout)((Activity)mContext).findViewById(R.id.hidden_buttons);
-//            hidden_layout.setVisibility(LinearLayout.GONE);
-//            multi_select_flag = false;
-//
-//            if(positions != null && !positions.isEmpty())
-//                positions.clear();
-//
-//            if(clearData)
-//                if(mMultiSelectData != null && !mMultiSelectData.isEmpty())
-//                    mMultiSelectData.clear();
-//
-//            notifyDataSetChanged();
-//            */
-//        }
+        public void clearMultiSelect() {
+            // TODO Handle multiple select
+
+            if(mSelectedPositions != null && !mSelectedPositions.isEmpty())
+                mSelectedPositions.clear();
+
+            if(mSelectedPath != null && !mSelectedPath.isEmpty())
+                mSelectedPath.clear();
+
+            notifyDataSetChanged();
+        }
 
 
         public void clearThumbnail() {
@@ -418,19 +409,28 @@ public class UploadHandler implements OnClickListener, OnItemLongClickListener{
                 holder.topView = (TextView)convertView.findViewById(R.id.file_name_view);
                 holder.bottomView = (TextView)convertView.findViewById(R.id.sub_files_count_view);
                 holder.icon = (ImageView)convertView.findViewById(R.id.row_image);
-                holder.mSelect = (ImageView)convertView.findViewById(R.id.multiselect_icon);
+                holder.mSelect = (CheckBox)convertView.findViewById(R.id.multiselect_checkbox);
+                // 1. Update CheckBox's tag, this tag used in ItemSelectedListener
+                holder.mSelect.setTag(position);
+                // 2. Set CheckBox's OnCheckedChangeListener
+                holder.mSelect.setOnCheckedChangeListener(mCheckedListener);
 
                 convertView.setTag(holder);
             } else {
                 holder = (ViewHolder)convertView.getTag();
+                // 1. Update CheckBox's tag, this tag used in ItemSelectedListener
+                holder.mSelect.setTag(position);
+                // 2. Set CheckBox's OnCheckedChangeListener
+                holder.mSelect.setOnCheckedChangeListener(mCheckedListener);
             }
 
 
-            if (positions != null && positions.contains(position))
+            if (mSelectedPositions != null && mSelectedPositions.contains(position))
                 holder.mSelect.setVisibility(ImageView.VISIBLE);
             else
                 holder.mSelect.setVisibility(ImageView.GONE);
 
+            holder.mSelect.setVisibility(ImageView.VISIBLE);
 
             if(file != null && file.isFile()) {
                 String ext = file.toString();
@@ -509,16 +509,12 @@ public class UploadHandler implements OnClickListener, OnItemLongClickListener{
             ViewHolder holder;
             int num_items = 0;
             String temp = mFileMgr.getCurrentDir();
+
             File file = new File(getFilePath(position));
-            String filePath = file.getAbsolutePath();
-
-            //num_items = mDevices.getPartitions(filePath);
-            //if(num_items <= 0 ){
             String[] list = file.list();
-
             if(list != null)
                 num_items = list.length;
-            //}
+
             if(convertView == null) {
                 LayoutInflater inflater = (LayoutInflater) mContext.
                         getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -528,11 +524,19 @@ public class UploadHandler implements OnClickListener, OnItemLongClickListener{
                 holder.topView = (TextView)convertView.findViewById(R.id.file_name_view);
                 holder.bottomView = (TextView)convertView.findViewById(R.id.sub_files_count_view);
                 holder.icon = (ImageView)convertView.findViewById(R.id.row_image);
-                holder.mSelect = (ImageView)convertView.findViewById(R.id.multiselect_icon);
+                holder.mSelect = (CheckBox)convertView.findViewById(R.id.multiselect_checkbox);
+                // 1. Update CheckBox's tag, this tag used in ItemSelectedListener
+                holder.mSelect.setTag(position);
+                // 2. Set CheckBox's OnCheckedChangeListener
+                holder.mSelect.setOnCheckedChangeListener(mCheckedListener);
 
                 convertView.setTag(holder);
             } else {
                 holder = (ViewHolder)convertView.getTag();
+                // 1. Update CheckBox's tag, this tag used in ItemSelectedListener
+                holder.mSelect.setTag(position);
+                // 2. Set CheckBox's OnCheckedChangeListener
+                holder.mSelect.setOnCheckedChangeListener(mCheckedListener);
             }
     		
     		/* This will check if the thumbnail cache needs to be cleared by checking
@@ -545,12 +549,10 @@ public class UploadHandler implements OnClickListener, OnItemLongClickListener{
             }
 
 
-            if (positions != null && positions.contains(position))
-                holder.mSelect.setVisibility(ImageView.VISIBLE);
+            if (mSelectedPositions != null && mSelectedPositions.contains(position))
+                holder.mSelect.setChecked(true);
             else
-                holder.mSelect.setVisibility(ImageView.GONE);
-
-            holder.mSelect.setVisibility(ImageView.VISIBLE);
+                holder.mSelect.setChecked(false);
 
             if(file != null && file.isFile()) {
                 String ext = file.toString();
@@ -660,14 +662,40 @@ public class UploadHandler implements OnClickListener, OnItemLongClickListener{
             return convertView;
         }
 
-        /*
-        private void add_multiSelect_file(String src) {
-            if(mMultiSelectData == null)
-                mMultiSelectData = new ArrayList<String>();
+        /**
+         * This class listening ListView item's select CheckBox checked event.
+         * When user checked a item, class add this item's index to {@link #mSelectedPositions},
+         * and add path which the item stand for to {@link #mSelectedPath}
+         */
+        private class ItemCheckedListener implements CompoundButton.OnCheckedChangeListener{
+            //private static final String TAG     = "ItemSelectedListener";
 
-            mMultiSelectData.add(src);
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                Log.d(TAG, "Index: " + buttonView.getTag() + "\nChecked: " + isChecked);
+                int r_index = Integer.valueOf(buttonView.getTag().toString());
+                if (isChecked) {
+                    if (!mSelectedPositions.contains(r_index)) {
+                        mSelectedPositions.add(r_index);
+                        mSelectedPath.add(getFilePath(r_index));
+                    }
+                } else {
+                    if (mSelectedPositions.contains(r_index)) {
+                        mSelectedPositions.remove((Integer)r_index);
+                        mSelectedPath.remove(getFilePath(r_index));
+                    }
+                }
+                Log.d(TAG, "Current selected items: " + mSelectedPositions.toString());
+                if (mSelectedChangedListener != null)
+                    mSelectedChangedListener.changed(mSelectedPath);
+            }
         }
-        */
+
+
+    }
+
+    public boolean isMultiSelected() {
+        return !mSelectedPath.isEmpty();
     }
 
 
@@ -679,5 +707,13 @@ public class UploadHandler implements OnClickListener, OnItemLongClickListener{
             return true; //do not respond when in storage list mode
         }
         return true;
+    }
+
+    /**
+     * Interface definition for a callback to be invoked when user
+     * changed item check state
+     */
+    public interface SelectedChangedListener {
+        public void changed(ArrayList<String> selectedPathList);
     }
 }

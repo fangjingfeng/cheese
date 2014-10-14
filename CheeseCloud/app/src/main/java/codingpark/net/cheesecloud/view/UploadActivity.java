@@ -15,6 +15,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import java.io.File;
+import java.util.ArrayList;
 
 import codingpark.net.cheesecloud.Configs;
 import codingpark.net.cheesecloud.R;
@@ -25,13 +26,13 @@ import codingpark.net.cheesecloud.utils.CatalogList;
 /**
  *
  */
-public final class UploadActivity extends ListActivity {
+public final class UploadActivity extends ListActivity implements UploadHandler.SelectedChangedListener{
 
     private static final String TAG                     = "UploadActivity";
 
     private FileManager mFileMgr = null;
     private UploadHandler mHandler                      = null;
-    private UploadHandler.UploadListAdapter mTable      = null;
+    private UploadHandler.UploadListAdapter mAdapter    = null;
     private CatalogList mCataList                       = null;
 
     private SharedPreferences mSettings                 = null;
@@ -92,14 +93,14 @@ public final class UploadActivity extends ListActivity {
         // 3. Create ListAdapter
         mHandler = new UploadHandler(UploadActivity.this, mFileMgr, mCataList);
         mHandler.setShowThumbnails(thumb);
-        mTable = mHandler.new UploadListAdapter();
+        mAdapter = mHandler.new UploadListAdapter();
 
         /*
          * sets the ListAdapter for our ListActivity and
          * gives our EventHandler class the same adapter
          */
-        mHandler.setListAdapter(mTable);
-        setListAdapter(mTable);
+        mHandler.setListAdapter(mAdapter);
+        setListAdapter(mAdapter);
         getListView().setOnItemLongClickListener(mHandler);
         
         // Initial Path bar
@@ -107,6 +108,7 @@ public final class UploadActivity extends ListActivity {
         mHandler.setUpdatePathBar(path_bar_container);
 
         mHandler.updateContent(mFileMgr.switchToRoot());
+        mHandler.setSelectedChangedListener(this);
         getFocusForButton(R.id.header_disk_button);
 
         initUI();
@@ -191,6 +193,11 @@ public final class UploadActivity extends ListActivity {
         final String item = mHandler.getFilePath(position);
         File file = new File(item);
 
+        if (mHandler.isMultiSelected()) {
+            mAdapter.addMultiPosition(position);
+            return;
+        }
+
         if (file.isDirectory()) {
             if(file.canRead()) {
                 mHandler.updateContent(mFileMgr.switchToNextDir(item));
@@ -204,6 +211,7 @@ public final class UploadActivity extends ListActivity {
             }
         } else if (file.isFile()) {
             Log.d(TAG, "Select file: " + item);
+            mAdapter.addMultiPosition(position);
         }
     }
 
@@ -216,14 +224,11 @@ public final class UploadActivity extends ListActivity {
     @Override
     public boolean onKeyDown(int keycode, KeyEvent event) {
         // Current is not root directory, click back key indicate return up directory
-        if(keycode == KeyEvent.KEYCODE_BACK &&
-                !(mFileMgr.isRoot()) ) {
-            /*
+        if(keycode == KeyEvent.KEYCODE_BACK && !(mFileMgr.isRoot()) ) {
             if(mHandler.isMultiSelected()) {
-                mTable.killMultiSelect(true);
-                Toast.makeText(UploadActivity.this, getResources().getString(R.string.Multi_select_off), Toast.LENGTH_SHORT).show();
+                Log.d(TAG, "Back key clicked, clear multi selected data!");
+                mAdapter.clearMultiSelect();
             }
-            */
 
             mHandler.updateContent(mFileMgr.switchToPreviousDir());
             // TODO Judge current directory is root, refresh header bar button status
@@ -243,4 +248,10 @@ public final class UploadActivity extends ListActivity {
         return false;
     }
 
+    @Override
+    public void changed(ArrayList<String> selectedPathList) {
+        upload_bt.setText(this.getResources().getString(
+                R.string.upload_activity_bottom_bar_upload_bt)
+                + "(" + selectedPathList.size() + ")");
+    }
 }
