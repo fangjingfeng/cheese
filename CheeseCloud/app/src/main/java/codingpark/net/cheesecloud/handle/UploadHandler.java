@@ -17,7 +17,6 @@ import android.widget.TextView;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Stack;
-import java.util.zip.Inflater;
 
 import codingpark.net.cheesecloud.DevicePathUtils;
 import codingpark.net.cheesecloud.R;
@@ -416,8 +415,8 @@ public class UploadHandler implements OnClickListener, OnItemLongClickListener{
                 convertView = inflater.inflate(R.layout.upload_item_layout, parent, false);
 
                 holder = new ViewHolder();
-                holder.topView = (TextView)convertView.findViewById(R.id.top_view);
-                holder.bottomView = (TextView)convertView.findViewById(R.id.bottom_view);
+                holder.topView = (TextView)convertView.findViewById(R.id.file_name_view);
+                holder.bottomView = (TextView)convertView.findViewById(R.id.sub_files_count_view);
                 holder.icon = (ImageView)convertView.findViewById(R.id.row_image);
                 holder.mSelect = (ImageView)convertView.findViewById(R.id.multiselect_icon);
 
@@ -526,8 +525,8 @@ public class UploadHandler implements OnClickListener, OnItemLongClickListener{
                 convertView = inflater.inflate(R.layout.upload_item_layout, parent, false);
 
                 holder = new ViewHolder();
-                holder.topView = (TextView)convertView.findViewById(R.id.top_view);
-                holder.bottomView = (TextView)convertView.findViewById(R.id.bottom_view);
+                holder.topView = (TextView)convertView.findViewById(R.id.file_name_view);
+                holder.bottomView = (TextView)convertView.findViewById(R.id.sub_files_count_view);
                 holder.icon = (ImageView)convertView.findViewById(R.id.row_image);
                 holder.mSelect = (ImageView)convertView.findViewById(R.id.multiselect_icon);
 
