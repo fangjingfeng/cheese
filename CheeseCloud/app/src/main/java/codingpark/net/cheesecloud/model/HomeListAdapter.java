@@ -26,6 +26,7 @@ public class HomeListAdapter extends ArrayAdapter<String>{
         this.mContext = context;
         values = mContext.getResources().getStringArray(resource);
     }
+
     public HomeListAdapter(Context context, String[] values) {
         super(context, R.layout.home_item_layout, values);
         this.mContext = context;
