@@ -30,6 +30,8 @@ public final class UploadActivity extends ListActivity implements UploadHandler.
 
     private static final String TAG                     = "UploadActivity";
 
+    public static final String RESULT_SELECTED_FILES_KEY    = "selected_files_path_list";
+
     private FileManager mFileMgr = null;
     private UploadHandler mHandler                      = null;
     private UploadHandler.UploadListAdapter mAdapter    = null;
@@ -155,6 +157,9 @@ public final class UploadActivity extends ListActivity implements UploadHandler.
             public void onClick(View v) {
                 Log.d(TAG, "Upload button clicked, start uploading!");
                 Toast.makeText(UploadActivity.this, "开始上传", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent();
+                intent.putStringArrayListExtra(RESULT_SELECTED_FILES_KEY, mHandler.getSelectedPath());
+                setResult(RESULT_OK, intent);
                 finish();
             }
         });
@@ -178,6 +183,7 @@ public final class UploadActivity extends ListActivity implements UploadHandler.
         // 1. R.id.home: Action Bar up button clicked
         switch (item.getItemId()) {
             case android.R.id.home:
+                setResult(RESULT_CANCELED);
                 this.finish();
                 return true;
         }

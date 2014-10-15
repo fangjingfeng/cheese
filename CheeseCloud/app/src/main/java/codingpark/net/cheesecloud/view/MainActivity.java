@@ -1,5 +1,6 @@
 package codingpark.net.cheesecloud.view;
 
+import java.util.ArrayList;
 import java.util.Locale;
 
 import android.app.ActionBar;
@@ -26,14 +27,14 @@ import codingpark.net.cheesecloud.handle.OnFragmentInteractionListener;
 
 public class MainActivity extends Activity implements OnFragmentInteractionListener {
 
-    private static final String TAG     = "MainActivity";
+    private static final String TAG                 = "MainActivity";
 
     // Application preferences key
-    public static final String PREFS_NAME              = "ManagerPrefsFile";	//user preference file name
-    public static final String PREFS_HIDDEN            = "hidden";
-    public static final String PREFS_COLOR             = "color";
-    public static final String PREFS_THUMBNAIL         = "thumbnail";
-    public static final String PREFS_SORT              = "sort";
+    public static final String PREFS_NAME           = "ManagerPrefsFile";	//user preference file name
+    public static final String PREFS_HIDDEN         = "hidden";
+    public static final String PREFS_COLOR          = "color";
+    public static final String PREFS_THUMBNAIL      = "thumbnail";
+    public static final String PREFS_SORT           = "sort";
 
     // Bottom tab button
     private Button upload_bt            = null;
@@ -126,6 +127,16 @@ public class MainActivity extends Activity implements OnFragmentInteractionListe
         return false;
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.d(TAG, "Upload Activity return results!");
+        if (resultCode == RESULT_OK) {
+            ArrayList<String> selectFiles = data.getStringArrayListExtra(UploadActivity.RESULT_SELECTED_FILES_KEY);
+            Log.d(TAG, "User selected upload file: \n" + selectFiles.toString());
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
     private void initUI() {
         tab_home_iv = (ImageView)findViewById(R.id.tab_home);
         tab_contact_iv = (ImageView)findViewById(R.id.tab_contact);
@@ -202,7 +213,6 @@ public class MainActivity extends Activity implements OnFragmentInteractionListe
                 MainActivity.this.startActivityForResult(i, 0);
             }
         });
-
     }
 
     @Override

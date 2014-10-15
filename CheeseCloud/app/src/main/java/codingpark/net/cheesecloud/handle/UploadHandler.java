@@ -100,6 +100,10 @@ public class UploadHandler implements OnClickListener, OnItemLongClickListener{
         return mlistmode;
     }
 
+    public ArrayList<String> getSelectedPath() {
+        return mSelectedPath;
+    }
+
     /**
      * This method is called from the upload activity and is passed
      * the LinearLayout that should be updated as the directory changes
@@ -153,7 +157,6 @@ public class UploadHandler implements OnClickListener, OnItemLongClickListener{
     /**
      * Set this true and thumbnails will be used as the icon for image files. False will
      * show a default image.
-     *
      * @param show
      */
     public void setShowThumbnails(boolean show) {
