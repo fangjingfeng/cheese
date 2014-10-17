@@ -1,4 +1,4 @@
-package codingpark.net.cheesecloud.model;
+package codingpark.net.cheesecloud.wsi;
 
 import codingpark.net.cheesecloud.eumn.SexType;
 
@@ -26,6 +26,32 @@ public class WsUser {
      * The descriptions of the user
      */
     private String selfInfo     = "";
+
+    /**
+     * User login name
+     */
+    private String username     = "";
+
+    /**
+     * User login password
+     */
+    private String password_md5 = "";
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPassword_md5() {
+        return password_md5;
+    }
+
+    public void setPassword_md5(String password_md5) {
+        this.password_md5 = password_md5;
+    }
 
     public String getCreateData() {
         return createData;

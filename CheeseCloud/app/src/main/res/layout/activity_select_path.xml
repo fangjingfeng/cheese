@@ -9,13 +9,31 @@
     tools:context="codingpark.net.cheesecloud.view.SelectPathActivity">
 
 
-    <ListView
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_weight="2"
-        android:smoothScrollbar="true"
-        android:longClickable="true"
-        android:id="@+id/android:list"
-        style="@style/AppTheme" />
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="UserLogin"
+        android:id="@+id/test_userLogin_bt"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="CheckedFileInfo"
+        android:id="@+id/test_checkedFileInfo_bt"
+        android:layout_below="@+id/test_userLogin_bt"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="UploadFile"
+        android:id="@+id/test_uploadFile_bt"
+        android:layout_below="@+id/test_checkedFileInfo_bt"
+        android:layout_alignRight="@+id/test_checkedFileInfo_bt"
+        android:layout_alignEnd="@+id/test_checkedFileInfo_bt" />
 
 </RelativeLayout>

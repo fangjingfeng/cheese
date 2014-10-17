@@ -4,28 +4,23 @@ import android.content.Context;
 import android.util.Log;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.channels.FileChannel;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Stack;
 
+import codingpark.net.cheesecloud.AppConfigs;
 import codingpark.net.cheesecloud.DevicePathUtils;
 
 public class FileManager {
     private static final String TAG = "FileManager";
 
-    /**
-     * No sort
-     */
-    private static final int SORT_NONE = 	0;
-    /**
-     * Sort by alpha of file name
-     */
-    private static final int SORT_ALPHA = 	1;
-    /**
-     * Sort by file type
-     */
-    private static final int SORT_TYPE = 	2;
 
     /**
      * ArrayList store all internal flash storage disk path of system
@@ -49,7 +44,7 @@ public class FileManager {
      * Setting of the sort type, which display files and directory
      * Default: sort by alpha
      */
-    private int mSortType = SORT_ALPHA;
+    private int mSortType = AppConfigs.SORT_ALPHA;
     /**
      * The stack data structure, which store current directory path
      */
@@ -277,11 +272,11 @@ public class FileManager {
 			
 					/* sort the arraylist that was made from above for loop */
                     switch(mSortType) {
-                        case SORT_NONE:
+                        case AppConfigs.SORT_NONE:
                             //no sorting needed
                             break;
 
-                        case SORT_ALPHA:
+                        case AppConfigs.SORT_ALPHA:
                             Object[] tt = mDirContent.toArray();
                             mDirContent.clear();
 
@@ -292,7 +287,7 @@ public class FileManager {
                             }
                             break;
 
-                        case SORT_TYPE:
+                        case AppConfigs.SORT_TYPE:
                             Object[] t = mDirContent.toArray();
                             String dir = mPathStack.peek();
 
@@ -315,6 +310,55 @@ public class FileManager {
             mDirContent.clear();
         }
         return mDirContent;
+    }
+
+    final protected static char[] hexArray = "0123456789ABCDEF".toCharArray();
+    public static String bytesToHex(byte[] bytes) {
+        char[] hexChars = new char[bytes.length * 2];
+        for ( int j = 0; j < bytes.length; j++ ) {
+            int v = bytes[j] & 0xFF;
+            hexChars[j * 2] = hexArray[v >>> 4];
+            hexChars[j * 2 + 1] = hexArray[v & 0x0F];
+        }
+        return new String(hexChars);
+    }
+
+
+    public static String generateMD5(FileInputStream inputStream){
+        if(inputStream==null){
+
+            return null;
+        }
+        MessageDigest md;
+        try {
+            md = MessageDigest.getInstance("MD5");
+            FileChannel channel = inputStream.getChannel();
+            ByteBuffer buff = ByteBuffer.allocate(2048);
+            while(channel.read(buff) != -1)
+            {
+                buff.flip();
+                md.update(buff);
+                buff.clear();
+            }
+            byte[] hashValue = md.digest();
+
+            return bytesToHex(hashValue);
+        }
+        catch (NoSuchAlgorithmException e)
+        {
+            return null;
+        }
+        catch (IOException e)
+        {
+            return null;
+        } finally
+        {
+            try {
+                if(inputStream!=null)inputStream.close();
+            } catch (IOException e) {
+
+            }
+        }
     }
 
 }

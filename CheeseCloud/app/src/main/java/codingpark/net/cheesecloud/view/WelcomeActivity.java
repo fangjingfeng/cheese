@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.ImageButton;
 
 import codingpark.net.cheesecloud.R;
+import codingpark.net.cheesecloud.handle.LocalDatabase;
 
 
 public class WelcomeActivity extends Activity {
@@ -59,6 +60,9 @@ public class WelcomeActivity extends Activity {
             public void onClick(View v) {
                 Log.d(TAG, "Welcome login in button clicked!");
                 // TODO Handle login in action
+                LocalDatabase ldb = new LocalDatabase(WelcomeActivity.this);
+                ldb.getWritableDatabase();
+                ldb.close();
                 Intent intent = new Intent(WelcomeActivity.this, MainActivity.class);
                 WelcomeActivity.this.startActivity(intent);
                 WelcomeActivity.this.finish();

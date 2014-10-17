@@ -17,7 +17,7 @@ import android.widget.Toast;
 import java.io.File;
 import java.util.ArrayList;
 
-import codingpark.net.cheesecloud.Configs;
+import codingpark.net.cheesecloud.AppConfigs;
 import codingpark.net.cheesecloud.R;
 import codingpark.net.cheesecloud.handle.FileManager;
 import codingpark.net.cheesecloud.handle.UploadHandler;
@@ -76,10 +76,10 @@ public final class UploadActivity extends ListActivity implements UploadHandler.
         setContentView(R.layout.activity_upload);
 
         /* Get system preferences: hide/thumb/color/sort */
-        mSettings           = getSharedPreferences(Configs.PREFS_NAME, 0);
-        boolean hide        = mSettings.getBoolean(Configs.PREFS_HIDDEN, false);
-        boolean thumb       = mSettings.getBoolean(Configs.PREFS_THUMBNAIL, true);
-        int sort            = mSettings.getInt(Configs.PREFS_SORT, 1);
+        mSettings           = getSharedPreferences(AppConfigs.PREFS_NAME, 0);
+        boolean hide        = mSettings.getBoolean(AppConfigs.PREFS_HIDDEN, false);
+        boolean thumb       = mSettings.getBoolean(AppConfigs.PREFS_THUMBNAIL, true);
+        int sort            = mSettings.getInt(AppConfigs.PREFS_SORT, 1);
 
         // 1. Initial FileManager utility
         // 2. Set FileManager utility work parameter
