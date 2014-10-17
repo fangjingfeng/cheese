@@ -1,6 +1,7 @@
 package codingpark.net.cheesecloud.wsi;
 
 import org.ksoap2.serialization.KvmSerializable;
+import org.ksoap2.serialization.MarshalBase64;
 import org.ksoap2.serialization.PropertyInfo;
 
 import java.util.Hashtable;
@@ -10,13 +11,13 @@ import java.util.Hashtable;
  */
 public class SyncFileBlock implements KvmSerializable{
     // Count: 7
-    protected long SourceIndex;
-    protected long SourceSize;
-    protected String SourceMd5;
-    protected String SourceAlder32;
-    protected long UpdateIndex;
-    protected long OffSet;
-    protected byte[] UpdateData;
+    public long SourceIndex;
+    public long SourceSize;
+    public String SourceMd5;
+    public String SourceAlder32;
+    public long UpdateIndex;
+    public long OffSet;
+    public byte[] UpdateData;
 
     @Override
     public Object getProperty(int i) {
@@ -102,7 +103,7 @@ public class SyncFileBlock implements KvmSerializable{
                 propertyInfo.setName("OffSet");
                 break;
             case 6:
-                propertyInfo.setType(PropertyInfo.VECTOR_CLASS);
+                propertyInfo.setType(MarshalBase64.BYTE_ARRAY_CLASS);
                 propertyInfo.setName("UpdateData");
                 break;
             default:

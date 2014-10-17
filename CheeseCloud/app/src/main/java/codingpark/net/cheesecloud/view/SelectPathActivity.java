@@ -54,6 +54,22 @@ public class SelectPathActivity extends Activity {
                 t.start();
             }
         });
+
+        Button test_uploadFile_bt = (Button)findViewById(R.id.test_uploadFile_bt);
+        test_uploadFile_bt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG, "*****Test UploadFile******");
+                Thread t = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        ClientWS.getInstance().test_uploadFile("/sdcard/wiki.amr");
+                    }
+                });
+                t.start();
+
+            }
+        });
     }
 
 
