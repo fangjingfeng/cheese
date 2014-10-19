@@ -39,23 +39,29 @@ public class HomeListAdapter extends ArrayAdapter<String>{
         LayoutInflater inflater = (LayoutInflater) mContext
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View v = inflater.inflate(R.layout.home_item_layout, parent, false);
-        ImageView imageView = (ImageView) v.findViewById(R.id.tab_home_item_new_iv);
+        ImageView imageView = (ImageView) v.findViewById(R.id.tab_home_item_icon_iv);
+        TextView textView = (TextView) v.findViewById(R.id.tab_home_item_title_tv);
         // change the icon for Windows and iPhone
         String s = values[position];
         if (s.equals(FragmentHome.TAB_HOME_ITEM_NEWS)) {
-            imageView.setImageResource(R.drawable.tab_home_news_items_normal);
+            imageView.setImageResource(R.drawable.tab_home_news_item_icon_normal_img);
+            textView.setText(R.string.tab_home_item_news_title);
             v.setTag(FragmentHome.TAB_HOME_ITEM_NEWS);
         } else if (s.equals(FragmentHome.TAB_HOME_ITEM_CLOUD_DISK)){
-            imageView.setImageResource(R.drawable.tab_home_cloud_disk_itmes_normal);
+            imageView.setImageResource(R.drawable.tab_home_cloud_disk_item_icon_normal_img);
+            textView.setText(R.string.tab_home_item_cloud_disk_title);
             v.setTag(FragmentHome.TAB_HOME_ITEM_CLOUD_DISK);
         } else if (s.equals(FragmentHome.TAB_HOME_ITEM_RESOURCE_LIBRARY)) {
-            imageView.setImageResource(R.drawable.tab_home_resource_library_item_normal);
+            imageView.setImageResource(R.drawable.tab_home_res_lib_item_icon_normal);
+            textView.setText(R.string.tab_home_item_res_lib_title);
             v.setTag(FragmentHome.TAB_HOME_ITEM_RESOURCE_LIBRARY);
         } else if (s.equals(FragmentHome.TAB_HOME_ITEM_SMALL_CLASS)) {
-            imageView.setImageResource(R.drawable.tab_home_small_class_item_normal);
+            imageView.setImageResource(R.drawable.tab_home_small_class_item_icon_normal);
+            textView.setText(R.string.tab_home_item_small_class_title);
             v.setTag(FragmentHome.TAB_HOME_ITEM_SMALL_CLASS);
         } else if (s.equals(FragmentHome.TAB_HOME_ITEM_TEMP_SCREEN)) {
-            imageView.setImageResource(R.drawable.tab_home_temp_screen_item_normal);
+            imageView.setImageResource(R.drawable.tab_home_temp_screen_item_icon_normal);
+            textView.setText(R.string.tab_home_item_temp_screen_title);
             v.setTag(FragmentHome.TAB_HOME_ITEM_TEMP_SCREEN);
         }
         return v;

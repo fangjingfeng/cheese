@@ -37,7 +37,7 @@ public class ContactListAdapter extends ArrayAdapter<String> {
         LayoutInflater inflater = (LayoutInflater) mContext
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View v = inflater.inflate(R.layout.home_item_layout, parent, false);
-        ImageView imageView = (ImageView) v.findViewById(R.id.tab_home_item_new_iv);
+        ImageView imageView = (ImageView) v.findViewById(R.id.tab_home_item_icon_iv);
         // change the icon for Windows and iPhone
         String s = values[position];
         if (s.equals("old_friends")) {

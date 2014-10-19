@@ -16,13 +16,6 @@
     <string name="select_path_activity_action_bar_title">选择上传路径</string>
     <string name="action_create_directory">创建文件夹</string>
 
-    <!-- select type dialog -->
-    <string name="open_file">"选择文件类型"</string>
-    <string name="text">"文本"</string>
-    <string name="audio">"音频"</string>
-    <string name="video">"视频"</string>
-    <string name="image">"图片"</string>
-
     <!-- main menu -->
     <string name="New_Directory">"新目录"</string>
     <string name="Search">"搜索"</string>
@@ -30,10 +23,6 @@
     <string name="Quit">"退出"</string>
     <string name="Help">"帮助"</string>
 
-    <!-- Referenced by FileManager utility -->
-    <string name="Folder_operations">"文件夹操作"</string>
-    <string name="Copied">"复件_"</string>
-    <string name="File_Operations">"文件操作"</string>
 
     <!-- App setting fragment -->
     <string name="Display">"显示"</string>
@@ -50,7 +39,14 @@
     <string name="Type">"按类型"</string>
 
     <!--MainActivity title bar-->
-    <string name="title_activity_main">Cheese云</string>
+    <string name="title_activity_main">琦思云</string>
+
+    <!-- MainActivity Home Fragment -->
+    <string name="tab_home_item_news_title">消息公告</string>
+    <string name="tab_home_item_cloud_disk_title">我的云盘</string>
+    <string name="tab_home_item_res_lib_title">公共云盘</string>
+    <string name="tab_home_item_small_class_title">微课吧</string>
+    <string name="tab_home_item_temp_screen_title">临时屏</string>
 
     <!--Help page-->
     <string name="product_info">"Cheese 资源管理系统移动客户端,功能稳定,易用, 是您管理多媒体资源的好帮手.\n\n"</string>

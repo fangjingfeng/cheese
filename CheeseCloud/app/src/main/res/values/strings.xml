@@ -19,24 +19,12 @@
     <string name="select_path_activity_action_bar_title">Select upload folder</string>
     <string name="action_create_directory">Create directory</string>
 
-    <!-- select type dialog -->
-    <string name="open_file">Select the type of file</string>
-    <string name="text">Text</string>
-    <string name="audio">Audio</string>
-    <string name="video">Video</string>
-    <string name="image">Image</string>
-
     <!-- main menu -->
     <string name="New_Directory">New Directory</string>
     <string name="Search">Search</string>
     <string name="Settings">Settings</string>
     <string name="Quit">Logout</string>
     <string name="Help">Help</string>
-
-    <!-- Referenced by FileManager utility -->
-    <string name="Folder_operations">Folder operations</string>
-    <string name="Copied">"Copy_"</string>
-    <string name="File_Operations">File Operations</string>
 
     <!-- App setting fragment -->
     <string name="Display">Display</string>
@@ -55,6 +43,13 @@
     <!-- MainActivity title bar -->
     <string name="title_activity_main">Cheese Cloud</string>
 
+    <!-- MainActivity Home Fragment -->
+    <string name="tab_home_item_news_title">News</string>
+    <string name="tab_home_item_cloud_disk_title">Cloud Disk</string>
+    <string name="tab_home_item_res_lib_title">Resource Library</string>
+    <string name="tab_home_item_small_class_title">Small Class</string>
+    <string name="tab_home_item_temp_screen_title">Temp Screen</string>
+
     <!-- Used by pager -->
     <string name="title_section1">Section 1</string>
     <string name="title_section2">Section 2</string>
@@ -72,5 +67,6 @@
     <!-- Welcome Activity -->
     <string name="welcome_login_bt_string">Login</string>
     <string name="welcome_about_bt_string">About</string>
+
 
 </resources>
