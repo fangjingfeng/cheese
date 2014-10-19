@@ -69,4 +69,8 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
 
+    <!-- Welcome Activity -->
+    <string name="welcome_login_bt_string">Login</string>
+    <string name="welcome_about_bt_string">About</string>
+
 </resources>

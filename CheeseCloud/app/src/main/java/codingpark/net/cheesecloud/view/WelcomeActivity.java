@@ -6,7 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.ImageButton;
+import android.widget.Button;
 
 import codingpark.net.cheesecloud.R;
 import codingpark.net.cheesecloud.handle.LocalDatabase;
@@ -16,8 +16,8 @@ public class WelcomeActivity extends Activity {
 
     private static final String TAG = "WelcomeActivity";
 
-    private ImageButton signin_bt        = null;
-    private ImageButton loginin_bt       = null;
+    private Button about_bt = null;
+    private Button loginin_bt       = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,18 +39,17 @@ public class WelcomeActivity extends Activity {
         setContentView(R.layout.activity_welcome);
 
         // Initial sign in and login in button
-        signin_bt = (ImageButton)findViewById(R.id.welcome_sign_bt);
-        loginin_bt = (ImageButton)findViewById(R.id.welcome_login_bt);
+        about_bt = (Button)findViewById(R.id.welcome_about_bt);
+        loginin_bt = (Button)findViewById(R.id.welcome_login_bt);
 
-        // Set sign in button click listener
-        signin_bt.setOnClickListener(new View.OnClickListener() {
+        // Set about button click listener
+        about_bt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d(TAG, "Welcome sign in button clicked!");
-                // TODO Handle sign in action
-                Intent intent = new Intent(WelcomeActivity.this, MainActivity.class);
+                Log.d(TAG, "Welcome about button clicked!");
+                Intent intent = new Intent(WelcomeActivity.this, HelpActivity.class);
                 WelcomeActivity.this.startActivity(intent);
-                WelcomeActivity.this.finish();
+                //WelcomeActivity.this.finish();
             }
         });
 
