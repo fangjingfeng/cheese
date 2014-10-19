@@ -312,7 +312,7 @@ public class FileManager {
         return mDirContent;
     }
 
-    final protected static char[] hexArray = "0123456789ABCDEF".toCharArray();
+    final protected static char[] hexArray = "0123456789abcdef".toCharArray();
     public static String bytesToHex(byte[] bytes) {
         char[] hexChars = new char[bytes.length * 2];
         for ( int j = 0; j < bytes.length; j++ ) {
@@ -323,6 +323,20 @@ public class FileManager {
         return new String(hexChars);
     }
 
+    public static String generateMD5(String inputString) {
+        String results = null;
+        byte[] btInput = inputString.getBytes();
+        MessageDigest mdInst = null;
+        try {
+            mdInst = MessageDigest.getInstance("MD5");
+            mdInst.update(btInput);
+            byte[] md = mdInst.digest();
+            results = bytesToHex(md);
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        return results;
+    }
 
     public static String generateMD5(FileInputStream inputStream){
         if(inputStream==null){

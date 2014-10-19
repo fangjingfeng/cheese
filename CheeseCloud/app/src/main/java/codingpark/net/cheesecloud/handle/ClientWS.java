@@ -17,6 +17,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,9 +51,11 @@ public final class ClientWS {
     // Namespace
     String NAMESPACE        = "http://tempuri.org/";
     // EndPoint
-    String ENDPOINT         = "http://192.168.0.108:22332/ClientWS.asmx";
+    String ENDPOINT         = "http://58.116.52.8:8989/ClientWS.asmx";
 
     private static String session_id            = "";
+    private static WsFile s_file = null;
+    private static String s_id = "";
 
     private ClientWS() {
     }
@@ -65,9 +69,13 @@ public final class ClientWS {
     public void test_userLogin() {
         WsGuidOwner owner = new WsGuidOwner();
         owner.CreateDate = "2014-10-17 16:44:23";
-
-        userLogin("mrmsadmin@cheese.com", "cheese", owner);
-
+        MessageDigest md = null;
+        try {
+            md = MessageDigest.getInstance("MD5");
+            userLogin("mrmsadmin@cheese.com", FileManager.generateMD5("cheese"), owner);
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
     }
 
     public void userLogin(String username, String password, WsGuidOwner userinfo) {
@@ -159,8 +167,6 @@ public final class ClientWS {
         checkedFileInfo(ws_file);
     }
 
-    private WsFile s_file = null;
-    private String s_id = "";
 
     public void checkedFileInfo(WsFile wsFile) {
         // 1. Create SOAP Action

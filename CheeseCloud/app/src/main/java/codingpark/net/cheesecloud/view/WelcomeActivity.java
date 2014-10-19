@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 
 import codingpark.net.cheesecloud.R;
+import codingpark.net.cheesecloud.handle.ClientWS;
 import codingpark.net.cheesecloud.handle.LocalDatabase;
 
 
@@ -58,6 +59,15 @@ public class WelcomeActivity extends Activity {
             public void onClick(View v) {
                 Log.d(TAG, "Welcome login in button clicked!");
                 // TODO Handle login in action
+                Log.d(TAG, "*****Test UserLogin******");
+                Thread t = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        ClientWS.getInstance().test_userLogin();
+                    }
+                });
+                t.start();
+
                 LocalDatabase ldb = new LocalDatabase(WelcomeActivity.this);
                 ldb.getWritableDatabase();
                 ldb.close();
