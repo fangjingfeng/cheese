@@ -32,6 +32,9 @@ public class UserDataSource {
         dbHelper.close();
     }
 
+    /**
+     * |  _ID      |
+     */
     public static class UserEntry implements BaseColumns {
         /**
          * The user table name
@@ -63,8 +66,8 @@ public class UserDataSource {
         return true;
     }
 
-    public User deleteUser(String username) {
-        return new User();
+    public boolean deleteUser(String username) {
+        return true;
     }
 
     public boolean updateUser(User user) {
@@ -76,6 +79,10 @@ public class UserDataSource {
         ArrayList<User> userList = new ArrayList<User>();
         //database.query(UserEntry.TABLE_NAME, );
         Cursor cursor = database.query(UserEntry.TABLE_NAME, null, null, null, null, null, null);
+        while(cursor.moveToNext()) {
+            User u = new User();
+            //u.setUsername(cursor.get);
+        }
         return userList;
     }
 
