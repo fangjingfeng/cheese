@@ -59,6 +59,7 @@ public class WelcomeActivity extends Activity {
             public void onClick(View v) {
                 Log.d(TAG, "Welcome login in button clicked!");
                 // TODO Handle login in action
+                /*
                 Log.d(TAG, "*****Test UserLogin******");
                 Thread t = new Thread(new Runnable() {
                     @Override
@@ -72,6 +73,10 @@ public class WelcomeActivity extends Activity {
                 ldb.getWritableDatabase();
                 ldb.close();
                 Intent intent = new Intent(WelcomeActivity.this, MainActivity.class);
+                WelcomeActivity.this.startActivity(intent);
+                WelcomeActivity.this.finish();
+                */
+                Intent intent = new Intent(WelcomeActivity.this, LoginActivity.class);
                 WelcomeActivity.this.startActivity(intent);
                 WelcomeActivity.this.finish();
             }
