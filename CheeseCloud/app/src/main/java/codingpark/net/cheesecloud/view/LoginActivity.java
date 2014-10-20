@@ -3,16 +3,14 @@ package codingpark.net.cheesecloud.view;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
-
 import android.app.Activity;
 import android.app.LoaderManager.LoaderCallbacks;
-import android.content.ContentResolver;
 import android.content.CursorLoader;
+import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
-
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
@@ -28,14 +26,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesUtil;
-import com.google.android.gms.common.SignInButton;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import codingpark.net.cheesecloud.R;
+import codingpark.net.cheesecloud.handle.ClientWS;
 
 /**
  * A login screen that offers login via email/password
@@ -122,9 +117,11 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
         String password = mPasswordView.getText().toString();
 
         boolean cancel = false;
+        cancel = false;
         View focusView = null;
 
 
+        /*
         // Check for a valid password, if the user entered one.
         if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
             mPasswordView.setError(getString(R.string.error_invalid_password));
@@ -142,6 +139,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
             focusView = mEmailView;
             cancel = true;
         }
+        */
 
         if (cancel) {
             // There was an error; don't attempt login and focus the first
@@ -276,8 +274,10 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
 
             try {
                 // Simulate network access.
-                Thread.sleep(2000);
+                Thread.sleep(20);
                 // 1. Call web service UserLogin
+                ClientWS.getInstance().test_userLogin();
+                ClientWS.getInstance().test_getDisk();
             } catch (InterruptedException e) {
                 return false;
             }
@@ -303,6 +303,9 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
                 // 1. Login success: Store the mEmail and mPassword to database
                 Log.d(TAG, "Login Success!");
                 // 2. Close LoginActivity and start MainActivity
+                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                LoginActivity.this.startActivity(intent);
+                LoginActivity.this.finish();
                 finish();
             } else {
                 // 1. Login failed: Toast the error information to user

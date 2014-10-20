@@ -1,17 +1,16 @@
 package codingpark.net.cheesecloud.view;
 
-import android.app.Activity;
+import android.app.ListActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
 import codingpark.net.cheesecloud.R;
-import codingpark.net.cheesecloud.handle.ClientWS;
 
-public class SelectPathActivity extends Activity {
+public class SelectPathActivity extends ListActivity {
     private static final String TAG     = "SelectPathActivity";
 
     @Override
@@ -25,51 +24,6 @@ public class SelectPathActivity extends Activity {
         // 2. Set the title
         getActionBar().setTitle(R.string.select_path_activity_action_bar_title);
 
-        Button test_userLogin_bt = (Button)findViewById(R.id.test_userLogin_bt);
-        test_userLogin_bt.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d(TAG, "*****Test UserLogin******");
-                Thread t = new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        ClientWS.getInstance().test_userLogin();
-                    }
-                });
-                t.start();
-            }
-        });
-
-        Button test_checkedFileInfo_bt = (Button)findViewById(R.id.test_checkedFileInfo_bt);
-        test_checkedFileInfo_bt.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d(TAG, "*****Test CheckedFileInfo******");
-                Thread t = new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        ClientWS.getInstance().test_checkedFileInfo("/sdcard/wiki.amr");
-                    }
-                });
-                t.start();
-            }
-        });
-
-        Button test_uploadFile_bt = (Button)findViewById(R.id.test_uploadFile_bt);
-        test_uploadFile_bt.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d(TAG, "*****Test UploadFile******");
-                Thread t = new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        ClientWS.getInstance().test_uploadFile("/sdcard/wiki.amr");
-                    }
-                });
-                t.start();
-
-            }
-        });
     }
 
 
@@ -93,4 +47,11 @@ public class SelectPathActivity extends Activity {
 
         return super.onOptionsItemSelected(item);
     }
+
+
+    @Override
+    protected void onListItemClick(ListView l, View v, int position, long id) {
+        super.onListItemClick(l, v, position, id);
+    }
+
 }

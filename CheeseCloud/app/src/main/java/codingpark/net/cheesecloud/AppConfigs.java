@@ -1,5 +1,8 @@
 package codingpark.net.cheesecloud;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+
 /**
  * Created by ethanshan on 14-9-25.
  */
@@ -34,15 +37,15 @@ public class AppConfigs {
     /**
      * No sort
      */
-    public static final int SORT_NONE = 	0;
+    public static final int SORT_NONE                   = 0;
     /**
      * Sort by alpha of file name
      */
-    public static final int SORT_ALPHA = 	1;
+    public static final int SORT_ALPHA                  = 1;
     /**
      * Sort by file type
      */
-    public static final int SORT_TYPE = 	2;
+    public static final int SORT_TYPE                   = 2;
 
     /**
      * Set login username
@@ -57,5 +60,29 @@ public class AppConfigs {
      * Set the web services url
      */
     //public static final String SERVER_ADDRESS           = "server_address";
+
+    private static Context mContext                         = null;
+    private static AppConfigs mConfigs                      = null;
+
+    private SharedPreferences mPreferences                  = null;
+
+    private AppConfigs() {
+        //mPreferences = SharedPreferences.
+        mPreferences = mContext.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+    }
+
+    public static AppConfigs getInstance() {
+        if (mConfigs == null)
+            mConfigs = new AppConfigs();
+        return mConfigs;
+    }
+
+    public static AppConfigs getInstance(Context context) {
+        mContext = context;
+        if (mConfigs == null)
+            mConfigs = new AppConfigs();
+        return mConfigs;
+    }
+
 
 }

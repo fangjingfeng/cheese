@@ -25,8 +25,11 @@ import java.util.List;
 import codingpark.net.cheesecloud.wsi.FileInfo;
 import codingpark.net.cheesecloud.wsi.SyncFileBlock;
 import codingpark.net.cheesecloud.wsi.WsFile;
+import codingpark.net.cheesecloud.wsi.WsFolder;
 import codingpark.net.cheesecloud.wsi.WsGuidOwner;
+import codingpark.net.cheesecloud.wsi.WsPermission;
 import codingpark.net.cheesecloud.wsi.WsPhyFileInfo;
+import codingpark.net.cheesecloud.wsi.WsSpaceSizer;
 import codingpark.net.cheesecloud.wsi.WsSyncFile;
 
 /**
@@ -46,12 +49,11 @@ public final class ClientWS {
     public static final String METHOD_GETDISK               = "GetDisk";
     public static final String METHOD_GETFOLDERLIST         = "GetFolderList";
 
-
     // Web services server configurations
     // Namespace
     String NAMESPACE        = "http://tempuri.org/";
     // EndPoint
-    String ENDPOINT         = "http://58.116.52.8:8989/ClientWS.asmx";
+    String ENDPOINT         = "http://192.168.0.108:22332/ClientWS.asmx";
 
     private static String session_id            = "";
     private static WsFile s_file = null;
@@ -72,7 +74,7 @@ public final class ClientWS {
         MessageDigest md = null;
         try {
             md = MessageDigest.getInstance("MD5");
-            userLogin("mrmsadmin@cheese.com", FileManager.generateMD5("cheese"), owner);
+            userLogin("mrmsadmin@cheese.com", "cheese", owner);
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         }
@@ -207,6 +209,7 @@ public final class ClientWS {
 
         // 5. Set http header cookies values before call WS
         List<HeaderProperty> paraHttpHeaders = new ArrayList<HeaderProperty>();
+        paraHttpHeaders.add(new HeaderProperty("Cookie", session_id));
 
         // 6. Call WS, store the return http header
         // Store http header values after call WS
@@ -230,12 +233,6 @@ public final class ClientWS {
         Log.d(TAG, "----------The object id: " + s_id);
 
 
-        //s_file = (WsFile) object.getProperty("file");
-        //PropertyInfo p1 = new PropertyInfo();
-        //p1.setType(WsFile.class);
-        //p1.setName("name");
-        //object.getPropertyInfo(0, p1);
-        //s_file = (WsFile)  p1.getValue();
         if (s_file != null)
             Log.d(TAG, "################fileinfo: " + s_file.toString());
 
@@ -317,6 +314,7 @@ public final class ClientWS {
 
         // 5. Set http header cookies values before call WS
         List<HeaderProperty> paraHttpHeaders = new ArrayList<HeaderProperty>();
+        paraHttpHeaders.add(new HeaderProperty("Cookie", session_id));
 
         // 6. Call WS, store the return http header
         // Store http header values after call WS
@@ -343,6 +341,75 @@ public final class ClientWS {
             }
         }
         Log.d(TAG, "************************************************");
+    }
+
+    public void test_getDisk() {
+        getDisk(new ArrayList<WsFolder>());
+
+    }
+
+    public void getDisk(List<WsFolder> list) {
+        // 1. Create SOAP Action
+        String soapAction = NAMESPACE + METHOD_GETDISK;//"http://tempuri.org/Test";
+
+        // 2. Initial SoapObject
+        SoapObject rpc = new SoapObject(NAMESPACE, METHOD_GETDISK);
+        // add web service method parameter
+
+        // 3. Initial envelope
+        // Create soap request object with soap version
+        SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(SoapEnvelope.VER12);
+        // Initial envelope's SoapObject
+        envelope.bodyOut = rpc;
+        // Initial web service implements technology(.Net)
+        envelope.dotNet = true;
+        envelope.setOutputSoapObject(rpc);
+
+        // Mapping
+        envelope.addMapping(NAMESPACE, WsGuidOwner.class.getSimpleName(), WsGuidOwner.class);
+        envelope.addMapping(NAMESPACE, WsFolder.class.getSimpleName(), WsFolder.class);
+        envelope.addMapping(NAMESPACE, WsSpaceSizer.class.getSimpleName(), WsSpaceSizer.class);
+        envelope.addMapping(NAMESPACE, WsPermission.class.getSimpleName(), WsPermission.class);
+
+        //---------------------------------------------------------------------------------------
+        // MARSHALLING:
+        //---------------------------------------------------------------------------------------
+        Marshal floatMarshal = new MarshalFloat();
+        floatMarshal.register(envelope);
+
+        // 4. Initial http transport
+        HttpTransportSE transport = new HttpTransportSE(ENDPOINT);
+        transport.debug = true;
+
+        // 5. Set http header cookies values before call WS
+        List<HeaderProperty> paraHttpHeaders = new ArrayList<HeaderProperty>();
+        paraHttpHeaders.add(new HeaderProperty("Cookie", session_id));
+
+        // 6. Call WS, store the return http header
+        // Store http header values after call WS
+        List resultHttpHeaderList = null;
+        try {
+            resultHttpHeaderList = transport.call(soapAction, envelope, paraHttpHeaders);
+            Log.d(TAG, "Request: \n" + transport.requestDump);
+            Log.d(TAG, "Response: \n" + transport.responseDump);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        // 7. Process return data
+        // Get webservice return object
+        final SoapObject object = (SoapObject) envelope.bodyIn;
+        // Convert return object to local entity
+        Log.d(TAG, object.toString());
+        Log.d(TAG, "************************************************");
+
+    }
+
+    public void test_getFolderList() {
+
+    }
+    public void getFolderList() {
+
     }
 
 }

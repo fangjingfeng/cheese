@@ -4,8 +4,9 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import codingpark.net.cheesecloud.model.UploadFile;
+import codingpark.net.cheesecloud.model.UploadFileDataSource;
 import codingpark.net.cheesecloud.model.User;
+import codingpark.net.cheesecloud.model.UserDataSource;
 
 /**
  * Created by ethanshan on 14-10-15.
@@ -34,28 +35,28 @@ public class LocalDatabase extends  SQLiteOpenHelper {
      * userinfo table
      */
     private static final String CREATE_USERINFO_TABLE_SQL       =
-            "CREATE TABLE " + User.UserEntry.TABLE_NAME + " (" +
-                    User.UserEntry._ID + " INTEGER PRIMARY KEY, " +
-                    User.UserEntry.COLUMN_PASSWORD_MD5 + " VARCHAR(50), " +
-                    User.UserEntry.COLUMN_USERNAME + " VARCHAR(50), " +
-                    User.UserEntry.COLUMN_WS_ADDRESS + " VARCHAR(255) " +
+            "CREATE TABLE " + UserDataSource.UserEntry.TABLE_NAME + " (" +
+                    UserDataSource.UserEntry._ID + " INTEGER PRIMARY KEY, " +
+                    UserDataSource.UserEntry.COLUMN_PASSWORD_MD5 + " VARCHAR(50), " +
+                    UserDataSource.UserEntry.COLUMN_USERNAME + " VARCHAR(50), " +
+                    UserDataSource.UserEntry.COLUMN_WS_ADDRESS + " VARCHAR(255) " +
                     " )";
 
     /**
      * upload_files table
      */
     private static final String CREATE_UPLOAD_FILES_TABLE_SQL   =
-            "CREATE TABLE " + UploadFile.UploadFileEntry.TABLE_NAME + " (" +
-                    UploadFile.UploadFileEntry._ID + " INTEGER PRIMARY KEY, " +
-                    UploadFile.UploadFileEntry.COLUMN_DESTPATH + " TEXT, " +
-                    UploadFile.UploadFileEntry.COLUMN_FILEPATH + " TEXT, " +
-                    UploadFile.UploadFileEntry.COLUMN_FILESIZE + " INTEGER, " +
-                    UploadFile.UploadFileEntry.COLUMN_FILETYPE + " INTEGER, " +
-                    UploadFile.UploadFileEntry.COLUMN_MD5 + " VARCHAR(50), " +
-                    UploadFile.UploadFileEntry.COLUMN_PARENT_ID + " INTEGER, " +
-                    UploadFile.UploadFileEntry.COLUMN_STATE + " INTEGER, " +
-                    UploadFile.UploadFileEntry.COLUMN_UPLOADED_SIZE + " INTEGER, " +
-                    UploadFile.UploadFileEntry.COLUMN_USERID + " INTEGER" +
+            "CREATE TABLE " + UploadFileDataSource.UploadFileEntry.TABLE_NAME + " (" +
+                    UploadFileDataSource.UploadFileEntry._ID + " INTEGER PRIMARY KEY, " +
+                    UploadFileDataSource.UploadFileEntry.COLUMN_DESTPATH + " TEXT, " +
+                    UploadFileDataSource.UploadFileEntry.COLUMN_FILEPATH + " TEXT, " +
+                    UploadFileDataSource.UploadFileEntry.COLUMN_FILESIZE + " INTEGER, " +
+                    UploadFileDataSource.UploadFileEntry.COLUMN_FILETYPE + " INTEGER, " +
+                    UploadFileDataSource.UploadFileEntry.COLUMN_MD5 + " VARCHAR(50), " +
+                    UploadFileDataSource.UploadFileEntry.COLUMN_PARENT_ID + " INTEGER, " +
+                    UploadFileDataSource.UploadFileEntry.COLUMN_STATE + " INTEGER, " +
+                    UploadFileDataSource.UploadFileEntry.COLUMN_UPLOADED_SIZE + " INTEGER, " +
+                    UploadFileDataSource.UploadFileEntry.COLUMN_USERID + " INTEGER" +
                     " )";
 
     /**
@@ -91,4 +92,5 @@ public class LocalDatabase extends  SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // TODO According to current database version, implement database upgrade logic
     }
+
 }

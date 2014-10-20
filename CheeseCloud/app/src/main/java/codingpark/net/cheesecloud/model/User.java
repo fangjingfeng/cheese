@@ -1,5 +1,6 @@
 package codingpark.net.cheesecloud.model;
 
+import android.database.sqlite.SQLiteDatabase;
 import android.provider.BaseColumns;
 
 /**
@@ -14,30 +15,6 @@ public class User {
 
     private String ws_address   = "";
 
-    public static class UserEntry implements BaseColumns {
-        /**
-         * The user table name
-         */
-        public static final String TABLE_NAME           = "userinfo";
-        /**
-         * Type: VARCHAR(50)
-         * Description: The login password(Encrypt by MD5 Algorithm)
-         * Default: ""(String.Empty);
-         */
-        public static final String COLUMN_PASSWORD_MD5  = "password_md5";
-        /**
-         * Type: VARCHAR(50)
-         * Description: The login user name, current is the email address
-         * Default: ""(String.Empty)
-         */
-        public static final String COLUMN_USERNAME      = "username";
-        /**
-         * Type: VARCHAR(255)
-         * Description: The web service URL
-         * Default: ""(String.Empty)
-         */
-        public static final String COLUMN_WS_ADDRESS    = "ws_address";
-    }
 
     public String getUsername() {
         return username;
@@ -62,4 +39,5 @@ public class User {
     public void setWs_address(String ws_address) {
         this.ws_address = ws_address;
     }
+
 }

@@ -46,6 +46,15 @@
                     android:maxLines="1"
                     android:singleLine="true" />
 
+                <EditText
+                    android:id="@+id/web_url"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/prompt_web_url"
+                    android:maxLines="1"
+                    android:inputType="textUri"
+                    android:singleLine="true" />
+
                 <Button
                     android:id="@+id/email_sign_in_button"
                     style="?android:textAppearanceSmall"
