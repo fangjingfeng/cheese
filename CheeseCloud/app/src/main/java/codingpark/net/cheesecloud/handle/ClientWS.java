@@ -406,10 +406,64 @@ public final class ClientWS {
     }
 
     public void test_getFolderList() {
-
+        getFolderList();
     }
-    public void getFolderList() {
 
+    public void getFolderList() {
+        // 1. Create SOAP Action
+        String soapAction = NAMESPACE + METHOD_GETFOLDERLIST;//"http://tempuri.org/Test";
+
+        // 2. Initial SoapObject
+        SoapObject rpc = new SoapObject(NAMESPACE, METHOD_GETFOLDERLIST);
+        // add web service method parameter
+
+        // 3. Initial envelope
+        // Create soap request object with soap version
+        SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(SoapEnvelope.VER12);
+        // Initial envelope's SoapObject
+        envelope.bodyOut = rpc;
+        // Initial web service implements technology(.Net)
+        envelope.dotNet = true;
+        envelope.setOutputSoapObject(rpc);
+
+        // Mapping
+        envelope.addMapping(NAMESPACE, WsGuidOwner.class.getSimpleName(), WsGuidOwner.class);
+        envelope.addMapping(NAMESPACE, WsFolder.class.getSimpleName(), WsFolder.class);
+        envelope.addMapping(NAMESPACE, WsSpaceSizer.class.getSimpleName(), WsSpaceSizer.class);
+        envelope.addMapping(NAMESPACE, WsPermission.class.getSimpleName(), WsPermission.class);
+        envelope.addMapping(NAMESPACE, FileInfo.class.getSimpleName(), FileInfo.class);
+
+        //---------------------------------------------------------------------------------------
+        // MARSHALLING:
+        //---------------------------------------------------------------------------------------
+        Marshal floatMarshal = new MarshalFloat();
+        floatMarshal.register(envelope);
+
+        // 4. Initial http transport
+        HttpTransportSE transport = new HttpTransportSE(ENDPOINT);
+        transport.debug = true;
+
+        // 5. Set http header cookies values before call WS
+        List<HeaderProperty> paraHttpHeaders = new ArrayList<HeaderProperty>();
+        paraHttpHeaders.add(new HeaderProperty("Cookie", session_id));
+
+        // 6. Call WS, store the return http header
+        // Store http header values after call WS
+        List resultHttpHeaderList = null;
+        try {
+            resultHttpHeaderList = transport.call(soapAction, envelope, paraHttpHeaders);
+            Log.d(TAG, "Request: \n" + transport.requestDump);
+            Log.d(TAG, "Response: \n" + transport.responseDump);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        // 7. Process return data
+        // Get webservice return object
+        final SoapObject object = (SoapObject) envelope.bodyIn;
+        // Convert return object to local entity
+        Log.d(TAG, object.toString());
+        Log.d(TAG, "************************************************");
     }
 
 }
