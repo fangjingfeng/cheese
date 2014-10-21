@@ -371,6 +371,11 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
                 case LoginResultType.Success:
                     // 1. Login success: Store the mEmail and mPassword to database
                     Log.d(TAG, "Login Success!");
+                    User u = new User();
+                    u.setUsername(mEmail);
+                    u.setPassword_md5(mPassword);
+                    u.setWs_address(mWebUrl);
+                    mDataSource.addUser(u);
                     // 2. Close LoginActivity and start MainActivity
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     LoginActivity.this.startActivity(intent);

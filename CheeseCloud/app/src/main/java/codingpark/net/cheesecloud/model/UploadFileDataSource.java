@@ -6,6 +6,7 @@ import android.provider.BaseColumns;
  * Created by ethanshan on 14-10-20.
  */
 public class UploadFileDataSource {
+
     public static final class UploadFileEntry implements BaseColumns {
         /**
          * The table name which to store the user selected files information.
@@ -73,4 +74,6 @@ public class UploadFileDataSource {
          */
         public static final String COLUMN_UPLOADED_SIZE    = "uploaded_size";
     }
+
+
 }

@@ -75,12 +75,19 @@ public class UserDataSource {
 
     /**
      * Insert a record to userinfo table
+     * Auto detect the record is exist.
      * @param user The user model
      * @return
      *  true: insert success
      *  false: insert failed
      */
     public boolean addUser(User user) {
+        // 1. Judge the user is already stored in database
+        // If exist, just update the record
+        if (getUserByUsername(user.getUsername()) != null) {
+            return updateUser(user);
+        }
+        // If not exist, insert a new record
         ContentValues cv = new ContentValues();
         cv.put(UserEntry.COLUMN_PASSWORD_MD5, user.getPassword_md5());
         cv.put(UserEntry.COLUMN_USERNAME, user.getUsername());
