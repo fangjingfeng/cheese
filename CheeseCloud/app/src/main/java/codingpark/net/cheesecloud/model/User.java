@@ -9,12 +9,21 @@ import android.provider.BaseColumns;
  */
 public class User {
 
+    private int id              = -1;
+
     private String username     = "";
 
     private String password_md5 = "";
 
     private String ws_address   = "";
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public String getUsername() {
         return username;

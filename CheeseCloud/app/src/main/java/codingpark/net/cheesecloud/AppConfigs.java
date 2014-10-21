@@ -50,39 +50,17 @@ public class AppConfigs {
     /**
      * Set login username
      */
-    //public static final String USERNAME                 = "username";
+    public static final String USERNAME                 = "username";
     /**
      * Set login password(encrypt by MD5)
      */
-    //public static final String PASSWORD_MD5             = "password_md5";
+    public static final String PASSWORD_MD5             = "password_md5";
 
     /**
      * Set the web services url
      */
-    //public static final String SERVER_ADDRESS           = "server_address";
+    public static final String SERVER_ADDRESS           = "server_address";
 
-    private static Context mContext                         = null;
-    private static AppConfigs mConfigs                      = null;
-
-    private SharedPreferences mPreferences                  = null;
-
-    private AppConfigs() {
-        //mPreferences = SharedPreferences.
-        mPreferences = mContext.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-    }
-
-    public static AppConfigs getInstance() {
-        if (mConfigs == null)
-            mConfigs = new AppConfigs();
-        return mConfigs;
-    }
-
-    public static AppConfigs getInstance(Context context) {
-        mContext = context;
-        if (mConfigs == null)
-            mConfigs = new AppConfigs();
-        return mConfigs;
-    }
 
 
 }

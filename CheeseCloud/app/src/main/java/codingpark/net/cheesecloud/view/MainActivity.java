@@ -139,8 +139,8 @@ public class MainActivity extends Activity implements OnFragmentInteractionListe
             Thread t = new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    ClientWS.getInstance().test_checkedFileInfo(selectFiles.get(0));
-                    ClientWS.getInstance().test_uploadFile(selectFiles.get(0));
+                    ClientWS.getInstance(MainActivity.this).test_checkedFileInfo(selectFiles.get(0));
+                    ClientWS.getInstance(MainActivity.this).test_uploadFile(selectFiles.get(0));
                 }
             });
             t.start();

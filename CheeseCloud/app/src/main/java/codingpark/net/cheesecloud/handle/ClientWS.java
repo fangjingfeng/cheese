@@ -1,15 +1,17 @@
 package codingpark.net.cheesecloud.handle;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.Log;
 
 import org.ksoap2.HeaderProperty;
 import org.ksoap2.SoapEnvelope;
-import org.ksoap2.SoapFault;
 import org.ksoap2.serialization.Marshal;
 import org.ksoap2.serialization.MarshalBase64;
 import org.ksoap2.serialization.MarshalFloat;
 import org.ksoap2.serialization.PropertyInfo;
 import org.ksoap2.serialization.SoapObject;
+import org.ksoap2.serialization.SoapPrimitive;
 import org.ksoap2.serialization.SoapSerializationEnvelope;
 import org.ksoap2.transport.HttpTransportSE;
 
@@ -22,6 +24,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 
+import codingpark.net.cheesecloud.AppConfigs;
 import codingpark.net.cheesecloud.wsi.FileInfo;
 import codingpark.net.cheesecloud.wsi.SyncFileBlock;
 import codingpark.net.cheesecloud.wsi.WsFile;
@@ -49,20 +52,28 @@ public final class ClientWS {
     public static final String METHOD_GETDISK               = "GetDisk";
     public static final String METHOD_GETFOLDERLIST         = "GetFolderList";
 
+    // Default server info
+    public static final String DEFAULT_ENDPOINT             = "http://192.168.0.101:22332/ClientWS.asmx";
+
     // Web services server configurations
     // Namespace
-    String NAMESPACE        = "http://tempuri.org/";
+    private String NAMESPACE        = "http://tempuri.org/";
     // EndPoint
-    String ENDPOINT         = "http://192.168.0.108:22332/ClientWS.asmx";
+    private String mEndPoint        = "http://192.168.0.108:22332/ClientWS.asmx";
 
     private static String session_id            = "";
-    private static WsFile s_file = null;
-    private static String s_id = "";
+    private static WsFile s_file                = null;
+    private static String s_id                  = "";
+
+    private static Context mContext             = null;
 
     private ClientWS() {
+        SharedPreferences prefs = mContext.getSharedPreferences(AppConfigs.PREFS_NAME, Context.MODE_PRIVATE);
+        mEndPoint = prefs.getString(AppConfigs.SERVER_ADDRESS, DEFAULT_ENDPOINT);
     }
 
-    public static ClientWS getInstance() {
+    public static ClientWS getInstance(Context context) {
+        mContext = context;
         if (client == null)
             client = new ClientWS();
         return client;
@@ -70,7 +81,7 @@ public final class ClientWS {
 
     public void test_userLogin() {
         WsGuidOwner owner = new WsGuidOwner();
-        owner.CreateDate = "2014-10-17 16:44:23";
+        //owner.CreateDate = "2014-10-17 16:44:23";
         MessageDigest md = null;
         try {
             md = MessageDigest.getInstance("MD5");
@@ -80,7 +91,7 @@ public final class ClientWS {
         }
     }
 
-    public void userLogin(String username, String password, WsGuidOwner userinfo) {
+    public int userLogin(String username, String password, WsGuidOwner userinfo) {
         // 1. Create SOAP Action
         String soapAction = NAMESPACE + METHOD_USERLOGIN;//"http://tempuri.org/Test";
 
@@ -114,7 +125,7 @@ public final class ClientWS {
         floatMarshal.register(envelope);
 
         // 4. Initial http transport
-        HttpTransportSE transport = new HttpTransportSE(ENDPOINT);
+        HttpTransportSE transport = new HttpTransportSE(mEndPoint);
         transport.debug = true;
 
         // 5. Set http header cookies values before call WS
@@ -127,24 +138,32 @@ public final class ClientWS {
             resultHttpHeaderList = transport.call(soapAction, envelope, paraHttpHeaders);
             Log.d(TAG, "Request: \n" + transport.requestDump);
             Log.d(TAG, "Response: \n" + transport.responseDump);
+            // 7. Process return data
+            // Get webservice return object
+            final SoapObject object = (SoapObject) envelope.bodyIn;
+            //object.getProperty("UserLoginResult")
+
+            Log.d(TAG, object.getProperty(0).toString());
+            //int loginResult = Integer.valueOf(result_obj.getProperty("UserLoginResult").toString());
+            int loginResult = Integer.valueOf(object.getProperty(0).toString());
+
+            // Convert return object to local entity
+            Log.d(TAG, object.toString());
+            // Print Login return http header key/values
+            for (Object o : resultHttpHeaderList) {
+                HeaderProperty p = (HeaderProperty)o;
+                if (p.getKey()!=null && p.getKey().equals("Set-Cookie")) {
+                    Log.d(TAG, "key: " + p.getKey() + "\t" + "values:" + p.getValue());
+                    session_id = p.getValue();
+                }
+            }
+            return loginResult;
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        // 7. Process return data
-        // Get webservice return object
-        final SoapObject object = (SoapObject) envelope.bodyIn;
-        // Convert return object to local entity
-        //Log.d(TAG, object.toString());
-        // Print Login return http header key/values
-        for (Object o : resultHttpHeaderList) {
-            HeaderProperty p = (HeaderProperty)o;
-            if (p.getKey()!=null && p.getKey().equals("Set-Cookie")) {
-                Log.d(TAG, "key: " + p.getKey() + "\t" + "values:" + p.getValue());
-                session_id = p.getValue();
-            }
-        }
         Log.d(TAG, "************************************************");
+        return -1;
     }
 
 
@@ -204,7 +223,7 @@ public final class ClientWS {
         floatMarshal.register(envelope);
 
         // 4. Initial http transport
-        HttpTransportSE transport = new HttpTransportSE(ENDPOINT);
+        HttpTransportSE transport = new HttpTransportSE(mEndPoint);
         transport.debug = true;
 
         // 5. Set http header cookies values before call WS
@@ -309,7 +328,7 @@ public final class ClientWS {
         base64Marshal.register(envelope);
 
         // 4. Initial http transport
-        HttpTransportSE transport = new HttpTransportSE(ENDPOINT);
+        HttpTransportSE transport = new HttpTransportSE(mEndPoint);
         transport.debug = true;
 
         // 5. Set http header cookies values before call WS
@@ -378,7 +397,7 @@ public final class ClientWS {
         floatMarshal.register(envelope);
 
         // 4. Initial http transport
-        HttpTransportSE transport = new HttpTransportSE(ENDPOINT);
+        HttpTransportSE transport = new HttpTransportSE(mEndPoint);
         transport.debug = true;
 
         // 5. Set http header cookies values before call WS
@@ -440,7 +459,7 @@ public final class ClientWS {
         floatMarshal.register(envelope);
 
         // 4. Initial http transport
-        HttpTransportSE transport = new HttpTransportSE(ENDPOINT);
+        HttpTransportSE transport = new HttpTransportSE(mEndPoint);
         transport.debug = true;
 
         // 5. Set http header cookies values before call WS

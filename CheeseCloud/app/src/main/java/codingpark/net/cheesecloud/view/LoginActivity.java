@@ -5,9 +5,11 @@ import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.LoaderManager.LoaderCallbacks;
+import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -25,12 +27,20 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 
+import codingpark.net.cheesecloud.AppConfigs;
 import codingpark.net.cheesecloud.R;
+import codingpark.net.cheesecloud.eumn.LoginResultType;
 import codingpark.net.cheesecloud.handle.ClientWS;
+import codingpark.net.cheesecloud.model.User;
+import codingpark.net.cheesecloud.model.UserDataSource;
+import codingpark.net.cheesecloud.wsi.WsGuidOwner;
 
 /**
  * A login screen that offers login via email/password
@@ -53,11 +63,16 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
     private UserLoginTask mAuthTask = null;
 
     // UI references.
-    private AutoCompleteTextView mEmailView;
-    private EditText mPasswordView;
-    private View mProgressView;
-    private View mEmailLoginFormView;
-    private View mLoginFormView;
+    private AutoCompleteTextView mEmailView     = null;
+    private EditText mPasswordView              = null;
+    private EditText mWebUrlView                = null;
+    private View mProgressView                  = null;
+    private View mEmailLoginFormView            = null;
+    private View mLoginFormView                 = null;
+
+
+    private UserDataSource mDataSource          = null;
+    private SharedPreferences mPrefs            = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +82,8 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
         // Set up the login form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
         populateAutoComplete();
+
+        mWebUrlView = (EditText)findViewById(R.id.web_url);
 
         mPasswordView = (EditText) findViewById(R.id.password);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -91,6 +108,37 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
         mEmailLoginFormView = findViewById(R.id.email_login_form);
+
+        // Initial data source
+        mDataSource = new UserDataSource(this);
+        mDataSource.open();
+        mPrefs = getSharedPreferences(AppConfigs.PREFS_NAME, Context.MODE_PRIVATE);
+
+        initInfo();
+    }
+
+    private void initInfo() {
+        String latestUser = mPrefs.getString(AppConfigs.USERNAME, "");
+        if (!latestUser.isEmpty()) {
+            User user = mDataSource.getUserByUsername(latestUser);
+            if (user != null) {
+                mEmailView.setText(user.getUsername());
+                mPasswordView.setText(user.getPassword_md5());
+                mWebUrlView.setText(user.getWs_address());
+            }
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        mDataSource.open();
+        super.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        mDataSource.close();
+        super.onPause();
     }
 
     private void populateAutoComplete() {
@@ -111,17 +159,18 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
         // Reset errors.
         mEmailView.setError(null);
         mPasswordView.setError(null);
+        mWebUrlView.setError(null);
 
         // Store values at the time of the login attempt.
         String email = mEmailView.getText().toString();
         String password = mPasswordView.getText().toString();
+        String web_url = mWebUrlView.getText().toString();
 
         boolean cancel = false;
         cancel = false;
         View focusView = null;
 
 
-        /*
         // Check for a valid password, if the user entered one.
         if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
             mPasswordView.setError(getString(R.string.error_invalid_password));
@@ -139,7 +188,18 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
             focusView = mEmailView;
             cancel = true;
         }
-        */
+
+        // Check for a valid server address.
+        if (TextUtils.isEmpty(web_url)) {
+            mWebUrlView.setError(getString(R.string.error_field_required));
+            focusView = mWebUrlView;
+            cancel = true;
+        } else if (!isWebUrlValid(web_url)) {
+            mWebUrlView.setError(getString(R.string.error_invalid_weburl));
+            focusView = mWebUrlView;
+            cancel = true;
+        }
+
 
         if (cancel) {
             // There was an error; don't attempt login and focus the first
@@ -149,7 +209,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-            mAuthTask = new UserLoginTask(email, password);
+            mAuthTask = new UserLoginTask(email, password, web_url);
             mAuthTask.execute((Void) null);
         }
     }
@@ -162,6 +222,11 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
     private boolean isPasswordValid(String password) {
         //TODO: Replace this with password check logic
         return password.length() > 4;
+    }
+
+    private boolean isWebUrlValid(String weburl) {
+        //TODO: Replace this with password check logic
+        return weburl.length() > 7;
     }
 
     /**
@@ -259,58 +324,80 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
      * Represents an asynchronous login/registration task used to authenticate
      * the user.
      */
-    public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
+    public class UserLoginTask extends AsyncTask<Void, Void, Integer> {
 
         private final String mEmail;
         private final String mPassword;
+        private final String mWebUrl;
 
-        UserLoginTask(String email, String password) {
+        UserLoginTask(String email, String password, String weburl) {
             mEmail = email;
             mPassword = password;
+            mWebUrl = weburl;
+            // Store the username/password/weburl to SharedPreferences
+            mPrefs.edit().putString(AppConfigs.USERNAME, mEmail);
+            mPrefs.edit().putString(AppConfigs.PASSWORD_MD5, mPassword);
+            mPrefs.edit().putString(AppConfigs.SERVER_ADDRESS, mWebUrl);
+            // Store the username/password/weburl to local database
         }
 
         @Override
-        protected Boolean doInBackground(Void... params) {
+        protected Integer doInBackground(Void... params) {
 
+            int result = -1;
             try {
-                // Simulate network access.
-                Thread.sleep(20);
                 // 1. Call web service UserLogin
-                ClientWS.getInstance().test_userLogin();
-                ClientWS.getInstance().test_getDisk();
-            } catch (InterruptedException e) {
-                return false;
+                WsGuidOwner owner = new WsGuidOwner();
+                //owner.CreateDate = "2014-10-17 16:44:23";
+                MessageDigest md = null;
+                md = MessageDigest.getInstance("MD5");
+                result = ClientWS.getInstance(LoginActivity.this).userLogin(mEmail, mPassword, owner);
+            } catch (NoSuchAlgorithmException e) {
+                e.printStackTrace();
             }
+            //ClientWS.getInstance(LoginActivity.this).test_getDisk();
 
-            for (String credential : DUMMY_CREDENTIALS) {
-                String[] pieces = credential.split(":");
-                if (pieces[0].equals(mEmail)) {
-                    // Account exists, return true if the password matches.
-                    return pieces[1].equals(mPassword);
-                }
-            }
 
             // TODO: register the new account here.
-            return true;
+            return result;
         }
 
         @Override
-        protected void onPostExecute(final Boolean success) {
+        protected void onPostExecute(final Integer result) {
             mAuthTask = null;
             showProgress(false);
 
-            if (success) {
-                // 1. Login success: Store the mEmail and mPassword to database
-                Log.d(TAG, "Login Success!");
-                // 2. Close LoginActivity and start MainActivity
-                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                LoginActivity.this.startActivity(intent);
-                LoginActivity.this.finish();
-                finish();
-            } else {
-                // 1. Login failed: Toast the error information to user
-                mPasswordView.setError(getString(R.string.error_incorrect_password));
-                mPasswordView.requestFocus();
+            switch (result) {
+                case LoginResultType.Success:
+                    // 1. Login success: Store the mEmail and mPassword to database
+                    Log.d(TAG, "Login Success!");
+                    // 2. Close LoginActivity and start MainActivity
+                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                    LoginActivity.this.startActivity(intent);
+                    LoginActivity.this.finish();
+                    finish();
+                    return;
+                case -1:
+                    Toast.makeText(LoginActivity.this, "服务器无法访问", Toast.LENGTH_SHORT);
+                    mWebUrlView.setError(getString(R.string.error_invalid_weburl));
+                    mWebUrlView.requestFocus();
+                    return;
+                case LoginResultType.UserIsNotFind:
+                    Toast.makeText(LoginActivity.this, "用户名错误", Toast.LENGTH_SHORT);
+                    mEmailView.setError(getString(R.string.error_invalid_email));
+                    mEmailView.requestFocus();
+                    return;
+                case LoginResultType.PasswordIsWrong:
+                    Toast.makeText(LoginActivity.this, "密码错误", Toast.LENGTH_SHORT);
+                    mPasswordView.setError(getString(R.string.error_incorrect_password));
+                    mPasswordView.requestFocus();
+                    return;
+                case LoginResultType.SsoIsError:
+                    Toast.makeText(LoginActivity.this, "服务器报错", Toast.LENGTH_SHORT);
+                    mWebUrlView.setError(getString(R.string.error_invalid_weburl));
+                    mWebUrlView.requestFocus();
+                    return;
+
             }
         }
 

@@ -32,7 +32,8 @@
                     android:hint="@string/prompt_email"
                     android:inputType="textEmailAddress"
                     android:maxLines="1"
-                    android:singleLine="true" />
+                    android:singleLine="true"
+                    android:text="mrmsadmin@cheese.com" />
 
                 <EditText
                     android:id="@+id/password"
@@ -44,7 +45,8 @@
                     android:imeOptions="actionUnspecified"
                     android:inputType="textPassword"
                     android:maxLines="1"
-                    android:singleLine="true" />
+                    android:singleLine="true"
+                    android:text="cheese" />
 
                 <EditText
                     android:id="@+id/web_url"
@@ -53,7 +55,8 @@
                     android:hint="@string/prompt_web_url"
                     android:maxLines="1"
                     android:inputType="textUri"
-                    android:singleLine="true" />
+                    android:singleLine="true"
+                    android:text="http://192.168.0.101:22332/ClientWS.asmx&quot;" />
 
                 <Button
                     android:id="@+id/email_sign_in_button"
