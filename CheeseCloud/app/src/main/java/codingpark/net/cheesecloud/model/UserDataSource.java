@@ -82,16 +82,20 @@ public class UserDataSource {
     /**
      * Insert a record to userinfo table
      * Auto detect the record is exist.
+     * If exist: update the user info
+     * If no exist: insert it
      * @param user The user model
      * @return
      *  true: insert success
      *  false: insert failed
      */
-    public boolean addUser(User user) {
+    public long addUser(User user) {
         // 1. Judge the user is already stored in database
         // If exist, just update the record
-        if (getUserByUsername(user.getEmail()) != null) {
-            return updateUser(user);
+        User r_user = null;
+        if ((r_user = getUserByUsername(user.getEmail())) != null) {
+            updateUser(user);
+            return r_user.getId();
         }
         // If not exist, insert a new record
         ContentValues cv = new ContentValues();
@@ -100,7 +104,7 @@ public class UserDataSource {
         cv.put(UserEntry.COLUMN_USERNAME, user.getEmail());
         cv.put(UserEntry.COLUMN_WS_ADDRESS, user.getWs_address());
         long id = database.insert(UserEntry.TABLE_NAME, null, cv);
-        return id > 0;
+        return id;
     }
 
     /**

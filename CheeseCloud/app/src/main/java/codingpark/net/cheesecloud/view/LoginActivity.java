@@ -49,13 +49,6 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
 
     private static final String TAG = LoginActivity.class.getSimpleName();
 
-    /**
-     * A dummy authentication store containing known user names and passwords.
-     * TODO: remove after connecting to a real authentication system.
-     */
-    private static final String[] DUMMY_CREDENTIALS = new String[]{
-            "foo@example.com:hello", "bar@example.com:world"
-    };
 
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
@@ -361,7 +354,6 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
                 e.printStackTrace();
             }
 
-
             // TODO: register the new account here.
             return result;
         }
@@ -379,8 +371,9 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
                     u.setEmail(mEmail);
                     u.setPassword_md5(mPassword);
                     u.setWs_address(mWebUrl);
-                    mDataSource.addUser(u);
-                    // 2. Close LoginActivity and start MainActivity
+                    // 2. Save current user id to AppConfigs
+                    AppConfigs.current_local_user_id = mDataSource.addUser(u);
+                    // 3. Close LoginActivity and start MainActivity
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     LoginActivity.this.startActivity(intent);
                     LoginActivity.this.finish();

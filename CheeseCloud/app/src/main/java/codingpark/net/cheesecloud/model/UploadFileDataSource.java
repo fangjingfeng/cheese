@@ -14,6 +14,7 @@ import codingpark.net.cheesecloud.handle.LocalDatabase;
 
 /**
  * Created by ethanshan on 14-10-20.
+ * The class provide operation interface to manage uploadfile table
  */
 public class UploadFileDataSource {
 
@@ -108,9 +109,20 @@ public class UploadFileDataSource {
         dbHelper.close();
     }
 
-    public boolean addUploadFile(UploadFile file) {
-
-        return true;
+    /**
+     * Insert upload info to uploadfile table
+     * @param file
+     * @return
+     *  -1: Insert error occured
+     *  >0: Insert success
+     */
+    public long addUploadFile(UploadFile file) {
+        // 1. Judge the file is exist
+        //String sql = "SELECT * FROM " ;
+        // 2. Insert the file to local database
+        ContentValues cv = fileToContentValue(file);
+        long result = database.insert(UploadFileEntry.TABLE_NAME, null, cv);
+        return result;
     }
 
     /**
@@ -127,9 +139,14 @@ public class UploadFileDataSource {
     }
 
     public boolean updateUploadFile(UploadFile file) {
+        /*
         ContentValues cv = fileToContentValue(file);
-        int result = database.update(UploadFileEntry.TABLE_NAME, cv, UploadFileEntry.COLUMN_FILEPATH + "=?", new String[] {file.getFilepath()});
+        int result = database.update(UploadFileEntry.TABLE_NAME, cv,
+                UploadFileEntry.COLUMN_FILEPATH + "=?" +
+                " and " + , new String[] {file.getFilepath()});
         return result > 0;
+                */
+        return true;
     }
 
     public List<UploadFile> getAllUploadFile() {
