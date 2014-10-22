@@ -51,6 +51,7 @@ public final class ClientWS {
     public static final String METHOD_UPLOADFILE            = "UploadFile";
     public static final String METHOD_GETDISK               = "GetDisk";
     public static final String METHOD_GETFOLDERLIST         = "GetFolderList";
+    public static final String METHOD_CREATEFOLDER          = "CreateFolder";
 
     // Default server info
     public static final String DEFAULT_ENDPOINT             = "http://192.168.0.101:22332/ClientWS.asmx";
@@ -440,6 +441,81 @@ public final class ClientWS {
         // 2. Initial SoapObject
         SoapObject rpc = new SoapObject(NAMESPACE, METHOD_GETFOLDERLIST);
         // add web service method parameter
+
+        // 3. Initial envelope
+        // Create soap request object with soap version
+        SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(SoapEnvelope.VER12);
+        // Initial envelope's SoapObject
+        envelope.bodyOut = rpc;
+        // Initial web service implements technology(.Net)
+        envelope.dotNet = true;
+        envelope.setOutputSoapObject(rpc);
+
+        // Mapping
+        envelope.addMapping(NAMESPACE, WsGuidOwner.class.getSimpleName(), WsGuidOwner.class);
+        envelope.addMapping(NAMESPACE, WsFolder.class.getSimpleName(), WsFolder.class);
+        envelope.addMapping(NAMESPACE, WsSpaceSizer.class.getSimpleName(), WsSpaceSizer.class);
+        envelope.addMapping(NAMESPACE, WsPermission.class.getSimpleName(), WsPermission.class);
+        envelope.addMapping(NAMESPACE, FileInfo.class.getSimpleName(), FileInfo.class);
+
+        //---------------------------------------------------------------------------------------
+        // MARSHALLING:
+        //---------------------------------------------------------------------------------------
+        Marshal floatMarshal = new MarshalFloat();
+        floatMarshal.register(envelope);
+
+        // 4. Initial http transport
+        HttpTransportSE transport = new HttpTransportSE(mEndPoint);
+        transport.debug = true;
+
+        // 5. Set http header cookies values before call WS
+        List<HeaderProperty> paraHttpHeaders = new ArrayList<HeaderProperty>();
+        paraHttpHeaders.add(new HeaderProperty("Cookie", session_id));
+
+        // 6. Call WS, store the return http header
+        // Store http header values after call WS
+        List resultHttpHeaderList = null;
+        try {
+            resultHttpHeaderList = transport.call(soapAction, envelope, paraHttpHeaders);
+            Log.d(TAG, "Request: \n" + transport.requestDump);
+            Log.d(TAG, "Response: \n" + transport.responseDump);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        // 7. Process return data
+        // Get webservice return object
+        final SoapObject object = (SoapObject) envelope.bodyIn;
+        // Convert return object to local entity
+        Log.d(TAG, object.toString());
+        Log.d(TAG, "************************************************");
+    }
+
+    public void test_createFolder(String path) {
+
+        WsFolder folder = new WsFolder();
+        File file = new File(path);
+        if (file.exists()) {
+            folder.FatherID = "395ED821-E528-42F0-8EA7-C59F258E7435";
+            folder.Name = file.getName();
+        } else {
+            Log.d(TAG, "File: " + path + " \t" + " not exist!");
+        }
+        createFolder(folder);
+    }
+
+    public void createFolder(WsFolder folder) {
+        // 1. Create SOAP Action
+        String soapAction = NAMESPACE + METHOD_CREATEFOLDER;//"http://tempuri.org/Test";
+
+        // 2. Initial SoapObject
+        SoapObject rpc = new SoapObject(NAMESPACE, METHOD_CREATEFOLDER);
+        // add web service method parameter
+        PropertyInfo p_folderInfo= new PropertyInfo();
+        p_folderInfo.setName("folder");
+        p_folderInfo.setValue(folder);
+        p_folderInfo.setType(WsFolder.class);
+        rpc.addPropertyIfValue(p_folderInfo);
 
         // 3. Initial envelope
         // Create soap request object with soap version

@@ -1,5 +1,6 @@
 package codingpark.net.cheesecloud.view;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Locale;
 
@@ -139,8 +140,16 @@ public class MainActivity extends Activity implements OnFragmentInteractionListe
             Thread t = new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    ClientWS.getInstance(MainActivity.this).test_checkedFileInfo(selectFiles.get(0));
-                    ClientWS.getInstance(MainActivity.this).test_uploadFile(selectFiles.get(0));
+                    File file = new File(selectFiles.get(0));
+                    if (file.exists()) {
+                        if (file.isFile()) {
+                            ClientWS.getInstance(MainActivity.this).test_checkedFileInfo(selectFiles.get(0));
+                            ClientWS.getInstance(MainActivity.this).test_uploadFile(selectFiles.get(0));
+                        } else if (file.isDirectory()) {
+                            ClientWS.getInstance(MainActivity.this).test_createFolder(selectFiles.get(0));
+                        }
+
+                    }
                 }
             });
             t.start();
