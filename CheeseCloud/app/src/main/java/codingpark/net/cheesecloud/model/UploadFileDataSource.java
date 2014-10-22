@@ -27,13 +27,7 @@ public class UploadFileDataSource {
         /**
          * The user guid at the server database
          */
-        public static final String COLUMN_REMOTE_UID    = "remote_uid";
-        /**
-         * Type: TEXT
-         * Description: The remote folder(destination) path
-         * Default: ""(String.Empty)
-         */
-        public static final String COLUMN_DESTPATH     = "destpath";
+        public static final String COLUMN_REMOTE_ID    = "remote_id";
         /**
          * Type: TEXT
          * Description: The file absolutely path in local file system
@@ -41,19 +35,11 @@ public class UploadFileDataSource {
          */
         public static final String COLUMN_FILEPATH     = "filepath";
         /**
-         * Type: INTEGER
-         * Description: The whole file size in Byte unit
-         * Default: 0
+         * Type: VARCHAR(50)
+         * Description: The whole file MD5 value
+         * Default: ""(String.Empty)
          */
-        public static final String COLUMN_FILESIZE     = "filesize";
-        /**
-         * Type: INTEGER
-         * Description: The file type(not extension type)
-         * 0: file
-         * 1: folder
-         * Default: 0
-         */
-        public static final String COLUMN_FILETYPE     = "filetype";
+        public static final String COLUMN_MD5          = "md5";
         /**
          * Type: INTEGER
          * Description: The file parent folder id. Associate with {@link #_ID}
@@ -64,6 +50,20 @@ public class UploadFileDataSource {
         public static final String COLUMN_PARENT_ID    = "parent_id";
         /**
          * Type: INTEGER
+         * Description: The file parent folder id. Associate with {@link #_ID}
+         * -1: The selected root
+         * >=0:
+         * Default: -1
+         */
+        public static final String COLUMN_REMOTE_PARENT_ID    = "remote_parent_id";
+        /**
+         * Type: INTEGER
+         * Description: The whole file size in Byte unit
+         * Default: 0
+         */
+        public static final String COLUMN_FILESIZE     = "filesize";
+        /**
+         * Type: INTEGER
          * Description: The file current upload state
          * 0: not uploaded
          * 1: uploading
@@ -72,23 +72,25 @@ public class UploadFileDataSource {
          */
         public static final String COLUMN_STATE        = "state";
         /**
-         * Type: VARCHAR(50)
-         * Description: The whole file MD5 value
-         * Default: ""(String.Empty)
-         */
-        public static final String COLUMN_MD5          = "md5";
-        /**
-         * Type: INTEGER
-         * Description: The user who insert this item. Associate with user table's _ID
-         * Default: -1
-         */
-        public static final String COLUMN_USERID       = "user_id";
-        /**
          * Type: INTEGER
          * Description: The file current uploaded size(offset from head)
          * Default: 0
          */
         public static final String COLUMN_UPLOADED_SIZE    = "uploaded_size";
+        /**
+         * Type: INTEGER
+         * Description: The file type(not extension type)
+         * 0: file
+         * 1: folder
+         * Default: 0
+         */
+        public static final String COLUMN_FILETYPE     = "filetype";
+        /**
+         * Type: INTEGER
+         * Description: The user id(local database) who insert this item. Associate with user table's _ID
+         * Default: -1
+         */
+        public static final String COLUMN_USERID       = "local_user_id";
     }
 
     public UploadFileDataSource(Context context) {

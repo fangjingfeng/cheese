@@ -9,31 +9,65 @@ import android.provider.BaseColumns;
  *
  */
 public class UploadFile {
-    private int local_uid           = -1;
-    private int remote_uid          = -1;
+    /**
+     * The id(Index) at local table uploadfile
+     */
+    private int id                  = -1;
+    /**
+     * The guid at remote server
+     */
+    private String remote_id        = "";
+    /**
+     * The absolute file path(Local file system)
+     */
     private String filepath         = "";
+    /**
+     * The file's md5 value(Whole)
+     */
     private String md5              = "";
+    /**
+     * The parent folder id at local
+     */
     private int parent_id           = -1;
-    private String destpath         = "";
-    private int filesize            = 0;
+    /**
+     * The parent folder id(GUID) at remote server
+     */
+    private String remote_parent_id = "";
+    /**
+     * The whole file size in byte unit
+     */
+    private long filesize            = 0;
+    /**
+     * The file upload state
+     */
     private int state               = 0;
+    /**
+     * The uploaded size
+     */
     private int uploadsize          = 0;
+    /**
+     * The file type(file or folder)
+     */
     private int filetype            = 0;
+    /**
+     * The user id who insert the this item to table
+     */
+    private int local_user_id       = -1;
 
-    public int getLocal_uid() {
-        return local_uid;
+    public int getId() {
+        return id;
     }
 
-    public void setLocal_uid(int local_uid) {
-        this.local_uid = local_uid;
+    public void setId(int id) {
+        this.id = id;
     }
 
-    public int getRemote_uid() {
-        return remote_uid;
+    public String getRemote_id() {
+        return remote_id;
     }
 
-    public void setRemote_uid(int remote_uid) {
-        this.remote_uid = remote_uid;
+    public void setRemote_id(String remote_id) {
+        this.remote_id = remote_id;
     }
 
     public String getFilepath() {
@@ -60,19 +94,19 @@ public class UploadFile {
         this.parent_id = parent_id;
     }
 
-    public String getDestpath() {
-        return destpath;
+    public String getRemote_parent_id() {
+        return remote_parent_id;
     }
 
-    public void setDestpath(String destpath) {
-        this.destpath = destpath;
+    public void setRemote_parent_id(String remote_parent_id) {
+        this.remote_parent_id = remote_parent_id;
     }
 
-    public int getFilesize() {
+    public long getFilesize() {
         return filesize;
     }
 
-    public void setFilesize(int filesize) {
+    public void setFilesize(long filesize) {
         this.filesize = filesize;
     }
 
@@ -100,4 +134,11 @@ public class UploadFile {
         this.filetype = filetype;
     }
 
+    public int getLocal_user_id() {
+        return local_user_id;
+    }
+
+    public void setLocal_user_id(int local_user_id) {
+        this.local_user_id = local_user_id;
+    }
 }
