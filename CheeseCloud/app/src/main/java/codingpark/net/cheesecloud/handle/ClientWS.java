@@ -70,6 +70,7 @@ public final class ClientWS {
     private ClientWS() {
         SharedPreferences prefs = mContext.getSharedPreferences(AppConfigs.PREFS_NAME, Context.MODE_PRIVATE);
         mEndPoint = prefs.getString(AppConfigs.SERVER_ADDRESS, DEFAULT_ENDPOINT);
+        //mEndPoint = "http://192.168.0.101:22332/ClientWS.asmx?wsdl";
     }
 
     public static ClientWS getInstance(Context context) {
@@ -77,6 +78,10 @@ public final class ClientWS {
         if (client == null)
             client = new ClientWS();
         return client;
+    }
+
+    public void setEndPoint(String url) {
+        mEndPoint = url;
     }
 
     public void test_userLogin() {

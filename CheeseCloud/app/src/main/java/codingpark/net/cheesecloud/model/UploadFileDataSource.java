@@ -1,6 +1,8 @@
 package codingpark.net.cheesecloud.model;
 
+import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.provider.BaseColumns;
@@ -107,18 +109,85 @@ public class UploadFileDataSource {
     }
 
     public boolean addUploadFile(UploadFile file) {
+
         return true;
     }
 
-    public boolean deleteUploadFile() {
-        return true;
+    /**
+     * Delete the record by local uploadfile._ID column
+     * @param id
+     *  The target record _ID
+     * @return
+     *  true: delete success
+     *  false: delete failed
+     */
+    public boolean deleteUploadFile(int id) {
+        int result = database.delete(UploadFileEntry.TABLE_NAME, UploadFileEntry._ID + "=?", new String[]{String.valueOf(id)});
+        return result > 0;
     }
 
     public boolean updateUploadFile(UploadFile file) {
-        return true;
+        ContentValues cv = fileToContentValue(file);
+        int result = database.update(UploadFileEntry.TABLE_NAME, cv, UploadFileEntry.COLUMN_FILEPATH + "=?", new String[] {file.getFilepath()});
+        return result > 0;
     }
 
     public List<UploadFile> getAllUploadFile() {
-        return new ArrayList<UploadFile>();
+        List<UploadFile> fileList = new ArrayList<UploadFile>();
+        Cursor cursor = database.query(UploadFileEntry.TABLE_NAME, new String[]{
+                UploadFileEntry._ID,
+                UploadFileEntry.COLUMN_FILEPATH,
+                UploadFileEntry.COLUMN_FILESIZE,
+                UploadFileEntry.COLUMN_FILETYPE,
+                UploadFileEntry.COLUMN_MD5,
+                UploadFileEntry.COLUMN_PARENT_ID,
+                UploadFileEntry.COLUMN_REMOTE_ID,
+                UploadFileEntry.COLUMN_REMOTE_PARENT_ID,
+                UploadFileEntry.COLUMN_STATE,
+                UploadFileEntry.COLUMN_UPLOADED_SIZE,
+                UploadFileEntry.COLUMN_USERID
+        }, null, null, null, null, null);
+        while (cursor.moveToNext()) {
+            fileList.add(cursorToFile(cursor));
+        }
+        return fileList;
+    }
+
+    private UploadFile cursorToFile(Cursor cursor) {
+        UploadFile file = new UploadFile();
+        file.setId(cursor.getInt(0));
+        file.setFilepath(cursor.getString(1));
+        file.setFilesize(cursor.getLong(2));
+        file.setFiletype(cursor.getInt(3));
+        file.setMd5(cursor.getString(4));
+        file.setParent_id(cursor.getInt(5));
+        file.setRemote_id(cursor.getString(6));
+        file.setRemote_parent_id(cursor.getString(7));
+        file.setState(cursor.getInt(8));
+        file.setUploadsize(cursor.getLong(9));
+        file.setLocal_user_id(cursor.getInt(10));
+        return file;
+    }
+
+    /**
+     * Convert UploadFile object to ContentValues object
+     * @param file
+     *  UploadFile object
+     * @return
+     *  ContentValues object
+     */
+    private ContentValues fileToContentValue(UploadFile file) {
+        ContentValues cv = new ContentValues();
+        cv.put(UploadFileEntry.COLUMN_FILEPATH, file.getFilepath());
+        cv.put(UploadFileEntry.COLUMN_FILESIZE, file.getFilesize());
+        cv.put(UploadFileEntry.COLUMN_FILETYPE, file.getFiletype());
+        cv.put(UploadFileEntry.COLUMN_MD5, file.getMd5());
+        cv.put(UploadFileEntry.COLUMN_PARENT_ID, file.getParent_id());
+        cv.put(UploadFileEntry.COLUMN_REMOTE_ID, file.getRemote_id());
+        cv.put(UploadFileEntry.COLUMN_REMOTE_PARENT_ID, file.getRemote_parent_id());
+        cv.put(UploadFileEntry.COLUMN_STATE, file.getState());
+        cv.put(UploadFileEntry.COLUMN_UPLOADED_SIZE, file.getUploadsize());
+        cv.put(UploadFileEntry.COLUMN_USERID, file.getLocal_user_id());
+        return cv;
     }
 }

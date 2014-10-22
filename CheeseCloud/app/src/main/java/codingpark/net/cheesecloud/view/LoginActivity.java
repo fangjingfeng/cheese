@@ -118,10 +118,13 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
     }
 
     private void initInfo() {
+        Log.d(TAG, "initInfo");
         String latestUser = mPrefs.getString(AppConfigs.USERNAME, "");
         if (!latestUser.isEmpty()) {
+            Log.d(TAG, "latestUser: " + latestUser);
             User user = mDataSource.getUserByUsername(latestUser);
             if (user != null) {
+                Log.d(TAG, "Database have the user");
                 mEmailView.setText(user.getEmail());
                 mPasswordView.setText(user.getPassword_md5());
                 mWebUrlView.setText(user.getWs_address());
@@ -335,10 +338,11 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
             mPassword = password;
             mWebUrl = weburl;
             // Store the username/password/weburl to SharedPreferences
-            mPrefs.edit().putString(AppConfigs.USERNAME, mEmail);
-            mPrefs.edit().putString(AppConfigs.PASSWORD_MD5, mPassword);
-            mPrefs.edit().putString(AppConfigs.SERVER_ADDRESS, mWebUrl);
-            // Store the username/password/weburl to local database
+            mPrefs.edit().putString(AppConfigs.USERNAME, mEmail).commit();
+            mPrefs.edit().putString(AppConfigs.PASSWORD_MD5, mPassword).commit();
+            mPrefs.edit().putString(AppConfigs.SERVER_ADDRESS, mWebUrl).commit();
+            // Refresh ClientWS
+            ClientWS.getInstance(LoginActivity.this).setEndPoint(mWebUrl);
         }
 
         @Override
@@ -351,11 +355,11 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
                 //owner.CreateDate = "2014-10-17 16:44:23";
                 MessageDigest md = null;
                 md = MessageDigest.getInstance("MD5");
+                Log.d(TAG, "mEmail: " + mEmail + "##########" + "mPassword:" + mPassword + "#############" + mWebUrl);
                 result = ClientWS.getInstance(LoginActivity.this).userLogin(mEmail, mPassword, owner);
             } catch (NoSuchAlgorithmException e) {
                 e.printStackTrace();
             }
-            //ClientWS.getInstance(LoginActivity.this).test_getDisk();
 
 
             // TODO: register the new account here.
