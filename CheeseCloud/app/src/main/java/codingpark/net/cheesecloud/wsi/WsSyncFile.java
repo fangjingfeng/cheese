@@ -13,7 +13,6 @@ public class WsSyncFile implements KvmSerializable {
     // Count=23
     public boolean IsPreview;
     public String FullName;
-    public String ExpName;
     public String FatherID;
     public String CreatDate;
     public String Extend;
@@ -25,6 +24,7 @@ public class WsSyncFile implements KvmSerializable {
     public long UsedSpaceSizeKB;
     public String RecycleDate;
     public WsGuidOwner Recycler;
+    public boolean IsRecycled;
     public int TranCodeType;
     public int DownCount;
     public int LookCount;
@@ -45,29 +45,29 @@ public class WsSyncFile implements KvmSerializable {
             case 1:
                 return FullName;
             case 2:
-                return ExpName;
-            case 3:
                 return FatherID;
-            case 4:
+            case 3:
                 return CreatDate;
-            case 5:
+            case 4:
                 return Extend;
-            case 6:
+            case 5:
                 return CreaterID;
-            case 7:
+            case 6:
                 return PhyInfo;
-            case 8:
+            case 7:
                 return IsShow;
-            case 9:
+            case 8:
                 return ID;
-            case 10:
+            case 9:
                 return Name;
-            case 11:
+            case 10:
                 return UsedSpaceSizeKB;
-            case 12:
+            case 11:
                 return RecycleDate;
-            case 13:
+            case 12:
                 return Recycler;
+            case 13:
+                return IsRecycled;
             case 14:
                 return TranCodeType;
             case 15:
@@ -106,40 +106,40 @@ public class WsSyncFile implements KvmSerializable {
                 FullName = (String)o;
                 break;
             case 2:
-                ExpName = (String)o;
-                break;
-            case 3:
                 FatherID = (String)o;
                 break;
-            case 4:
+            case 3:
                 CreatDate = (String)o;
                 break;
-            case 5:
+            case 4:
                 Extend = (String)o;
                 break;
-            case 6:
+            case 5:
                 CreaterID = (String)o;
                 break;
-            case 7:
+            case 6:
                 PhyInfo = (WsPhyFileInfo)o;
                 break;
-            case 8:
+            case 7:
                 IsShow = (Boolean)o;
                 break;
-            case 9:
+            case 8:
                 ID = (String)o;
                 break;
-            case 10:
+            case 9:
                 Name = (String)o;
                 break;
-            case 11:
+            case 10:
                 UsedSpaceSizeKB = (Long)o;
                 break;
-            case 12:
+            case 11:
                 RecycleDate = (String)o;
                 break;
-            case 13:
+            case 12:
                 Recycler = (WsGuidOwner)o;
+                break;
+            case 13:
+                IsRecycled = (Boolean)o;
                 break;
             case 14:
                 TranCodeType = (Integer)o;
@@ -186,51 +186,51 @@ public class WsSyncFile implements KvmSerializable {
                 break;
             case 2:
                 propertyInfo.setType(PropertyInfo.STRING_CLASS);
-                propertyInfo.setName("ExpName");
+                propertyInfo.setName("FatherID");
                 break;
             case 3:
                 propertyInfo.setType(PropertyInfo.STRING_CLASS);
-                propertyInfo.setName("FatherID");
+                propertyInfo.setName("CreateDate");
                 break;
             case 4:
                 propertyInfo.setType(PropertyInfo.STRING_CLASS);
-                propertyInfo.setName("CreateDate");
+                propertyInfo.setName("Extend");
                 break;
             case 5:
                 propertyInfo.setType(PropertyInfo.STRING_CLASS);
-                propertyInfo.setName("Extend");
-                break;
-            case 6:
-                propertyInfo.setType(PropertyInfo.STRING_CLASS);
                 propertyInfo.setName("CreaterID");
                 break;
-            case 7:
+            case 6:
                 propertyInfo.setType(WsPhyFileInfo.class);
                 propertyInfo.setName("PhyInfo");
                 break;
-            case 8:
+            case 7:
                 propertyInfo.setType(PropertyInfo.BOOLEAN_CLASS);
                 propertyInfo.setName("IsShow");
                 break;
-            case 9:
+            case 8:
                 propertyInfo.setType(PropertyInfo.STRING_CLASS);
                 propertyInfo.setName("ID");
                 break;
-            case 10:
+            case 9:
                 propertyInfo.setType(PropertyInfo.STRING_CLASS);
                 propertyInfo.setName("Name");
                 break;
-            case 11:
+            case 10:
                 propertyInfo.setType(PropertyInfo.LONG_CLASS);
                 propertyInfo.setName("UsedSpaceSizeKB");
                 break;
-            case 12:
+            case 11:
                 propertyInfo.setType(PropertyInfo.STRING_CLASS);
                 propertyInfo.setName("RecycleDate");
                 break;
-            case 13:
+            case 12:
                 propertyInfo.setType(WsGuidOwner.class);
                 propertyInfo.setName("Recycler");
+                break;
+            case 13:
+                propertyInfo.setType(PropertyInfo.BOOLEAN_CLASS);
+                propertyInfo.setName("IsRecycled");
                 break;
             case 14:
                 propertyInfo.setType(PropertyInfo.INTEGER_CLASS);

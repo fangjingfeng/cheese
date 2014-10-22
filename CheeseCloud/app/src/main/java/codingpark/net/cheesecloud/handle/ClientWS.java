@@ -176,7 +176,7 @@ public final class ClientWS {
             ws_file.Extend = path.substring(path.lastIndexOf(".") + 1);
             ws_file.SizeB = file.length();
             ws_file.FullName = file.getName();
-            //ws_file.CreatDate = "2014/10/17 16:44:23";
+            ws_file.CreatDate = "2014/10/17 16:44:23";
             try {
                 ws_file.MD5 = FileManager.generateMD5(new FileInputStream(file));
             } catch (FileNotFoundException e) {

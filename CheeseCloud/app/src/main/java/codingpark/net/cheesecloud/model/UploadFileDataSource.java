@@ -1,17 +1,33 @@
 package codingpark.net.cheesecloud.model;
 
+import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
 import android.provider.BaseColumns;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import codingpark.net.cheesecloud.handle.LocalDatabase;
 
 /**
  * Created by ethanshan on 14-10-20.
  */
 public class UploadFileDataSource {
 
+    private Context mContext            = null;
+    private SQLiteDatabase database     = null;
+    private SQLiteOpenHelper dbHelper   = null;
+
     public static final class UploadFileEntry implements BaseColumns {
         /**
          * The table name which to store the user selected files information.
          */
         public static final String TABLE_NAME   = "upload_files";
+        /**
+         * The user guid at the server database
+         */
+        public static final String COLUMN_REMOTE_UID    = "remote_uid";
         /**
          * Type: TEXT
          * Description: The remote folder(destination) path
@@ -75,5 +91,32 @@ public class UploadFileDataSource {
         public static final String COLUMN_UPLOADED_SIZE    = "uploaded_size";
     }
 
+    public UploadFileDataSource(Context context) {
+        mContext = context;
+        dbHelper = new LocalDatabase(mContext);
+    }
 
+    public void open() {
+        database = dbHelper.getWritableDatabase();
+    }
+
+    public void close() {
+        dbHelper.close();
+    }
+
+    public boolean addUploadFile(UploadFile file) {
+        return true;
+    }
+
+    public boolean deleteUploadFile() {
+        return true;
+    }
+
+    public boolean updateUploadFile(UploadFile file) {
+        return true;
+    }
+
+    public List<UploadFile> getAllUploadFile() {
+        return new ArrayList<UploadFile>();
+    }
 }

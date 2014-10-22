@@ -37,6 +37,7 @@ public class LocalDatabase extends  SQLiteOpenHelper {
     private static final String CREATE_USERINFO_TABLE_SQL       =
             "CREATE TABLE " + UserDataSource.UserEntry.TABLE_NAME + " (" +
                     UserDataSource.UserEntry._ID + " INTEGER PRIMARY KEY, " +
+                    UserDataSource.UserEntry.COLUMN_GUID + " VARCHAR(50), " +
                     UserDataSource.UserEntry.COLUMN_PASSWORD_MD5 + " VARCHAR(50), " +
                     UserDataSource.UserEntry.COLUMN_USERNAME + " VARCHAR(50), " +
                     UserDataSource.UserEntry.COLUMN_WS_ADDRESS + " VARCHAR(255) " +
@@ -62,9 +63,6 @@ public class LocalDatabase extends  SQLiteOpenHelper {
     /**
      * download_files_table
      */
-    public static final String DOWNLOAD_FILES_TABLE_NAME        = "download_files";
-    private static final String CREATE_DOWNLOAD_FILES_TABLE_SQL = "CREATE TABLE " + DOWNLOAD_FILES_TABLE_NAME
-            + "";
 
     public LocalDatabase(Context context) {
         super(context, DATABASE_NAME , null, DATABASE_VERSION_1);

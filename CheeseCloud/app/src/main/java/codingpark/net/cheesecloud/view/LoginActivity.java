@@ -122,7 +122,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
         if (!latestUser.isEmpty()) {
             User user = mDataSource.getUserByUsername(latestUser);
             if (user != null) {
-                mEmailView.setText(user.getUsername());
+                mEmailView.setText(user.getEmail());
                 mPasswordView.setText(user.getPassword_md5());
                 mWebUrlView.setText(user.getWs_address());
             }
@@ -372,7 +372,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
                     // 1. Login success: Store the mEmail and mPassword to database
                     Log.d(TAG, "Login Success!");
                     User u = new User();
-                    u.setUsername(mEmail);
+                    u.setEmail(mEmail);
                     u.setPassword_md5(mPassword);
                     u.setWs_address(mWebUrl);
                     mDataSource.addUser(u);

@@ -9,6 +9,9 @@ import java.util.Hashtable;
  * Created by ethanshan on 14-10-20.
  */
 public class WsPermission implements KvmSerializable{
+    /**
+     * The permission type
+     */
     public int Type;
 
     @Override

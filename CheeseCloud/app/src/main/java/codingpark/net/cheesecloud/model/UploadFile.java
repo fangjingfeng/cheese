@@ -9,7 +9,8 @@ import android.provider.BaseColumns;
  *
  */
 public class UploadFile {
-    private int user_id             = -1;
+    private int local_uid           = -1;
+    private int remote_uid          = -1;
     private String filepath         = "";
     private String md5              = "";
     private int parent_id           = -1;
@@ -19,12 +20,20 @@ public class UploadFile {
     private int uploadsize          = 0;
     private int filetype            = 0;
 
-    public int getUser_id() {
-        return user_id;
+    public int getLocal_uid() {
+        return local_uid;
     }
 
-    public void setUser_id(int user_id) {
-        this.user_id = user_id;
+    public void setLocal_uid(int local_uid) {
+        this.local_uid = local_uid;
+    }
+
+    public int getRemote_uid() {
+        return remote_uid;
+    }
+
+    public void setRemote_uid(int remote_uid) {
+        this.remote_uid = remote_uid;
     }
 
     public String getFilepath() {

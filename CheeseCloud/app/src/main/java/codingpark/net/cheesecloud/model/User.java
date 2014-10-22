@@ -1,20 +1,34 @@
 package codingpark.net.cheesecloud.model;
 
-import android.database.sqlite.SQLiteDatabase;
-import android.provider.BaseColumns;
-
 /**
  * Created by ethanshan on 14-10-16.
  * The user entity, fetch/store user profile from/to database.
  */
 public class User {
 
+    /**
+     * Local database user id(index)
+     */
     private int id              = -1;
 
-    private String username     = "";
+    /**
+     * Remote database user id
+     */
+    private String guid         = "";
 
+    /**
+     * The user email(login username)
+     */
+    private String email = "";
+
+    /**
+     * The user password
+     */
     private String password_md5 = "";
 
+    /**
+     * The web service address
+     */
     private String ws_address   = "";
 
     public int getId() {
@@ -25,12 +39,20 @@ public class User {
         this.id = id;
     }
 
-    public String getUsername() {
-        return username;
+    public String getGuid() {
+        return guid;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setGuid(String guid) {
+        this.guid = guid;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getPassword_md5() {

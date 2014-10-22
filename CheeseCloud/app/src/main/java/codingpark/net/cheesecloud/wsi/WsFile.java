@@ -11,24 +11,82 @@ import java.util.Hashtable;
 public class WsFile implements KvmSerializable{
 
     // Count=19
+    /**
+     * The file is preview file
+     */
     public boolean IsPreview;
+    /**
+     * The file logic full name
+     */
     public String FullName;
-    public String ExpName;
+    /**
+     * The file's father folder ID
+     */
     public String FatherID;
+    /**
+     * The file's create date
+     */
     public String CreatDate;
+    /**
+     * The file extension name
+     * Exclude "."
+     */
     public String Extend;
+    /**
+     * The file's creator ID
+     */
     public String CreaterID;
+    /**
+     * ?
+     */
     public FileInfo PhyInfo;
+    /**
+     * Show the file in logic list
+     */
     public boolean IsShow;
+    /**
+     * The file's GUID
+     */
     public String ID;
+    /**
+     * ?
+     */
     public String Name;
+    /**
+     * The space usage(KB)
+     */
     public long UsedSpaceSizeKB;
+    /**
+     * The file deleted date
+     */
     public String RecycleDate;
+    /**
+     * The user object who delete this file
+     */
     public WsGuidOwner Recycler;
+    /**
+     * The file is deleted
+     */
+    public boolean IsRecycled;
+    /**
+     * Transcoding type
+     */
     public int TranCodeType;
+    /**
+     * Download time
+     */
     public int DownCount;
+    /**
+     * Show time
+     */
     public int LookCount;
+    /**
+     * The file size in byte unit
+     */
     public long SizeB;
+    /**
+     * The file md5 value(whole file)
+     */
     public String MD5;
 
 
@@ -41,29 +99,29 @@ public class WsFile implements KvmSerializable{
             case 1:
                 return FullName;
             case 2:
-                return ExpName;
-            case 3:
                 return FatherID;
-            case 4:
+            case 3:
                 return CreatDate;
-            case 5:
+            case 4:
                 return Extend;
-            case 6:
+            case 5:
                 return CreaterID;
-            case 7:
+            case 6:
                 return PhyInfo;
-            case 8:
+            case 7:
                 return IsShow;
-            case 9:
+            case 8:
                 return ID;
-            case 10:
+            case 9:
                 return Name;
-            case 11:
+            case 10:
                 return UsedSpaceSizeKB;
-            case 12:
+            case 11:
                 return RecycleDate;
-            case 13:
+            case 12:
                 return Recycler;
+            case 13:
+                return IsRecycled;
             case 14:
                 return TranCodeType;
             case 15:
@@ -94,40 +152,40 @@ public class WsFile implements KvmSerializable{
                 FullName = (String)o;
                 break;
             case 2:
-                ExpName = (String)o;
-                break;
-            case 3:
                 FatherID = (String)o;
                 break;
-            case 4:
+            case 3:
                 CreatDate = (String)o;
                 break;
-            case 5:
+            case 4:
                 Extend = (String)o;
                 break;
-            case 6:
+            case 5:
                 CreaterID = (String)o;
                 break;
-            case 7:
+            case 6:
                 PhyInfo = (FileInfo)o;
                 break;
-            case 8:
+            case 7:
                 IsShow = (Boolean)o;
                 break;
-            case 9:
+            case 8:
                 ID = (String)o;
                 break;
-            case 10:
+            case 9:
                 Name = (String)o;
                 break;
-            case 11:
+            case 10:
                 UsedSpaceSizeKB = (Long)o;
                 break;
-            case 12:
+            case 11:
                 RecycleDate = (String)o;
                 break;
-            case 13:
+            case 12:
                 Recycler = (WsGuidOwner)o;
+                break;
+            case 13:
+                IsRecycled = (Boolean)o;
                 break;
             case 14:
                 TranCodeType = (Integer)o;
@@ -163,51 +221,51 @@ public class WsFile implements KvmSerializable{
                 break;
             case 2:
                 propertyInfo.setType(PropertyInfo.STRING_CLASS);
-                propertyInfo.setName("ExpName");
+                propertyInfo.setName("FatherID");
                 break;
             case 3:
                 propertyInfo.setType(PropertyInfo.STRING_CLASS);
-                propertyInfo.setName("FatherID");
+                propertyInfo.setName("CreateDate");
                 break;
             case 4:
                 propertyInfo.setType(PropertyInfo.STRING_CLASS);
-                propertyInfo.setName("CreateDate");
+                propertyInfo.setName("Extend");
                 break;
             case 5:
                 propertyInfo.setType(PropertyInfo.STRING_CLASS);
-                propertyInfo.setName("Extend");
-                break;
-            case 6:
-                propertyInfo.setType(PropertyInfo.STRING_CLASS);
                 propertyInfo.setName("CreaterID");
                 break;
-            case 7:
+            case 6:
                 propertyInfo.setType(FileInfo.class);
                 propertyInfo.setName("PhyInfo");
                 break;
-            case 8:
+            case 7:
                 propertyInfo.setType(PropertyInfo.BOOLEAN_CLASS);
                 propertyInfo.setName("IsShow");
                 break;
-            case 9:
+            case 8:
                 propertyInfo.setType(PropertyInfo.STRING_CLASS);
                 propertyInfo.setName("ID");
                 break;
-            case 10:
+            case 9:
                 propertyInfo.setType(PropertyInfo.STRING_CLASS);
                 propertyInfo.setName("Name");
                 break;
-            case 11:
+            case 10:
                 propertyInfo.setType(PropertyInfo.LONG_CLASS);
                 propertyInfo.setName("UsedSpaceSizeKB");
                 break;
-            case 12:
+            case 11:
                 propertyInfo.setType(PropertyInfo.STRING_CLASS);
                 propertyInfo.setName("RecycleDate");
                 break;
-            case 13:
+            case 12:
                 propertyInfo.setType(WsGuidOwner.class);
                 propertyInfo.setName("Recycler");
+                break;
+            case 13:
+                propertyInfo.setType(PropertyInfo.BOOLEAN_CLASS);
+                propertyInfo.setName("IsRecycled");
                 break;
             case 14:
                 propertyInfo.setType(PropertyInfo.INTEGER_CLASS);

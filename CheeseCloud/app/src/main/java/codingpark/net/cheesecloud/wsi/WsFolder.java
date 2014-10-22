@@ -10,9 +10,9 @@ import java.util.Hashtable;
  */
 public class WsFolder implements KvmSerializable{
     // Count: 17
-    public WsGuidOwner Father;
+    public String FatherID;
     public String ApplicationID;
-    public WsGuidOwner LogicDisk;
+    public String LogicDiskID;
     public WsSpaceSizer SpaceSize;
     public boolean IsShow;
     public String CreatDate;
@@ -33,11 +33,11 @@ public class WsFolder implements KvmSerializable{
     public Object getProperty(int i) {
         switch (i) {
             case 0:
-                return Father;
+                return FatherID;
             case 1:
                 return ApplicationID;
             case 2:
-                return LogicDisk;
+                return LogicDiskID;
             case 3:
                 return SpaceSize;
             case 4:
@@ -80,13 +80,13 @@ public class WsFolder implements KvmSerializable{
     public void setProperty(int i, Object o) {
         switch (i) {
             case 0:
-                Father = (WsGuidOwner)o;
+                FatherID = (String)o;
                 break;
             case 1:
                 ApplicationID = (String)o;
                 break;
             case 2:
-                LogicDisk = (WsGuidOwner)o;
+                LogicDiskID = (String)o;
                 break;
             case 3:
                 SpaceSize = (WsSpaceSizer)o;
@@ -140,16 +140,16 @@ public class WsFolder implements KvmSerializable{
     public void getPropertyInfo(int i, Hashtable hashtable, PropertyInfo propertyInfo) {
         switch (i) {
             case 0:
-                propertyInfo.setType(WsGuidOwner.class);
-                propertyInfo.setName("Father");
+                propertyInfo.setType(PropertyInfo.STRING_CLASS);
+                propertyInfo.setName("FatherID");
                 break;
             case 1:
                 propertyInfo.setType(PropertyInfo.STRING_CLASS);
                 propertyInfo.setName("ApplicationID");
                 break;
             case 2:
-                propertyInfo.setType(WsGuidOwner.class);
-                propertyInfo.setName("LogicDisk");
+                propertyInfo.setType(PropertyInfo.STRING_CLASS);
+                propertyInfo.setName("LogicDiskID");
                 break;
             case 3:
                 propertyInfo.setType(WsSpaceSizer.class);

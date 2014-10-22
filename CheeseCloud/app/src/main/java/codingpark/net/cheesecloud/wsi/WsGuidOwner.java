@@ -11,15 +11,46 @@ import java.util.Hashtable;
 public class WsGuidOwner implements KvmSerializable{
 
     // Count: 10
+    /**
+     * The user ID(Service GUID)
+     */
     public String ID;
+    /**
+     * The user email(As login username)
+     */
     public String Email;
+    /**
+     * The gender of the user
+     */
     public int Sex;
+    /**
+     * The path of user's portrait picture
+     */
     public String FacePicture;
+    /**
+     * User description
+     */
     public String SelfInfo;
+    /**
+     * The user create date
+     */
     public String CreateDate;
+    /**
+     * The user is freeze
+     */
     public boolean IsFreezed;
+    /**
+     * The user type
+     */
     public int UserType;
+    /**
+     * Used for third party application to access
+     * the system
+     */
     public String AccessCode;
+    /**
+     * The username(For show)
+     */
     public String Name;
 
     @Override

@@ -38,7 +38,9 @@ public class UserDataSource {
      * userinfo table
      * ---------------------------------------
      * |  _ID           |   INTEGER
-     * --------------------------------------
+     * ---------------------------------------
+     * |   guid         |   VARCHAR(50)
+     * ---------------------------------------
      * |  password_md5  |   VARCHAR(50)
      * ---------------------------------------
      * |  username      |   VARCHAR(50)
@@ -52,6 +54,10 @@ public class UserDataSource {
          * The user table name
          */
         public static final String TABLE_NAME           = "userinfo";
+        /**
+         * The user id at remote server(GUID)
+         */
+        public static final String COLUMN_GUID          = "guid";
         /**
          * Type: VARCHAR(50)
          * Description: The login password(Encrypt by MD5 Algorithm)
@@ -84,13 +90,14 @@ public class UserDataSource {
     public boolean addUser(User user) {
         // 1. Judge the user is already stored in database
         // If exist, just update the record
-        if (getUserByUsername(user.getUsername()) != null) {
+        if (getUserByUsername(user.getEmail()) != null) {
             return updateUser(user);
         }
         // If not exist, insert a new record
         ContentValues cv = new ContentValues();
+        cv.put(UserEntry.COLUMN_GUID, user.getGuid());
         cv.put(UserEntry.COLUMN_PASSWORD_MD5, user.getPassword_md5());
-        cv.put(UserEntry.COLUMN_USERNAME, user.getUsername());
+        cv.put(UserEntry.COLUMN_USERNAME, user.getEmail());
         cv.put(UserEntry.COLUMN_WS_ADDRESS, user.getWs_address());
         long id = database.insert(UserEntry.TABLE_NAME, null, cv);
         return id > 0;
@@ -117,10 +124,11 @@ public class UserDataSource {
      */
     public boolean updateUser(User user) {
         ContentValues cv = new ContentValues();
+        cv.put(UserEntry.COLUMN_GUID, user.getGuid());
         cv.put(UserEntry.COLUMN_PASSWORD_MD5, user.getPassword_md5());
-        cv.put(UserEntry.COLUMN_USERNAME, user.getUsername());
+        cv.put(UserEntry.COLUMN_USERNAME, user.getEmail());
         cv.put(UserEntry.COLUMN_WS_ADDRESS, user.getWs_address());
-        int rows = database.update(UserEntry.TABLE_NAME, cv, UserEntry.COLUMN_USERNAME + "=?", new String[]{user.getUsername()});
+        int rows = database.update(UserEntry.TABLE_NAME, cv, UserEntry.COLUMN_USERNAME + "=?", new String[]{user.getEmail()});
         return rows > 0;
     }
 
@@ -133,6 +141,7 @@ public class UserDataSource {
         ArrayList<User> userList = new ArrayList<User>();
         Cursor cursor = database.query(UserEntry.TABLE_NAME,
                 new String[]{UserEntry._ID,
+                        UserEntry.COLUMN_GUID,
                         UserEntry.COLUMN_PASSWORD_MD5,
                         UserEntry.COLUMN_USERNAME,
                         UserEntry.COLUMN_WS_ADDRESS},
@@ -140,9 +149,10 @@ public class UserDataSource {
         while(cursor.moveToNext()) {
             User u = new User();
             u.setId(cursor.getInt(0));
-            u.setPassword_md5(cursor.getString(1));
-            u.setUsername(cursor.getString(2));
-            u.setWs_address(cursor.getString(3));
+            u.setGuid(cursor.getString(1));
+            u.setPassword_md5(cursor.getString(2));
+            u.setEmail(cursor.getString(3));
+            u.setWs_address(cursor.getString(4));
             userList.add(u);
         }
         return userList;
@@ -159,6 +169,7 @@ public class UserDataSource {
         User user = null;
         Cursor cursor = database.query(UserEntry.TABLE_NAME,
                 new String[]{UserEntry._ID,
+                        UserEntry.COLUMN_GUID,
                         UserEntry.COLUMN_PASSWORD_MD5,
                         UserEntry.COLUMN_USERNAME,
                         UserEntry.COLUMN_WS_ADDRESS},
@@ -166,9 +177,10 @@ public class UserDataSource {
         while(cursor.moveToNext()) {
             user = new User();
             user.setId(cursor.getInt(0));
-            user.setPassword_md5(cursor.getString(1));
-            user.setUsername(cursor.getString(2));
-            user.setWs_address(cursor.getString(3));
+            user.setGuid(cursor.getString(1));
+            user.setPassword_md5(cursor.getString(2));
+            user.setEmail(cursor.getString(3));
+            user.setWs_address(cursor.getString(4));
         }
         return user;
     }
