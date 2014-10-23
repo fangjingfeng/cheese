@@ -11,10 +11,15 @@ public class UploadFileState {
     public static final int NotUpload       = 0;
     /**
      * In process uploading
+     * file: the file is uploading, and created on server
+     * folder: the folder already created on server, but sub
+     * file not upload complete.
      */
     public static final int Uploading       = 1;
     /**
      * Upload completed
+     * file: the file already uploaded complete
+     * folder: the folder created and sub file upload complete on server
      */
     public static final int Uploaded        = 2;
 }

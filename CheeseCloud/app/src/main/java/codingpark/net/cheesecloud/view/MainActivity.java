@@ -28,6 +28,7 @@ import codingpark.net.cheesecloud.R;
 import codingpark.net.cheesecloud.handle.ClientWS;
 import codingpark.net.cheesecloud.handle.OnFragmentInteractionListener;
 import codingpark.net.cheesecloud.handle.SelectedPathHandler;
+import codingpark.net.cheesecloud.handle.UploadService;
 import codingpark.net.cheesecloud.model.UploadFileDataSource;
 
 
@@ -401,7 +402,6 @@ public class MainActivity extends Activity implements OnFragmentInteractionListe
             return SCAN_SUCCESS;
         }
 
-
         @Override
         protected void onProgressUpdate(Void... values) {
             super.onProgressUpdate(values);
@@ -412,7 +412,8 @@ public class MainActivity extends Activity implements OnFragmentInteractionListe
             switch (result) {
                 case SCAN_SUCCESS:
                     Toast.makeText(MainActivity.this, "扫描插入完成", Toast.LENGTH_SHORT).show();
-                    Log.d(TAG, "Scan complete!");
+                    Log.d(TAG, "Scan complete, send upload action to UploadService!");
+                    UploadService.startActionUpload(MainActivity.this);
                     break;
                 case SCAN_FAILED:
                     break;
@@ -438,36 +439,6 @@ public class MainActivity extends Activity implements OnFragmentInteractionListe
                 }
             }
             return;
-        }
-    }
-
-    private class UploadFileTask extends AsyncTask<Void, Void, Integer> {
-
-        public UploadFileTask() {
-        }
-
-        @Override
-        protected Integer doInBackground(Void... params) {
-            return null;
-        }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-        }
-
-        @Override
-        protected void onPostExecute(Integer integer) {
-            super.onPostExecute(integer);
-        }
-
-        @Override
-        protected void onProgressUpdate(Void... values) {
-            super.onProgressUpdate(values);
-        }
-
-        private void root_upload() {
-
         }
     }
 

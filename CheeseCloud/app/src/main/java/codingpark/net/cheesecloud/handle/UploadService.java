@@ -13,6 +13,12 @@ public class UploadService extends IntentService {
     public static final String TAG      = UploadService.class.getSimpleName();
 
     /**
+     * The upload block size in byte unit
+     * Default size 4KB
+     */
+    public static final int UPLOAD_BLOCK_SIZE           = 4096;
+
+    /**
      * Start upload command
      */
     private static final String ACTION_START_UPLOAD     = "codingpark.net.cheesecloud.handle.ACTION_START_UPLOAD";
@@ -47,6 +53,7 @@ public class UploadService extends IntentService {
 
     public UploadService() {
         super("UploadService");
+        Context c = getApplicationContext();
     }
 
     @Override
@@ -76,4 +83,9 @@ public class UploadService extends IntentService {
     private void handleActionPauseUpload() {
         Log.d(TAG, "Pause uploading");
     }
+
+    private void root_upload() {
+
+    }
+
 }

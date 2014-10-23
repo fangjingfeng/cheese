@@ -102,6 +102,22 @@ public class UploadFileDataSource {
          * Default: -1
          */
         public static final String COLUMN_USERID       = "local_user_id";
+
+        /**
+         * UploadFile table columns array
+         */
+        public static final String[] COLUMN_ARRAY = new String[] {
+                _ID,
+                COLUMN_FILEPATH,
+                COLUMN_FILESIZE,
+                COLUMN_FILETYPE,
+                COLUMN_MD5,
+                COLUMN_PARENT_ID,
+                COLUMN_REMOTE_ID,
+                COLUMN_REMOTE_PARENT_ID,
+                COLUMN_STATE,
+                COLUMN_UPLOADED_SIZE,
+                COLUMN_USERID};
     }
 
     public UploadFileDataSource(Context context) {
@@ -185,19 +201,9 @@ public class UploadFileDataSource {
 
     public List<UploadFile> getAllUploadFile() {
         List<UploadFile> fileList = new ArrayList<UploadFile>();
-        Cursor cursor = database.query(UploadFileEntry.TABLE_NAME, new String[]{
-                UploadFileEntry._ID,
-                UploadFileEntry.COLUMN_FILEPATH,
-                UploadFileEntry.COLUMN_FILESIZE,
-                UploadFileEntry.COLUMN_FILETYPE,
-                UploadFileEntry.COLUMN_MD5,
-                UploadFileEntry.COLUMN_PARENT_ID,
-                UploadFileEntry.COLUMN_REMOTE_ID,
-                UploadFileEntry.COLUMN_REMOTE_PARENT_ID,
-                UploadFileEntry.COLUMN_STATE,
-                UploadFileEntry.COLUMN_UPLOADED_SIZE,
-                UploadFileEntry.COLUMN_USERID
-        }, null, null, null, null, null);
+        Cursor cursor = database.query(UploadFileEntry.TABLE_NAME,
+                UploadFileEntry.COLUMN_ARRAY,
+                null, null, null, null, null);
         while (cursor.moveToNext()) {
             fileList.add(cursorToFile(cursor));
         }
@@ -218,6 +224,19 @@ public class UploadFileDataSource {
         file.setUploadsize(cursor.getLong(9));
         file.setLocal_user_id(cursor.getInt(10));
         return file;
+    }
+
+    public List<UploadFile> getNotUploadedRootFiles() {
+        List<UploadFile> fileList = new ArrayList<UploadFile>();
+        Cursor cursor = database.query(UploadFileEntry.TABLE_NAME,
+                UploadFileEntry.COLUMN_ARRAY,
+                UploadFileEntry.COLUMN_STATE + "!=? and "
+                        + UploadFileEntry.COLUMN_USERID + "=? and "
+                        + UploadFileEntry.COLUMN_PARENT_ID + "=-1", null, null, null, null);
+       while (cursor.moveToNext())  {
+           fileList.add(cursorToFile(cursor));
+       }
+        return fileList;
     }
 
     /**
