@@ -390,6 +390,17 @@ public final class ClientWS {
         envelope.dotNet = true;
         envelope.setOutputSoapObject(rpc);
 
+        // Add parameters
+        /*
+        SoapObject disks = new SoapObject(NAMESPACE, "disks");
+
+        PropertyInfo p_folderList = new PropertyInfo();
+        p_folderList.setType(PropertyInfo.VECTOR_CLASS);
+        p_folderList.setName("disks");
+        p_folderList.setValue(list);
+        rpc.addProperty(p_folderList);
+        */
+
         // Mapping
         envelope.addMapping(NAMESPACE, WsGuidOwner.class.getSimpleName(), WsGuidOwner.class);
         envelope.addMapping(NAMESPACE, WsFolder.class.getSimpleName(), WsFolder.class);
@@ -431,16 +442,24 @@ public final class ClientWS {
     }
 
     public void test_getFolderList() {
-        getFolderList();
+        WsFolder folder = new WsFolder();
+        folder.FatherID = "395ED821-E528-42F0-8EA7-C59F258E7435";
+        folder.ID = "395ED821-E528-42F0-8EA7-C59F258E7435";
+        getFolderList(folder);
     }
 
-    public void getFolderList() {
+    public void getFolderList(WsFolder folder) {
         // 1. Create SOAP Action
         String soapAction = NAMESPACE + METHOD_GETFOLDERLIST;//"http://tempuri.org/Test";
 
         // 2. Initial SoapObject
         SoapObject rpc = new SoapObject(NAMESPACE, METHOD_GETFOLDERLIST);
         // add web service method parameter
+        PropertyInfo p_folderInfo = new PropertyInfo();
+        p_folderInfo.setType(WsFolder.class);
+        p_folderInfo.setName("folder");
+        p_folderInfo.setValue(folder);
+        rpc.addProperty(p_folderInfo);
 
         // 3. Initial envelope
         // Create soap request object with soap version
@@ -497,6 +516,7 @@ public final class ClientWS {
         File file = new File(path);
         if (file.exists()) {
             folder.FatherID = "395ED821-E528-42F0-8EA7-C59F258E7435";
+            //folder.ID = "395ED821-E528-42F0-8EA7-C59F258E7435";
             folder.Name = file.getName();
         } else {
             Log.d(TAG, "File: " + path + " \t" + " not exist!");

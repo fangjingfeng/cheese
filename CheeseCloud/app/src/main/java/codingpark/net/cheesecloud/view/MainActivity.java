@@ -9,6 +9,7 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.support.v13.app.FragmentPagerAdapter;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
@@ -21,15 +22,19 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import codingpark.net.cheesecloud.R;
 import codingpark.net.cheesecloud.handle.ClientWS;
 import codingpark.net.cheesecloud.handle.OnFragmentInteractionListener;
+import codingpark.net.cheesecloud.handle.SelectedPathHandler;
+import codingpark.net.cheesecloud.model.UploadFileDataSource;
 
 
 public class MainActivity extends Activity implements OnFragmentInteractionListener {
 
     private static final String TAG                 = "MainActivity";
+    private static String remote_parent_id          = "";
 
     // Application preferences key
     public static final String PREFS_NAME           = "ManagerPrefsFile";	//user preference file name
@@ -134,12 +139,18 @@ public class MainActivity extends Activity implements OnFragmentInteractionListe
         Log.d(TAG, "Upload Activity return results!");
         if (resultCode == RESULT_OK) {
             final ArrayList<String> selectFiles = data.getStringArrayListExtra(UploadActivity.RESULT_SELECTED_FILES_KEY);
+            remote_parent_id   = data.getStringExtra(SelectPathActivity.RESULT_SELECTED_REMOTE_PARENT_ID);
             Log.d(TAG, "User selected upload file: \n" + selectFiles.toString());
+            Log.d(TAG, "User selected remote parent id: " + remote_parent_id);
 
+            new ScanFilesTask(selectFiles).execute();
             Log.d(TAG, "*****Test CheckedFileInfo and UploadFile******");
             Thread t = new Thread(new Runnable() {
+
                 @Override
                 public void run() {
+                    if (selectFiles.size() <= 0)
+                        return;
                     File file = new File(selectFiles.get(0));
                     if (file.exists()) {
                         if (file.isFile()) {
@@ -364,6 +375,70 @@ public class MainActivity extends Activity implements OnFragmentInteractionListe
         }
     }
 
+    private class ScanFilesTask extends AsyncTask<Void, Void, Integer> {
 
+        public static final int SCAN_SUCCESS    = 0;
+        public static final int SCAN_FAILED     = 1;
+
+        private ArrayList<String> mFileList         = null;
+        private UploadFileDataSource mDataSource    = null;
+
+        public ScanFilesTask(ArrayList<String> fileList) {
+            mFileList = fileList;
+            mDataSource = new UploadFileDataSource(MainActivity.this);
+        }
+
+        @Override
+        protected void onPreExecute() {
+            mDataSource.open();
+        }
+
+        protected Integer doInBackground(Void... params) {
+            for (String path: mFileList) {
+                Log.d(TAG, "scan: " + path);
+                scan(new File(path), -1, remote_parent_id);
+            }
+            return SCAN_SUCCESS;
+        }
+
+
+        @Override
+        protected void onProgressUpdate(Void... values) {
+            super.onProgressUpdate(values);
+        }
+
+        @Override
+        protected void onPostExecute(Integer result) {
+            switch (result) {
+                case SCAN_SUCCESS:
+                    Toast.makeText(MainActivity.this, "扫描插入完成", Toast.LENGTH_SHORT).show();
+                    Log.d(TAG, "Scan complete!");
+                    break;
+                case SCAN_FAILED:
+                    break;
+                default:
+                    break;
+            }
+            mDataSource.close();
+        }
+
+
+        private void scan(File file, long l_parent_id, String r_parent_id) {
+            long id = mDataSource.addUploadFile(file, l_parent_id, r_parent_id);
+            if (file.isDirectory()) {
+                File[] fileArray = file.listFiles();
+                File subFile = null;
+                for (int i = 0; i < fileArray.length; i++) {
+                    subFile = fileArray[i];
+                    if (subFile.isFile()) {
+                        mDataSource.addUploadFile(subFile, id, "");
+                    } else {
+                        scan(subFile, id, "");
+                    }
+                }
+            }
+            return;
+        }
+    }
 
 }

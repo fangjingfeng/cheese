@@ -7,9 +7,17 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.provider.BaseColumns;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
+import codingpark.net.cheesecloud.AppConfigs;
+import codingpark.net.cheesecloud.eumn.UploadFileState;
+import codingpark.net.cheesecloud.eumn.UploadFileType;
+import codingpark.net.cheesecloud.handle.ClientWS;
+import codingpark.net.cheesecloud.handle.FileManager;
 import codingpark.net.cheesecloud.handle.LocalDatabase;
 
 /**
@@ -28,7 +36,7 @@ public class UploadFileDataSource {
          */
         public static final String TABLE_NAME   = "upload_files";
         /**
-         * The user guid at the server database
+         * The user guid at the server database(Current not use)
          */
         public static final String COLUMN_REMOTE_ID    = "remote_id";
         /**
@@ -123,6 +131,32 @@ public class UploadFileDataSource {
         ContentValues cv = fileToContentValue(file);
         long result = database.insert(UploadFileEntry.TABLE_NAME, null, cv);
         return result;
+    }
+
+    public long addUploadFile(File file, long l_parent_id, String r_parent_id) {
+        UploadFile u_file = new UploadFile();
+        // TODO Judge the table have the same path/local_user_id/state!=uploaded(If have, not need insert)
+        if (file.exists()) {
+            try {
+                u_file.setFilepath(file.getAbsolutePath());
+                if (file.isFile())
+                    u_file.setMd5(FileManager.generateMD5(new FileInputStream(file)));
+                else
+                    u_file.setMd5("");
+                u_file.setParent_id(l_parent_id);
+                u_file.setRemote_parent_id(r_parent_id);
+                u_file.setFilesize(file.length());
+                u_file.setState(UploadFileState.NotUpload);
+                u_file.setUploadsize(0);
+                u_file.setFiletype(file.isFile() ? UploadFileType.TYPE_FILE : UploadFileType.TYPE_FOLDER);
+                u_file.setLocal_user_id(AppConfigs.current_local_user_id);
+                return addUploadFile(u_file);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return -1;
     }
 
     /**

@@ -1,7 +1,5 @@
 package codingpark.net.cheesecloud.model;
 
-import android.provider.BaseColumns;
-
 /**
  * Created by ethanshan on 14-10-16.
  * The UploadFile entity, fetch/store uploading files information
@@ -12,7 +10,7 @@ public class UploadFile {
     /**
      * The id(Index) at local table uploadfile
      */
-    private int id                  = -1;
+    private long id                 = -1;
     /**
      * The guid at remote server
      */
@@ -28,7 +26,7 @@ public class UploadFile {
     /**
      * The parent folder id at local
      */
-    private int parent_id           = -1;
+    private long parent_id          = -1;
     /**
      * The parent folder id(GUID) at remote server
      */
@@ -52,13 +50,13 @@ public class UploadFile {
     /**
      * The user id who insert the this item to table
      */
-    private int local_user_id       = -1;
+    private long local_user_id       = -1;
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -86,11 +84,11 @@ public class UploadFile {
         this.md5 = md5;
     }
 
-    public int getParent_id() {
+    public long getParent_id() {
         return parent_id;
     }
 
-    public void setParent_id(int parent_id) {
+    public void setParent_id(long parent_id) {
         this.parent_id = parent_id;
     }
 
@@ -134,11 +132,11 @@ public class UploadFile {
         this.filetype = filetype;
     }
 
-    public int getLocal_user_id() {
+    public long getLocal_user_id() {
         return local_user_id;
     }
 
-    public void setLocal_user_id(int local_user_id) {
+    public void setLocal_user_id(long local_user_id) {
         this.local_user_id = local_user_id;
     }
 }

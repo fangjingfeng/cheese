@@ -28,11 +28,15 @@ import codingpark.net.cheesecloud.utils.CatalogList;
  */
 public final class UploadActivity extends ListActivity implements UploadHandler.SelectedChangedListener{
 
-    private static final String TAG                     = "UploadActivity";
+    private static final String TAG                     = UploadActivity.class.getSimpleName();
 
-    public static final String RESULT_SELECTED_FILES_KEY    = "selected_files_path_list";
+    public static final String RESULT_SELECTED_FILES_KEY= "selected_files_path_list";
 
-    private FileManager mFileMgr = null;
+    public static final String RESULT_REMOTE_PARENT_ID  = "remote_parent_id";
+
+    public static String remote_parent_id               = "";
+
+    private FileManager mFileMgr                        = null;
     private UploadHandler mHandler                      = null;
     private UploadHandler.UploadListAdapter mAdapter    = null;
     private CatalogList mCataList                       = null;
@@ -159,6 +163,7 @@ public final class UploadActivity extends ListActivity implements UploadHandler.
                 Toast.makeText(UploadActivity.this, "开始上传", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent();
                 intent.putStringArrayListExtra(RESULT_SELECTED_FILES_KEY, mHandler.getSelectedPath());
+                intent.putExtra(SelectPathActivity.RESULT_SELECTED_REMOTE_PARENT_ID, remote_parent_id);
                 setResult(RESULT_OK, intent);
                 finish();
             }
@@ -188,6 +193,17 @@ public final class UploadActivity extends ListActivity implements UploadHandler.
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.d(TAG, "Selected Activity return results!");
+        if (resultCode == RESULT_OK) {
+            remote_parent_id = data.getStringExtra(SelectPathActivity.RESULT_SELECTED_REMOTE_PARENT_ID);
+            Log.d(TAG, "User selected remote parent id: \n" + remote_parent_id);
+
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     /**
