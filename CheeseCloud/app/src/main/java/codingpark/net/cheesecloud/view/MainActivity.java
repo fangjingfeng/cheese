@@ -441,4 +441,34 @@ public class MainActivity extends Activity implements OnFragmentInteractionListe
         }
     }
 
+    private class UploadFileTask extends AsyncTask<Void, Void, Integer> {
+
+        public UploadFileTask() {
+        }
+
+        @Override
+        protected Integer doInBackground(Void... params) {
+            return null;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected void onPostExecute(Integer integer) {
+            super.onPostExecute(integer);
+        }
+
+        @Override
+        protected void onProgressUpdate(Void... values) {
+            super.onProgressUpdate(values);
+        }
+
+        private void root_upload() {
+
+        }
+    }
+
 }

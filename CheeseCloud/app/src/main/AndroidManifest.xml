@@ -14,7 +14,9 @@
     <uses-permission android:name="android.permission.USE_CREDENTIALS" /> <!-- To retrieve the account name (email) as part of sign-in: -->
     <uses-permission android:name="android.permission.GET_ACCOUNTS" /> <!-- To auto-complete the email text field in the login form with the user's emails -->
     <uses-permission android:name="android.permission.READ_PROFILE" />
-    <uses-permission android:name="android.permission.READ_CONTACTS" /> <!-- <uses-permission android:name="android.permission.DEVICE_POWER"/> -->
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+
+    <!-- <uses-permission android:name="android.permission.DEVICE_POWER"/> -->
     <application
         android:allowBackup="true"
         android:icon="@drawable/cheesecloud_icon"
@@ -71,6 +73,11 @@
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
+
+        <service
+            android:name="codingpark.net.cheesecloud.handle.UploadService"
+            android:exported="false" >
+        </service>
     </application>
 
 </manifest>
