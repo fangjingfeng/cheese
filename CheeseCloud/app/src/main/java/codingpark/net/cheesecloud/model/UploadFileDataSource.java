@@ -232,10 +232,12 @@ public class UploadFileDataSource {
                 UploadFileEntry.COLUMN_ARRAY,
                 UploadFileEntry.COLUMN_STATE + "!=? and "
                         + UploadFileEntry.COLUMN_USERID + "=? and "
-                        + UploadFileEntry.COLUMN_PARENT_ID + "=-1", null, null, null, null);
-       while (cursor.moveToNext())  {
-           fileList.add(cursorToFile(cursor));
-       }
+                        + UploadFileEntry.COLUMN_PARENT_ID + "=-1",
+                new String[]{String.valueOf(UploadFileState.Uploaded),
+                        String.valueOf(AppConfigs.current_local_user_id)}, null, null, null);
+        while (cursor.moveToNext())  {
+            fileList.add(cursorToFile(cursor));
+        }
         return fileList;
     }
 

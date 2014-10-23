@@ -5,6 +5,18 @@ import android.content.Intent;
 import android.content.Context;
 import android.util.Log;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.util.List;
+
+import codingpark.net.cheesecloud.eumn.UploadFileState;
+import codingpark.net.cheesecloud.eumn.UploadFileType;
+import codingpark.net.cheesecloud.eumn.WsResultType;
+import codingpark.net.cheesecloud.model.UploadFile;
+import codingpark.net.cheesecloud.model.UploadFileDataSource;
+import codingpark.net.cheesecloud.wsi.WsFile;
+
 /**
  * An {@link IntentService} subclass for handling asynchronous upload
  * task requests in a service on a separate handler thread.
@@ -26,6 +38,8 @@ public class UploadService extends IntentService {
      * Pause upload command
      */
     private static final String ACTION_PAUSE_UPLOAD     = "codingpark.net.cheesecloud.handle.ACTION_PAUSE_UPLOAD";
+
+    private UploadFileDataSource uploadFileDataSource   = null;
 
     /**
      * Starts this service to perform action ACTION_START_UPLOAD with the
@@ -73,6 +87,8 @@ public class UploadService extends IntentService {
      * parameters.
      */
     private void handleActionStartUpload() {
+        uploadFileDataSource = new UploadFileDataSource(this);
+        uploadFileDataSource.open();
         Log.d(TAG, "Start uploading");
     }
 
@@ -85,7 +101,81 @@ public class UploadService extends IntentService {
     }
 
     private void root_upload() {
+        List<UploadFile> fileList = uploadFileDataSource.getNotUploadedRootFiles();
+        int result = WsResultType.Success;
 
+        // 1. First select the uploading root to upload
+        for (UploadFile file : fileList) {
+            if (file.getState() == UploadFileState.Uploading) {
+                if (file.getFiletype() == UploadFileType.TYPE_FILE) {
+
+                }
+                if (upload(file) == WsResultType.Success) {
+                    //file.set
+                    uploadFileDataSource.updateUploadFile(file);
+                }
+            }
+            if (result == WsResultType.Success) {
+
+            }
+        }
+        // 2. Traverse fileList
+        for (UploadFile file : fileList) {
+            if (file.getState() == UploadFileState.NotUpload) {
+                // Create
+            }
+                upload(file);
+        }
     }
 
+    private int upload(UploadFile file) {
+        return WsResultType.Success;
+    }
+
+
+
+    private int startUploading(UploadFile file) {
+        if (file.getFiletype() == UploadFileType.TYPE_FILE) {
+            if (file.getState() == UploadFileState.NotUpload) {
+                this.checkedFileInfo_wrapper(file);
+            }
+        } else if (file.getFiletype() == UploadFileType.TYPE_FOLDER) {
+
+        }
+        return WsResultType.Success;
+    }
+
+    private int checkedFileInfo_wrapper(UploadFile file) {
+        WsFile wsFile = new WsFile();
+        String path = file.getFilepath();
+        File r_file = new File(path);
+        wsFile.CreaterID = "395ED821-E528-42F0-8EA7-C59F258E7435";
+        wsFile.FatherID = "395ED821-E528-42F0-8EA7-C59F258E7435";
+        wsFile.Extend = path.substring(path.lastIndexOf(".") + 1);
+        wsFile.SizeB = r_file.length();
+        wsFile.FullName = r_file.getName();
+        wsFile.CreatDate = "2014/10/17 16:44:23";
+        try {
+            wsFile.MD5 = FileManager.generateMD5(new FileInputStream(r_file));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        ClientWS.getInstance(this).checkedFileInfo(wsFile);
+        return 0;
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
