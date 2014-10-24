@@ -25,6 +25,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import codingpark.net.cheesecloud.AppConfigs;
+import codingpark.net.cheesecloud.eumn.LoginResultType;
+import codingpark.net.cheesecloud.eumn.WsResultType;
 import codingpark.net.cheesecloud.wsi.FileInfo;
 import codingpark.net.cheesecloud.wsi.SyncFileBlock;
 import codingpark.net.cheesecloud.wsi.WsFile;
@@ -98,78 +100,69 @@ public final class ClientWS {
     }
 
     public int userLogin(String username, String password, WsGuidOwner userinfo) {
-        // 1. Create SOAP Action
+        int result = LoginResultType.Success;
+        // Create SOAP Action
         String soapAction = NAMESPACE + METHOD_USERLOGIN;//"http://tempuri.org/Test";
 
-        // 2. Initial SoapObject
+        // Initial SoapObject
         SoapObject rpc = new SoapObject(NAMESPACE, METHOD_USERLOGIN);
         // add web service method parameter
         rpc.addProperty("user", username);
         rpc.addProperty("passwordMd5", password);
-        //rpc.addProperty("userInfo", userinfo);
-
         PropertyInfo p_userInfo = new PropertyInfo();
         p_userInfo.setName("userInfo");
         p_userInfo.setValue(userinfo);
         p_userInfo.setType(WsGuidOwner.class);
         rpc.addPropertyIfValue(p_userInfo);
 
-        // 3. Initial envelope
+        // Initial envelope
         // Create soap request object with soap version
         SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(SoapEnvelope.VER12);
-        // Initial envelope's SoapObject
         envelope.bodyOut = rpc;
-        // Initial web service implements technology(.Net)
         envelope.dotNet = true;
         envelope.setOutputSoapObject(rpc);
-
+        // Set Mapping
         envelope.addMapping(NAMESPACE, WsGuidOwner.class.getSimpleName(), WsGuidOwner.class);
-        //---------------------------------------------------------------------------------------
-        // MARSHALLING:
-        //---------------------------------------------------------------------------------------
+        // Set MARSHALLING type
         Marshal floatMarshal = new MarshalFloat();
         floatMarshal.register(envelope);
 
-        // 4. Initial http transport
+        // Initial http transport
         HttpTransportSE transport = new HttpTransportSE(mEndPoint);
         transport.debug = true;
 
-        // 5. Set http header cookies values before call WS
+        // Set http header cookies values before call WS(null)
         List<HeaderProperty> paraHttpHeaders = new ArrayList<HeaderProperty>();
 
-        // 6. Call WS, store the return http header
+        // Call WS, store the return http header
         // Store http header values after call WS
         List resultHttpHeaderList = null;
         try {
             resultHttpHeaderList = transport.call(soapAction, envelope, paraHttpHeaders);
             Log.d(TAG, "Request: \n" + transport.requestDump);
             Log.d(TAG, "Response: \n" + transport.responseDump);
-            // 7. Process return data
-            // Get webservice return object
-            final SoapObject object = (SoapObject) envelope.bodyIn;
-            //object.getProperty("UserLoginResult")
+            // Process return data
+            final SoapObject resp = (SoapObject) envelope.bodyIn;
+            // Fetch operation result
+            result = Integer.valueOf(resp.getProperty("UserLoginResult").toString());
 
-            Log.d(TAG, object.getProperty(0).toString());
-            //int loginResult = Integer.valueOf(result_obj.getProperty("UserLoginResult").toString());
-            int loginResult = Integer.valueOf(object.getProperty(0).toString());
-
-            // Convert return object to local entity
-            Log.d(TAG, object.toString());
-            // Print Login return http header key/values
-            for (Object o : resultHttpHeaderList) {
-                HeaderProperty p = (HeaderProperty)o;
-                if (p.getKey()!=null && p.getKey().equals("Set-Cookie")) {
-                    Log.d(TAG, "key: " + p.getKey() + "\t" + "values:" + p.getValue());
-                    session_id = p.getValue();
+            if (result == LoginResultType.Success) {
+                // Fetch session id
+                for (Object o : resultHttpHeaderList) {
+                    HeaderProperty p = (HeaderProperty)o;
+                    if (p.getKey()!=null && p.getKey().equals("Set-Cookie")) {
+                        Log.d(TAG, "key: " + p.getKey() + "\t" + "values:" + p.getValue());
+                        session_id = p.getValue();
+                        break;
+                    }
                 }
+
             }
-            return loginResult;
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        Log.d(TAG, "************************************************");
-        return -1;
+        return result;
     }
 
 
@@ -195,83 +188,60 @@ public final class ClientWS {
     }
 
 
-    public void checkedFileInfo(WsFile wsFile) {
-        // 1. Create SOAP Action
+    public int checkedFileInfo(WsFile wsFile) {
+        int result = WsResultType.Success;
+        // Create SOAP Action
         String soapAction = NAMESPACE + METHOD_CHECKEDFILEINFO;//"http://tempuri.org/Test";
 
-        // 2. Initial SoapObject
+        // Initial SoapObject
         SoapObject rpc = new SoapObject(NAMESPACE, METHOD_CHECKEDFILEINFO);
         // add web service method parameter
-
         PropertyInfo p_fileInfo = new PropertyInfo();
         p_fileInfo.setName("file");
         p_fileInfo.setValue(wsFile);
         p_fileInfo.setType(WsFile.class);
         rpc.addPropertyIfValue(p_fileInfo);
 
-        // 3. Initial envelope
+        // Initial envelope
         // Create soap request object with soap version
         SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(SoapEnvelope.VER12);
-        // Initial envelope's SoapObject
         envelope.bodyOut = rpc;
-        // Initial web service implements technology(.Net)
         envelope.dotNet = true;
         envelope.setOutputSoapObject(rpc);
-
+        // Mapping
         envelope.addMapping(NAMESPACE, WsFile.class.getSimpleName(), WsFile.class);
         envelope.addMapping(NAMESPACE, FileInfo.class.getSimpleName(), FileInfo.class);
         envelope.addMapping(NAMESPACE, WsGuidOwner.class.getSimpleName(), WsGuidOwner.class);
-
-        //---------------------------------------------------------------------------------------
-        // MARSHALLING:
-        //---------------------------------------------------------------------------------------
+        // Set MARSHALLING type
         Marshal floatMarshal = new MarshalFloat();
         floatMarshal.register(envelope);
 
-        // 4. Initial http transport
+        // Initial http transport
         HttpTransportSE transport = new HttpTransportSE(mEndPoint);
         transport.debug = true;
 
-        // 5. Set http header cookies values before call WS
+        // Set http header cookies values before call WS
         List<HeaderProperty> paraHttpHeaders = new ArrayList<HeaderProperty>();
         paraHttpHeaders.add(new HeaderProperty("Cookie", session_id));
 
-        // 6. Call WS, store the return http header
-        // Store http header values after call WS
-        List resultHttpHeaderList = null;
         try {
-            resultHttpHeaderList = transport.call(soapAction, envelope, paraHttpHeaders);
+            transport.call(soapAction, envelope, paraHttpHeaders);
             Log.d(TAG, "Request: \n" + transport.requestDump);
             Log.d(TAG, "Response: \n" + transport.responseDump);
+
+            // Process return data
+            // Fetch operation result
+            final SoapObject resp = (SoapObject) envelope.bodyIn;
+            result = Integer.valueOf(resp.getProperty("CheckedFileInfoResult").toString());
+            if (result == WsResultType.Success) {
+                // Fetch file info
+                SoapObject obj = (SoapObject) resp.getProperty("file");
+                wsFile.ID = obj.getProperty("ID").toString();
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        // 7. Process return data
-        // Get webservice return object
-        final SoapObject object = (SoapObject) envelope.bodyIn;
-        //WsFile file = new WsFile();
-        //envelope.getInfo(WsFile.class, s_file);
-        Log.d(TAG, "----------The object count: " + object.getPropertyCount());
-        SoapObject obj = (SoapObject) object.getProperty("file");
-        s_id = obj.getProperty("ID").toString();
-        Log.d(TAG, "----------The object id: " + s_id);
-
-
-        if (s_file != null)
-            Log.d(TAG, "################fileinfo: " + s_file.toString());
-
-        // Convert return object to local entity
-        //Log.d(TAG, object.toString());
-        // Print Login return http header key/values
-        for (Object o : resultHttpHeaderList) {
-            HeaderProperty p = (HeaderProperty)o;
-            if (p.getKey()!=null && p.getKey().equals("Set-Cookie")) {
-                Log.d(TAG, "key: " + p.getKey() + "\t" + "values:" + p.getValue());
-                session_id = p.getValue();
-            }
-        }
-        Log.d(TAG, "************************************************");
+        return result;
     }
 
     public void test_uploadFile(String path) {

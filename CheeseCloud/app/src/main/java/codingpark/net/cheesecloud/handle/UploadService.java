@@ -3,13 +3,16 @@ package codingpark.net.cheesecloud.handle;
 import android.app.IntentService;
 import android.content.Intent;
 import android.content.Context;
+import android.text.format.DateFormat;
 import android.util.Log;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.util.Date;
 import java.util.List;
 
+import codingpark.net.cheesecloud.AppConfigs;
 import codingpark.net.cheesecloud.eumn.UploadFileState;
 import codingpark.net.cheesecloud.eumn.UploadFileType;
 import codingpark.net.cheesecloud.eumn.WsResultType;
@@ -133,7 +136,6 @@ public class UploadService extends IntentService {
     }
 
 
-
     private int startUploading(UploadFile file) {
         if (file.getFiletype() == UploadFileType.TYPE_FILE) {
             if (file.getState() == UploadFileState.NotUpload) {
@@ -145,23 +147,30 @@ public class UploadService extends IntentService {
         return WsResultType.Success;
     }
 
+    /**
+     * Get current date format string
+     * @return
+     *  String: current date string, such as 2014/10/17 16:44:23
+     */
+    private String getDateString() {
+        return DateFormat.format("yyyy/MM/dd HH:mm:ss", new Date(System.currentTimeMillis())).toString();
+    }
     private int checkedFileInfo_wrapper(UploadFile file) {
         WsFile wsFile = new WsFile();
         String path = file.getFilepath();
         File r_file = new File(path);
-        wsFile.CreaterID = "395ED821-E528-42F0-8EA7-C59F258E7435";
-        wsFile.FatherID = "395ED821-E528-42F0-8EA7-C59F258E7435";
+        wsFile.CreaterID = AppConfigs.current_remote_user_id;
+        wsFile.FatherID = file.getRemote_parent_id();
         wsFile.Extend = path.substring(path.lastIndexOf(".") + 1);
         wsFile.SizeB = r_file.length();
         wsFile.FullName = r_file.getName();
-        wsFile.CreatDate = "2014/10/17 16:44:23";
+        wsFile.CreatDate = getDateString();
         try {
             wsFile.MD5 = FileManager.generateMD5(new FileInputStream(r_file));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-        ClientWS.getInstance(this).checkedFileInfo(wsFile);
-        return 0;
+        return ClientWS.getInstance(this).checkedFileInfo(wsFile);
     }
 }
 

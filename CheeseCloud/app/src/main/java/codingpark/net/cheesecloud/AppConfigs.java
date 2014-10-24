@@ -62,4 +62,6 @@ public class AppConfigs {
     public static final String SERVER_ADDRESS           = "server_address";
 
     public static long current_local_user_id            = -1;
+
+    public static String current_remote_user_id         = "";
 }

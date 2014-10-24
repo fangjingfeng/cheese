@@ -331,9 +331,9 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
             mPassword = password;
             mWebUrl = weburl;
             // Store the username/password/weburl to SharedPreferences
-            mPrefs.edit().putString(AppConfigs.USERNAME, mEmail).commit();
-            mPrefs.edit().putString(AppConfigs.PASSWORD_MD5, mPassword).commit();
-            mPrefs.edit().putString(AppConfigs.SERVER_ADDRESS, mWebUrl).commit();
+            mPrefs.edit().putString(AppConfigs.USERNAME, mEmail).apply();
+            mPrefs.edit().putString(AppConfigs.PASSWORD_MD5, mPassword).apply();
+            mPrefs.edit().putString(AppConfigs.SERVER_ADDRESS, mWebUrl).apply();
             // Refresh ClientWS
             ClientWS.getInstance(LoginActivity.this).setEndPoint(mWebUrl);
         }
