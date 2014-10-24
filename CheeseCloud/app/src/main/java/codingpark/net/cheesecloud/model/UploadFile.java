@@ -42,7 +42,7 @@ public class UploadFile {
     /**
      * The uploaded size
      */
-    private long uploadsize          = 0;
+    private long uploadedsize = 0;
     /**
      * The file type(file or folder)
      */
@@ -116,12 +116,12 @@ public class UploadFile {
         this.state = state;
     }
 
-    public long getUploadsize() {
-        return uploadsize;
+    public long getUploadedsize() {
+        return uploadedsize;
     }
 
-    public void setUploadsize(long uploadsize) {
-        this.uploadsize = uploadsize;
+    public void setUploadedsize(long uploadedsize) {
+        this.uploadedsize = uploadedsize;
     }
 
     public int getFiletype() {

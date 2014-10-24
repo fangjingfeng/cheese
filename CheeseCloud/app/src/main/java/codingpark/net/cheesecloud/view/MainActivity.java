@@ -145,6 +145,7 @@ public class MainActivity extends Activity implements OnFragmentInteractionListe
             Log.d(TAG, "User selected remote parent id: " + remote_parent_id);
 
             new ScanFilesTask(selectFiles).execute();
+            /*
             Log.d(TAG, "*****Test CheckedFileInfo and UploadFile******");
             Thread t = new Thread(new Runnable() {
 
@@ -165,6 +166,7 @@ public class MainActivity extends Activity implements OnFragmentInteractionListe
                 }
             });
             t.start();
+            */
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
