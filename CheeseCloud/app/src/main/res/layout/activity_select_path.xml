@@ -1,4 +1,4 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
@@ -6,19 +6,51 @@
     tools:context="codingpark.net.cheesecloud.view.SelectPathActivity"
     >
     <!--Use to show current path-->
-    <include layout="@layout/path_bar_layout" />
+    <!--
+    <include layout="@layout/path_bar_layout"
+        android:layout_alignParentStart="true"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="false"
+        android:layout_alignParentRight="false"
+        android:layout_below="@+id/android:list" />
+        -->
+    <HorizontalScrollView xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/horizontalScrollView"
+        android:scrollbars="none"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        tools:context=".view.UploadActivity">
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/path_bar_bg_img"
+            android:id="@+id/pathBarContainer"
+            >
+            <include layout="@layout/path_bar_item_layout"/>
+        </LinearLayout>
+    </HorizontalScrollView>
+
     <ListView
         android:id="@+id/android:list"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_weight="2"
-        />
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="false"
+        android:layout_below="@+id/horizontalScrollView" />
 
     <RelativeLayout
+        android:id="@+id/bottom_form"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="#ff1b1724">
+        android:background="#ff1b1724"
+        android:layout_above="@+id/android:list"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentStart="true">
 
         <TextView
             android:layout_width="wrap_content"
@@ -54,4 +86,4 @@
             android:background="@drawable/upload_activity_bottom_start_upload_bg_normal_img" />
     </RelativeLayout>
 
-</LinearLayout>
+</RelativeLayout>

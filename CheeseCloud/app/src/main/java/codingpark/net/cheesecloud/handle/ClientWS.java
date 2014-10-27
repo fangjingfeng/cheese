@@ -333,82 +333,90 @@ public final class ClientWS {
 
     }
 
-    public void getDisk(List<WsFolder> list) {
-        // 1. Create SOAP Action
+    /**
+     * Pull disk list from web server
+     * @param list The list save WsFolder object
+     * @return
+     *  {@link codingpark.net.cheesecloud.eumn.WsResultType}
+     */
+    public int getDisk(List<WsFolder> list) {
+        int result = WsResultType.Success;
+        // Create SOAP Action
         String soapAction = NAMESPACE + METHOD_GETDISK;//"http://tempuri.org/Test";
 
-        // 2. Initial SoapObject
+        // Initial SoapObject
         SoapObject rpc = new SoapObject(NAMESPACE, METHOD_GETDISK);
-        // add web service method parameter
 
-        // 3. Initial envelope
+        // Initial envelope
         // Create soap request object with soap version
         SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(SoapEnvelope.VER12);
-        // Initial envelope's SoapObject
         envelope.bodyOut = rpc;
-        // Initial web service implements technology(.Net)
         envelope.dotNet = true;
         envelope.setOutputSoapObject(rpc);
 
         // Add parameters
-        /*
-        SoapObject disks = new SoapObject(NAMESPACE, "disks");
 
-        PropertyInfo p_folderList = new PropertyInfo();
-        p_folderList.setType(PropertyInfo.VECTOR_CLASS);
-        p_folderList.setName("disks");
-        p_folderList.setValue(list);
-        rpc.addProperty(p_folderList);
-        */
-
-        // Mapping
+        // Set Mapping
         envelope.addMapping(NAMESPACE, WsGuidOwner.class.getSimpleName(), WsGuidOwner.class);
         envelope.addMapping(NAMESPACE, WsFolder.class.getSimpleName(), WsFolder.class);
         envelope.addMapping(NAMESPACE, WsSpaceSizer.class.getSimpleName(), WsSpaceSizer.class);
         envelope.addMapping(NAMESPACE, WsPermission.class.getSimpleName(), WsPermission.class);
 
-        //---------------------------------------------------------------------------------------
-        // MARSHALLING:
-        //---------------------------------------------------------------------------------------
+        // Set MARSHALLING:
         Marshal floatMarshal = new MarshalFloat();
         floatMarshal.register(envelope);
 
-        // 4. Initial http transport
+        // Initial http transport
         HttpTransportSE transport = new HttpTransportSE(mEndPoint);
         transport.debug = true;
 
-        // 5. Set http header cookies values before call WS
+        // Set http header cookies values before call WS
         List<HeaderProperty> paraHttpHeaders = new ArrayList<HeaderProperty>();
         paraHttpHeaders.add(new HeaderProperty("Cookie", session_id));
 
-        // 6. Call WS, store the return http header
-        // Store http header values after call WS
-        List resultHttpHeaderList = null;
+        // Call WS
         try {
-            resultHttpHeaderList = transport.call(soapAction, envelope, paraHttpHeaders);
+            transport.call(soapAction, envelope, paraHttpHeaders);
             Log.d(TAG, "Request: \n" + transport.requestDump);
             Log.d(TAG, "Response: \n" + transport.responseDump);
+            // Process return data
+            final SoapObject resp = (SoapObject) envelope.bodyIn;
+            // Convert return object to local entity
+            result = Integer.valueOf(resp.getProperty("GetDiskResult").toString());
+            if (result == WsResultType.Success) {
+                SoapObject disks = (SoapObject)resp.getProperty("disks");
+                for (int i = 0; i < disks.getPropertyCount(); i++) {
+                    SoapObject folder = (SoapObject)disks.getProperty(i);
+                    WsFolder r_folder = new WsFolder();
+                    r_folder.ID = folder.getProperty("ID").toString();
+                    r_folder.Name = folder.getProperty("Name").toString();
+                    list.add(r_folder);
+                }
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        // 7. Process return data
-        // Get webservice return object
-        final SoapObject object = (SoapObject) envelope.bodyIn;
-        // Convert return object to local entity
-        Log.d(TAG, object.toString());
-        Log.d(TAG, "************************************************");
-
+        return result;
     }
 
     public void test_getFolderList() {
         WsFolder folder = new WsFolder();
         folder.FatherID = "395ED821-E528-42F0-8EA7-C59F258E7435";
         folder.ID = "395ED821-E528-42F0-8EA7-C59F258E7435";
-        getFolderList(folder);
+        getFolderList(folder, null, null);
     }
 
-    public void getFolderList(WsFolder folder) {
+    /**
+     * Pull the folder and file list from web server
+     * @param folder the parent folder info
+     * @param fileList the parent folder's sub files list
+     * @param folderList the parent folder's sub folders list
+     * @return {@link codingpark.net.cheesecloud.eumn.WsResultType}
+     */
+    public int getFolderList(WsFolder folder, ArrayList<WsFile> fileList,
+                              ArrayList<WsFolder> folderList) {
+        int result = WsResultType.Success;
         // 1. Create SOAP Action
         String soapAction = NAMESPACE + METHOD_GETFOLDERLIST;//"http://tempuri.org/Test";
 
@@ -458,16 +466,17 @@ public final class ClientWS {
             resultHttpHeaderList = transport.call(soapAction, envelope, paraHttpHeaders);
             Log.d(TAG, "Request: \n" + transport.requestDump);
             Log.d(TAG, "Response: \n" + transport.responseDump);
+            // 7. Process return data
+            // Get webservice return object
+            final SoapObject object = (SoapObject) envelope.bodyIn;
+            // Convert return object to local entity
+            Log.d(TAG, object.toString());
+            Log.d(TAG, "************************************************");
         } catch (Exception e) {
             e.printStackTrace();
+            result = WsResultType.Faild;
         }
-
-        // 7. Process return data
-        // Get webservice return object
-        final SoapObject object = (SoapObject) envelope.bodyIn;
-        // Convert return object to local entity
-        Log.d(TAG, object.toString());
-        Log.d(TAG, "************************************************");
+        return result;
     }
 
     public void test_createFolder(String path) {

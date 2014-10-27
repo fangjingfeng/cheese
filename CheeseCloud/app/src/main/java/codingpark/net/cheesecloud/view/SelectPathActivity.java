@@ -1,17 +1,34 @@
 package codingpark.net.cheesecloud.view;
 
 import android.app.ListActivity;
+import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
+
+import java.util.ArrayList;
+import java.util.Stack;
 
 import codingpark.net.cheesecloud.R;
+import codingpark.net.cheesecloud.eumn.UploadFileType;
+import codingpark.net.cheesecloud.eumn.WsResultType;
 import codingpark.net.cheesecloud.handle.ClientWS;
+import codingpark.net.cheesecloud.model.UploadFile;
+import codingpark.net.cheesecloud.wsi.WsFolder;
 
 public class SelectPathActivity extends ListActivity {
     private static final String TAG     = "SelectPathActivity";
@@ -21,7 +38,13 @@ public class SelectPathActivity extends ListActivity {
 
     public static final String RESULT_SELECTED_REMOTE_PARENT_ID = "";
     // TODO The value should fetch from server dynamic
-    private String remote_parent_id         = "395ED821-E528-42F0-8EA7-C59F258E7435";
+    private String remote_parent_id                     = "395ED821-E528-42F0-8EA7-C59F258E7435";
+    private ArrayList<String> mFolderNameList           = null;
+    private ArrayList<UploadFile> mFolderList           = null;
+    private Stack<UploadFile> mPathStack                = null;
+
+    private SelectPathAdapter mAdapter                  = null;
+    private PullFolderListTask mTask                    = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,19 +57,36 @@ public class SelectPathActivity extends ListActivity {
         // 2. Set the title
         getActionBar().setTitle(R.string.select_path_activity_action_bar_title);
 
+        // Initial path list
+        mFolderNameList = new ArrayList<String>();
+        mFolderList = new ArrayList<UploadFile>();
+        mPathStack = new Stack<UploadFile>();
+
+        // Initial list adapter
+        mAdapter = new SelectPathAdapter();
+        setListAdapter(mAdapter);
+
+        // Inital search task
+        mTask = new PullFolderListTask();
+
         initUI();
         initHandler();
-        Thread t = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                ClientWS.getInstance(SelectPathActivity.this).test_getDisk();
-                ClientWS.getInstance(SelectPathActivity.this).test_getFolderList();
-            }
-        });
-        t.start();
+
+        mTask.execute();
     }
 
     private void initUI() {
+        // Create a progress bar to display while the list loads
+        ProgressBar progressBar = new ProgressBar(this);
+        progressBar.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+                FrameLayout.LayoutParams.WRAP_CONTENT, Gravity.CENTER));
+        progressBar.setIndeterminate(true);
+        getListView().setEmptyView(progressBar);
+
+        // Must add the progress bar to the root of the layout
+        ViewGroup root = (ViewGroup) findViewById(android.R.id.content);
+        root.addView(progressBar);
+
         select_path_cancel_bt = (Button) findViewById(R.id.select_upload_path_cancel_bt);
         select_path_ok_bt = (Button) findViewById(R.id.select_upload_path_ok_bt);
     }
@@ -102,5 +142,106 @@ public class SelectPathActivity extends ListActivity {
     protected void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
     }
+
+    /**
+     * File/Directory list item view encapsulate
+     */
+    private static class ViewHolder {
+        ImageView icon;
+        TextView rightView;
+    }
+
+    public class SelectPathAdapter extends ArrayAdapter<UploadFile> {
+
+        public SelectPathAdapter() {
+            super(SelectPathActivity.this, R.layout.upload_item_layout, mFolderList);
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+
+            ViewHolder holder;
+
+            if(convertView == null) {
+                LayoutInflater inflater = (LayoutInflater) SelectPathActivity.this.
+                        getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                convertView = inflater.inflate(R.layout.select_path_item_layout, parent, false);
+
+                holder = new ViewHolder();
+                holder.icon = (ImageView)convertView.findViewById(R.id.row_image);
+                // Update icon src
+                holder.icon.setImageResource(R.drawable.folder);
+                holder.rightView = (TextView)convertView.findViewById(R.id.file_name_view);
+
+                convertView.setTag(holder);
+            } else {
+                holder = (ViewHolder)convertView.getTag();
+            }
+
+            holder.rightView.setText(mFolderList.get(position).getFilepath());
+
+            return convertView;
+        }
+    }
+
+    /**
+     * This class used to pull folder from remote server and trigger
+     * refresh UI(ListView + Bottom Bar).
+     */
+    private class PullFolderListTask extends AsyncTask<Void,Void,Integer> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected Integer doInBackground(Void... params) {
+            mFolderList.clear();
+            int result = WsResultType.Success;
+            if (mPathStack.size() == 0) {
+                // TODO Need pull disk list
+                result = getDisk_wrapper();
+            } else {
+                // TODO Need pull the sub folder list
+            }
+            return result;
+        }
+
+        @Override
+        protected void onPostExecute(Integer result) {
+            switch (result) {
+                case WsResultType.Success:
+                    // TODO Refresh ListView
+                    mAdapter.notifyDataSetChanged();
+                    return;
+                default:
+                    // TODO Warning pull error
+                    return;
+            }
+        }
+
+        private int getDisk_wrapper() {
+            int result = WsResultType.Success;
+            ArrayList<WsFolder> r_wsFolder = new ArrayList<WsFolder>();
+            result = ClientWS.getInstance(SelectPathActivity.this).getDisk(r_wsFolder);
+            for (WsFolder ws_f : r_wsFolder) {
+                UploadFile f = new UploadFile();
+                f.setFiletype(UploadFileType.TYPE_FOLDER);
+                f.setRemote_id(ws_f.ID);
+                f.setFilepath(ws_f.Name);
+                mFolderList.add(f);
+            }
+            return result;
+        }
+
+        private int getFolderList_wrapper() {
+            int result = WsResultType.Success;
+            ArrayList<WsFolder> r_wsFolder = new ArrayList<WsFolder>();
+            //result = ClientWS.getInstance(SelectPathActivity.this).getFolderList(r_wsFolder);
+            return result;
+        }
+    }
+
 
 }

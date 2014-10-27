@@ -241,7 +241,7 @@ public class UploadFileDataSource {
         List<UploadFile> fileList = new ArrayList<UploadFile>();
         Cursor cursor = database.query(UploadFileEntry.TABLE_NAME,
                 UploadFileEntry.COLUMN_ARRAY,
-                UploadFileEntry.COLUMN_PARENT_ID + " =? " +
+                UploadFileEntry.COLUMN_PARENT_ID + " =? and " +
                         UploadFileEntry.COLUMN_USERID + " =? ",
                 new String[]{String.valueOf(file.getId()), String.valueOf(AppConfigs.current_local_user_id)},
                 null,

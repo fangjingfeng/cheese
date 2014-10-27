@@ -12,6 +12,9 @@ public class WsFolder implements KvmSerializable{
     // Count: 17
     public String FatherID;
     public String ApplicationID;
+    /**
+     * The root disk ID
+     */
     public String LogicDiskID;
     public WsSpaceSizer SpaceSize;
     public boolean IsShow;
@@ -19,6 +22,9 @@ public class WsFolder implements KvmSerializable{
     public WsGuidOwner Creater;
     public int FileCount;
     public int FolderCount;
+    /**
+     * The folder ID
+     */
     public String ID;
     public String Name;
     public long AllSpaceSizeKB;

@@ -427,6 +427,7 @@ public class MainActivity extends Activity implements OnFragmentInteractionListe
 
 
         private void scan(File file, long l_parent_id, String r_parent_id) {
+            Log.d(TAG, "Scan");
             long id = mDataSource.addUploadFile(file, l_parent_id, r_parent_id);
             if (file.isDirectory()) {
                 File[] fileArray = file.listFiles();

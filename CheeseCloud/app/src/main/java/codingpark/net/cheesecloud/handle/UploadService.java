@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.util.Date;
 import java.util.List;
 
@@ -217,9 +218,11 @@ public class UploadService extends IntentService {
             int count = 0;
             try {
                 while (true) {
-                    FileInputStream stream = new FileInputStream(r_file);
+                    //FileInputStream stream = new FileInputStream(r_file);
+                    RandomAccessFile stream = new RandomAccessFile(r_file, "r");
                     Log.d(TAG, "Array size:" + buffer.length + "\n" + "uploadedsize: " + (int)file.getUploadedsize());
-                    count = stream.read(buffer, (int)file.getUploadedsize(), UPLOAD_BLOCK_SIZE);
+                    stream.seek(file.getUploadedsize());
+                    count = stream.read(buffer, 0, UPLOAD_BLOCK_SIZE);
                     if (count != -1) {
                         result = uploadFile_wrapper(file, buffer, count);
                         if (result != WsResultType.Success)
