@@ -66,7 +66,7 @@ public class SelectPathActivity extends ListActivity {
         mAdapter = new SelectPathAdapter();
         setListAdapter(mAdapter);
 
-        // Inital search task
+        // Initial search task
         mTask = new PullFolderListTask();
 
         initUI();
@@ -140,7 +140,14 @@ public class SelectPathActivity extends ListActivity {
 
     @Override
     protected void onListItemClick(ListView l, View v, int position, long id) {
+        UploadFile file = mFolderList.get(position);
+        mPathStack.push(file);
+        mTask.execute();
         super.onListItemClick(l, v, position, id);
+    }
+
+    private void refreshPathBar() {
+
     }
 
     /**
@@ -204,6 +211,7 @@ public class SelectPathActivity extends ListActivity {
                 result = getDisk_wrapper();
             } else {
                 // TODO Need pull the sub folder list
+                result = getFolderList_wrapper();
             }
             return result;
         }
@@ -221,6 +229,11 @@ public class SelectPathActivity extends ListActivity {
             }
         }
 
+        /**
+         * Wrapper getDisk(Web Service Interface)
+         * Convert WsFolder to UploadFile
+         * @return int, the getDisk execute result
+         */
         private int getDisk_wrapper() {
             int result = WsResultType.Success;
             ArrayList<WsFolder> r_wsFolder = new ArrayList<WsFolder>();
@@ -235,6 +248,11 @@ public class SelectPathActivity extends ListActivity {
             return result;
         }
 
+        /**
+         * Wrapper getFolderList(Web Service Interface)
+         * Convert WsFolder to UploadFile
+         * @return int, the getFolderList execute result
+         */
         private int getFolderList_wrapper() {
             int result = WsResultType.Success;
             ArrayList<WsFolder> r_wsFolder = new ArrayList<WsFolder>();

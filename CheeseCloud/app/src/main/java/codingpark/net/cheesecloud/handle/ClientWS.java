@@ -27,7 +27,9 @@ import java.util.List;
 import codingpark.net.cheesecloud.AppConfigs;
 import codingpark.net.cheesecloud.eumn.CheckedFileInfoType;
 import codingpark.net.cheesecloud.eumn.LoginResultType;
+import codingpark.net.cheesecloud.eumn.UploadFileType;
 import codingpark.net.cheesecloud.eumn.WsResultType;
+import codingpark.net.cheesecloud.model.UploadFile;
 import codingpark.net.cheesecloud.wsi.FileInfo;
 import codingpark.net.cheesecloud.wsi.SyncFileBlock;
 import codingpark.net.cheesecloud.wsi.WsFile;
@@ -417,10 +419,10 @@ public final class ClientWS {
     public int getFolderList(WsFolder folder, ArrayList<WsFile> fileList,
                               ArrayList<WsFolder> folderList) {
         int result = WsResultType.Success;
-        // 1. Create SOAP Action
+        // Create SOAP Action
         String soapAction = NAMESPACE + METHOD_GETFOLDERLIST;//"http://tempuri.org/Test";
 
-        // 2. Initial SoapObject
+        // Initial SoapObject
         SoapObject rpc = new SoapObject(NAMESPACE, METHOD_GETFOLDERLIST);
         // add web service method parameter
         PropertyInfo p_folderInfo = new PropertyInfo();
@@ -429,49 +431,66 @@ public final class ClientWS {
         p_folderInfo.setValue(folder);
         rpc.addProperty(p_folderInfo);
 
-        // 3. Initial envelope
+        // Initial envelope
         // Create soap request object with soap version
         SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(SoapEnvelope.VER12);
-        // Initial envelope's SoapObject
         envelope.bodyOut = rpc;
-        // Initial web service implements technology(.Net)
         envelope.dotNet = true;
         envelope.setOutputSoapObject(rpc);
 
-        // Mapping
+        // Set Mapping
         envelope.addMapping(NAMESPACE, WsGuidOwner.class.getSimpleName(), WsGuidOwner.class);
         envelope.addMapping(NAMESPACE, WsFolder.class.getSimpleName(), WsFolder.class);
         envelope.addMapping(NAMESPACE, WsSpaceSizer.class.getSimpleName(), WsSpaceSizer.class);
         envelope.addMapping(NAMESPACE, WsPermission.class.getSimpleName(), WsPermission.class);
         envelope.addMapping(NAMESPACE, FileInfo.class.getSimpleName(), FileInfo.class);
 
-        //---------------------------------------------------------------------------------------
-        // MARSHALLING:
-        //---------------------------------------------------------------------------------------
+        // Set MARSHALLING type
         Marshal floatMarshal = new MarshalFloat();
         floatMarshal.register(envelope);
 
-        // 4. Initial http transport
+        // Initial http transport
         HttpTransportSE transport = new HttpTransportSE(mEndPoint);
         transport.debug = true;
 
-        // 5. Set http header cookies values before call WS
+        // Set http header cookies values before call WS
         List<HeaderProperty> paraHttpHeaders = new ArrayList<HeaderProperty>();
         paraHttpHeaders.add(new HeaderProperty("Cookie", session_id));
 
-        // 6. Call WS, store the return http header
-        // Store http header values after call WS
-        List resultHttpHeaderList = null;
+        // Call WS
         try {
-            resultHttpHeaderList = transport.call(soapAction, envelope, paraHttpHeaders);
+            transport.call(soapAction, envelope, paraHttpHeaders);
             Log.d(TAG, "Request: \n" + transport.requestDump);
             Log.d(TAG, "Response: \n" + transport.responseDump);
-            // 7. Process return data
+            // Process return data
             // Get webservice return object
-            final SoapObject object = (SoapObject) envelope.bodyIn;
-            // Convert return object to local entity
-            Log.d(TAG, object.toString());
-            Log.d(TAG, "************************************************");
+            final SoapObject resp= (SoapObject) envelope.bodyIn;
+            result = Integer.valueOf(resp.getProperty("GetFolderListResult").toString());
+            // Parse file list result
+            if (fileList != null) {
+                SoapObject x_fileArr = (SoapObject)resp.getProperty("folders");
+                for(int i = 0; i < x_fileArr.getPropertyCount(); i++) {
+                    WsFile r_file = new WsFile();
+                    SoapObject x_file = (SoapObject)x_fileArr.getProperty(i);
+                    r_file.Extend = x_file.getPropertyAsString("Extend");
+                    r_file.FullName = x_file.getPropertyAsString("FullName");
+                    r_file.Name = x_file.getPropertyAsString("Name");
+                    r_file.SizeB = Long.valueOf(x_file.getPropertyAsString("SizeB"));
+                    fileList.add(r_file);
+                }
+            }
+            // Parse folder list result
+            if (folderList != null) {
+                SoapObject x_folderArr = (SoapObject)resp.getProperty("folders");
+                for(int i = 0; i < x_folderArr.getPropertyCount(); i++) {
+                    WsFolder r_folder = new WsFolder();
+                    SoapObject x_folder = (SoapObject)x_folderArr.getProperty(i);
+                    r_folder.ID = x_folder.getPropertyAsString("ID");
+                    r_folder.Name = x_folder.getPropertyAsString("Name");
+                    folderList.add(r_folder);
+                }
+
+            }
         } catch (Exception e) {
             e.printStackTrace();
             result = WsResultType.Faild;
