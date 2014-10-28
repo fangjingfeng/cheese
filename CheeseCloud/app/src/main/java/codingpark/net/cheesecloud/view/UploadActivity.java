@@ -3,6 +3,7 @@ package codingpark.net.cheesecloud.view;
 import android.app.ListActivity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -19,9 +20,13 @@ import java.util.ArrayList;
 
 import codingpark.net.cheesecloud.AppConfigs;
 import codingpark.net.cheesecloud.R;
+import codingpark.net.cheesecloud.eumn.WsResultType;
+import codingpark.net.cheesecloud.handle.ClientWS;
 import codingpark.net.cheesecloud.handle.FileManager;
 import codingpark.net.cheesecloud.handle.UploadHandler;
+import codingpark.net.cheesecloud.model.UploadFile;
 import codingpark.net.cheesecloud.utils.CatalogList;
+import codingpark.net.cheesecloud.wsi.WsFolder;
 
 /**
  *
@@ -34,7 +39,7 @@ public final class UploadActivity extends ListActivity implements UploadHandler.
 
     public static final String RESULT_REMOTE_PARENT_ID  = "remote_parent_id";
 
-    public static String remote_parent_id               = "";
+    public static String remote_folder_id               = "";
 
     private FileManager mFileMgr                        = null;
     private UploadHandler mHandler                      = null;
@@ -119,6 +124,7 @@ public final class UploadActivity extends ListActivity implements UploadHandler.
 
         initUI();
         initHandler();
+        refresh_bottom_bar();
     }
 
     /**
@@ -163,7 +169,7 @@ public final class UploadActivity extends ListActivity implements UploadHandler.
                 Toast.makeText(UploadActivity.this, "开始上传", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent();
                 intent.putStringArrayListExtra(RESULT_SELECTED_FILES_KEY, mHandler.getSelectedPath());
-                intent.putExtra(SelectPathActivity.RESULT_SELECTED_REMOTE_PARENT_ID, remote_parent_id);
+                intent.putExtra(SelectPathActivity.RESULT_SELECTED_REMOTE_FOLDER_ID, remote_folder_id);
                 setResult(RESULT_OK, intent);
                 finish();
             }
@@ -199,11 +205,31 @@ public final class UploadActivity extends ListActivity implements UploadHandler.
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         Log.d(TAG, "Selected Activity return results!");
         if (resultCode == RESULT_OK) {
-            remote_parent_id = data.getStringExtra(SelectPathActivity.RESULT_SELECTED_REMOTE_PARENT_ID);
-            Log.d(TAG, "User selected remote parent id: \n" + remote_parent_id);
-
+            remote_folder_id = data.getStringExtra(SelectPathActivity.RESULT_SELECTED_REMOTE_FOLDER_ID);
+            Log.d(TAG, "User selected remote folder id: \n" + remote_folder_id);
+            refresh_bottom_bar();
         }
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    private void refresh_bottom_bar() {
+        if (remote_folder_id == null || (remote_folder_id.isEmpty())) {
+            remote_folder_id = AppConfigs.current_remote_user_id;
+        }
+        Log.d(TAG, "@@@@@@@@@@@@@@@The current remote user id" + AppConfigs.current_remote_user_id);
+        Log.d(TAG, "@@@@@@@@@@@@@@@The folder id: " + remote_folder_id);
+        new RefreshBottomBarTask().execute();
+    }
+
+    private int getFolderInfo_wrapper(UploadFile folder) {
+        int result = WsResultType.Success;
+        WsFolder wsFolder = new WsFolder();
+        wsFolder.ID = folder.getRemote_id();
+        result = ClientWS.getInstance(this).getFolderInfo(wsFolder);
+        if (result == WsResultType.Success) {
+            folder.setFilepath(wsFolder.Name);
+        }
+        return result;
     }
 
     /**
@@ -275,5 +301,42 @@ public final class UploadActivity extends ListActivity implements UploadHandler.
         upload_bt.setText(this.getResources().getString(
                 R.string.upload_activity_bottom_bar_upload_bt)
                 + "(" + selectedPathList.size() + ")");
+    }
+
+    private class RefreshBottomBarTask extends AsyncTask<Void,Void,Integer> {
+
+        private UploadFile folder   = null;
+
+        public RefreshBottomBarTask() {
+            folder = new UploadFile();
+        }
+
+        @Override
+        protected Integer doInBackground(Void... params) {
+            int result = WsResultType.Success;
+            folder.setRemote_id(remote_folder_id);
+            result = getFolderInfo_wrapper(folder);
+            return result;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected void onPostExecute(Integer result) {
+            switch (result) {
+                case WsResultType.Success:
+                    select_upload_path_bt.setText(folder.getFilepath());
+                default:
+                    return;
+            }
+        }
+
+        @Override
+        protected void onProgressUpdate(Void... values) {
+            super.onProgressUpdate(values);
+        }
     }
 }

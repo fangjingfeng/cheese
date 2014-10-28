@@ -322,14 +322,16 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
      */
     public class UserLoginTask extends AsyncTask<Void, Void, Integer> {
 
-        private final String mEmail;
-        private final String mPassword;
-        private final String mWebUrl;
+        private String mEmail     = null;
+        private String mPassword  = null;
+        private String mWebUrl    = null;
+        private WsGuidOwner owner       = null;
 
         UserLoginTask(String email, String password, String weburl) {
             mEmail = email;
             mPassword = password;
             mWebUrl = weburl;
+            owner = new WsGuidOwner();
             // Store the username/password/weburl to SharedPreferences
             mPrefs.edit().putString(AppConfigs.USERNAME, mEmail).apply();
             mPrefs.edit().putString(AppConfigs.PASSWORD_MD5, mPassword).apply();
@@ -344,7 +346,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
             int result = -1;
             try {
                 // 1. Call web service UserLogin
-                WsGuidOwner owner = new WsGuidOwner();
+                owner = new WsGuidOwner();
                 //owner.CreateDate = "2014-10-17 16:44:23";
                 MessageDigest md = null;
                 md = MessageDigest.getInstance("MD5");
@@ -373,6 +375,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
                     u.setWs_address(mWebUrl);
                     // 2. Save current user id to AppConfigs
                     AppConfigs.current_local_user_id = mDataSource.addUser(u);
+                    AppConfigs.current_remote_user_id = owner.ID;
                     // 3. Close LoginActivity and start MainActivity
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     LoginActivity.this.startActivity(intent);

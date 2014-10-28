@@ -25,9 +25,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import codingpark.net.cheesecloud.R;
-import codingpark.net.cheesecloud.handle.ClientWS;
 import codingpark.net.cheesecloud.handle.OnFragmentInteractionListener;
-import codingpark.net.cheesecloud.handle.SelectedPathHandler;
 import codingpark.net.cheesecloud.handle.UploadService;
 import codingpark.net.cheesecloud.model.UploadFileDataSource;
 
@@ -140,7 +138,7 @@ public class MainActivity extends Activity implements OnFragmentInteractionListe
         Log.d(TAG, "Upload Activity return results!");
         if (resultCode == RESULT_OK) {
             final ArrayList<String> selectFiles = data.getStringArrayListExtra(UploadActivity.RESULT_SELECTED_FILES_KEY);
-            remote_parent_id   = data.getStringExtra(SelectPathActivity.RESULT_SELECTED_REMOTE_PARENT_ID);
+            remote_parent_id   = data.getStringExtra(SelectPathActivity.RESULT_SELECTED_REMOTE_FOLDER_ID);
             Log.d(TAG, "User selected upload file: \n" + selectFiles.toString());
             Log.d(TAG, "User selected remote parent id: " + remote_parent_id);
 

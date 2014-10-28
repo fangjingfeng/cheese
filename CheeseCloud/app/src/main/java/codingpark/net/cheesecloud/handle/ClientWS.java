@@ -57,6 +57,7 @@ public final class ClientWS {
     public static final String METHOD_GETDISK               = "GetDisk";
     public static final String METHOD_GETFOLDERLIST         = "GetFolderList";
     public static final String METHOD_CREATEFOLDER          = "CreateFolder";
+    public static final String METHOD_GETFOLDERINFO         = "GetFolderInfo";
 
     // Default server info
     public static final String DEFAULT_ENDPOINT             = "http://192.168.0.101:22332/ClientWS.asmx";
@@ -159,6 +160,9 @@ public final class ClientWS {
                         break;
                     }
                 }
+                // Fetch user info
+                SoapObject x_user = (SoapObject)resp.getProperty("userInfo");
+                userinfo.ID = x_user.getPropertyAsString("ID");
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -466,30 +470,31 @@ public final class ClientWS {
             // Get webservice return object
             final SoapObject resp= (SoapObject) envelope.bodyIn;
             result = Integer.valueOf(resp.getProperty("GetFolderListResult").toString());
-            // Parse file list result
-            if (fileList != null) {
-                SoapObject x_fileArr = (SoapObject)resp.getProperty("folders");
-                for(int i = 0; i < x_fileArr.getPropertyCount(); i++) {
-                    WsFile r_file = new WsFile();
-                    SoapObject x_file = (SoapObject)x_fileArr.getProperty(i);
-                    r_file.Extend = x_file.getPropertyAsString("Extend");
-                    r_file.FullName = x_file.getPropertyAsString("FullName");
-                    r_file.Name = x_file.getPropertyAsString("Name");
-                    r_file.SizeB = Long.valueOf(x_file.getPropertyAsString("SizeB"));
-                    fileList.add(r_file);
+            if (result == WsResultType.Success) {
+                // Parse file list result
+                if (fileList != null) {
+                    SoapObject x_fileArr = (SoapObject)resp.getProperty("folders");
+                    for(int i = 0; i < x_fileArr.getPropertyCount(); i++) {
+                        WsFile r_file = new WsFile();
+                        SoapObject x_file = (SoapObject)x_fileArr.getProperty(i);
+                        r_file.Extend = x_file.getPropertyAsString("Extend");
+                        r_file.FullName = x_file.getPropertyAsString("FullName");
+                        r_file.Name = x_file.getPropertyAsString("Name");
+                        r_file.SizeB = Long.valueOf(x_file.getPropertyAsString("SizeB"));
+                        fileList.add(r_file);
+                    }
                 }
-            }
-            // Parse folder list result
-            if (folderList != null) {
-                SoapObject x_folderArr = (SoapObject)resp.getProperty("folders");
-                for(int i = 0; i < x_folderArr.getPropertyCount(); i++) {
-                    WsFolder r_folder = new WsFolder();
-                    SoapObject x_folder = (SoapObject)x_folderArr.getProperty(i);
-                    r_folder.ID = x_folder.getPropertyAsString("ID");
-                    r_folder.Name = x_folder.getPropertyAsString("Name");
-                    folderList.add(r_folder);
+                // Parse folder list result
+                if (folderList != null) {
+                    SoapObject x_folderArr = (SoapObject)resp.getProperty("folders");
+                    for(int i = 0; i < x_folderArr.getPropertyCount(); i++) {
+                        WsFolder r_folder = new WsFolder();
+                        SoapObject x_folder = (SoapObject)x_folderArr.getProperty(i);
+                        r_folder.ID = x_folder.getPropertyAsString("ID");
+                        r_folder.Name = x_folder.getPropertyAsString("Name");
+                        folderList.add(r_folder);
+                    }
                 }
-
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -566,6 +571,76 @@ public final class ClientWS {
         } catch (Exception e) {
             e.printStackTrace();
             return WsResultType.Faild;
+        }
+        return result;
+    }
+
+    /**
+     * Pull the folder/file information by the folder.ID from web server.
+     * Save the information to folder.
+     * @param folder the parent folder info(Need the ID)
+     * @return {@link codingpark.net.cheesecloud.eumn.WsResultType}
+     */
+    public int getFolderInfo(WsFolder folder) {
+        int result = WsResultType.Success;
+        // Create SOAP Action
+        String soapAction = NAMESPACE + METHOD_GETFOLDERINFO;//"http://tempuri.org/Test";
+
+        // Initial SoapObject
+        SoapObject rpc = new SoapObject(NAMESPACE, METHOD_GETFOLDERINFO);
+        // add web service method parameter
+        PropertyInfo p_folderInfo = new PropertyInfo();
+        p_folderInfo.setType(WsFolder.class);
+        p_folderInfo.setName("folder");
+        p_folderInfo.setValue(folder);
+        rpc.addProperty(p_folderInfo);
+
+        // Initial envelope
+        // Create soap request object with soap version
+        SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(SoapEnvelope.VER12);
+        envelope.bodyOut = rpc;
+        envelope.dotNet = true;
+        envelope.setOutputSoapObject(rpc);
+
+        // Set Mapping
+        envelope.addMapping(NAMESPACE, WsGuidOwner.class.getSimpleName(), WsGuidOwner.class);
+        envelope.addMapping(NAMESPACE, WsFolder.class.getSimpleName(), WsFolder.class);
+        envelope.addMapping(NAMESPACE, WsSpaceSizer.class.getSimpleName(), WsSpaceSizer.class);
+        envelope.addMapping(NAMESPACE, WsPermission.class.getSimpleName(), WsPermission.class);
+        envelope.addMapping(NAMESPACE, FileInfo.class.getSimpleName(), FileInfo.class);
+
+        // Set MARSHALLING type
+        Marshal floatMarshal = new MarshalFloat();
+        floatMarshal.register(envelope);
+
+        // Initial http transport
+        HttpTransportSE transport = new HttpTransportSE(mEndPoint);
+        transport.debug = true;
+
+        // Set http header cookies values before call WS
+        List<HeaderProperty> paraHttpHeaders = new ArrayList<HeaderProperty>();
+        paraHttpHeaders.add(new HeaderProperty("Cookie", session_id));
+
+        // Call WS
+        try {
+            transport.call(soapAction, envelope, paraHttpHeaders);
+            Log.d(TAG, "Request: \n" + transport.requestDump);
+            Log.d(TAG, "Response: \n" + transport.responseDump);
+            // Process return data
+            // Get webservice return object
+            final SoapObject resp= (SoapObject) envelope.bodyIn;
+            result = Integer.valueOf(resp.getPropertyAsString("GetFolderInfoResult"));
+            if (result == WsResultType.Success) {
+                // Parse folder result
+                if (folder != null) {
+                    SoapObject x_folder = (SoapObject)resp.getProperty("folder");
+                    // Save the folder name
+                    folder.Name = x_folder.getPropertyAsString("Name");
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            result = WsResultType.Faild;
         }
         return result;
     }

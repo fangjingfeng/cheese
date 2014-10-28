@@ -20,6 +20,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.Stack;
 
+import codingpark.net.cheesecloud.AppConfigs;
 import codingpark.net.cheesecloud.R;
 import codingpark.net.cheesecloud.eumn.UploadFileType;
 import codingpark.net.cheesecloud.eumn.WsResultType;
@@ -27,15 +28,23 @@ import codingpark.net.cheesecloud.handle.ClientWS;
 import codingpark.net.cheesecloud.model.UploadFile;
 import codingpark.net.cheesecloud.wsi.WsFolder;
 
+/**
+ * The class used to list all folder in web server, user select one folder,
+ * then return the folder information to {@link codingpark.net.cheesecloud.view.UploadActivity}.
+ * It upload files to the destination.
+ * When user click select_path_ok_bt, the class call mPathStack.peek(), add the result to intent
+ * which will received by UploadActivity. Default destination folder is null, so when UploadActivity
+ * receive a null folder, it will use the user id as the destination folder id(My Cloud Folder).
+ */
 public class SelectPathActivity extends ListActivity {
     private static final String TAG     = "SelectPathActivity";
 
     private Button select_path_cancel_bt    = null;
     private Button select_path_ok_bt        = null;
 
-    public static final String RESULT_SELECTED_REMOTE_PARENT_ID = "";
+    public static final String RESULT_SELECTED_REMOTE_FOLDER_ID    = "selected_remote_folder_id";
     // TODO The value should fetch from server dynamic
-    private String remote_parent_id                     = "395ED821-E528-42F0-8EA7-C59F258E7435";
+    //private String remote_parent_id                     = "395ED821-E528-42F0-8EA7-C59F258E7435";
     private ArrayList<String> mFolderNameList           = null;
     private ArrayList<UploadFile> mFolderList           = null;
     private Stack<UploadFile> mPathStack                = null;
@@ -108,9 +117,15 @@ public class SelectPathActivity extends ListActivity {
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "Select this path!");
-                // Return selected remote parent id to UploadActivity
+                // Return selected remote folder id to UploadActivity
                 Intent intent = new Intent();
-                intent.putExtra(RESULT_SELECTED_REMOTE_PARENT_ID, remote_parent_id);
+                if (mPathStack.peek() != null)
+                    intent.putExtra(RESULT_SELECTED_REMOTE_FOLDER_ID,
+                            mPathStack.peek().getRemote_id());
+                else
+                    intent.putExtra(RESULT_SELECTED_REMOTE_FOLDER_ID,
+                            AppConfigs.current_remote_user_id);
+
                 setResult(RESULT_OK, intent);
                 SelectPathActivity.this.finish();
             }
