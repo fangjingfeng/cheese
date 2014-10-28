@@ -60,4 +60,6 @@
     <!-- Welcome Activity -->
     <string name="welcome_login_bt_string">登录</string>
     <string name="welcome_about_bt_string">关于</string>
+    <string name="select_path_activity_cancel_bt_string">取消</string>
+    <string name="select_path_activity_ok_bt_prefix_string">选定: </string>
 </resources>

@@ -18,6 +18,8 @@
     <!-- SelectPathActivity -->
     <string name="select_path_activity_action_bar_title">Select upload folder</string>
     <string name="action_create_directory">Create directory</string>
+    <string name="select_path_activity_cancel_bt_string">Cancel</string>
+    <string name="select_path_activity_ok_bt_prefix_string">Select: </string>
 
     <!-- main menu -->
     <string name="New_Directory">New Directory</string>
