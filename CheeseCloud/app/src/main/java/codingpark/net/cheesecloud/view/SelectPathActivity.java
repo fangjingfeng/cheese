@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -36,8 +37,10 @@ import codingpark.net.cheesecloud.wsi.WsFolder;
  * which will received by UploadActivity. Default destination folder is null, so when UploadActivity
  * receive a null folder, it will use the user id as the destination folder id(My Cloud Folder).
  */
-public class SelectPathActivity extends ListActivity {
+public class SelectPathActivity extends ListActivity implements View.OnClickListener {
     private static final String TAG     = "SelectPathActivity";
+
+    public static final String NULL_ID      = "/";
 
     private Button select_path_cancel_bt    = null;
     private Button select_path_ok_bt        = null;
@@ -48,6 +51,8 @@ public class SelectPathActivity extends ListActivity {
     private ArrayList<String> mFolderNameList           = null;
     private ArrayList<UploadFile> mFolderList           = null;
     private Stack<UploadFile> mPathStack                = null;
+    // Path bar, use to show current directory path
+    private LinearLayout path_bar_container = null;
 
     private SelectPathAdapter mAdapter                  = null;
 
@@ -66,6 +71,11 @@ public class SelectPathActivity extends ListActivity {
         mFolderNameList = new ArrayList<String>();
         mFolderList = new ArrayList<UploadFile>();
         mPathStack = new Stack<UploadFile>();
+        // Initial mPathStack with NULL_ID when not select any folder
+        UploadFile file = new UploadFile();
+        file.setRemote_id(NULL_ID);
+        file.setFilepath("磁盘");
+        mPathStack.push(file);
 
         // Initial list adapter
         mAdapter = new SelectPathAdapter();
@@ -73,7 +83,9 @@ public class SelectPathActivity extends ListActivity {
 
         initUI();
         initHandler();
+        refreshPathBar();
         refreshList();
+        refreshBottomBar();
     }
 
     private void refreshList() {
@@ -101,6 +113,7 @@ public class SelectPathActivity extends ListActivity {
 
         select_path_cancel_bt = (Button) findViewById(R.id.select_upload_path_cancel_bt);
         select_path_ok_bt = (Button) findViewById(R.id.select_upload_path_ok_bt);
+        path_bar_container = (LinearLayout) findViewById(R.id.pathBarContainer);
     }
 
     private void initHandler() {
@@ -119,12 +132,20 @@ public class SelectPathActivity extends ListActivity {
                 Log.d(TAG, "Select this path!");
                 // Return selected remote folder id to UploadActivity
                 Intent intent = new Intent();
-                if (mPathStack.peek() != null)
-                    intent.putExtra(RESULT_SELECTED_REMOTE_FOLDER_ID,
-                            mPathStack.peek().getRemote_id());
-                else
+                if (mPathStack.peek() != null) {
+                    String id = mPathStack.peek().getRemote_id();
+                    if (id.equals(NULL_ID)) {
+                        intent.putExtra(RESULT_SELECTED_REMOTE_FOLDER_ID,
+                                AppConfigs.current_remote_user_id);
+                    }
+                    else {
+                        intent.putExtra(RESULT_SELECTED_REMOTE_FOLDER_ID, id);
+                    }
+                }
+                else {
                     intent.putExtra(RESULT_SELECTED_REMOTE_FOLDER_ID,
                             AppConfigs.current_remote_user_id);
+                }
 
                 setResult(RESULT_OK, intent);
                 SelectPathActivity.this.finish();
@@ -161,19 +182,62 @@ public class SelectPathActivity extends ListActivity {
         // 1. Refresh bottom bar select path button text
         UploadFile file = mFolderList.get(position);
         mPathStack.push(file);
+        refreshPathBar();
         refreshList();
         refreshBottomBar();
     }
 
     private void refreshBottomBar() {
-        if (mPathStack.size() > 0)
+        if (mPathStack.size() > 1)
             select_path_ok_bt.setText(
                     getString(R.string.select_path_activity_ok_bt_prefix_string)
                             + mPathStack.peek().getFilepath());
+        else
+            select_path_ok_bt.setText(
+                    getString(R.string.select_path_activity_ok_bt_prefix_string));
+
     }
 
     private void refreshPathBar() {
+        Log.d(TAG, "Start refresh path bar");
+        int pathBarCount = path_bar_container.getChildCount();
+        int pathStackCount = mPathStack.size();
+        LayoutInflater inflater = (LayoutInflater)this.getSystemService
+                (Context.LAYOUT_INFLATER_SERVICE);
 
+        if (pathBarCount < pathStackCount) {
+            // Add extra path to pathBar
+            for (int i = pathBarCount; i < pathStackCount; i++) {
+                TextView textView = (TextView)inflater.inflate(R.layout.path_bar_item_layout, null);
+                textView.setTag(i);
+                String path = mPathStack.get(i).getFilepath();
+                Log.d(TAG, "path " + i + " is " + path);
+                textView.setText(path);
+                textView.setOnClickListener(this);
+                path_bar_container.addView(textView);
+            }
+        } else if (pathBarCount > pathStackCount) {
+            // Remove extra path from pathBar
+            for (int i = pathBarCount; i > pathStackCount ; i--) {
+                path_bar_container.removeViewAt(i - 1);
+            }
+        }
+    }
+
+    /**
+     * Listen path bar item click event, when user click the item, list
+     * view would be switch to the folder which the item stand for.
+     * @param v The view(path bar item)
+     */
+    @Override
+    public void onClick(View v) {
+        Log.d(TAG, "Item clicked!");
+        int index = Integer.valueOf(v.getTag().toString());
+        while (index < (mPathStack.size() - 1))
+            mPathStack.pop();
+        refreshPathBar();
+        refreshList();
+        refreshBottomBar();
     }
 
     /**
@@ -232,11 +296,12 @@ public class SelectPathActivity extends ListActivity {
         protected Integer doInBackground(Void... params) {
             mFolderList.clear();
             int result = WsResultType.Success;
-            if (mPathStack.size() == 0) {
-                // TODO Need pull disk list
+            UploadFile file = mPathStack.peek();
+            if (file.getRemote_id().equals(NULL_ID)) {
+                // Pull disk list
                 result = getDisk_wrapper();
             } else {
-                // TODO Need pull the sub folder list
+                // Pull the sub folder list
                 result = getFolderList_wrapper(mPathStack.peek());
             }
             return result;
