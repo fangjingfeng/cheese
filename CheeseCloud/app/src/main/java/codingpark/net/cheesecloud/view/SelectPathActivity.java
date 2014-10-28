@@ -44,7 +44,6 @@ public class SelectPathActivity extends ListActivity {
     private Stack<UploadFile> mPathStack                = null;
 
     private SelectPathAdapter mAdapter                  = null;
-    private PullFolderListTask mTask                    = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,12 +66,16 @@ public class SelectPathActivity extends ListActivity {
         setListAdapter(mAdapter);
 
         // Initial search task
-        mTask = new PullFolderListTask();
+        //mTask = new PullFolderListTask();
 
         initUI();
         initHandler();
+        refreshList();
+    }
 
-        mTask.execute();
+    private void refreshList() {
+        Log.d(TAG, "Call execute.");
+        new PullFolderListTask().execute();
     }
 
     private void initUI() {
@@ -142,8 +145,7 @@ public class SelectPathActivity extends ListActivity {
     protected void onListItemClick(ListView l, View v, int position, long id) {
         UploadFile file = mFolderList.get(position);
         mPathStack.push(file);
-        mTask.execute();
-        super.onListItemClick(l, v, position, id);
+        refreshList();
     }
 
     private void refreshPathBar() {
@@ -211,7 +213,7 @@ public class SelectPathActivity extends ListActivity {
                 result = getDisk_wrapper();
             } else {
                 // TODO Need pull the sub folder list
-                result = getFolderList_wrapper();
+                result = getFolderList_wrapper(mPathStack.peek());
             }
             return result;
         }
@@ -252,11 +254,23 @@ public class SelectPathActivity extends ListActivity {
          * Wrapper getFolderList(Web Service Interface)
          * Convert WsFolder to UploadFile
          * @return int, the getFolderList execute result
+         * {@link codingpark.net.cheesecloud.eumn.WsResultType}
          */
-        private int getFolderList_wrapper() {
+        private int getFolderList_wrapper(UploadFile file) {
             int result = WsResultType.Success;
-            ArrayList<WsFolder> r_wsFolder = new ArrayList<WsFolder>();
-            //result = ClientWS.getInstance(SelectPathActivity.this).getFolderList(r_wsFolder);
+            ArrayList<WsFolder> r_wsFolderList = new ArrayList<WsFolder>();
+            WsFolder wsFolder = new WsFolder();
+            wsFolder.ID = file.getRemote_id();
+            result = ClientWS.getInstance(SelectPathActivity.this).getFolderList(wsFolder, null, r_wsFolderList);
+            if (result == WsResultType.Success) {
+                for (WsFolder tmp_folder : r_wsFolderList) {
+                    UploadFile f = new UploadFile();
+                    f.setFiletype(UploadFileType.TYPE_FOLDER);
+                    f.setRemote_id(tmp_folder.ID);
+                    f.setFilepath(tmp_folder.Name);
+                    mFolderList.add(f);
+                }
+            }
             return result;
         }
     }

@@ -39,7 +39,8 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="false"
-        android:layout_below="@+id/horizontalScrollView" />
+        android:layout_below="@+id/horizontalScrollView"
+        android:layout_above="@+id/bottom_form" />
 
     <RelativeLayout
         android:id="@+id/bottom_form"
@@ -47,7 +48,6 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:background="#ff1b1724"
-        android:layout_above="@+id/android:list"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentStart="true">
