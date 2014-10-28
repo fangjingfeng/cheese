@@ -65,9 +65,6 @@ public class SelectPathActivity extends ListActivity {
         mAdapter = new SelectPathAdapter();
         setListAdapter(mAdapter);
 
-        // Initial search task
-        //mTask = new PullFolderListTask();
-
         initUI();
         initHandler();
         refreshList();
@@ -79,16 +76,22 @@ public class SelectPathActivity extends ListActivity {
     }
 
     private void initUI() {
+        /*
         // Create a progress bar to display while the list loads
         ProgressBar progressBar = new ProgressBar(this);
         progressBar.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
                 FrameLayout.LayoutParams.WRAP_CONTENT, Gravity.CENTER));
         progressBar.setIndeterminate(true);
         getListView().setEmptyView(progressBar);
-
         // Must add the progress bar to the root of the layout
         ViewGroup root = (ViewGroup) findViewById(android.R.id.content);
         root.addView(progressBar);
+        */
+        //ListView lv = (ListView)findViewById(android.R.id.list);
+        //TextView emptyText = (TextView)findViewById(R.layout.select_path_activity_list_empty);
+
+        // Set list view empty widget
+        getListView().setEmptyView(findViewById(android.R.id.empty));
 
         select_path_cancel_bt = (Button) findViewById(R.id.select_upload_path_cancel_bt);
         select_path_ok_bt = (Button) findViewById(R.id.select_upload_path_ok_bt);

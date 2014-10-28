@@ -34,13 +34,27 @@
         </LinearLayout>
     </HorizontalScrollView>
 
-    <ListView
-        android:id="@+id/android:list"
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="false"
         android:layout_below="@+id/horizontalScrollView"
-        android:layout_above="@+id/bottom_form" />
+        android:layout_above="@+id/bottom_form" >
+        <ListView
+            android:id="@+id/android:list"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            />
+        <!-- the android:id is important -->
+        <TextView
+            android:id="@android:id/empty"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:text="无子文件夹"
+            android:gravity="center_vertical|center_horizontal"
+            android:textSize="20dp" />
+    </LinearLayout>
 
     <RelativeLayout
         android:id="@+id/bottom_form"
