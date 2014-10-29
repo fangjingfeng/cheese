@@ -54,7 +54,7 @@ public class SelectedPathHandler {
                 holder.icon = (ImageView)convertView.findViewById(R.id.row_image);
                 // Update icon src
                 holder.icon.setImageResource(R.drawable.folder);
-                holder.rightView = (TextView)convertView.findViewById(R.id.file_name_view);
+                holder.rightView = (TextView)convertView.findViewById(R.id.fileNameView);
 
                 convertView.setTag(holder);
             } else {

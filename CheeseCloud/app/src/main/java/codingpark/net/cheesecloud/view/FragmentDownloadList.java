@@ -1,6 +1,7 @@
 package codingpark.net.cheesecloud.view;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.app.ListFragment;
 import android.view.View;
@@ -8,6 +9,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import codingpark.net.cheesecloud.handle.OnFragmentInteractionListener;
+import codingpark.net.cheesecloud.model.UploadFileDataSource;
 import codingpark.net.cheesecloud.view.dummy.DummyContent;
 
 /**
@@ -25,7 +27,8 @@ public class FragmentDownloadList extends ListFragment {
     // The fragment index in TransferStateActivity
     private int section_number;
 
-    private OnFragmentInteractionListener mListener;
+    private OnFragmentInteractionListener mListener = null;
+    private Context mContext                        = null;
 
     public static FragmentDownloadList newInstance(int number) {
         FragmentDownloadList fragment = new FragmentDownloadList();
@@ -61,6 +64,7 @@ public class FragmentDownloadList extends ListFragment {
         super.onAttach(activity);
         try {
             mListener = (OnFragmentInteractionListener) activity;
+            mContext = activity;
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
                     + " must implement OnFragmentInteractionListener");

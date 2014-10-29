@@ -20,9 +20,11 @@ public class ContactListAdapter extends ArrayAdapter<String> {
     private Context mContext        = null;
     private String[] values         = null;
 
+    /*
     public ContactListAdapter(Context context, int resource) {
         super(context, resource);
     }
+    */
 
     public ContactListAdapter(Context context, int resource, String[] objects) {
         super(context, resource, objects);

@@ -149,7 +149,7 @@ public class TransferStateActivity extends Activity implements ActionBar.TabList
             switch (position) {
                 case 0:
                     return FragmentDownloadList.newInstance(position);
-                case 2:
+                case 1:
                     return FragmentUploadList.newInstance(position);
                 default:
                     return FragmentDownloadList.newInstance(position);
