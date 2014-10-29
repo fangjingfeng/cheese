@@ -148,11 +148,11 @@ public class TransferStateActivity extends Activity implements ActionBar.TabList
             // getItem is called to instantiate the fragment for the given page.
             switch (position) {
                 case 0:
-                    return FragmentDownloadList.newInstance("", "");
+                    return FragmentDownloadList.newInstance(position);
                 case 2:
-                    return FragmentUploadList.newInstance("", "");
+                    return FragmentUploadList.newInstance(position);
                 default:
-                    return FragmentDownloadList.newInstance("", "");
+                    return FragmentDownloadList.newInstance(position);
             }
         }
 
