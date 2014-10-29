@@ -144,8 +144,8 @@ public class TransferStateActivity extends Activity implements ActionBar.TabList
 
         @Override
         public int getCount() {
-            // Show 3 total pages.
-            return 3;
+            // Download + Upload
+            return 2;
         }
 
         @Override
@@ -153,11 +153,9 @@ public class TransferStateActivity extends Activity implements ActionBar.TabList
             Locale l = Locale.getDefault();
             switch (position) {
                 case 0:
-                    return getString(R.string.title_section1).toUpperCase(l);
+                    return getString(R.string.transfer_state_activity_download_section_title).toUpperCase(l);
                 case 1:
-                    return getString(R.string.title_section2).toUpperCase(l);
-                case 2:
-                    return getString(R.string.title_section3).toUpperCase(l);
+                    return getString(R.string.transfer_state_activity_upload_section_title).toUpperCase(l);
             }
             return null;
         }

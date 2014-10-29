@@ -52,10 +52,10 @@
     <string name="tab_home_item_small_class_title">Small Class</string>
     <string name="tab_home_item_temp_screen_title">Temp Screen</string>
 
-    <!-- Used by pager -->
-    <string name="title_section1">Section 1</string>
-    <string name="title_section2">Section 2</string>
-    <string name="title_section3">Section 3</string>
+    <!-- TransferStateActivity -->
+    <string name="transfer_state_activity_download_section_title">Download List</string>
+    <string name="transfer_state_activity_upload_section_title">Upload List</string>
+    <string name="title_activity_transfer_state">Transfer State</string>
 
     <!-- Help page -->
     <string name="product_info">Cheese Cloud description</string>
@@ -69,6 +69,5 @@
     <!-- Welcome Activity -->
     <string name="welcome_login_bt_string">Login</string>
     <string name="welcome_about_bt_string">About</string>
-    <string name="title_activity_transfer_state">TransferStateActivity</string>
 
 </resources>

@@ -339,14 +339,17 @@ public class MainActivity extends Activity implements OnFragmentInteractionListe
 
         @Override
         public CharSequence getPageTitle(int position) {
-            Locale l = Locale.getDefault();
+            //Locale l = Locale.getDefault();
             switch (position) {
                 case 0:
-                    return getString(R.string.title_section1).toUpperCase(l);
+                    return "";
+                    //return getString(R.string.title_section1).toUpperCase(l);
                 case 1:
-                    return getString(R.string.title_section2).toUpperCase(l);
+                    return "";
+                    //return getString(R.string.title_section2).toUpperCase(l);
                 case 2:
-                    return getString(R.string.title_section3).toUpperCase(l);
+                    return "";
+                    //return getString(R.string.title_section3).toUpperCase(l);
             }
             return null;
         }

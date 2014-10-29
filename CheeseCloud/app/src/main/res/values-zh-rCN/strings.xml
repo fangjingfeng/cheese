@@ -62,4 +62,8 @@
     <string name="welcome_about_bt_string">关于</string>
     <string name="select_path_activity_cancel_bt_string">取消</string>
     <string name="select_path_activity_ok_bt_prefix_string">选定: </string>
+    <string name="title_activity_select_path">选择上传路径</string>
+    <string name="title_activity_transfer_state">传输状态</string>
+    <string name="transfer_state_activity_download_section_title">下载列表</string>
+    <string name="transfer_state_activity_upload_section_title">上传列表</string>
 </resources>
