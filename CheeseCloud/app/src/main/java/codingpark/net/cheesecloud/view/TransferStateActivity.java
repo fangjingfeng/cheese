@@ -7,6 +7,7 @@ import android.app.ActionBar;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.app.ListFragment;
 import android.support.v13.app.FragmentPagerAdapter;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
@@ -16,9 +17,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import codingpark.net.cheesecloud.R;
+import codingpark.net.cheesecloud.handle.OnFragmentInteractionListener;
 
 /**
  * This activity show the upload/download file state to user.
@@ -30,7 +33,7 @@ import codingpark.net.cheesecloud.R;
  *  This section contain a list view to show uploading/uploaded state
  *  record.
  */
-public class TransferStateActivity extends Activity implements ActionBar.TabListener {
+public class TransferStateActivity extends Activity implements ActionBar.TabListener,OnFragmentInteractionListener {
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -125,6 +128,11 @@ public class TransferStateActivity extends Activity implements ActionBar.TabList
     public void onTabReselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
     }
 
+    @Override
+    public void onFragmentInteraction(String id) {
+
+    }
+
     /**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
      * one of the sections/tabs/pages.
@@ -138,8 +146,14 @@ public class TransferStateActivity extends Activity implements ActionBar.TabList
         @Override
         public Fragment getItem(int position) {
             // getItem is called to instantiate the fragment for the given page.
-            // Return a PlaceholderFragment (defined as a static inner class below).
-            return PlaceholderFragment.newInstance(position + 1);
+            switch (position) {
+                case 0:
+                    return FragmentDownloadList.newInstance("", "");
+                case 2:
+                    return FragmentUploadList.newInstance("", "");
+                default:
+                    return FragmentDownloadList.newInstance("", "");
+            }
         }
 
         @Override
@@ -160,38 +174,4 @@ public class TransferStateActivity extends Activity implements ActionBar.TabList
             return null;
         }
     }
-
-    /**
-     * A placeholder fragment containing a simple view.
-     */
-    public static class PlaceholderFragment extends Fragment {
-        /**
-         * The fragment argument representing the section number for this
-         * fragment.
-         */
-        private static final String ARG_SECTION_NUMBER = "section_number";
-
-        /**
-         * Returns a new instance of this fragment for the given section
-         * number.
-         */
-        public static PlaceholderFragment newInstance(int sectionNumber) {
-            PlaceholderFragment fragment = new PlaceholderFragment();
-            Bundle args = new Bundle();
-            args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-            fragment.setArguments(args);
-            return fragment;
-        }
-
-        public PlaceholderFragment() {
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_transfer_state, container, false);
-            return rootView;
-        }
-    }
-
 }
