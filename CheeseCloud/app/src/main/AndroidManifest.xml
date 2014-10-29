@@ -78,6 +78,15 @@
             android:name="codingpark.net.cheesecloud.handle.UploadService"
             android:exported="false" >
         </service>
+
+        <activity
+            android:name="codingpark.net.cheesecloud.view.TransferStateActivity"
+            android:label="@string/title_activity_transfer_state"
+            android:parentActivityName="codingpark.net.cheesecloud.view.MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="codingpark.net.cheesecloud.view.MainActivity" />
+        </activity>
     </application>
 
 </manifest>

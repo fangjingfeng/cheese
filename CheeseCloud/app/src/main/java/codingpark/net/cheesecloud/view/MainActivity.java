@@ -245,6 +245,15 @@ public class MainActivity extends Activity implements OnFragmentInteractionListe
                 MainActivity.this.startActivityForResult(i, 0);
             }
         });
+
+        more_bt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG, "more button clicked!");
+                Intent intent = new Intent(MainActivity.this, TransferStateActivity.class);
+                MainActivity.this.startActivity(intent);
+            }
+        });
     }
 
     @Override
