@@ -165,7 +165,8 @@ public class FragmentUploadList extends ListFragment {
             switch (file.getState()) {
                 case UploadFileState.NotUpload:
                 case UploadFileState.Uploading:
-                    holder.stateView.setText("上传");
+                    holder.stateView.setText("上传中");
+                    break;
                 case UploadFileState.Uploaded:
                 default:
                     holder.stateView.setText("上传完成");
