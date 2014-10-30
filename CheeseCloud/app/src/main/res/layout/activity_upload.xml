@@ -91,11 +91,11 @@
             android:textColor="@color/white"
             android:text="@string/upload_activity_bottom_bar_upload_bt"
             android:id="@+id/start_upload_bt"
-            android:layout_alignParentEnd="true"
             android:layout_below="@+id/textView"
             android:layout_marginRight="20dp"
             android:layout_marginBottom="10dp"
-            android:background="@drawable/upload_activity_bottom_start_upload_bg_normal_img" />
+            android:background="@drawable/upload_activity_bottom_start_upload_bg_normal_img"
+            android:layout_alignParentRight="true" />
     </RelativeLayout>
 
 </LinearLayout>

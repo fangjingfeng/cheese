@@ -92,11 +92,11 @@
             android:textColor="@color/white"
             android:text="@string/select_path_activity_ok_bt_prefix_string"
             android:id="@+id/select_upload_path_ok_bt"
-            android:layout_alignParentEnd="true"
             android:layout_below="@+id/textView"
             android:layout_marginRight="20dp"
             android:layout_marginBottom="10dp"
-            android:background="@drawable/upload_activity_bottom_start_upload_bg_normal_img" />
+            android:background="@drawable/upload_activity_bottom_start_upload_bg_normal_img"
+            android:layout_alignParentRight="true" />
     </RelativeLayout>
 
 </RelativeLayout>
