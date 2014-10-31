@@ -27,6 +27,7 @@ import android.widget.SimpleAdapter;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Toast;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -100,7 +101,9 @@ public class GalleryActivity extends Activity implements LoaderManager.LoaderCal
         gridView = (GridView) findViewById(R.id.gridview);
         list = new ArrayList<HashMap<String, String>>();
         cr = getContentResolver();
-        String[] projection = { MediaStore.Images.Thumbnails._ID, MediaStore.Images.Thumbnails.IMAGE_ID,
+        String[] projection = {
+                MediaStore.Images.Thumbnails._ID,
+                MediaStore.Images.Thumbnails.IMAGE_ID,
                 MediaStore.Images.Thumbnails.DATA };
         Cursor cursor = cr.query(MediaStore.Images.Thumbnails.EXTERNAL_CONTENT_URI, projection,
                 null, null, null);
@@ -111,11 +114,37 @@ public class GalleryActivity extends Activity implements LoaderManager.LoaderCal
         ListAdapter adapter = new GridAdapter(this, list, R.layout.item, from,
                 to);
         gridView.setAdapter(adapter);
-        //gridView.setOnItemClickListener(listener);
+        gridView.setOnItemClickListener(listener);
+
+
+        // Query the extra infomation from Image table by image_id, judge the orig id is exist
+        String[] image_projection = {
+                MediaStore.Images.Media._ID,
+                MediaStore.Images.Media.DATA,
+                MediaStore.Images.Media.DATE_TAKEN,
+                MediaStore.Images.Media.DISPLAY_NAME,
+                MediaStore.Images.Media.DESCRIPTION,
+                MediaStore.Images.Media.BUCKET_DISPLAY_NAME,
+                MediaStore.Images.Media.BUCKET_ID,
+                MediaStore.Images.Media.MINI_THUMB_MAGIC
+        };
+        Cursor image_cursor = cr.query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, image_projection,
+                null, null, null);
+        while (image_cursor.moveToNext()) {
+            Log.d(TAG, "###################################################3");
+            Log.d(TAG, "ID: " + image_cursor.getInt(0));
+            Log.d(TAG, "DATA: " + image_cursor.getString(1));
+            Log.d(TAG, "DATE_TAKEN: " + image_cursor.getInt(2));
+            Log.d(TAG, "DISPLAY_NAME: " + image_cursor.getString(3));
+            Log.d(TAG, "DESCRIPTION: " + image_cursor.getString(4));
+            Log.d(TAG, "BUCKET_DISPLAY_NAME: " + image_cursor.getString(5));
+            Log.d(TAG, "BUCKET_ID: " + image_cursor.getInt(6));
+            Log.d(TAG, "MINI_THUMB_MAGIC: " + image_cursor.getInt(7));
+            Log.d(TAG, "###################################################3");
+        }
 
     }
 
-    /*
     AdapterView.OnItemClickListener listener = new AdapterView.OnItemClickListener() {
 
         @Override
@@ -131,42 +160,45 @@ public class GalleryActivity extends Activity implements LoaderManager.LoaderCal
                 cursor.moveToFirst();
                 String path = cursor.getString(cursor
                         .getColumnIndex(MediaStore.Images.Media.DATA));
+                Log.d(TAG, "path: " + path);
+                /*
                 Intent intent = new Intent(GalleryActivity.this,
                         ImageViewer.class);
                 intent.putExtra("path", path);
                 startActivity(intent);
+                */
             } else {
-                Toast.makeText(ThumbnailActivity.this, "Image doesn't exist!",
+                Toast.makeText(GalleryActivity.this, "Image doesn't exist!",
                         Toast.LENGTH_SHORT).show();
             }
 
         }
     };
-    */
 
     private void getColumnData(Cursor cur) {
         if (cur.moveToFirst()) {
-            int _id;
+            int id;
             int image_id;
             String image_path;
-            int _idColumn = cur.getColumnIndex(MediaStore.Images.Thumbnails._ID);
-            int image_idColumn = cur.getColumnIndex(MediaStore.Images.Thumbnails.IMAGE_ID);
+            int idColumn = cur.getColumnIndex(MediaStore.Images.Thumbnails._ID);
+            int imageIdColumn = cur.getColumnIndex(MediaStore.Images.Thumbnails.IMAGE_ID);
             int dataColumn = cur.getColumnIndex(MediaStore.Images.Thumbnails.DATA);
 
             do {
                 // Get the field values
-                _id = cur.getInt(_idColumn);
-                image_id = cur.getInt(image_idColumn);
+                id = cur.getInt(idColumn);
+                image_id = cur.getInt(imageIdColumn);
                 image_path = cur.getString(dataColumn);
 
                 // Do something with the values.
-                Log.i(TAG, _id + " image_id:" + image_id + " path:"
-                        + image_path + "---");
-                HashMap hash = new HashMap();
+                HashMap<String, String> hash = new HashMap<String,String>();
                 hash.put("image_id", image_id + "");
                 hash.put("path", image_path);
-                list.add(hash);
-
+                File file = new File(image_path);
+                if (file.exists()) {
+                    Log.i(TAG, id + " image_id:" + image_id + " path:"+ image_path);
+                    list.add(hash);
+                }
             } while (cur.moveToNext());
 
         }
@@ -185,8 +217,9 @@ public class GalleryActivity extends Activity implements LoaderManager.LoaderCal
         public void setViewImage(ImageView v, String value) {
             try {
                 Bitmap bitmap = null;
-                if (value != null)
+                if (value != null) {
                     bitmap = BitmapFactory.decodeFile(value);
+                }
                 if (bitmap != null) {
                     Bitmap newBit = Bitmap
                             .createScaledBitmap(bitmap, 100, 80, true);
