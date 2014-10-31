@@ -1,11 +1,11 @@
 package codingpark.net.testmediastore;
 
 import android.app.Activity;
+import android.app.ListActivity;
 import android.app.LoaderManager;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.CursorLoader;
-import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -14,17 +14,21 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.CursorAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ListAdapter;
+import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.SimpleCursorAdapter;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
@@ -34,184 +38,69 @@ import java.util.List;
 import java.util.Map;
 
 
-public class GalleryActivity extends Activity implements LoaderManager.LoaderCallbacks<Cursor>{
+public class GalleryActivity extends ListActivity implements LoaderManager.LoaderCallbacks<Cursor>{
     public static final String TAG = GalleryActivity.class.getSimpleName();
     /**
      * Cursor used to access the results from querying for images on the SD card.
      */
-    private Cursor cursor;
-    /*
-     * Column index for the Thumbnails Image IDs.
-     */
-    private int columnIndex;
+    private Cursor cursor           = null;
+    private ContentResolver cr      = null;
 
-    private GridView gridView;
-    private ArrayList<HashMap<String, String>> list;
-    private ContentResolver cr;
-
-
+    private String[] image_projection = {
+            MediaStore.Images.Media._ID,
+            MediaStore.Images.Media.DATA,
+            MediaStore.Images.Media.DATE_TAKEN,
+            MediaStore.Images.Media.DISPLAY_NAME,
+            MediaStore.Images.Media.DESCRIPTION,
+            MediaStore.Images.Media.BUCKET_DISPLAY_NAME,
+            MediaStore.Images.Media.BUCKET_ID,
+            MediaStore.Images.Media.MINI_THUMB_MAGIC
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_gallery);
+        setContentView(R.layout.select_upload_image_category_layout);
 
-        findViews();
-        /*
-        getLoaderManager().initLoader(0, null, this);
-        // Set up an array of the Thumbnail Image ID column we want
-        String[] projection = {
-                MediaStore.Images.Thumbnails._ID,
-                MediaStore.Images.Thumbnails.IMAGE_ID,
-        };
-        // Create the cursor pointing to the SDCard
-        // MediaStore.Images.Media
-        cursor = managedQuery( MediaStore.Images.Thumbnails.EXTERNAL_CONTENT_URI,
-                projection, // Which columns to return
-                null,       // Return all rows
-                null,
-                MediaStore.Images.Thumbnails.IMAGE_ID);
-        // Get the column index of the Thumbnails Image ID
-        columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Thumbnails._ID);
-
-        GridView sdcardImages = (GridView) findViewById(R.id.sdcard);
-        sdcardImages.setAdapter(new ImageAdapter(this));
-
-        // Set up a click listener
-        sdcardImages.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            public void onItemClick(AdapterView parent, View v, int position, long id) {
-                // Get the data location of the image
-                String[] projection = {MediaStore.Images.Media.DATA};
-                cursor = managedQuery(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                        projection, // Which columns to return
-                        null,       // Return all rows
-                        null,
-                        null);
-                columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-                cursor.moveToPosition(position);
-                // Get image filename
-                String imagePath = cursor.getString(columnIndex);
-                // Use this path to do further processing, i.e. full screen display
-            }
-        });
-        */
-    }
-
-    private void findViews() {
-        gridView = (GridView) findViewById(R.id.gridview);
-        list = new ArrayList<HashMap<String, String>>();
         cr = getContentResolver();
-        String[] projection = {
-                MediaStore.Images.Thumbnails._ID,
-                MediaStore.Images.Thumbnails.IMAGE_ID,
-                MediaStore.Images.Thumbnails.DATA };
-        Cursor cursor = cr.query(MediaStore.Images.Thumbnails.EXTERNAL_CONTENT_URI, projection,
-                null, null, null);
-        getColumnData(cursor);
 
-        String[] from = { "path" };
-        int[] to = { R.id.imageView };
-        ListAdapter adapter = new GridAdapter(this, list, R.layout.item, from,
-                to);
-        gridView.setAdapter(adapter);
-        gridView.setOnItemClickListener(listener);
-
-
-        // Query the extra infomation from Image table by image_id, judge the orig id is exist
-        String[] image_projection = {
-                MediaStore.Images.Media._ID,
-                MediaStore.Images.Media.DATA,
-                MediaStore.Images.Media.DATE_TAKEN,
-                MediaStore.Images.Media.DISPLAY_NAME,
-                MediaStore.Images.Media.DESCRIPTION,
-                MediaStore.Images.Media.BUCKET_DISPLAY_NAME,
-                MediaStore.Images.Media.BUCKET_ID,
-                MediaStore.Images.Media.MINI_THUMB_MAGIC
-        };
-        Cursor image_cursor = cr.query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, image_projection,
-                null, null, null);
-        while (image_cursor.moveToNext()) {
-            Log.d(TAG, "###################################################3");
-            Log.d(TAG, "ID: " + image_cursor.getInt(0));
-            Log.d(TAG, "DATA: " + image_cursor.getString(1));
-            Log.d(TAG, "DATE_TAKEN: " + image_cursor.getInt(2));
-            Log.d(TAG, "DISPLAY_NAME: " + image_cursor.getString(3));
-            Log.d(TAG, "DESCRIPTION: " + image_cursor.getString(4));
-            Log.d(TAG, "BUCKET_DISPLAY_NAME: " + image_cursor.getString(5));
-            Log.d(TAG, "BUCKET_ID: " + image_cursor.getInt(6));
-            Log.d(TAG, "MINI_THUMB_MAGIC: " + image_cursor.getInt(7));
-            Log.d(TAG, "###################################################3");
-        }
-
+        getLoaderManager().initLoader(0, null, this);
+        this.setListAdapter(new GridAdapter(this, null, 0, null, null));
     }
 
-    AdapterView.OnItemClickListener listener = new AdapterView.OnItemClickListener() {
-
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position,
-                                long id) {
-            // TODO Auto-generated method stub
-            String image_id = list.get(position).get("image_id");
-            Log.i(TAG, "---(^o^)----" + image_id);
-            String[] projection = { MediaStore.Images.Media._ID, MediaStore.Images.Media.DATA };
-            Cursor cursor = cr.query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, projection,
-                    MediaStore.Images.Media._ID + "=" + image_id, null, null);
-            if (cursor != null) {
-                cursor.moveToFirst();
-                String path = cursor.getString(cursor
-                        .getColumnIndex(MediaStore.Images.Media.DATA));
-                Log.d(TAG, "path: " + path);
-                /*
-                Intent intent = new Intent(GalleryActivity.this,
-                        ImageViewer.class);
-                intent.putExtra("path", path);
-                startActivity(intent);
-                */
-            } else {
-                Toast.makeText(GalleryActivity.this, "Image doesn't exist!",
-                        Toast.LENGTH_SHORT).show();
-            }
-
-        }
-    };
-
-    private void getColumnData(Cursor cur) {
-        if (cur.moveToFirst()) {
-            int id;
-            int image_id;
-            String image_path;
-            int idColumn = cur.getColumnIndex(MediaStore.Images.Thumbnails._ID);
-            int imageIdColumn = cur.getColumnIndex(MediaStore.Images.Thumbnails.IMAGE_ID);
-            int dataColumn = cur.getColumnIndex(MediaStore.Images.Thumbnails.DATA);
-
-            do {
-                // Get the field values
-                id = cur.getInt(idColumn);
-                image_id = cur.getInt(imageIdColumn);
-                image_path = cur.getString(dataColumn);
-
-                // Do something with the values.
-                HashMap<String, String> hash = new HashMap<String,String>();
-                hash.put("image_id", image_id + "");
-                hash.put("path", image_path);
-                File file = new File(image_path);
-                if (file.exists()) {
-                    Log.i(TAG, id + " image_id:" + image_id + " path:"+ image_path);
-                    list.add(hash);
-                }
-            } while (cur.moveToNext());
-
-        }
+    @Override
+    protected void onListItemClick(ListView l, View v, int position, long id) {
+        super.onListItemClick(l, v, position, id);
     }
+
 
     class GridAdapter extends SimpleAdapter {
+        /**
+         * Constructor
+         *
+         * @param context  The context where the View associated with this SimpleAdapter is running
+         * @param data     A List of Maps. Each entry in the List corresponds to one row in the list. The
+         *                 Maps contain the data for each row, and should include all the entries specified in
+         *                 "from"
+         * @param resource Resource identifier of a view layout that defines the views for this list
+         *                 item. The layout file should include at least those named views defined in "to"
+         * @param from     A list of column names that will be added to the Map associated with each
+         *                 item.
+         * @param to       The views that should display column in the "from" parameter. These should all be
+         *                 TextViews. The first N views in this list are given the values of the first N columns
+         */
+        public GridAdapter(Context context, List<? extends Map<String, ?>> data, int resource, String[] from, int[] to) {
+            super(context, data, resource, from, to);
+        }
 
+        /*
         public GridAdapter(Context context,
                            List<? extends Map<String, ?>> data, int resource,
                            String[] from, int[] to) {
             super(context, data, resource, from, to);
             // TODO Auto-generated constructor stub
         }
+        */
 
         // set the imageView using the path of image
         public void setViewImage(ImageView v, String value) {
@@ -231,6 +120,42 @@ public class GalleryActivity extends Activity implements LoaderManager.LoaderCal
         }
     }
 
+    private static final class ViewHolder {
+        public ImageView bucketThumbView    = null;
+        public TextView bucketNameView      = null;
+        public TextView countView           = null;
+    }
+
+    private class ImageCategoryAdapter extends CursorAdapter {
+        private LayoutInflater inflater     = null;
+        public ImageCategoryAdapter(Context context, Cursor c, boolean autoRequery) {
+            super(context, c, autoRequery);
+            inflater = (LayoutInflater)GalleryActivity.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        }
+
+        @Override
+        public View newView(Context context, Cursor cursor, ViewGroup parent) {
+            View view = inflater.inflate(R.layout.select_upload_image_fragment_item, parent);
+            ViewHolder holder = new ViewHolder();
+            holder.bucketThumbView = (ImageView)view.findViewById(R.id.bucketImageView);
+            holder.bucketNameView = (TextView)view.findViewById(R.id.bucketNameView);
+            holder.countView = (TextView)view.findViewById(R.id.countTextView);
+            view.setTag(holder);
+            initUI(holder, cursor);
+            return view;
+        }
+
+        private void initUI(ViewHolder holder, Cursor cursor) {
+
+        }
+
+        @Override
+        public void bindView(View view, Context context, Cursor cursor) {
+            // CursorAdapter already help us check the view is null
+            ViewHolder holder = (ViewHolder)view.getTag();
+            initUI(holder, cursor);
+        }
+    }
 
 
     @Override
@@ -242,7 +167,7 @@ public class GalleryActivity extends Activity implements LoaderManager.LoaderCal
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
+        // Handle action bar select_upload_image_fragment_item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
@@ -256,77 +181,38 @@ public class GalleryActivity extends Activity implements LoaderManager.LoaderCal
     }
 
 
+
     @Override
     public Loader onCreateLoader(int id, Bundle args) {
-        Uri uri = MediaStore.Images.Thumbnails.EXTERNAL_CONTENT_URI;
-        String[] projection = {MediaStore.Images.Thumbnails._ID};
+        Uri uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
         return new CursorLoader(this,
                 uri,
-                projection,
+                image_projection,
                 null,
                 null,
-                MediaStore.Images.Thumbnails.IMAGE_ID) ;
+                MediaStore.Images.Media.BUCKET_ID) ;
     }
 
     @Override
     public void onLoadFinished(Loader loader, Cursor data) {
-
+        if (data != null)  {
+            while(data.moveToNext()) {
+                Log.d(TAG, "###################################################3");
+                Log.d(TAG, "ID: " + data.getInt(0));
+                Log.d(TAG, "DATA: " + data.getString(1));
+                Log.d(TAG, "DATE_TAKEN: " + data.getInt(2));
+                Log.d(TAG, "DISPLAY_NAME: " + data.getString(3));
+                Log.d(TAG, "DESCRIPTION: " + data.getString(4));
+                Log.d(TAG, "BUCKET_DISPLAY_NAME: " + data.getString(5));
+                Log.d(TAG, "BUCKET_ID: " + data.getInt(6));
+                Log.d(TAG, "MINI_THUMB_MAGIC: " + data.getInt(7));
+                Log.d(TAG, "###################################################3");
+            }
+        }
     }
 
     @Override
     public void onLoaderReset(Loader loader) {
 
-    }
-
-    private class ImageCursorAdapter extends SimpleCursorAdapter {
-
-        public ImageCursorAdapter(Context context, int layout, Cursor c, String[] from, int[] to, int flags) {
-            super(context, layout, c, from, to, flags);
-        }
-    }
-
-
-
-    /**
-     * Adapter for our image files.
-     */
-    private class ImageAdapter extends BaseAdapter {
-
-        private Context context;
-
-        public ImageAdapter(Context localContext) {
-            context = localContext;
-        }
-
-        public int getCount() {
-            return cursor.getCount();
-        }
-        public Object getItem(int position) {
-            return position;
-        }
-        public long getItemId(int position) {
-            return position;
-        }
-        public View getView(int position, View convertView, ViewGroup parent) {
-            Log.d(TAG, "getView: " + position);
-            ImageView picturesView;
-            if (convertView == null) {
-                picturesView = new ImageView(context);
-                // Move cursor to current position
-                cursor.moveToPosition(position);
-                // Get the current value for the requested column
-                int imageID = cursor.getInt(columnIndex);
-                // Set the content of the image based on the provided URI
-                picturesView.setImageURI(Uri.withAppendedPath(
-                        MediaStore.Images.Thumbnails.INTERNAL_CONTENT_URI, "" + imageID));
-                picturesView.setScaleType(ImageView.ScaleType.FIT_CENTER);
-                picturesView.setPadding(8, 8, 8, 8);
-                picturesView.setLayoutParams(new GridView.LayoutParams(100, 100));
-            }
-            else {
-                picturesView = (ImageView)convertView;
-            }
-            return picturesView;
-        }
     }
 }
