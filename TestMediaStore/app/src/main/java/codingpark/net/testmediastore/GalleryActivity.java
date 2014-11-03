@@ -262,7 +262,7 @@ public class GalleryActivity extends ListActivity implements LoaderManager.Loade
                     Log.d(TAG, "getThumbPath: " + "empty");
                 } else {
                     MediaStore.Images.Thumbnails.getThumbnail(cr,
-                            item.id, MediaStore.Images.Thumbnails.MICRO_KIND, null);
+                            item.id, MediaStore.Images.Thumbnails.MINI_KIND, null);
                     lastPhotoId = item.id;
                     getThumbPath(item);
                 }
@@ -345,8 +345,14 @@ public class GalleryActivity extends ListActivity implements LoaderManager.Loade
                 holder = (ItemViewHolder)convertView.getTag();
             }
 
-            holder.itemThumbView.setImageBitmap(MediaStore.Images.Thumbnails.getThumbnail(cr, item.id, MediaStore.Images.Thumbnails.MICRO_KIND, null));
-            holder.imageNameView.setText(item.bucket_display_name);
+            String path = item.data;
+            if (path == null || path.isEmpty()) {
+                holder.itemThumbView.setImageResource(R.drawable.ic_launcher);
+            } else {
+                holder.itemThumbView.setImageBitmap(MediaStore.Images.Thumbnails.getThumbnail(cr, item.id, MediaStore.Images.Thumbnails.MICRO_KIND, null));
+            }
+            path = path.substring(path.lastIndexOf("/") + 1, path.length());
+            holder.imageNameView.setText(path);
             holder.imageTakeDateView.setText(item.date_taken + "");
             return convertView;
         }
