@@ -4,7 +4,7 @@
     android:layout_height="wrap_content"
     android:padding="6dip" >
     <ImageView
-        android:src="@drawable/text"
+        android:src="@drawable/ic_launcher"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
