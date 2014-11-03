@@ -7,8 +7,6 @@ import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Loader;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -19,15 +17,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 
 public class GalleryActivity extends ListActivity implements LoaderManager.LoaderCallbacks<Cursor>{
@@ -115,56 +112,27 @@ public class GalleryActivity extends ListActivity implements LoaderManager.Loade
 
     @Override
     protected void onListItemClick(ListView l, View v, int position, long id) {
-        super.onListItemClick(l, v, position, id);
-    }
-
-
-    class GridAdapter extends SimpleAdapter {
-        /**
-         * Constructor
-         *
-         * @param context  The context where the View associated with this SimpleAdapter is running
-         * @param data     A List of Maps. Each entry in the List corresponds to one row in the list. The
-         *                 Maps contain the data for each row, and should include all the entries specified in
-         *                 "from"
-         * @param resource Resource identifier of a view layout that defines the views for this list
-         *                 item. The layout file should include at least those named views defined in "to"
-         * @param from     A list of column names that will be added to the Map associated with each
-         *                 item.
-         * @param to       The views that should display column in the "from" parameter. These should all be
-         *                 TextViews. The first N views in this list are given the values of the first N columns
-         */
-        public GridAdapter(Context context, List<? extends Map<String, ?>> data, int resource, String[] from, int[] to) {
-            super(context, data, resource, from, to);
-        }
-
-        /*
-        public GridAdapter(Context context,
-                           List<? extends Map<String, ?>> data, int resource,
-                           String[] from, int[] to) {
-            super(context, data, resource, from, to);
-            // TODO Auto-generated constructor stub
-        }
-        */
-
-        // set the imageView using the path of image
-        public void setViewImage(ImageView v, String value) {
-            try {
-                Bitmap bitmap = null;
-                if (value != null) {
-                    bitmap = BitmapFactory.decodeFile(value);
+        if (mListMode == CATEGORY_LIST_MODE) {
+            // Get image item filtered by bucket_id
+            ItemImage category = mCategoryList.get(position);
+            mSubItemList.clear();
+            for (int i = 0; i < mAllItemList.size(); i++) {
+                ItemImage item = mAllItemList.get(i);
+                if (category.bucket_id == item.bucket_id) {
+                    try {
+                        mSubItemList.add((ItemImage) item.clone());
+                        getThumbPath(item);
+                    } catch (CloneNotSupportedException e) {
+                        e.printStackTrace();
+                    }
                 }
-                if (bitmap != null) {
-                    Bitmap newBit = Bitmap
-                            .createScaledBitmap(bitmap, 100, 80, true);
-                    v.setImageBitmap(newBit);
-                }
-            } catch (NumberFormatException nfe) {
-                v.setImageURI(Uri.parse(value));
             }
+            setListAdapter(mItemAdapter);
+            getListView().deferNotifyDataSetChanged();
+        } else if (mListMode == ITEM_LIST_MODE) {
+
         }
     }
-
 
 
     @Override
@@ -273,34 +241,41 @@ public class GalleryActivity extends ListActivity implements LoaderManager.Loade
     private long lastPhotoId        = 0;
     private String getThumbPath(ItemImage item) {
         String path = "";
-        Cursor cursor = MediaStore.Images.Thumbnails.queryMiniThumbnail(
-                cr, item.id,
-                MediaStore.Images.Thumbnails.MINI_KIND, null);
-        if (cursor != null && cursor.getCount() > 0) {
-            cursor.moveToFirst();
-            String thumbPath = cursor.getString(cursor
-                    .getColumnIndex(MediaStore.Images.Thumbnails.DATA));
-            File thumb = new File(thumbPath);
-            if (thumb.exists())
-                item.thumb_path = thumbPath;
-            else
-                item.thumb_path = "";
-            Log.d(TAG, "getThumbPath: " + item.thumb_path);
-        } else {
-            if (lastPhotoId == item.id) {
-                item.thumb_path = "";
-                Log.d(TAG, "getThumbPath: " + "empty");
+        Cursor cursor = null;
+        try {
+            cursor = MediaStore.Images.Thumbnails.queryMiniThumbnail(
+                    cr, item.id,
+                    MediaStore.Images.Thumbnails.MINI_KIND, null);
+            if (cursor != null && cursor.getCount() > 0) {
+                cursor.moveToFirst();
+                String thumbPath = cursor.getString(cursor
+                        .getColumnIndex(MediaStore.Images.Thumbnails.DATA));
+                File thumb = new File(thumbPath);
+                if (thumb.exists())
+                    item.thumb_path = thumbPath;
+                else
+                    item.thumb_path = "";
+                Log.d(TAG, "getThumbPath: " + item.thumb_path);
             } else {
-                MediaStore.Images.Thumbnails.getThumbnail(cr,
-                        item.id, MediaStore.Images.Thumbnails.MICRO_KIND, null);
-                lastPhotoId = item.id;
-                getThumbPath(item);
+                if (lastPhotoId == item.id) {
+                    item.thumb_path = "";
+                    Log.d(TAG, "getThumbPath: " + "empty");
+                } else {
+                    MediaStore.Images.Thumbnails.getThumbnail(cr,
+                            item.id, MediaStore.Images.Thumbnails.MICRO_KIND, null);
+                    lastPhotoId = item.id;
+                    getThumbPath(item);
+                }
+            }
+        } finally {
+            if(cursor != null && !cursor.isClosed()) {
+                cursor.close();
             }
         }
         return path;
     }
 
-    private static final class ViewHolder {
+    private static final class CategoryViewHolder {
         public ImageView bucketThumbView    = null;
         public TextView bucketNameView      = null;
         public TextView countView           = null;
@@ -318,16 +293,16 @@ public class GalleryActivity extends ListActivity implements LoaderManager.Loade
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             ItemImage item = mCategoryList.get(position);
-            ViewHolder holder = null;
+            CategoryViewHolder holder = null;
             if (convertView == null) {
-                holder = new ViewHolder();
+                holder = new CategoryViewHolder();
                 convertView = mInflater.inflate(R.layout.select_upload_image_category_mode_item_layout, null);
                 holder.bucketThumbView = (ImageView)convertView.findViewById(R.id.bucketImageView);
                 holder.bucketNameView = (TextView)convertView.findViewById(R.id.bucketNameView);
                 holder.countView = (TextView)convertView.findViewById(R.id.countTextView);
                 convertView.setTag(holder);
             } else {
-                holder = (ViewHolder)convertView.getTag();
+                holder = (CategoryViewHolder)convertView.getTag();
             }
             holder.bucketThumbView.setImageResource(R.drawable.ic_launcher);
             holder.bucketThumbView.setImageBitmap(MediaStore.Images.Thumbnails.getThumbnail(cr, item.id, MediaStore.Images.Thumbnails.MICRO_KIND, null));
@@ -337,6 +312,13 @@ public class GalleryActivity extends ListActivity implements LoaderManager.Loade
         }
     }
 
+    private static final class ItemViewHolder {
+        public ImageView itemThumbView      = null;
+        public TextView imageNameView       = null;
+        public TextView imageTakeDateView = null;
+        public CheckBox imageCheckbox       = null;
+    }
+
     /**
      * The {@SEE ITEM_LIST_MODE} adapter
      */
@@ -344,6 +326,29 @@ public class GalleryActivity extends ListActivity implements LoaderManager.Loade
 
         public ImageItemAdapter(Context context, int resource, List<ItemImage> objects) {
             super(context, resource, objects);
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            ItemImage item = mSubItemList.get(position);
+            ItemViewHolder holder = null;
+
+            if (convertView == null) {
+                convertView = mInflater.inflate(R.layout.select_upload_image_item_mode_item_layout, null);
+                holder = new ItemViewHolder();
+                holder.itemThumbView = (ImageView)convertView.findViewById(R.id.itemImageView);
+                holder.imageNameView = (TextView)convertView.findViewById(R.id.image_name_view);
+                holder.imageTakeDateView = (TextView)convertView.findViewById(R.id.image_take_date_view);
+                holder.imageCheckbox = (CheckBox)convertView.findViewById(R.id.image_checkbox);
+                convertView.setTag(holder);
+            } else {
+                holder = (ItemViewHolder)convertView.getTag();
+            }
+
+            holder.itemThumbView.setImageBitmap(MediaStore.Images.Thumbnails.getThumbnail(cr, item.id, MediaStore.Images.Thumbnails.MICRO_KIND, null));
+            holder.imageNameView.setText(item.bucket_display_name);
+            holder.imageTakeDateView.setText(item.date_taken + "");
+            return convertView;
         }
     }
 

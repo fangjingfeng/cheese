@@ -10,12 +10,12 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentBottom="false"
         android:layout_marginRight="6dip"
-        android:id="@+id/row_image"/>
+        android:id="@+id/itemImageView"/>
     <TextView
-        android:id="@+id/file_name_view"
+        android:id="@+id/image_name_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@+id/row_image"
+        android:layout_toRightOf="@+id/itemImageView"
         android:layout_alignParentTop="true"
         android:layout_alignParentBottom="false"
         android:textStyle="bold"
@@ -23,22 +23,24 @@
         android:gravity="center_vertical" />
 
     <TextView
-        android:id="@+id/sub_files_count_view"
+        android:id="@+id/image_take_date_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentBottom="false"
+        android:layout_alignParentTop="false"
+        android:layout_alignParentBottom="true"
         android:gravity="bottom|right"
         android:text="Text"
-        android:layout_toLeftOf="@+id/multiselect_checkbox" />
+        android:layout_toRightOf="@+id/itemImageView"
+        android:layout_below="@+id/image_name_view" />
 
     <CheckBox
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
+        android:layout_alignParentTop="false"
         android:layout_alignParentBottom="false"
         android:focusable="false"
-        android:id="@+id/multiselect_checkbox"
-        android:layout_alignParentRight="true" />
+        android:id="@+id/image_checkbox"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true" />
 
 </RelativeLayout>
