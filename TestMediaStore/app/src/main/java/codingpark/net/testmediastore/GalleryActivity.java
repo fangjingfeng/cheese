@@ -65,7 +65,7 @@ public class GalleryActivity extends ListActivity implements LoaderManager.Loade
         cr = getContentResolver();
 
         getLoaderManager().initLoader(0, null, this);
-        this.setListAdapter(new GridAdapter(this, null, 0, null, null));
+        //this.setListAdapter(new GridAdapter(this, null, 0, null, null));
     }
 
     @Override
