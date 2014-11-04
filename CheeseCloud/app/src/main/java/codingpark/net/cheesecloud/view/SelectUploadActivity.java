@@ -64,6 +64,8 @@ public class SelectUploadActivity extends Activity implements OnFragmentInteract
     private Drawable oldBackground = null;
     private int currentColor = 0xFF3F9FE0;
 
+    private Fragment mActiveFragment        = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -92,6 +94,7 @@ public class SelectUploadActivity extends Activity implements OnFragmentInteract
         changeColor(currentColor);
     }
 
+
     /**
      * This will check if the user is at root directory. If so, if they press back
      * again, it will close the application.
@@ -99,6 +102,18 @@ public class SelectUploadActivity extends Activity implements OnFragmentInteract
      */
     @Override
     public boolean onKeyDown(int keycode, KeyEvent event) {
+        int position = mViewPager.getCurrentItem();
+        Log.d(TAG, "Position:" + position);
+        /*
+        Fragment frag = getFragmentManager().findFragmentByTag(String.valueOf(position));
+        if (frag instanceof FragmentSelectUploadImage) {
+            Log.d(TAG, "Current: " + FragmentSelectUploadImage.class.getSimpleName());
+        } else if (frag instanceof FragmentSelectUploadVideo) {
+            Log.d(TAG, "Current: " + FragmentSelectUploadVideo.class.getSimpleName());
+        } else if (frag instanceof FragmentSelectUploadFiles) {
+            Log.d(TAG, "Current: " + FragmentSelectUploadFiles.class.getSimpleName());
+        }
+        */
         // Current is not root directory, click back key indicate return up directory
         if(keycode == KeyEvent.KEYCODE_BACK && !(mFileMgr.isRoot()) ) {
             /*
@@ -115,7 +130,7 @@ public class SelectUploadActivity extends Activity implements OnFragmentInteract
         // Current is root directory, click back key indicate cancel selected and return home
         else if(keycode == KeyEvent.KEYCODE_BACK &&
                 mFileMgr.isRoot() ) {
-            finish();
+            //finish();
             return false;
 
         }
@@ -166,15 +181,25 @@ public class SelectUploadActivity extends Activity implements OnFragmentInteract
         public Fragment getItem(int position) {
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
+            Log.d(TAG, "getItem: " + position);
+            Fragment frag = null;
             switch (position) {
                 case 0:
-                    return FragmentSelectUploadImage.newInstance("", "");
+                    frag = FragmentSelectUploadImage.newInstance("", "");
+                    //getFragmentManager().beginTransaction().add(frag, String.valueOf(position) + "kk").commit();
+                    return frag;
                 case 1:
-                    return FragmentSelectUploadVideo.newInstance("", "");
+                    frag = FragmentSelectUploadVideo.newInstance("", "");
+                    //getFragmentManager().beginTransaction().add(frag, String.valueOf(position) + "mm").commit();
+                    return frag;
                 case 2:
-                    return FragmentSelectUploadFiles.newInstance("", "");
+                    frag = FragmentSelectUploadFiles.newInstance("", "");
+                    //getFragmentManager().beginTransaction().add(frag, String.valueOf(position) + "nn").commit();
+                    return frag;
                 default:
-                    return FragmentSelectUploadImage.newInstance("", "");
+                    frag = FragmentSelectUploadImage.newInstance("", "");
+                    //getFragmentManager().beginTransaction().add(frag, String.valueOf(position) + "ll").commit();
+                    return frag;
             }
         }
 
@@ -186,6 +211,7 @@ public class SelectUploadActivity extends Activity implements OnFragmentInteract
 
         @Override
         public CharSequence getPageTitle(int position) {
+            Log.d(TAG, "getPageTitle: " + position);
             Locale l = Locale.getDefault();
             switch (position) {
                 case 0:
@@ -196,6 +222,21 @@ public class SelectUploadActivity extends Activity implements OnFragmentInteract
                     return getString(R.string.title_files).toUpperCase(l);
             }
             return null;
+        }
+
+        @Override
+        public void setPrimaryItem(ViewGroup container, int position, Object object) {
+            super.setPrimaryItem(container, position, object);
+            Log.d(TAG, "Set primary fragment: " + position);
+            mActiveFragment = (Fragment)object;
+            if (object instanceof FragmentSelectUploadImage) {
+                Log.d(TAG, "Current: " + FragmentSelectUploadImage.class.getSimpleName());
+            } else if (object instanceof FragmentSelectUploadVideo) {
+                Log.d(TAG, "Current: " + FragmentSelectUploadVideo.class.getSimpleName());
+            } else if (object instanceof FragmentSelectUploadFiles) {
+                Log.d(TAG, "Current: " + FragmentSelectUploadFiles.class.getSimpleName());
+            }
+
         }
     }
 
