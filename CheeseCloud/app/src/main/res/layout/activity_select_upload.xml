@@ -11,25 +11,6 @@
         android:layout_height="38dip"
         android:background="@drawable/background_tabs" />
 
-    <!--Use to show current path-->
-    <HorizontalScrollView xmlns:tools="http://schemas.android.com/tools"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/tabs"
-        android:id="@+id/horizontalScrollView"
-        android:scrollbars="none"
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        tools:context=".view.UploadActivity">
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/path_bar_bg_img"
-            android:id="@+id/pathBarContainer"
-            >
-            <include layout="@layout/path_bar_item_layout"/>
-        </LinearLayout>
-    </HorizontalScrollView>
 
     <!-- Select upload file list -->
     <android.support.v4.view.ViewPager
@@ -37,7 +18,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/bottom_form"
-        android:layout_below="@+id/horizontalScrollView"
+        android:layout_below="@+id/tabs"
         tools:context="codingpark.net.cheesecloud.view.SelectUploadActivity" />
 
     <!-- Select upload file bottom form -->

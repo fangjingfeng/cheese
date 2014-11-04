@@ -172,7 +172,7 @@ public class FragmentSelectUploadImage extends ListFragment implements LoaderMan
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return super.onCreateView(inflater, container, savedInstanceState);
+        return inflater.inflate(R.layout.fragment_select_upload_images, null);
     }
 
     @Override
