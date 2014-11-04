@@ -1,19 +1,20 @@
-package codingpark.net.cheesecloud.handle;
+package codingpark.net.cheesecloud.view;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.os.Bundle;
+import android.app.ListFragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import java.io.File;
@@ -22,106 +23,140 @@ import java.util.Stack;
 
 import codingpark.net.cheesecloud.DevicePathUtils;
 import codingpark.net.cheesecloud.R;
-import codingpark.net.cheesecloud.utils.CatalogList;
+
+import codingpark.net.cheesecloud.handle.FileManager;
+import codingpark.net.cheesecloud.handle.OnFragmentInteractionListener;
 import codingpark.net.cheesecloud.utils.ThumbnailCreator;
 import codingpark.net.cheesecloud.utils.TypeFilter;
+import codingpark.net.cheesecloud.view.dummy.DummyContent;
 
-public class UploadHandler implements OnClickListener, OnItemLongClickListener{
-    private static final String TAG         = "EventHandler";
+/**
+ * A fragment representing a list of Items.
+ * <p/>
+ * <p/>
+ * Activities containing this fragment MUST implement the {@link OnFragmentInteractionListener}
+ * interface.
+ */
+public class FragmentSelectUploadFiles extends ListFragment {
+    public static final String TAG      = FragmentSelectUploadFiles.class.getSimpleName();
 
-    // Common list mode: list all files and folders
-    public static final int TREEVIEW_MODE           = 1;
-    // Catalog list mode: just list the specified type files
-    public static final int CATALOG_MODE            = 2;
-    // Current selected list mode: default mode is TREEVIEW_MODE
-    private int	mlistmode                           = TREEVIEW_MODE;
+    // TODO: Rename parameter arguments, choose names that match
+    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+    private static final String ARG_PARAM1 = "param1";
+    private static final String ARG_PARAM2 = "param2";
 
-    private final Context mContext;
-    private final FileManager mFileMgr;
-    private final CatalogList mCataList;
+    // TODO: Rename and change types of parameters
+    private String mParam1;
+    private String mParam2;
 
+    private OnFragmentInteractionListener mListener     = null;
+    private Context mContext                            = null;
+    private FileManager mFileMgr                        = null;
     private UploadListAdapter mAdapter              = null;
     // Enable/disable show pictures/videos thumbnail
     private boolean thumbnail_flag                  = true;
+    private ThumbnailCreator thumbnail      = null;
 
     //the list used to feed info into the array adapter
     private ArrayList<String> mFileList             = null;
     // Store user selected all file/folder path
-    private ArrayList<String> mSelectedPath = null;
+    private ArrayList<String> mSelectedPath         = null;
     private LinearLayout mPathBar                   = null;
-
-    // The previous selected header tab
-    private View preView                            = null;
 
     private PathBarItemClickListener mPathBatItemListener       = null;
     private SelectedChangedListener mSelectedChangedListener    = null;
 
+    // TODO: Rename and change types of parameters
+    public static FragmentSelectUploadFiles newInstance(String param1, String param2) {
+        FragmentSelectUploadFiles fragment = new FragmentSelectUploadFiles();
+        Bundle args = new Bundle();
+        args.putString(ARG_PARAM1, param1);
+        args.putString(ARG_PARAM2, param2);
+        fragment.setArguments(args);
+        return fragment;
+    }
 
     /**
-     * Creates an EventHandler object. This object is used to communicate
-     * most work from the Main activity to the FileManager class.
+     * Mandatory empty constructor for the fragment manager to instantiate the
+     * fragment (e.g. upon screen orientation changes).
+     */
+    public FragmentSelectUploadFiles() {
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        if (getArguments() != null) {
+            mParam1 = getArguments().getString(ARG_PARAM1);
+            mParam2 = getArguments().getString(ARG_PARAM2);
+        }
+
+        // TODO: Change Adapter to display your content
+        setListAdapter(new ArrayAdapter<DummyContent.DummyItem>(getActivity(),
+                android.R.layout.simple_list_item_1, android.R.id.text1, DummyContent.ITEMS));
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        try {
+            mListener = (OnFragmentInteractionListener) activity;
+            mContext = activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString()
+                    + " must implement OnFragmentInteractionListener");
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mListener = null;
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        // ??? The inflate parent parameter must be null, Why?
+        View view = View.inflate(mContext, R.layout.fragment_select_upload_files, null);
+        return view;
+    }
+
+    @Override
+    public void onListItemClick(ListView l, View v, int position, long id) {
+        super.onListItemClick(l, v, position, id);
+
+        if (null != mListener) {
+            // Notify the active callbacks interface (the activity, if the
+            // fragment is attached to one) that an item has been selected.
+            mListener.onFragmentInteraction(DummyContent.ITEMS.get(position).id);
+        }
+    }
+
+    public String getFilePath(int position){
+        final String item = getData(position);
+        Log.d(TAG, "item  " + item);
+        String curDir = mFileMgr.getCurrentDir();
+        if(curDir.equals(mFileMgr.diskName)) {
+            return item;
+        }
+        else {
+            return (mFileMgr.getCurrentDir() + "/" + item);
+        }
+    }
+
+    /**
+     * will return the data in the ArrayList that holds the dir contents.
      *
-     * @param context	The context of the activity_upload activity e.g  Main
-     * @param manager	The FileManager object that was instantiated from Main
+     * @param position	the indext of the arraylist holding the dir content
+     * @return the data in the arraylist at position (position)
      */
-    public UploadHandler(Context context, final FileManager manager, final CatalogList CataList) {
-        mContext = context;
-        mFileMgr = manager;
-        mCataList = CataList;
+    private String getData(int position) {
 
-        mPathBatItemListener = new PathBarItemClickListener();
+        if(position > mFileList.size() - 1 || position < 0)
+            return null;
 
-        // Initial as ROOT_DISK, ListView list all flash and sdcard
-        mFileList = new ArrayList<String>(mFileMgr.switchToRoot());
-        mSelectedPath = new ArrayList<String>();
-    }
-
-    /**
-     * This method is called from the Main activity and this has the same
-     * reference to the same object so when changes are made here or there
-     * they will display in the same way.
-     *
-     * @param adapter	The TableRow object
-     */
-    public void setListAdapter(UploadListAdapter adapter) {
-        mAdapter = adapter;
-    }
-
-    public void setSelectedChangedListener(SelectedChangedListener listener) {
-        mSelectedChangedListener = listener;
-    }
-
-    /**
-     * This method is called from the upload activity and this has the same
-     * reference to the same object so when changes are made here or there
-     * they will display in the same way.
-     */
-    public int getMode() {
-        return mlistmode;
-    }
-
-    public ArrayList<String> getSelectedPath() {
-        return mSelectedPath;
-    }
-
-    /**
-     * This method is called from the upload activity and is passed
-     * the LinearLayout that should be updated as the directory changes
-     * so the user knows which folder they are in.
-     *
-     * @param pathBar	The label to update as the directory changes
-     */
-    public void setUpdatePathBar(LinearLayout pathBar) {
-        mPathBar = pathBar;
-        // Initial path bar default item, Disk, this item is root.
-        LayoutInflater inflater = (LayoutInflater)mContext.getSystemService
-                (Context.LAYOUT_INFLATER_SERVICE);
-        TextView textView = (TextView)inflater.inflate(R.layout.path_bar_item_layout, null);
-        textView.setTag(0);
-        String path = mContext.getResources().getString(R.string.upload_activity_bottom_bar_default_item_string);
-        textView.setText(path);
-        textView.setOnClickListener(mPathBatItemListener);
-        mPathBar.addView(textView);
+        return mFileList.get(position);
     }
 
     private void refreshPathBar() {
@@ -153,125 +188,6 @@ public class UploadHandler implements OnClickListener, OnItemLongClickListener{
         }
     }
 
-
-    /**
-     * Set this true and thumbnails will be used as the icon for image files. False will
-     * show a default image.
-     * @param show
-     */
-    public void setShowThumbnails(boolean show) {
-        thumbnail_flag = show;
-    }
-
-
-
-    /**
-     *  This method, handles the button presses of the top buttons found
-     *  in the Main activity.
-     */
-    @Override
-    public void onClick(View v) {
-
-        switch(v.getId()) {
-
-            case R.id.back_button:
-                if (mlistmode != TREEVIEW_MODE)
-                {
-                    break;
-                }
-
-                if (!mFileMgr.isRoot()) {
-                    if (isMultiSelected()) {
-                        mAdapter.clearMultiSelect();
-                    }
-                    updateContent(mFileMgr.switchToPreviousDir());
-                }
-                break;
-
-            case R.id.header_disk_button:
-                refreshFocus(preView,v);
-                if(mlistmode == TREEVIEW_MODE) {
-                    break;
-                }
-                mlistmode = TREEVIEW_MODE;
-                updateContent(mFileMgr.switchToRoot());
-                if(mPathBar != null)
-                    refreshPathBar();
-                break;
-
-            case R.id.image_button:
-                mlistmode = CATALOG_MODE;
-                updateContent(mCataList.SetFileTyp(CatalogList.TYPE_PICTURE));
-                if(mPathBar != null)
-                    refreshPathBar();
-                refreshFocus(preView,v);
-                break;
-
-            case R.id.movie_button:
-                mlistmode = CATALOG_MODE;
-                updateContent(mCataList.SetFileTyp(CatalogList.TYPE_MOVIE));
-                if(mPathBar != null)
-                    refreshPathBar();
-                refreshFocus(preView,v);
-                break;
-			
-        }
-        switch(getMode()){
-            case CATALOG_MODE:
-                break;
-            case TREEVIEW_MODE:
-                if(mFileMgr.isRoot()){
-                }else{
-                }
-                break;
-            default:
-                break;
-        }
-    }
-
-    public void setInitView(View v){
-        preView = v;
-    }
-
-    private void refreshFocus(View pre,View cur) {
-        if( pre != cur)
-        {
-            cur.setSelected(true);
-            pre.setSelected(false);
-            preView = cur;
-        }
-    }
-
-    /**
-     * will return the data in the ArrayList that holds the dir contents.
-     *
-     * @param position	the indext of the arraylist holding the dir content
-     * @return the data in the arraylist at position (position)
-     */
-    private String getData(int position) {
-
-        if(position > mFileList.size() - 1 || position < 0)
-            return null;
-
-        return mFileList.get(position);
-    }
-
-    public String getFilePath(int position){
-        final String item = getData(position);
-        Log.d(TAG,"item  " + item);
-        if(getMode() == UploadHandler.TREEVIEW_MODE)
-        {
-            String curDir = mFileMgr.getCurrentDir();
-            if(curDir.equals(mFileMgr.diskName)) {
-                return item;
-            }
-            else {
-                return (mFileMgr.getCurrentDir() + "/" + item);
-            }
-        }
-        return item;
-    }
-
     /**
      * called to update the file contents as the user navigates there
      * phones file system.
@@ -290,22 +206,12 @@ public class UploadHandler implements OnClickListener, OnItemLongClickListener{
     }
 
     /**
-     * File/Directory list item view encapsulate
-     */
-    private static class ViewHolder {
-        TextView topView;
-        TextView bottomView;
-        ImageView icon;
-        CheckBox mSelect;	//multi-select check mark icon
-    }
-
-    /**
      * This class listening path bar item click event.Path bar's item
      * stand for a folder of current path. When user click one item,
      * the current path should switch to the folder and clear the path
      * bar's extra redundant item.
      */
-    private class PathBarItemClickListener implements OnClickListener {
+    private class PathBarItemClickListener implements View.OnClickListener {
 
         @Override
         public void onClick(View v) {
@@ -314,7 +220,23 @@ public class UploadHandler implements OnClickListener, OnItemLongClickListener{
         }
     }
 
+    /**
+     * Interface definition for a callback to be invoked when user
+     * changed item check state
+     */
+    public interface SelectedChangedListener {
+        public void changed(ArrayList<String> selectedPathList);
+    }
 
+    /**
+     * File/Directory list item view encapsulate
+     */
+    private static class ViewHolder {
+        TextView topView;
+        TextView bottomView;
+        ImageView icon;
+        CheckBox mSelect;	//multi-select check mark icon
+    }
 
     /**
      * A nested class to handle displaying a custom view in the ListView that
@@ -332,14 +254,14 @@ public class UploadHandler implements OnClickListener, OnItemLongClickListener{
         // Store user selected files index in the ListView
         private ArrayList<Integer> mSelectedPositions = null;
         //private LinearLayout hidden_layout;
-        private ThumbnailCreator thumbnail      = null;
+        //private ThumbnailCreator thumbnail      = null;
         private DevicePathUtils mDevices        = null;
         private ItemCheckedListener mCheckedListener = null;
 
         public UploadListAdapter() {
             super(mContext, R.layout.upload_item_layout, mFileList);
 
-            thumbnail = new ThumbnailCreator(mContext, 64, 64);
+            //thumbnail = new ThumbnailCreator(mContext, 64, 64);
             dir_name = mFileMgr.getCurrentDir();
             mDevices = new DevicePathUtils(mContext);
 
@@ -375,124 +297,9 @@ public class UploadHandler implements OnClickListener, OnItemLongClickListener{
             notifyDataSetChanged();
         }
 
-
-        public void clearThumbnail() {
-            if(thumbnail_flag) {
-                thumbnail.clearBitmapCache();
-            }
-        }
-
         @Override
         public View getView(int position, View convertView, ViewGroup parent){
-            if(mlistmode == CATALOG_MODE) {
-                return getView_catalog(position,convertView,parent);
-            }
-            else if (mlistmode == TREEVIEW_MODE) {
-                return getView_tree(position,convertView,parent);
-            }
-
             return getView_tree(position,convertView,parent);
-        }
-
-        private View getView_catalog(int position, View convertView, ViewGroup parent){
-            ViewHolder holder;
-            File file = new File(mFileList.get(position));
-
-            if(convertView == null) {
-                LayoutInflater inflater = (LayoutInflater) mContext.
-                        getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                convertView = inflater.inflate(R.layout.upload_item_layout, parent, false);
-
-                holder = new ViewHolder();
-                holder.topView = (TextView)convertView.findViewById(R.id.file_name_view);
-                holder.bottomView = (TextView)convertView.findViewById(R.id.sub_files_count_view);
-                holder.icon = (ImageView)convertView.findViewById(R.id.row_image);
-                holder.mSelect = (CheckBox)convertView.findViewById(R.id.multiselect_checkbox);
-                // 1. Update CheckBox's tag, this tag used in ItemSelectedListener
-                holder.mSelect.setTag(position);
-                // 2. Set CheckBox's OnCheckedChangeListener
-                holder.mSelect.setOnCheckedChangeListener(mCheckedListener);
-
-                convertView.setTag(holder);
-            } else {
-                holder = (ViewHolder)convertView.getTag();
-                // 1. Update CheckBox's tag, this tag used in ItemSelectedListener
-                holder.mSelect.setTag(position);
-                // 2. Set CheckBox's OnCheckedChangeListener
-                holder.mSelect.setOnCheckedChangeListener(mCheckedListener);
-            }
-
-
-            if (mSelectedPositions != null && mSelectedPositions.contains(position))
-                holder.mSelect.setVisibility(ImageView.VISIBLE);
-            else
-                holder.mSelect.setVisibility(ImageView.GONE);
-
-            holder.mSelect.setVisibility(ImageView.VISIBLE);
-
-            if(file != null && file.isFile()) {
-                String ext = file.toString();
-                String sub_ext = ext.substring(ext.lastIndexOf(".") + 1);
-    			
-    			/* This series of else if statements will determine which 
-    			 * icon is displayed 
-    			 */
-                if (TypeFilter.getInstance().isPdfFile(sub_ext)) {
-                    holder.icon.setImageResource(R.drawable.pdf);
-
-                } else if (TypeFilter.getInstance().isMusicFile(sub_ext)) {
-
-                    holder.icon.setImageResource(R.drawable.music);
-
-                } else if (TypeFilter.getInstance().isPictureFile(sub_ext)) {
-
-                    if(thumbnail_flag && file.length() != 0) {
-                        Bitmap thumb = thumbnail.hasBitmapCached(file.getAbsolutePath());
-
-                        if(thumb == null) {
-
-                            holder.icon.setImageResource(R.drawable.image);
-                            thumbnail.setBitmapToImageView(file.getAbsolutePath(),
-                                    holder.icon);
-
-                        } else {
-                            holder.icon.setImageBitmap(thumb);
-                        }
-
-                    } else {
-                        holder.icon.setImageResource(R.drawable.image);
-                    }
-
-                } else if(TypeFilter.getInstance().isMovieFile(sub_ext)) {
-
-                    holder.icon.setImageResource(R.drawable.movies);
-
-                } else {
-                    holder.icon.setImageResource(R.drawable.text);
-                }
-            }
-
-
-            if(file.isFile()) {
-                double size = file.length();
-                if (size > GB)
-                    display_size = String.format("%.2f Gb ", (double)size / GB);
-                else if (size < GB && size > MG)
-                    display_size = String.format("%.2f Mb ", (double)size / MG);
-                else if (size < MG && size > KB)
-                    display_size = String.format("%.2f Kb ", (double)size/ KB);
-                else
-                    display_size = String.format("%.2f bytes ", (double)size);
-
-                if(file.isHidden())
-                    holder.bottomView.setText("(hidden) | " + display_size);
-                else
-                    holder.bottomView.setText(display_size);
-            }
-
-            holder.topView.setText(file.getName());
-
-            return convertView;
         }
 
         /**
@@ -536,10 +343,10 @@ public class UploadHandler implements OnClickListener, OnItemLongClickListener{
                 // 2. Set CheckBox's OnCheckedChangeListener
                 holder.mSelect.setOnCheckedChangeListener(mCheckedListener);
             }
-    		
+
     		/* This will check if the thumbnail cache needs to be cleared by checking
     		 * if the user has changed directories. This way the cache wont show
-    		 * a wrong thumbnail image for the new image file 
+    		 * a wrong thumbnail image for the new image file
     		 */
             if(!dir_name.equals(temp) && thumbnail_flag) {
                 thumbnail.clearBitmapCache();
@@ -555,9 +362,9 @@ public class UploadHandler implements OnClickListener, OnItemLongClickListener{
             if(file != null && file.isFile()) {
                 String ext = file.toString();
                 String sub_ext = ext.substring(ext.lastIndexOf(".") + 1);
-    			
-    			/* This series of else if statements will determine which 
-    			 * icon is displayed 
+
+    			/* This series of else if statements will determine which
+    			 * icon is displayed
     			 */
                 if (TypeFilter.getInstance().isPdfFile(sub_ext)) {
                     holder.icon.setImageResource(R.drawable.pdf);
@@ -692,26 +499,4 @@ public class UploadHandler implements OnClickListener, OnItemLongClickListener{
 
     }
 
-    public boolean isMultiSelected() {
-        return !mSelectedPath.isEmpty();
-    }
-
-
-    @Override
-    public boolean onItemLongClick(AdapterView<?> arg0, View arg1, int arg2,
-                                   long arg3) {
-        Log.d(TAG, "Long clicked!");
-        if(mFileMgr.getCurrentDir().equals(mFileMgr.diskName)) {
-            return true; //do not respond when in storage list mode
-        }
-        return true;
-    }
-
-    /**
-     * Interface definition for a callback to be invoked when user
-     * changed item check state
-     */
-    public interface SelectedChangedListener {
-        public void changed(ArrayList<String> selectedPathList);
-    }
 }

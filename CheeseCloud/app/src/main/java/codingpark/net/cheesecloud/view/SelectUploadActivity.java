@@ -16,8 +16,10 @@ import android.os.Handler;
 import android.support.v13.app.FragmentPagerAdapter;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -28,9 +30,18 @@ import android.widget.TextView;
 import net.codingpark.PagerSlidingTabStrip;
 
 import codingpark.net.cheesecloud.R;
+import codingpark.net.cheesecloud.handle.FileManager;
 import codingpark.net.cheesecloud.handle.OnFragmentInteractionListener;
 
 public class SelectUploadActivity extends Activity implements OnFragmentInteractionListener {
+
+    private static final String TAG                     = SelectUploadActivity.class.getSimpleName();
+
+    public static final String RESULT_SELECTED_FILES_KEY= "selected_files_path_list";
+    public static final String RESULT_REMOTE_PARENT_ID  = "remote_parent_id";
+    public static String remote_folder_id               = "";
+
+    private FileManager mFileMgr                        = null;
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -40,12 +51,12 @@ public class SelectUploadActivity extends Activity implements OnFragmentInteract
      * may be best to switch to a
      * {@link android.support.v13.app.FragmentStatePagerAdapter}.
      */
-    SectionsPagerAdapter mSectionsPagerAdapter;
+    private SectionsPagerAdapter mSectionsPagerAdapter      = null;
 
     /**
      * The {@link ViewPager} that will host the section contents.
      */
-    ViewPager mViewPager;
+    private ViewPager mViewPager                            = null;
 
     private final Handler handler = new Handler();
     private PagerSlidingTabStrip tabs;
@@ -56,6 +67,11 @@ public class SelectUploadActivity extends Activity implements OnFragmentInteract
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // Initial ActionBar
+        // 1. Show back arrow
+        getActionBar().setDisplayHomeAsUpEnabled(true);
+        // 2. Set the title
+        getActionBar().setTitle(R.string.upload_activity_action_bar_title);
         setContentView(R.layout.activity_select_upload);
 
 
@@ -76,6 +92,35 @@ public class SelectUploadActivity extends Activity implements OnFragmentInteract
         changeColor(currentColor);
     }
 
+    /**
+     * This will check if the user is at root directory. If so, if they press back
+     * again, it will close the application.
+     * @see android.app.Activity#onKeyDown(int, android.view.KeyEvent)
+     */
+    @Override
+    public boolean onKeyDown(int keycode, KeyEvent event) {
+        // Current is not root directory, click back key indicate return up directory
+        if(keycode == KeyEvent.KEYCODE_BACK && !(mFileMgr.isRoot()) ) {
+            /*
+            if(mHandler.isMultiSelected()) {
+                Log.d(TAG, "Back key clicked, clear multi selected data!");
+                mAdapter.clearMultiSelect();
+            }
+
+            mHandler.updateContent(mFileMgr.switchToPreviousDir());
+            return true;
+            */
+
+        }
+        // Current is root directory, click back key indicate cancel selected and return home
+        else if(keycode == KeyEvent.KEYCODE_BACK &&
+                mFileMgr.isRoot() ) {
+            finish();
+            return false;
+
+        }
+        return false;
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -91,11 +136,14 @@ public class SelectUploadActivity extends Activity implements OnFragmentInteract
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        // Handle action bar event
+        // 1. R.id.home: Action Bar up button clicked
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                setResult(RESULT_CANCELED);
+                this.finish();
+                return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -103,7 +151,6 @@ public class SelectUploadActivity extends Activity implements OnFragmentInteract
     public void onFragmentInteraction(String id) {
 
     }
-
 
     /**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
@@ -122,8 +169,12 @@ public class SelectUploadActivity extends Activity implements OnFragmentInteract
             switch (position) {
                 case 0:
                     return FragmentSelectUploadImage.newInstance("", "");
+                case 1:
+                    return FragmentSelectUploadVideo.newInstance("", "");
+                case 2:
+                    return FragmentSelectUploadFiles.newInstance("", "");
                 default:
-                    return PlaceholderFragment.newInstance(position + 1);
+                    return FragmentSelectUploadImage.newInstance("", "");
             }
         }
 
@@ -138,11 +189,11 @@ public class SelectUploadActivity extends Activity implements OnFragmentInteract
             Locale l = Locale.getDefault();
             switch (position) {
                 case 0:
-                    return getString(R.string.title_section1).toUpperCase(l);
+                    return getString(R.string.title_images).toUpperCase(l);
                 case 1:
-                    return getString(R.string.title_section2).toUpperCase(l);
+                    return getString(R.string.title_video).toUpperCase(l);
                 case 2:
-                    return getString(R.string.title_section3).toUpperCase(l);
+                    return getString(R.string.title_files).toUpperCase(l);
             }
             return null;
         }
@@ -191,9 +242,7 @@ public class SelectUploadActivity extends Activity implements OnFragmentInteract
             getActionBar().setDisplayShowTitleEnabled(true);
 
         }
-
         currentColor = newColor;
-
     }
 
     private Drawable.Callback drawableCallback = new Drawable.Callback() {
@@ -212,38 +261,4 @@ public class SelectUploadActivity extends Activity implements OnFragmentInteract
             handler.removeCallbacks(what);
         }
     };
-
-    /**
-     * A placeholder fragment containing a simple view.
-     */
-    public static class PlaceholderFragment extends Fragment {
-        /**
-         * The fragment argument representing the section number for this
-         * fragment.
-         */
-        private static final String ARG_SECTION_NUMBER = "section_number";
-
-        /**
-         * Returns a new instance of this fragment for the given section
-         * number.
-         */
-        public static PlaceholderFragment newInstance(int sectionNumber) {
-            PlaceholderFragment fragment = new PlaceholderFragment();
-            Bundle args = new Bundle();
-            args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-            fragment.setArguments(args);
-            return fragment;
-        }
-
-        public PlaceholderFragment() {
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_select_upload, container, false);
-            return rootView;
-        }
-    }
-
 }

@@ -14,6 +14,9 @@
     <string name="upload_activity_bottom_bar_upload_bt">Upload</string>
     <string name="upload_activity_bottom_bar_default_item_string">Disk</string>
     <string name="upload_activity_list_item_count_unit_string">items</string>
+    <string name="title_images">Images</string>
+    <string name="title_video">Video</string>
+    <string name="title_files">Files</string>
 
     <!-- SelectPathActivity -->
     <string name="select_path_activity_action_bar_title">Select upload folder</string>
@@ -70,8 +73,5 @@
     <string name="welcome_login_bt_string">Login</string>
     <string name="welcome_about_bt_string">About</string>
     <string name="title_activity_select_upload">SelectUploadActivity</string>
-    <string name="title_section1">Images</string>
-    <string name="title_section2">Video</string>
-    <string name="title_section3">Files</string>
 
 </resources>

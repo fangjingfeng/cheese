@@ -66,4 +66,8 @@
     <string name="title_activity_transfer_state">传输状态</string>
     <string name="transfer_state_activity_download_section_title">下载列表</string>
     <string name="transfer_state_activity_upload_section_title">上传列表</string>
+    <string name="title_files">其它文件</string>
+    <string name="title_images">照片</string>
+    <string name="title_video">视频</string>
+    <string name="title_activity_select_upload">选择上传文件</string>
 </resources>

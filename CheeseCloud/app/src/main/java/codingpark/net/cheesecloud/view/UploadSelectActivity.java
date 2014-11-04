@@ -339,4 +339,6 @@ public final class UploadSelectActivity extends ListActivity implements UploadHa
             super.onProgressUpdate(values);
         }
     }
+
+
 }
