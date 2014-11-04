@@ -238,9 +238,15 @@ public class MainActivity extends Activity implements OnFragmentInteractionListe
 
         // Set upload_bt click listener, start local filesystem browser activity
         upload_bt.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View v) {
+                /*
                 Intent i = new Intent(MainActivity.this, UploadSelectActivity.class);
+                MainActivity.this.startActivityForResult(i, 0);
+                */
+                // TODO Replace UploadSelectActivity to SelectUploadActivity
+                Intent i = new Intent(MainActivity.this, SelectUploadActivity.class);
                 MainActivity.this.startActivityForResult(i, 0);
             }
         });

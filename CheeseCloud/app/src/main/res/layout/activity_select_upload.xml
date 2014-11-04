@@ -1,0 +1,63 @@
+<RelativeLayout
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+    <!-- Select upload file header tab -->
+    <net.codingpark.PagerSlidingTabStrip
+        android:id="@+id/tabs"
+        android:layout_width="match_parent"
+        android:layout_height="38dip"
+        android:background="@drawable/background_tabs" />
+
+    <!-- Select upload file list -->
+    <android.support.v4.view.ViewPager
+        android:id="@+id/pager"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/bottom_form"
+        android:layout_below="@+id/tabs"
+        tools:context="codingpark.net.cheesecloud.view.SelectUploadActivity" />
+
+    <!-- Select upload file bottom form -->
+    <RelativeLayout
+        android:id="@+id/bottom_form"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="#ff1b1724">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="@string/upload_activity_bottom_bar_title"
+            android:id="@+id/textView"
+            android:layout_alignParentTop="true"
+            android:textColor="@color/white" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:text="@string/upload_activity_bottom_bar_select_path_bt"
+            android:id="@+id/select_upload_location_bt"
+            android:layout_below="@+id/textView"
+            android:layout_marginLeft="20dp"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/upload_activity_bottom_select_location_bg" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:text="@string/upload_activity_bottom_bar_upload_bt"
+            android:id="@+id/start_upload_bt"
+            android:layout_below="@+id/textView"
+            android:layout_marginRight="20dp"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/upload_activity_bottom_start_upload_bg_normal_img"
+            android:layout_alignParentRight="true" />
+    </RelativeLayout>
+</RelativeLayout>

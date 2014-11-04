@@ -11,4 +11,6 @@
     <color name="darkBlue">#880000FF</color>
     <color name="themeBlue">#ff3098fa</color>
     <color name="transparent">#000000FF</color>
+
+    <color name="background_window">#FFE5E5E5</color>
 </resources>

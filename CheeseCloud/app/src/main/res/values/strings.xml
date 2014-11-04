@@ -69,5 +69,9 @@
     <!-- Welcome Activity -->
     <string name="welcome_login_bt_string">Login</string>
     <string name="welcome_about_bt_string">About</string>
+    <string name="title_activity_select_upload">SelectUploadActivity</string>
+    <string name="title_section1">Images</string>
+    <string name="title_section2">Video</string>
+    <string name="title_section3">Files</string>
 
 </resources>
