@@ -31,7 +31,7 @@ import codingpark.net.cheesecloud.wsi.WsFolder;
 
 /**
  * The class used to list all folder in web server, user select one folder,
- * then return the folder information to {@link codingpark.net.cheesecloud.view.UploadActivity}.
+ * then return the folder information to {@link UploadSelectActivity}.
  * It upload files to the destination.
  * When user click select_path_ok_bt, the class call mPathStack.peek(), add the result to intent
  * which will received by UploadActivity. Default destination folder is null, so when UploadActivity

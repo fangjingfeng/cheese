@@ -88,6 +88,7 @@
     <orderEntry type="library" exported="" name="play-services-6.1.11" level="project" />
     <orderEntry type="library" exported="" name="ksoap2-android-assembly-3.3.1-SNAPSHOT-jar-with-dependencies" level="project" />
     <orderEntry type="library" exported="" name="support-v13-21.0.0" level="project" />
+    <orderEntry type="module" module-name="pagerSlibTabLib" exported="" />
   </component>
 </module>
 

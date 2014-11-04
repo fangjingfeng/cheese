@@ -2,7 +2,6 @@ package codingpark.net.cheesecloud.view;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Locale;
 
 import android.app.ActionBar;
 import android.app.Activity;
@@ -137,7 +136,7 @@ public class MainActivity extends Activity implements OnFragmentInteractionListe
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         Log.d(TAG, "Upload Activity return results!");
         if (resultCode == RESULT_OK) {
-            final ArrayList<String> selectFiles = data.getStringArrayListExtra(UploadActivity.RESULT_SELECTED_FILES_KEY);
+            final ArrayList<String> selectFiles = data.getStringArrayListExtra(UploadSelectActivity.RESULT_SELECTED_FILES_KEY);
             remote_parent_id   = data.getStringExtra(SelectPathActivity.RESULT_SELECTED_REMOTE_FOLDER_ID);
             Log.d(TAG, "User selected upload file: \n" + selectFiles.toString());
             Log.d(TAG, "User selected remote parent id: " + remote_parent_id);
@@ -241,7 +240,7 @@ public class MainActivity extends Activity implements OnFragmentInteractionListe
         upload_bt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(MainActivity.this, UploadActivity.class);
+                Intent i = new Intent(MainActivity.this, UploadSelectActivity.class);
                 MainActivity.this.startActivityForResult(i, 0);
             }
         });

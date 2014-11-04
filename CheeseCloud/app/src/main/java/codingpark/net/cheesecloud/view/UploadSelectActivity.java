@@ -31,9 +31,9 @@ import codingpark.net.cheesecloud.wsi.WsFolder;
 /**
  *
  */
-public final class UploadActivity extends ListActivity implements UploadHandler.SelectedChangedListener{
+public final class UploadSelectActivity extends ListActivity implements UploadHandler.SelectedChangedListener{
 
-    private static final String TAG                     = UploadActivity.class.getSimpleName();
+    private static final String TAG                     = UploadSelectActivity.class.getSimpleName();
 
     public static final String RESULT_SELECTED_FILES_KEY= "selected_files_path_list";
 
@@ -102,7 +102,7 @@ public final class UploadActivity extends ListActivity implements UploadHandler.
         // 1. Initial EventHandler
         // 2. Set EventHandler work parameter(text color/show thumbnail)
         // 3. Create ListAdapter
-        mHandler = new UploadHandler(UploadActivity.this, mFileMgr, mCataList);
+        mHandler = new UploadHandler(UploadSelectActivity.this, mFileMgr, mCataList);
         mHandler.setShowThumbnails(thumb);
         mAdapter = mHandler.new UploadListAdapter();
 
@@ -158,15 +158,15 @@ public final class UploadActivity extends ListActivity implements UploadHandler.
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "Select upload path button clicked!");
-                Intent r_intent = new Intent(UploadActivity.this, SelectPathActivity.class);
-                UploadActivity.this.startActivityForResult(r_intent, 0, null);
+                Intent r_intent = new Intent(UploadSelectActivity.this, SelectPathActivity.class);
+                UploadSelectActivity.this.startActivityForResult(r_intent, 0, null);
             }
         });
         upload_bt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "Upload button clicked, start uploading!");
-                Toast.makeText(UploadActivity.this, "开始上传", Toast.LENGTH_SHORT).show();
+                Toast.makeText(UploadSelectActivity.this, "开始上传", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent();
                 intent.putStringArrayListExtra(RESULT_SELECTED_FILES_KEY, mHandler.getSelectedPath());
                 intent.putExtra(SelectPathActivity.RESULT_SELECTED_REMOTE_FOLDER_ID, remote_folder_id);
