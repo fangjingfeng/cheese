@@ -12,6 +12,7 @@ gen/
 libs/
 bin/
 obj/
+build/
 .project
 .classpath
 .externalToolBuilders/
