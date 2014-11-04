@@ -2,6 +2,7 @@ package codingpark.net.cheesecloud.view;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.app.ListFragment;
@@ -21,6 +22,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Stack;
 
+import codingpark.net.cheesecloud.AppConfigs;
 import codingpark.net.cheesecloud.DevicePathUtils;
 import codingpark.net.cheesecloud.R;
 
@@ -65,6 +67,7 @@ public class FragmentSelectUploadFiles extends ListFragment {
 
     private PathBarItemClickListener mPathBatItemListener       = null;
     private SelectedChangedListener mSelectedChangedListener    = null;
+    private SharedPreferences mSettings                 = null;
 
     // TODO: Rename and change types of parameters
     public static FragmentSelectUploadFiles newInstance(String param1, String param2) {
@@ -92,6 +95,16 @@ public class FragmentSelectUploadFiles extends ListFragment {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
 
+        mSettings           = mContext.getSharedPreferences(AppConfigs.PREFS_NAME, 0);
+        boolean hide        = mSettings.getBoolean(AppConfigs.PREFS_HIDDEN, false);
+        boolean thumb       = mSettings.getBoolean(AppConfigs.PREFS_THUMBNAIL, true);
+        int sort            = mSettings.getInt(AppConfigs.PREFS_SORT, 1);
+
+        // 1. Initial FileManager utility
+        // 2. Set FileManager utility work parameter
+        mFileMgr = new FileManager(mContext);
+        mFileMgr.setShowHiddenFiles(hide);
+        mFileMgr.setSortType(sort);
         // TODO: Change Adapter to display your content
         setListAdapter(new ArrayAdapter<DummyContent.DummyItem>(getActivity(),
                 android.R.layout.simple_list_item_1, android.R.id.text1, DummyContent.ITEMS));
