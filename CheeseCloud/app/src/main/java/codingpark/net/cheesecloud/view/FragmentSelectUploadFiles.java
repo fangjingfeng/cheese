@@ -29,6 +29,7 @@ import codingpark.net.cheesecloud.R;
 
 import codingpark.net.cheesecloud.handle.FileManager;
 import codingpark.net.cheesecloud.handle.OnFragmentInteractionListener;
+import codingpark.net.cheesecloud.handle.OnKeyDownListener;
 import codingpark.net.cheesecloud.handle.OnSelectUploadChangedListener;
 import codingpark.net.cheesecloud.utils.ThumbnailCreator;
 import codingpark.net.cheesecloud.utils.TypeFilter;
@@ -41,7 +42,7 @@ import codingpark.net.cheesecloud.view.dummy.DummyContent;
  * Activities containing this fragment MUST implement the {@link OnFragmentInteractionListener}
  * interface.
  */
-public class FragmentSelectUploadFiles extends ListFragment {
+public class FragmentSelectUploadFiles extends ListFragment implements OnKeyDownListener {
     public static final String TAG      = FragmentSelectUploadFiles.class.getSimpleName();
 
     // TODO: Rename parameter arguments, choose names that match
@@ -314,6 +315,18 @@ public class FragmentSelectUploadFiles extends ListFragment {
 
         if(mPathBar != null)
             refreshPathBar();
+    }
+
+    @Override
+    public boolean onBackKeyDown() {
+        if (mFileMgr.isRoot()) {
+            return false;
+        } else {
+            if (isMultiSelected())
+                mAdapter.clearMultiSelect();
+            updateContent(mFileMgr.switchToPreviousDir());
+            return true;
+        }
     }
 
     /**

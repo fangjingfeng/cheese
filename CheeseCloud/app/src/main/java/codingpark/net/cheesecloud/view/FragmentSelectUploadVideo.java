@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import codingpark.net.cheesecloud.R;
 
 import codingpark.net.cheesecloud.handle.OnFragmentInteractionListener;
+import codingpark.net.cheesecloud.handle.OnKeyDownListener;
 import codingpark.net.cheesecloud.handle.OnSelectUploadChangedListener;
 import codingpark.net.cheesecloud.view.dummy.DummyContent;
 
@@ -24,7 +25,7 @@ import codingpark.net.cheesecloud.view.dummy.DummyContent;
  * Activities containing this fragment MUST implement the {@link OnFragmentInteractionListener}
  * interface.
  */
-public class FragmentSelectUploadVideo extends ListFragment {
+public class FragmentSelectUploadVideo extends ListFragment implements OnKeyDownListener{
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -102,4 +103,8 @@ public class FragmentSelectUploadVideo extends ListFragment {
         }
     }
 
+    @Override
+    public boolean onBackKeyDown() {
+        return false;
+    }
 }

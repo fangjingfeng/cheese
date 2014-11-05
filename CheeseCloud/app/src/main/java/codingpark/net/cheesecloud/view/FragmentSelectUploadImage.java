@@ -29,6 +29,7 @@ import java.util.List;
 import codingpark.net.cheesecloud.R;
 
 import codingpark.net.cheesecloud.handle.OnFragmentInteractionListener;
+import codingpark.net.cheesecloud.handle.OnKeyDownListener;
 import codingpark.net.cheesecloud.handle.OnSelectUploadChangedListener;
 import codingpark.net.cheesecloud.view.dummy.DummyContent;
 
@@ -39,7 +40,7 @@ import codingpark.net.cheesecloud.view.dummy.DummyContent;
  * Activities containing this fragment MUST implement the {@link OnFragmentInteractionListener}
  * interface.
  */
-public class FragmentSelectUploadImage extends ListFragment implements LoaderManager.LoaderCallbacks<Cursor> {
+public class FragmentSelectUploadImage extends ListFragment implements LoaderManager.LoaderCallbacks<Cursor>, OnKeyDownListener {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -366,6 +367,11 @@ public class FragmentSelectUploadImage extends ListFragment implements LoaderMan
             }
         }
         return path;
+    }
+
+    @Override
+    public boolean onBackKeyDown() {
+        return false;
     }
 
     private static final class CategoryViewHolder {

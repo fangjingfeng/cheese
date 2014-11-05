@@ -34,6 +34,7 @@ import codingpark.net.cheesecloud.R;
 import codingpark.net.cheesecloud.eumn.WsResultType;
 import codingpark.net.cheesecloud.handle.ClientWS;
 import codingpark.net.cheesecloud.handle.FileManager;
+import codingpark.net.cheesecloud.handle.OnKeyDownListener;
 import codingpark.net.cheesecloud.handle.OnSelectUploadChangedListener;
 import codingpark.net.cheesecloud.model.UploadFile;
 import codingpark.net.cheesecloud.wsi.WsFolder;
@@ -46,7 +47,6 @@ public class SelectUploadActivity extends Activity implements OnSelectUploadChan
     public static final String RESULT_REMOTE_PARENT_ID  = "remote_parent_id";
     public static String remote_folder_id               = "";
 
-    private FileManager mFileMgr                        = null;
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -119,35 +119,12 @@ public class SelectUploadActivity extends Activity implements OnSelectUploadChan
     public boolean onKeyDown(int keycode, KeyEvent event) {
         int position = mViewPager.getCurrentItem();
         Log.d(TAG, "Position:" + position);
-        /*
-        Fragment frag = getFragmentManager().findFragmentByTag(String.valueOf(position));
-        if (frag instanceof FragmentSelectUploadImage) {
-            Log.d(TAG, "Current: " + FragmentSelectUploadImage.class.getSimpleName());
-        } else if (frag instanceof FragmentSelectUploadVideo) {
-            Log.d(TAG, "Current: " + FragmentSelectUploadVideo.class.getSimpleName());
-        } else if (frag instanceof FragmentSelectUploadFiles) {
-            Log.d(TAG, "Current: " + FragmentSelectUploadFiles.class.getSimpleName());
-        }
-        */
         // Current is not root directory, click back key indicate return up directory
-        if(keycode == KeyEvent.KEYCODE_BACK && !(mFileMgr.isRoot()) ) {
-            /*
-            if(mHandler.isMultiSelected()) {
-                Log.d(TAG, "Back key clicked, clear multi selected data!");
-                mAdapter.clearMultiSelect();
+        if(keycode == KeyEvent.KEYCODE_BACK) {
+            if (!((OnKeyDownListener) mActiveFragment).onBackKeyDown()) {
+                finish();
+                return true;
             }
-
-            mHandler.updateContent(mFileMgr.switchToPreviousDir());
-            return true;
-            */
-
-        }
-        // Current is root directory, click back key indicate cancel selected and return home
-        else if(keycode == KeyEvent.KEYCODE_BACK &&
-                mFileMgr.isRoot() ) {
-            //finish();
-            return false;
-
         }
         return false;
     }
