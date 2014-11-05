@@ -207,10 +207,15 @@ public class UploadService extends IntentService {
         if (file.getFiletype() == UploadFileType.TYPE_FILE) {
             if (file.getState() == UploadFileState.NotUpload) {
                 result = this.checkedFileInfo_wrapper(file);
+                // Call WS occur error
                 if (result < 0)
                     return result;
                 // Update to database
                 uploadFileDataSource.updateUploadFile(file);
+                result = WsResultType.Success;
+                if (result == CheckedFileInfoType.RESULT_QUICK_UPLOAD) {
+                    return result;
+                }
             }
             //Upload block one by one
             buffer = new byte[UPLOAD_BLOCK_SIZE];

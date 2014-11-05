@@ -217,7 +217,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
 
     private boolean isPasswordValid(String password) {
         //TODO: Replace this with password check logic
-        return password.length() > 4;
+        return password.length() > 2;
     }
 
     private boolean isWebUrlValid(String weburl) {
