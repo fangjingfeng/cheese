@@ -330,6 +330,8 @@ public class FragmentSelectUploadImage extends ListFragment implements LoaderMan
             mSelectedPath.add(r_path);
         }
         mItemAdapter.notifyDataSetChanged();
+        if (mListener != null)
+            mListener.onSelectUploadChanged(mSelectedPath);
     }
 
     /**

@@ -401,6 +401,8 @@ public class FragmentSelectUploadFiles extends ListFragment implements OnKeyDown
                 mSelectedPath.add(r_path);
             }
             notifyDataSetChanged();
+            if (mListener != null)
+                mListener.onSelectUploadChanged(mSelectedPath);
         }
 
         /**
