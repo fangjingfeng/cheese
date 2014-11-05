@@ -19,6 +19,7 @@ import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -61,6 +62,10 @@ public class FragmentSelectUploadImage extends ListFragment implements LoaderMan
      */
     private Cursor cursor           = null;
     private ContentResolver cr      = null;
+
+    private LinearLayout mPathBar                   = null;
+
+    private PathBarItemClickListener mPathBatItemListener       = null;
 
     private String[] image_projection = {
             MediaStore.Images.Media._ID,
@@ -161,6 +166,7 @@ public class FragmentSelectUploadImage extends ListFragment implements LoaderMan
         mCategoryAdapter = new ImageCategoryAdapter(mContext, R.layout.select_upload_image_category_mode_item_layout, mCategoryList);
         mItemAdapter = new ImageItemAdapter(mContext, R.layout.select_upload_image_item_mode_item_layout, mSubItemList);
         // Set default list adapter to CATEGORY_LIST_MODE
+        mPathBatItemListener = new PathBarItemClickListener();
     }
 
 
@@ -198,6 +204,8 @@ public class FragmentSelectUploadImage extends ListFragment implements LoaderMan
                 //mItemAdapter.notifyDataSetChanged();
                 break;
         }
+        mPathBar = (LinearLayout)getView().findViewById(R.id.pathBarContainer);
+        setUpdatePathBar(mPathBar);
     }
 
     @Override
@@ -227,6 +235,7 @@ public class FragmentSelectUploadImage extends ListFragment implements LoaderMan
             setListAdapter(mItemAdapter);
             mItemAdapter.notifyDataSetChanged();
             mListMode = ITEM_LIST_MODE;
+            refreshPathBar();
         } else if (mListMode == ITEM_LIST_MODE) {
             addMultiPosition(position);
         }
@@ -320,6 +329,19 @@ public class FragmentSelectUploadImage extends ListFragment implements LoaderMan
 
     }
 
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        Log.d(TAG, "setUserVisibleHint: " + isVisibleToUser);
+        super.setUserVisibleHint(isVisibleToUser);
+        if (mListMode == ITEM_LIST_MODE && !isVisibleToUser) {
+            if ((mSelectedPositions != null) || (mSelectedPath != null)) {
+                mSelectedPath.clear();
+                mSelectedPositions.clear();
+                mItemAdapter.notifyDataSetChanged();
+            }
+        }
+    }
+
     private void addMultiPosition(int index) {
         String r_path = mSubItemList.get(index).data;
         if (mSelectedPositions.contains(index)) {
@@ -400,6 +422,7 @@ public class FragmentSelectUploadImage extends ListFragment implements LoaderMan
             mListMode = CATEGORY_LIST_MODE;
             setListAdapter(mCategoryAdapter);
             mCategoryAdapter.notifyDataSetChanged();
+            refreshPathBar();
             return true;
         }
     }
@@ -588,4 +611,66 @@ public class FragmentSelectUploadImage extends ListFragment implements LoaderMan
         }
     }
 
+    /**
+     * This method is called from the upload activity and is passed
+     * the LinearLayout that should be updated as the directory changes
+     * so the user knows which folder they are in.
+     *
+     * @param pathBar	The label to update as the directory changes
+     */
+    private void setUpdatePathBar(LinearLayout pathBar) {
+        mPathBar = pathBar;
+        // Initial path bar default item, Disk, this item is root.
+        LayoutInflater inflater = (LayoutInflater)mContext.getSystemService
+                (Context.LAYOUT_INFLATER_SERVICE);
+        TextView textView = (TextView)inflater.inflate(R.layout.path_bar_item_layout, null);
+        textView.setTag(0);
+        String path = "相册";//mContext.getResources().getString(R.string.upload_activity_bottom_bar_default_item_string);
+        textView.setText(path);
+        textView.setOnClickListener(mPathBatItemListener);
+        mPathBar.addView(textView);
+    }
+
+    private void refreshPathBar() {
+        int pathBarCount = mPathBar.getChildCount();
+        Log.d(TAG, "pathStackCount: " + pathBarCount);
+
+        if (mListMode == CATEGORY_LIST_MODE) {
+            if (pathBarCount > 1)
+                mPathBar.removeViewAt(pathBarCount - 1);
+        } else if (mListMode == ITEM_LIST_MODE) {
+            if (pathBarCount == 1) {
+                TextView textView = (TextView)mInflater.inflate(R.layout.path_bar_item_layout, null);
+                textView.setTag(1);
+                String path = "";
+                path = mSubItemList.get(0).bucket_display_name;
+                Log.d(TAG, "path is " + path);
+                textView.setText(path);
+                textView.setOnClickListener(mPathBatItemListener);
+                mPathBar.addView(textView);
+            }
+        }
+    }
+
+    /**
+     * This class listening path bar item click event.Path bar's item
+     * stand for a folder of current path. When user click one item,
+     * the current path should switch to the folder and clear the path
+     * bar's extra redundant item.
+     */
+    private class PathBarItemClickListener implements View.OnClickListener {
+
+        @Override
+        public void onClick(View v) {
+            int index = Integer.valueOf(v.getTag().toString());
+            if (index == 0) {
+                clearMultiSelect();
+                mListMode = CATEGORY_LIST_MODE;
+                setListAdapter(mCategoryAdapter);
+                mCategoryAdapter.notifyDataSetChanged();
+                refreshPathBar();
+            }
+            //updateContent(mFileMgr.switchToDirByIndex(index));
+        }
+    }
 }
