@@ -141,6 +141,18 @@ public class FragmentSelectUploadImage extends ListFragment implements LoaderMan
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
 
+        cr = mContext.getContentResolver();
+        mInflater = (LayoutInflater)mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        // Initial MediaStore query task
+        getLoaderManager().initLoader(0, null, this);
+        // Initial the two show mode data list
+        mAllItemList = new ArrayList<ItemImage>();
+        mCategoryList = new ArrayList<ItemImage>();
+        mSubItemList = new ArrayList<ItemImage>();
+        // Intial the two show mode data adapter
+        mCategoryAdapter = new ImageCategoryAdapter(mContext, R.layout.select_upload_image_category_mode_item_layout, mCategoryList);
+        mItemAdapter = new ImageItemAdapter(mContext, R.layout.select_upload_image_item_mode_item_layout, mSubItemList);
+        // Set default list adapter to CATEGORY_LIST_MODE
     }
 
 
@@ -152,19 +164,6 @@ public class FragmentSelectUploadImage extends ListFragment implements LoaderMan
             mContext = activity;
             //setContentView(R.layout.select_upload_image_layout);
 
-            cr = mContext.getContentResolver();
-            mInflater = (LayoutInflater)mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            // Initial MediaStore query task
-            getLoaderManager().initLoader(0, null, this);
-            // Initial the two show mode data list
-            mAllItemList = new ArrayList<ItemImage>();
-            mCategoryList = new ArrayList<ItemImage>();
-            mSubItemList = new ArrayList<ItemImage>();
-            // Intial the two show mode data adapter
-            mCategoryAdapter = new ImageCategoryAdapter(mContext, R.layout.select_upload_image_category_mode_item_layout, mCategoryList);
-            mItemAdapter = new ImageItemAdapter(mContext, R.layout.select_upload_image_item_mode_item_layout, mSubItemList);
-            // Set default list adapter to CATEGORY_LIST_MODE
-            this.setListAdapter(mCategoryAdapter);
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
                     + " must implement OnFragmentInteractionListener");
@@ -173,7 +172,24 @@ public class FragmentSelectUploadImage extends ListFragment implements LoaderMan
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        Log.d(TAG, "onCreateView");
         return inflater.inflate(R.layout.fragment_select_upload_images, null);
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        Log.d(TAG, "onViewCreated");
+        super.onViewCreated(view, savedInstanceState);
+        switch (mListMode) {
+            case CATEGORY_LIST_MODE:
+                setListAdapter(mCategoryAdapter);
+                //mCategoryAdapter.notifyDataSetChanged();
+                break;
+            case ITEM_LIST_MODE:
+                setListAdapter(mItemAdapter);
+                //mItemAdapter.notifyDataSetChanged();
+                break;
+        }
     }
 
     @Override
@@ -224,11 +240,14 @@ public class FragmentSelectUploadImage extends ListFragment implements LoaderMan
 
     @Override
     public void onLoadFinished(Loader loader, Cursor data) {
+        Log.d(TAG, "onLoadFinished: " + data.getCount());
         if (data != null)  {
+            data.moveToPosition(-1);
             // Clear mAllItemList item
             mAllItemList.clear();
             // Traverse the cursor, store the data to mAllItemList
             while(data.moveToNext()) {
+                /*
                 Log.d(TAG, "###################################################3");
                 Log.d(TAG, "ID: " + data.getInt(0));
                 Log.d(TAG, "DATA: " + data.getString(1));
@@ -237,6 +256,7 @@ public class FragmentSelectUploadImage extends ListFragment implements LoaderMan
                 Log.d(TAG, "BUCKET_ID: " + data.getInt(4));
                 Log.d(TAG, "MINI_THUMB_MAGIC: " + data.getInt(5));
                 Log.d(TAG, "###################################################3");
+                */
                 // Judge the image is exist? If not exists, needn't add it to mAllItemList
                 if (!(new File(data.getString(1)).exists())) {
                     continue;
@@ -274,12 +294,15 @@ public class FragmentSelectUploadImage extends ListFragment implements LoaderMan
                     e.printStackTrace();
                 }
             }
-            if (mListMode == CATEGORY_LIST_MODE) {
-                getListView().deferNotifyDataSetChanged();
-            }
         }
         for (int i = 0; i < mCategoryList.size(); i++) {
             getThumbPath(mCategoryList.get(i));
+        }
+        if (mListMode == CATEGORY_LIST_MODE) {
+            Log.d(TAG, "Refresh list");
+            Log.d(TAG, "mCategoryList: " + mCategoryList.size());
+            Log.d(TAG, "mAllItemList: " + mAllItemList.size());
+            mCategoryAdapter.notifyDataSetChanged();
         }
     }
 
