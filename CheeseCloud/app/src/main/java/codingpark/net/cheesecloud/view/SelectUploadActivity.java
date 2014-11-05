@@ -1,5 +1,6 @@
 package codingpark.net.cheesecloud.view;
 
+import java.util.ArrayList;
 import java.util.Locale;
 
 import android.app.Activity;
@@ -25,6 +26,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import net.codingpark.PagerSlidingTabStrip;
@@ -65,6 +67,7 @@ public class SelectUploadActivity extends Activity implements OnFragmentInteract
     private int currentColor = 0xFF3F9FE0;
 
     private Fragment mActiveFragment        = null;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

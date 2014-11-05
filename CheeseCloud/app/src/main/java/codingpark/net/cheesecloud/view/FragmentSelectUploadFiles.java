@@ -17,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -54,7 +55,7 @@ public class FragmentSelectUploadFiles extends ListFragment {
     private OnFragmentInteractionListener mListener     = null;
     private Context mContext                            = null;
     private FileManager mFileMgr                        = null;
-    private UploadListAdapter mAdapter              = null;
+    private FileListAdapter mAdapter              = null;
     // Enable/disable show pictures/videos thumbnail
     private boolean thumbnail_flag                  = true;
     private ThumbnailCreator thumbnail      = null;
@@ -64,6 +65,10 @@ public class FragmentSelectUploadFiles extends ListFragment {
     // Store user selected all file/folder path
     private ArrayList<String> mSelectedPath         = null;
     private LinearLayout mPathBar                   = null;
+
+    // The previous selected header tab
+    private View preView                            = null;
+
 
     private PathBarItemClickListener mPathBatItemListener       = null;
     private SelectedChangedListener mSelectedChangedListener    = null;
@@ -100,14 +105,16 @@ public class FragmentSelectUploadFiles extends ListFragment {
         boolean thumb       = mSettings.getBoolean(AppConfigs.PREFS_THUMBNAIL, true);
         int sort            = mSettings.getInt(AppConfigs.PREFS_SORT, 1);
 
+        mFileList = new ArrayList<String>();
+        mSelectedPath = new ArrayList<String>();
+
         // 1. Initial FileManager utility
         // 2. Set FileManager utility work parameter
         mFileMgr = new FileManager(mContext);
         mFileMgr.setShowHiddenFiles(hide);
         mFileMgr.setSortType(sort);
-        // TODO: Change Adapter to display your content
-        setListAdapter(new ArrayAdapter<DummyContent.DummyItem>(getActivity(),
-                android.R.layout.simple_list_item_1, android.R.id.text1, DummyContent.ITEMS));
+
+        mPathBatItemListener = new PathBarItemClickListener();
     }
 
     @Override
@@ -136,16 +143,51 @@ public class FragmentSelectUploadFiles extends ListFragment {
     }
 
     @Override
-    public void onListItemClick(ListView l, View v, int position, long id) {
-        super.onListItemClick(l, v, position, id);
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
 
+        // Initial Path bar
+        LinearLayout path_bar_container = (LinearLayout)getView().findViewById(R.id.pathBarContainer);
+        setUpdatePathBar(path_bar_container);
+        mAdapter = new FileListAdapter();
+        // Set ListView adapter
+        setListAdapter(mAdapter);
+        updateContent(mFileMgr.switchToRoot());
+    }
+
+    @Override
+    public void onListItemClick(ListView l, View v, int position, long id) {
+
+        final String item = getFilePath(position);
+        File file = new File(item);
+
+        if (isMultiSelected()) {
+            mAdapter.addMultiPosition(position);
+            return;
+        }
+
+        if (file.isDirectory()) {
+            if(file.canRead()) {
+                updateContent(mFileMgr.switchToNextDir(item));
+
+            } else {
+                Toast.makeText(mContext, "Can't read folder due to permissions",
+                        Toast.LENGTH_SHORT).show();
+            }
+        } else if (file.isFile()) {
+            Log.d(TAG, "Select file: " + item);
+            mAdapter.addMultiPosition(position);
+        }
         if (null != mListener) {
             // Notify the active callbacks interface (the activity, if the
             // fragment is attached to one) that an item has been selected.
-            mListener.onFragmentInteraction(DummyContent.ITEMS.get(position).id);
+            //mListener.onFragmentInteraction(DummyContent.ITEMS.get(position).id);
         }
     }
 
+    public boolean isMultiSelected() {
+        return !mSelectedPath.isEmpty();
+    }
     public String getFilePath(int position){
         final String item = getData(position);
         Log.d(TAG, "item  " + item);
@@ -170,6 +212,26 @@ public class FragmentSelectUploadFiles extends ListFragment {
             return null;
 
         return mFileList.get(position);
+    }
+
+    /**
+     * This method is called from the upload activity and is passed
+     * the LinearLayout that should be updated as the directory changes
+     * so the user knows which folder they are in.
+     *
+     * @param pathBar	The label to update as the directory changes
+     */
+    private void setUpdatePathBar(LinearLayout pathBar) {
+        mPathBar = pathBar;
+        // Initial path bar default item, Disk, this item is root.
+        LayoutInflater inflater = (LayoutInflater)mContext.getSystemService
+                (Context.LAYOUT_INFLATER_SERVICE);
+        TextView textView = (TextView)inflater.inflate(R.layout.path_bar_item_layout, null);
+        textView.setTag(0);
+        String path = mContext.getResources().getString(R.string.upload_activity_bottom_bar_default_item_string);
+        textView.setText(path);
+        textView.setOnClickListener(mPathBatItemListener);
+        mPathBar.addView(textView);
     }
 
     private void refreshPathBar() {
@@ -257,7 +319,7 @@ public class FragmentSelectUploadFiles extends ListFragment {
      * be implemented in the getView method. This class is instantiated once in Main
      * and has no reason to be instantiated again.
      */
-    public class UploadListAdapter extends ArrayAdapter<String> {
+    public class FileListAdapter extends ArrayAdapter<String> {
         private final int KB            = 1024;
         private final int MG            = KB * KB;
         private final int GB            = MG * KB;
@@ -271,10 +333,10 @@ public class FragmentSelectUploadFiles extends ListFragment {
         private DevicePathUtils mDevices        = null;
         private ItemCheckedListener mCheckedListener = null;
 
-        public UploadListAdapter() {
+        public FileListAdapter() {
             super(mContext, R.layout.upload_item_layout, mFileList);
 
-            //thumbnail = new ThumbnailCreator(mContext, 64, 64);
+            thumbnail = new ThumbnailCreator(mContext, 64, 64);
             dir_name = mFileMgr.getCurrentDir();
             mDevices = new DevicePathUtils(mContext);
 
