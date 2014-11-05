@@ -106,6 +106,7 @@ public class SelectUploadActivity extends Activity implements OnSelectUploadChan
         // Associate the custom tab and the pager
         tabs.setViewPager(mViewPager);
         changeColor(currentColor);
+        refresh_bottom_bar();
     }
 
 

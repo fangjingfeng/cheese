@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -115,6 +116,10 @@ public class FragmentSelectUploadImage extends ListFragment implements LoaderMan
      */
     private LayoutInflater mInflater                        = null;
 
+    private ArrayList<String> mSelectedPath         = null;
+    // Store user selected files index in the ListView
+    private ArrayList<Integer> mSelectedPositions = null;
+
     // TODO: Rename and change types of parameters
     public static FragmentSelectUploadImage newInstance(String param1, String param2) {
         FragmentSelectUploadImage fragment = new FragmentSelectUploadImage();
@@ -149,6 +154,8 @@ public class FragmentSelectUploadImage extends ListFragment implements LoaderMan
         mAllItemList = new ArrayList<ItemImage>();
         mCategoryList = new ArrayList<ItemImage>();
         mSubItemList = new ArrayList<ItemImage>();
+        mSelectedPath = new ArrayList<String>();
+        mSelectedPositions = new ArrayList<Integer>();
         // Intial the two show mode data adapter
         mCategoryAdapter = new ImageCategoryAdapter(mContext, R.layout.select_upload_image_category_mode_item_layout, mCategoryList);
         mItemAdapter = new ImageItemAdapter(mContext, R.layout.select_upload_image_item_mode_item_layout, mSubItemList);
@@ -217,9 +224,10 @@ public class FragmentSelectUploadImage extends ListFragment implements LoaderMan
                 }
             }
             setListAdapter(mItemAdapter);
-            getListView().deferNotifyDataSetChanged();
+            mItemAdapter.notifyDataSetChanged();
+            mListMode = ITEM_LIST_MODE;
         } else if (mListMode == ITEM_LIST_MODE) {
-
+            addMultiPosition(position);
         }
     }
 
@@ -311,6 +319,18 @@ public class FragmentSelectUploadImage extends ListFragment implements LoaderMan
 
     }
 
+    private void addMultiPosition(int index) {
+        String r_path = mSubItemList.get(index).data;
+        if (mSelectedPositions.contains(index)) {
+            mSelectedPositions.remove(Integer.valueOf(index));
+            mSelectedPath.remove(r_path);
+        } else {
+            mSelectedPositions.add(index);
+            mSelectedPath.add(r_path);
+        }
+        mItemAdapter.notifyDataSetChanged();
+    }
+
     private long lastPhotoId        = 0;
     private String getThumbPath(ItemImage item) {
         String path = "";
@@ -396,9 +416,11 @@ public class FragmentSelectUploadImage extends ListFragment implements LoaderMan
      * The {@SEE ITEM_LIST_MODE} adapter
      */
     private class ImageItemAdapter extends ArrayAdapter<ItemImage> {
+        private CompoundButton.OnCheckedChangeListener mCheckedListener     = null;
 
         public ImageItemAdapter(Context context, int resource, List<ItemImage> objects) {
             super(context, resource, objects);
+            mCheckedListener = new ItemCheckedListener();
         }
 
         @Override
@@ -413,6 +435,8 @@ public class FragmentSelectUploadImage extends ListFragment implements LoaderMan
                 holder.imageNameView = (TextView)convertView.findViewById(R.id.image_name_view);
                 holder.imageTakeDateView = (TextView)convertView.findViewById(R.id.image_take_date_view);
                 holder.imageCheckbox = (CheckBox)convertView.findViewById(R.id.image_checkbox);
+                holder.imageCheckbox.setOnCheckedChangeListener(mCheckedListener);
+                holder.imageCheckbox.setTag(String.valueOf(position));
                 convertView.setTag(holder);
             } else {
                 holder = (ItemViewHolder)convertView.getTag();
@@ -427,7 +451,44 @@ public class FragmentSelectUploadImage extends ListFragment implements LoaderMan
             path = path.substring(path.lastIndexOf("/") + 1, path.length());
             holder.imageNameView.setText(path);
             holder.imageTakeDateView.setText(item.date_taken + "");
+
+            if (mSelectedPositions != null && mSelectedPositions.contains(position))
+                holder.imageCheckbox.setChecked(true);
+            else
+                holder.imageCheckbox.setChecked(false);
+
             return convertView;
+        }
+
+        /**
+         * This class listening ListView item's select CheckBox checked event.
+         * When user checked a item, class add this item's index to {@link #mSelectedPositions},
+         * and add path which the item stand for to {@link #mSelectedPath}
+         */
+        private class ItemCheckedListener implements CompoundButton.OnCheckedChangeListener{
+            //private static final String TAG     = "ItemSelectedListener";
+
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                Log.d(TAG, "Index: " + buttonView.getTag() + "\nChecked: " + isChecked);
+                int r_index = Integer.valueOf(buttonView.getTag().toString());
+                if (isChecked) {
+                    if (!mSelectedPositions.contains(r_index)) {
+                        mSelectedPositions.add(r_index);
+                        mSelectedPath.add(mSubItemList.get(r_index).data);
+                    }
+                } else {
+                    if (mSelectedPositions.contains(r_index)) {
+                        mSelectedPositions.remove((Integer)r_index);
+                        mSelectedPath.remove(mSubItemList.get(r_index).data);
+                    }
+                }
+                Log.d(TAG, "Current selected items: " + mSelectedPositions.toString());
+                if (mListener != null) {
+                    mListener.onSelectUploadChanged(mSelectedPath);
+                }
+
+            }
         }
     }
 
