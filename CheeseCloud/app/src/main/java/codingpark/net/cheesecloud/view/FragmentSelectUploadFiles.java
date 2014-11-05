@@ -29,6 +29,7 @@ import codingpark.net.cheesecloud.R;
 
 import codingpark.net.cheesecloud.handle.FileManager;
 import codingpark.net.cheesecloud.handle.OnFragmentInteractionListener;
+import codingpark.net.cheesecloud.handle.OnSelectUploadChangedListener;
 import codingpark.net.cheesecloud.utils.ThumbnailCreator;
 import codingpark.net.cheesecloud.utils.TypeFilter;
 import codingpark.net.cheesecloud.view.dummy.DummyContent;
@@ -52,7 +53,7 @@ public class FragmentSelectUploadFiles extends ListFragment {
     private String mParam1;
     private String mParam2;
 
-    private OnFragmentInteractionListener mListener     = null;
+    private OnSelectUploadChangedListener mListener     = null;
     private Context mContext                            = null;
     private FileManager mFileMgr                        = null;
     private FileListAdapter mAdapter              = null;
@@ -121,7 +122,7 @@ public class FragmentSelectUploadFiles extends ListFragment {
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         try {
-            mListener = (OnFragmentInteractionListener) activity;
+            mListener = (OnSelectUploadChangedListener) activity;
             mContext = activity;
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
@@ -177,11 +178,6 @@ public class FragmentSelectUploadFiles extends ListFragment {
         } else if (file.isFile()) {
             Log.d(TAG, "Select file: " + item);
             mAdapter.addMultiPosition(position);
-        }
-        if (null != mListener) {
-            // Notify the active callbacks interface (the activity, if the
-            // fragment is attached to one) that an item has been selected.
-            //mListener.onFragmentInteraction(DummyContent.ITEMS.get(position).id);
         }
     }
 
@@ -566,8 +562,10 @@ public class FragmentSelectUploadFiles extends ListFragment {
                     }
                 }
                 Log.d(TAG, "Current selected items: " + mSelectedPositions.toString());
-                if (mSelectedChangedListener != null)
-                    mSelectedChangedListener.changed(mSelectedPath);
+                if (mListener != null) {
+                    mListener.onSelectUploadChanged(mSelectedPath);
+                }
+
             }
         }
 

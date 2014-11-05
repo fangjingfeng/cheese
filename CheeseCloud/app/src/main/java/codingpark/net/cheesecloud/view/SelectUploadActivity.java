@@ -1,13 +1,8 @@
 package codingpark.net.cheesecloud.view;
 
-import java.util.ArrayList;
-import java.util.Locale;
-
 import android.app.Activity;
-import android.app.ActionBar;
 import android.app.Fragment;
 import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -15,36 +10,35 @@ import android.graphics.drawable.LayerDrawable;
 import android.graphics.drawable.TransitionDrawable;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.Handler;
 import android.support.v13.app.FragmentPagerAdapter;
-import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.util.TypedValue;
-import android.view.Gravity;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import net.codingpark.PagerSlidingTabStrip;
+
+import java.util.ArrayList;
+import java.util.Locale;
 
 import codingpark.net.cheesecloud.AppConfigs;
 import codingpark.net.cheesecloud.R;
 import codingpark.net.cheesecloud.eumn.WsResultType;
 import codingpark.net.cheesecloud.handle.ClientWS;
 import codingpark.net.cheesecloud.handle.FileManager;
-import codingpark.net.cheesecloud.handle.OnFragmentInteractionListener;
+import codingpark.net.cheesecloud.handle.OnSelectUploadChangedListener;
 import codingpark.net.cheesecloud.model.UploadFile;
 import codingpark.net.cheesecloud.wsi.WsFolder;
 
-public class SelectUploadActivity extends Activity implements OnFragmentInteractionListener {
+public class SelectUploadActivity extends Activity implements OnSelectUploadChangedListener {
 
     private static final String TAG                     = SelectUploadActivity.class.getSimpleName();
 
@@ -193,9 +187,10 @@ public class SelectUploadActivity extends Activity implements OnFragmentInteract
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    @Override
-    public void onFragmentInteraction(String id) {
 
+    @Override
+    public void onSelectUploadChanged(ArrayList<String> list) {
+        mSelectedFiles = list;
         upload_bt.setText(this.getResources().getString(
                 R.string.upload_activity_bottom_bar_upload_bt)
                 + "(" + mSelectedFiles.size() + ")");
@@ -430,4 +425,5 @@ public class SelectUploadActivity extends Activity implements OnFragmentInteract
             super.onProgressUpdate(values);
         }
     }
+
 }

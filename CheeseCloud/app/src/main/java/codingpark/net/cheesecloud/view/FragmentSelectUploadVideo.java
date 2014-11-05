@@ -9,9 +9,12 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import java.util.ArrayList;
+
 import codingpark.net.cheesecloud.R;
 
 import codingpark.net.cheesecloud.handle.OnFragmentInteractionListener;
+import codingpark.net.cheesecloud.handle.OnSelectUploadChangedListener;
 import codingpark.net.cheesecloud.view.dummy.DummyContent;
 
 /**
@@ -32,7 +35,7 @@ public class FragmentSelectUploadVideo extends ListFragment {
     private String mParam1;
     private String mParam2;
 
-    private OnFragmentInteractionListener mListener;
+    private OnSelectUploadChangedListener mListener;
 
     // TODO: Rename and change types of parameters
     public static FragmentSelectUploadVideo newInstance(String param1, String param2) {
@@ -70,7 +73,7 @@ public class FragmentSelectUploadVideo extends ListFragment {
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         try {
-            mListener = (OnFragmentInteractionListener) activity;
+            mListener = (OnSelectUploadChangedListener) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
                     + " must implement OnFragmentInteractionListener");
@@ -95,7 +98,7 @@ public class FragmentSelectUploadVideo extends ListFragment {
         if (null != mListener) {
             // Notify the active callbacks interface (the activity, if the
             // fragment is attached to one) that an item has been selected.
-            mListener.onFragmentInteraction(DummyContent.ITEMS.get(position).id);
+            mListener.onSelectUploadChanged(new ArrayList<String>());
         }
     }
 

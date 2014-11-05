@@ -28,6 +28,7 @@ import java.util.List;
 import codingpark.net.cheesecloud.R;
 
 import codingpark.net.cheesecloud.handle.OnFragmentInteractionListener;
+import codingpark.net.cheesecloud.handle.OnSelectUploadChangedListener;
 import codingpark.net.cheesecloud.view.dummy.DummyContent;
 
 /**
@@ -48,7 +49,7 @@ public class FragmentSelectUploadImage extends ListFragment implements LoaderMan
     private String mParam1;
     private String mParam2;
 
-    private OnFragmentInteractionListener mListener;
+    private OnSelectUploadChangedListener mListener;
 
     private Context mContext = null;
 
@@ -147,7 +148,7 @@ public class FragmentSelectUploadImage extends ListFragment implements LoaderMan
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         try {
-            mListener = (OnFragmentInteractionListener) activity;
+            mListener = (OnSelectUploadChangedListener) activity;
             mContext = activity;
             //setContentView(R.layout.select_upload_image_layout);
 
