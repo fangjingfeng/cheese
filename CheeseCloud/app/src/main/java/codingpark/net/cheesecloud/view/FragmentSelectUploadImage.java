@@ -32,7 +32,6 @@ import codingpark.net.cheesecloud.R;
 import codingpark.net.cheesecloud.handle.OnFragmentInteractionListener;
 import codingpark.net.cheesecloud.handle.OnKeyDownListener;
 import codingpark.net.cheesecloud.handle.OnSelectUploadChangedListener;
-import codingpark.net.cheesecloud.view.dummy.DummyContent;
 
 /**
  * A fragment representing a list of Items.
@@ -464,7 +463,7 @@ public class FragmentSelectUploadImage extends ListFragment implements LoaderMan
         }
     }
 
-    private static final class ItemViewHolder {
+    private static final class ImageItemViewHolder {
         public ImageView itemThumbView      = null;
         public TextView imageNameView       = null;
         public TextView imageTakeDateView = null;
@@ -485,11 +484,11 @@ public class FragmentSelectUploadImage extends ListFragment implements LoaderMan
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             ItemImage item = mSubItemList.get(position);
-            ItemViewHolder holder = null;
+            ImageItemViewHolder holder = null;
 
             if (convertView == null) {
                 convertView = mInflater.inflate(R.layout.select_upload_image_item_mode_item_layout, null);
-                holder = new ItemViewHolder();
+                holder = new ImageItemViewHolder();
                 holder.itemThumbView = (ImageView)convertView.findViewById(R.id.itemImageView);
                 holder.imageNameView = (TextView)convertView.findViewById(R.id.image_name_view);
                 holder.imageTakeDateView = (TextView)convertView.findViewById(R.id.image_take_date_view);
@@ -498,7 +497,7 @@ public class FragmentSelectUploadImage extends ListFragment implements LoaderMan
                 holder.imageCheckbox.setTag(String.valueOf(position));
                 convertView.setTag(holder);
             } else {
-                holder = (ItemViewHolder)convertView.getTag();
+                holder = (ImageItemViewHolder)convertView.getTag();
             }
 
             String path = item.data;
