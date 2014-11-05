@@ -8,10 +8,12 @@ import android.app.ActionBar;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.graphics.drawable.TransitionDrawable;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Handler;
 import android.support.v13.app.FragmentPagerAdapter;
@@ -26,14 +28,21 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import net.codingpark.PagerSlidingTabStrip;
 
+import codingpark.net.cheesecloud.AppConfigs;
 import codingpark.net.cheesecloud.R;
+import codingpark.net.cheesecloud.eumn.WsResultType;
+import codingpark.net.cheesecloud.handle.ClientWS;
 import codingpark.net.cheesecloud.handle.FileManager;
 import codingpark.net.cheesecloud.handle.OnFragmentInteractionListener;
+import codingpark.net.cheesecloud.model.UploadFile;
+import codingpark.net.cheesecloud.wsi.WsFolder;
 
 public class SelectUploadActivity extends Activity implements OnFragmentInteractionListener {
 
@@ -67,7 +76,11 @@ public class SelectUploadActivity extends Activity implements OnFragmentInteract
     private int currentColor = 0xFF3F9FE0;
 
     private Fragment mActiveFragment        = null;
+    private ArrayList<String> mSelectedFiles    = null;
 
+    // Bottom bar items
+    private Button select_upload_path_bt    = null;
+    private Button upload_bt                = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,6 +92,10 @@ public class SelectUploadActivity extends Activity implements OnFragmentInteract
         getActionBar().setTitle(R.string.upload_activity_action_bar_title);
         setContentView(R.layout.activity_select_upload);
 
+        mSelectedFiles = new ArrayList<String>();
+
+        initUI();
+        initHandler();
 
         tabs = (PagerSlidingTabStrip) findViewById(R.id.tabs);
         mViewPager = (ViewPager) findViewById(R.id.pager);
@@ -166,8 +183,22 @@ public class SelectUploadActivity extends Activity implements OnFragmentInteract
     }
 
     @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.d(TAG, "Selected Activity return results!");
+        if (resultCode == RESULT_OK) {
+            remote_folder_id = data.getStringExtra(SelectPathActivity.RESULT_SELECTED_REMOTE_FOLDER_ID);
+            Log.d(TAG, "User selected remote folder id: \n" + remote_folder_id);
+            refresh_bottom_bar();
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
     public void onFragmentInteraction(String id) {
 
+        upload_bt.setText(this.getResources().getString(
+                R.string.upload_activity_bottom_bar_upload_bt)
+                + "(" + mSelectedFiles.size() + ")");
     }
 
     /**
@@ -288,6 +319,52 @@ public class SelectUploadActivity extends Activity implements OnFragmentInteract
         }
         currentColor = newColor;
     }
+    /**
+     * Initial UploadActivity UI elements
+     */
+    private void initUI() {
+        // Initial UploadActivity bottom bar UI elements(Button)
+        select_upload_path_bt = (Button)findViewById(R.id.select_upload_location_bt);
+        upload_bt = (Button)findViewById(R.id.start_upload_bt);
+
+    }
+
+    /**
+     * Initial UploadActivity UI elements event handler
+     */
+    private void initHandler() {
+
+        // Initial UploadActivity bottom bar button click handler
+        select_upload_path_bt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG, "Select upload path button clicked!");
+                Intent r_intent = new Intent(SelectUploadActivity.this, SelectPathActivity.class);
+                SelectUploadActivity.this.startActivityForResult(r_intent, 0, null);
+            }
+        });
+        upload_bt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG, "Upload button clicked, start uploading!");
+                Toast.makeText(SelectUploadActivity.this, "开始上传", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent();
+                intent.putStringArrayListExtra(RESULT_SELECTED_FILES_KEY, mSelectedFiles);
+                intent.putExtra(SelectPathActivity.RESULT_SELECTED_REMOTE_FOLDER_ID, remote_folder_id);
+                setResult(RESULT_OK, intent);
+                finish();
+            }
+        });
+    }
+
+    private void refresh_bottom_bar() {
+        if (remote_folder_id == null || (remote_folder_id.isEmpty())) {
+            remote_folder_id = AppConfigs.current_remote_user_id;
+        }
+        Log.d(TAG, "@@@@@@@@@@@@@@@The current remote user id" + AppConfigs.current_remote_user_id);
+        Log.d(TAG, "@@@@@@@@@@@@@@@The folder id: " + remote_folder_id);
+        new RefreshBottomBarTask().execute();
+    }
 
     private Drawable.Callback drawableCallback = new Drawable.Callback() {
         @Override
@@ -305,4 +382,52 @@ public class SelectUploadActivity extends Activity implements OnFragmentInteract
             handler.removeCallbacks(what);
         }
     };
+
+    private int getFolderInfo_wrapper(UploadFile folder) {
+        int result = WsResultType.Success;
+        WsFolder wsFolder = new WsFolder();
+        wsFolder.ID = folder.getRemote_id();
+        result = ClientWS.getInstance(this).getFolderInfo(wsFolder);
+        if (result == WsResultType.Success) {
+            folder.setFilepath(wsFolder.Name);
+        }
+        return result;
+    }
+
+    private class RefreshBottomBarTask extends AsyncTask<Void,Void,Integer> {
+
+        private UploadFile folder   = null;
+
+        public RefreshBottomBarTask() {
+            folder = new UploadFile();
+        }
+
+        @Override
+        protected Integer doInBackground(Void... params) {
+            int result = WsResultType.Success;
+            folder.setRemote_id(remote_folder_id);
+            result = getFolderInfo_wrapper(folder);
+            return result;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected void onPostExecute(Integer result) {
+            switch (result) {
+                case WsResultType.Success:
+                    select_upload_path_bt.setText(folder.getFilepath());
+                default:
+                    return;
+            }
+        }
+
+        @Override
+        protected void onProgressUpdate(Void... values) {
+            super.onProgressUpdate(values);
+        }
+    }
 }
