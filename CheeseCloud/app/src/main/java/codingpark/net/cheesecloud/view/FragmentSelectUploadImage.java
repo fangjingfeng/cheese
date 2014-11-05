@@ -332,6 +332,26 @@ public class FragmentSelectUploadImage extends ListFragment implements LoaderMan
         mItemAdapter.notifyDataSetChanged();
     }
 
+    /**
+     * This will turn off multi-select and hide the multi-select buttons at the
+     * bottom of the view.
+     */
+    public void clearMultiSelect() {
+        // TODO Handle multiple select
+
+        if(mSelectedPositions != null && !mSelectedPositions.isEmpty())
+            mSelectedPositions.clear();
+
+        if(mSelectedPath != null && !mSelectedPath.isEmpty())
+            mSelectedPath.clear();
+
+        if (mListMode == ITEM_LIST_MODE) {
+            mItemAdapter.notifyDataSetChanged();
+            if (mListener != null)
+                mListener.onSelectUploadChanged(mSelectedPath);
+        }
+    }
+
     private long lastPhotoId        = 0;
     private String getThumbPath(ItemImage item) {
         String path = "";
@@ -371,7 +391,15 @@ public class FragmentSelectUploadImage extends ListFragment implements LoaderMan
 
     @Override
     public boolean onBackKeyDown() {
-        return false;
+        if (mListMode == CATEGORY_LIST_MODE) {
+            return false;
+        } else {
+            clearMultiSelect();
+            mListMode = CATEGORY_LIST_MODE;
+            setListAdapter(mCategoryAdapter);
+            mCategoryAdapter.notifyDataSetChanged();
+            return true;
+        }
     }
 
     private static final class CategoryViewHolder {
@@ -478,19 +506,22 @@ public class FragmentSelectUploadImage extends ListFragment implements LoaderMan
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 Log.d(TAG, "Index: " + buttonView.getTag() + "\nChecked: " + isChecked);
                 int r_index = Integer.valueOf(buttonView.getTag().toString());
+                boolean isChanged = false;
                 if (isChecked) {
                     if (!mSelectedPositions.contains(r_index)) {
                         mSelectedPositions.add(r_index);
                         mSelectedPath.add(mSubItemList.get(r_index).data);
+                        isChanged = true;
                     }
                 } else {
                     if (mSelectedPositions.contains(r_index)) {
                         mSelectedPositions.remove((Integer)r_index);
                         mSelectedPath.remove(mSubItemList.get(r_index).data);
+                        isChanged = true;
                     }
                 }
                 Log.d(TAG, "Current selected items: " + mSelectedPositions.toString());
-                if (mListener != null) {
+                if (isChanged && mListener != null) {
                     mListener.onSelectUploadChanged(mSelectedPath);
                 }
 
