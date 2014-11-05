@@ -65,11 +65,9 @@ public class FragmentSelectUploadFiles extends ListFragment {
     private ArrayList<String> mFileList             = null;
     // Store user selected all file/folder path
     private ArrayList<String> mSelectedPath         = null;
+    // Store user selected files index in the ListView
+    private ArrayList<Integer> mSelectedPositions = null;
     private LinearLayout mPathBar                   = null;
-
-    // The previous selected header tab
-    private View preView                            = null;
-
 
     private PathBarItemClickListener mPathBatItemListener       = null;
     private SelectedChangedListener mSelectedChangedListener    = null;
@@ -95,7 +93,7 @@ public class FragmentSelectUploadFiles extends ListFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        Log.d(TAG, "onCreate");
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
@@ -108,6 +106,7 @@ public class FragmentSelectUploadFiles extends ListFragment {
 
         mFileList = new ArrayList<String>();
         mSelectedPath = new ArrayList<String>();
+        mSelectedPositions = new ArrayList<Integer>();
 
         // 1. Initial FileManager utility
         // 2. Set FileManager utility work parameter
@@ -116,6 +115,8 @@ public class FragmentSelectUploadFiles extends ListFragment {
         mFileMgr.setSortType(sort);
 
         mPathBatItemListener = new PathBarItemClickListener();
+        // Initial ListView
+        mAdapter = new FileListAdapter();
     }
 
     @Override
@@ -139,21 +140,59 @@ public class FragmentSelectUploadFiles extends ListFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // ??? The inflate parent parameter must be null, Why?
+        Log.d(TAG, "onCreateView");
         View view = View.inflate(mContext, R.layout.fragment_select_upload_files, null);
         return view;
     }
 
     @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+    public void onPause() {
+        super.onPause();
+        Log.d(TAG, "Pause");
+    }
 
+    @Override
+    public void onDestroy() {
+        Log.d(TAG, "Destroy");
+        super.onDestroy();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        Log.d(TAG, "Destroy View");
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        Log.d(TAG, "onViewCreated");
+        super.onViewCreated(view, savedInstanceState);
         // Initial Path bar
         LinearLayout path_bar_container = (LinearLayout)getView().findViewById(R.id.pathBarContainer);
         setUpdatePathBar(path_bar_container);
-        mAdapter = new FileListAdapter();
+        refreshPathBar();
         // Set ListView adapter
         setListAdapter(mAdapter);
-        updateContent(mFileMgr.switchToRoot());
+        updateContent(mFileMgr.switchToDirByIndex(mFileMgr.getPathStack().size() - 1));
+    }
+
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        Log.d(TAG, "onHiddenChanged: " + hidden);
+        super.onHiddenChanged(hidden);
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        Log.d(TAG, "setUserVisibleHint: " + isVisibleToUser);
+        super.setUserVisibleHint(isVisibleToUser);
+        if (!isVisibleToUser) {
+            if ((mSelectedPositions != null) || (mSelectedPath != null)) {
+                mSelectedPath.clear();
+                mSelectedPositions.clear();
+                mAdapter.notifyDataSetChanged();
+            }
+        }
     }
 
     @Override
@@ -235,6 +274,7 @@ public class FragmentSelectUploadFiles extends ListFragment {
         Stack<String> pathStack = mFileMgr.getPathStack();
         int pathBarCount = mPathBar.getChildCount();
         int pathStackCount = pathStack.size();
+        Log.d(TAG, "pathStackCount: " + pathStackCount);
 
         LayoutInflater inflater = (LayoutInflater)mContext.getSystemService
                 (Context.LAYOUT_INFLATER_SERVICE);
@@ -322,8 +362,6 @@ public class FragmentSelectUploadFiles extends ListFragment {
 
         private String display_size     = null;
         private String dir_name         = null;
-        // Store user selected files index in the ListView
-        private ArrayList<Integer> mSelectedPositions = null;
         //private LinearLayout hidden_layout;
         //private ThumbnailCreator thumbnail      = null;
         private DevicePathUtils mDevices        = null;

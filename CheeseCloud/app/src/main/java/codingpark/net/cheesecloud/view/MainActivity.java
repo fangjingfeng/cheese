@@ -136,7 +136,7 @@ public class MainActivity extends Activity implements OnFragmentInteractionListe
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         Log.d(TAG, "Upload Activity return results!");
         if (resultCode == RESULT_OK) {
-            final ArrayList<String> selectFiles = data.getStringArrayListExtra(UploadSelectActivity.RESULT_SELECTED_FILES_KEY);
+            final ArrayList<String> selectFiles = data.getStringArrayListExtra(SelectUploadActivity.RESULT_SELECTED_FILES_KEY);
             remote_parent_id   = data.getStringExtra(SelectPathActivity.RESULT_SELECTED_REMOTE_FOLDER_ID);
             Log.d(TAG, "User selected upload file: \n" + selectFiles.toString());
             Log.d(TAG, "User selected remote parent id: " + remote_parent_id);
