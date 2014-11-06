@@ -92,6 +92,8 @@ public class SelectUploadActivity extends Activity implements OnSelectUploadChan
         initHandler();
 
         tabs = (PagerSlidingTabStrip) findViewById(R.id.tabs);
+        tabs.setShouldExpand(true);
+
         mViewPager = (ViewPager) findViewById(R.id.pager);
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.

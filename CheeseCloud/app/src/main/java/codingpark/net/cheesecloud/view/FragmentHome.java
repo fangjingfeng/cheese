@@ -3,6 +3,7 @@ package codingpark.net.cheesecloud.view;
 import android.app.Activity;
 import android.app.ListFragment;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -92,6 +93,19 @@ public class FragmentHome extends ListFragment {
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
+
+        String tag = v.getTag().toString();
+        if (tag.equals(TAB_HOME_ITEM_CLOUD_DISK)) {
+            Intent intent = new Intent();
+            intent.putExtra(CloudFilesActivity.LIST_MODE_KEY, CloudFilesActivity.MY_CLOUD_LIST_MODE);
+            intent.setClass(mContext, CloudFilesActivity.class);
+            mContext.startActivity(intent);
+        } else if (tag.equals(TAB_HOME_ITEM_RESOURCE_LIBRARY)) {
+            Intent intent = new Intent();
+            intent.putExtra(CloudFilesActivity.LIST_MODE_KEY, CloudFilesActivity.RESOURCELIB_LIST_MODE);
+            intent.setClass(mContext, CloudFilesActivity.class);
+            mContext.startActivity(intent);
+        }
 
         if (null != mListener) {
             // Notify the active callbacks interface (the activity, if the

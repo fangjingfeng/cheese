@@ -91,6 +91,10 @@
             android:name="codingpark.net.cheesecloud.view.SelectUploadActivity"
             android:label="@string/title_activity_select_upload" >
         </activity>
+        <activity
+            android:name="codingpark.net.cheesecloud.view.CloudFilesActivity"
+            android:label="@string/title_activity_cloud_files" >
+        </activity>
     </application>
 
 </manifest>

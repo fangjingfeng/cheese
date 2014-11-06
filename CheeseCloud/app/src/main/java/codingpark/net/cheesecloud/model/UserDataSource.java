@@ -14,6 +14,7 @@ import codingpark.net.cheesecloud.handle.LocalDatabase;
 
 /**
  * Created by ethanshan on 14-10-20.
+ * The class provide user table operate API
  */
 public class UserDataSource {
     private Context mContext            = null;
