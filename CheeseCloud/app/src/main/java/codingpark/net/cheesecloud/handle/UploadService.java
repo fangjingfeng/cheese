@@ -122,14 +122,14 @@ public class UploadService extends IntentService {
         for (UploadFile file : rootFileList) {
             if (file.getLocal_user_id() == -2) {
                 // The root is file, upload directly
-                if (file.getFiletype() == UploadFileType.TYPE_FILE) {
+                if (file.getFileType() == UploadFileType.TYPE_FILE) {
                     result = startUploading(file);
                     if (result != WsResultType.Success)
                         return;
                     break;
                 }
                 // The root is folder
-                else if (file.getFiletype() == UploadFileType.TYPE_FOLDER) {
+                else if (file.getFileType() == UploadFileType.TYPE_FOLDER) {
                     result = upload(file);
                 }
                 if (result != WsResultType.Success) return;
@@ -163,7 +163,7 @@ public class UploadService extends IntentService {
     private int upload(UploadFile file) {
         int result = WsResultType.Success;
         // If the target is file, upload directly
-        if (file.getFiletype() == UploadFileType.TYPE_FILE) {
+        if (file.getFileType() == UploadFileType.TYPE_FILE) {
             if (file.getState() != UploadFileState.Uploaded)
                 result = startUploading(file);
         }
@@ -178,14 +178,14 @@ public class UploadService extends IntentService {
             // Get sub files
             List<UploadFile> uploadFileList = uploadFileDataSource.getSubUploadFiles(file);
             for (UploadFile uFile : uploadFileList) {
-                if (uFile.getFiletype() == UploadFileType.TYPE_FOLDER) {
+                if (uFile.getFileType() == UploadFileType.TYPE_FOLDER) {
                 }
                 if (uFile.getState() != UploadFileState.Uploaded) {
                     // Update the sub files remote parent id
                     uFile.setRemote_parent_id(file.getRemote_id());
                     result = startUploading(uFile);
                     if (result == WsResultType.Success) {
-                        if (uFile.getFiletype() == UploadFileType.TYPE_FOLDER) {
+                        if (uFile.getFileType() == UploadFileType.TYPE_FOLDER) {
                             result = upload(file);
                         }
                     }
@@ -204,7 +204,7 @@ public class UploadService extends IntentService {
     private int startUploading(UploadFile file) {
         int result = WsResultType.Success;
         byte[] buffer;
-        if (file.getFiletype() == UploadFileType.TYPE_FILE) {
+        if (file.getFileType() == UploadFileType.TYPE_FILE) {
             if (file.getState() == UploadFileState.NotUpload) {
                 result = this.checkedFileInfo_wrapper(file);
                 // Call WS occur error
@@ -219,23 +219,23 @@ public class UploadService extends IntentService {
             }
             //Upload block one by one
             buffer = new byte[UPLOAD_BLOCK_SIZE];
-            File r_file = new File(file.getFilepath());
+            File r_file = new File(file.getFilePath());
             int count = 0;
             try {
                 while (true) {
                     //FileInputStream stream = new FileInputStream(r_file);
                     RandomAccessFile stream = new RandomAccessFile(r_file, "r");
-                    Log.d(TAG, "Array size:" + buffer.length + "\n" + "uploadedsize: " + (int)file.getUploadedsize());
-                    stream.seek(file.getUploadedsize());
+                    Log.d(TAG, "Array size:" + buffer.length + "\n" + "uploadedsize: " + (int)file.getChangedSize());
+                    stream.seek(file.getChangedSize());
                     count = stream.read(buffer, 0, UPLOAD_BLOCK_SIZE);
                     if (count != -1) {
                         result = uploadFile_wrapper(file, buffer, count);
                         if (result != WsResultType.Success)
                             return result;
                         // Increase index
-                        file.setUploadedsize(file.getUploadedsize() + count);
+                        file.setChangedSize(file.getChangedSize() + count);
                         // Upload completed
-                        if (file.getUploadedsize() == file.getFilesize()) {
+                        if (file.getChangedSize() == file.getFileSize()) {
                             file.setState(UploadFileState.Uploaded);
                         }
                         // Update to database
@@ -250,7 +250,7 @@ public class UploadService extends IntentService {
                 e.printStackTrace();
                 return WsResultType.Faild;
             }
-        } else if (file.getFiletype() == UploadFileType.TYPE_FOLDER) {
+        } else if (file.getFileType() == UploadFileType.TYPE_FOLDER) {
             result = createFolder_wrapper(file);
             if (result == WsResultType.Success) {
                 // Update database
@@ -265,14 +265,14 @@ public class UploadService extends IntentService {
         int result = 0;
         WsSyncFile wsFile = new WsSyncFile();
         wsFile.ID = file.getRemote_id();
-        if (file.getFilesize() == (file.getUploadedsize() + size)) {
+        if (file.getFileSize() == (file.getChangedSize() + size)) {
             wsFile.IsFinally = true;
             byte[] r_buf = new byte[size];
             System.arraycopy(buf, 0, r_buf, 0, size);
             buf = r_buf;
         }
         wsFile.Blocks = new SyncFileBlock();
-        wsFile.Blocks.OffSet = file.getUploadedsize();
+        wsFile.Blocks.OffSet = file.getChangedSize();
         wsFile.Blocks.UpdateData = buf;
         wsFile.Blocks.SourceSize = size;
         result = ClientWS.getInstance(UploadService.this).uploadFile(wsFile);
@@ -290,7 +290,7 @@ public class UploadService extends IntentService {
     private int checkedFileInfo_wrapper(UploadFile file) {
         int result;
         WsFile wsFile = new WsFile();
-        String path = file.getFilepath();
+        String path = file.getFilePath();
         File r_file = new File(path);
         wsFile.CreaterID = AppConfigs.current_remote_user_id;
         wsFile.FatherID = file.getRemote_parent_id();
@@ -308,7 +308,7 @@ public class UploadService extends IntentService {
         if (result == CheckedFileInfoResultType.RESULT_QUICK_UPLOAD) {
             file.setRemote_id(wsFile.ID);
             file.setState(UploadFileState.Uploaded);
-            file.setUploadedsize(file.getFilesize());
+            file.setChangedSize(file.getFileSize());
         } else if (result == CheckedFileInfoResultType.RESULT_CHECK_SUCCESS) {
             file.setRemote_id(wsFile.ID);
             file.setState(UploadFileState.Uploading);
@@ -320,7 +320,7 @@ public class UploadService extends IntentService {
         int result;
         WsFolder wsFolder = new WsFolder();
         wsFolder.FatherID = file.getRemote_parent_id();
-        File r_file = new File(file.getFilepath());
+        File r_file = new File(file.getFilePath());
         wsFolder.Name = r_file.getName();
         result = ClientWS.getInstance(this).createFolder(wsFolder);
         return result;

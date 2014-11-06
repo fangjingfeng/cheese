@@ -158,10 +158,10 @@ public class FragmentUploadList extends ListFragment {
                 holder = (ViewHolder)convertView.getTag();
             }
             UploadFile file = mFileList.get(position);
-            String fileName = file.getFilepath();
+            String fileName = file.getFilePath();
             fileName = fileName.substring(fileName.lastIndexOf("/")+1);
             holder.fileNameView.setText(fileName);
-            holder.ratioView.setText(file.getUploadedsize() + "/" + file.getFilesize());
+            holder.ratioView.setText(file.getChangedSize() + "/" + file.getFileSize());
             switch (file.getState()) {
                 case UploadFileState.NotUpload:
                 case UploadFileState.Uploading:

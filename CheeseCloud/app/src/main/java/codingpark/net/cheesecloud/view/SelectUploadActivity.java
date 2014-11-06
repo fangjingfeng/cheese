@@ -364,7 +364,7 @@ public class SelectUploadActivity extends Activity implements OnSelectUploadChan
         wsFolder.ID = folder.getRemote_id();
         result = ClientWS.getInstance(this).getFolderInfo(wsFolder);
         if (result == WsResultType.Success) {
-            folder.setFilepath(wsFolder.Name);
+            folder.setFilePath(wsFolder.Name);
         }
         return result;
     }
@@ -394,7 +394,7 @@ public class SelectUploadActivity extends Activity implements OnSelectUploadChan
         protected void onPostExecute(Integer result) {
             switch (result) {
                 case WsResultType.Success:
-                    select_upload_path_bt.setText(folder.getFilepath());
+                    select_upload_path_bt.setText(folder.getFilePath());
                 default:
                     return;
             }

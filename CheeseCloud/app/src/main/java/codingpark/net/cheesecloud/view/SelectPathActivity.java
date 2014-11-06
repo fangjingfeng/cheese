@@ -74,7 +74,7 @@ public class SelectPathActivity extends ListActivity implements View.OnClickList
         // Initial mPathStack with NULL_ID when not select any folder
         UploadFile file = new UploadFile();
         file.setRemote_id(NULL_ID);
-        file.setFilepath("磁盘");
+        file.setFilePath("磁盘");
         mPathStack.push(file);
 
         // Initial list adapter
@@ -191,7 +191,7 @@ public class SelectPathActivity extends ListActivity implements View.OnClickList
         if (mPathStack.size() > 1)
             select_path_ok_bt.setText(
                     getString(R.string.select_path_activity_ok_bt_prefix_string)
-                            + mPathStack.peek().getFilepath());
+                            + mPathStack.peek().getFilePath());
         else
             select_path_ok_bt.setText(
                     getString(R.string.select_path_activity_ok_bt_prefix_string));
@@ -210,7 +210,7 @@ public class SelectPathActivity extends ListActivity implements View.OnClickList
             for (int i = pathBarCount; i < pathStackCount; i++) {
                 TextView textView = (TextView)inflater.inflate(R.layout.path_bar_item_layout, null);
                 textView.setTag(i);
-                String path = mPathStack.get(i).getFilepath();
+                String path = mPathStack.get(i).getFilePath();
                 Log.d(TAG, "path " + i + " is " + path);
                 textView.setText(path);
                 textView.setOnClickListener(this);
@@ -275,7 +275,7 @@ public class SelectPathActivity extends ListActivity implements View.OnClickList
                 holder = (ViewHolder)convertView.getTag();
             }
 
-            holder.rightView.setText(mFolderList.get(position).getFilepath());
+            holder.rightView.setText(mFolderList.get(position).getFilePath());
 
             return convertView;
         }
@@ -331,9 +331,9 @@ public class SelectPathActivity extends ListActivity implements View.OnClickList
             result = ClientWS.getInstance(SelectPathActivity.this).getDisk(r_wsFolder);
             for (WsFolder ws_f : r_wsFolder) {
                 UploadFile f = new UploadFile();
-                f.setFiletype(UploadFileType.TYPE_FOLDER);
+                f.setFileType(UploadFileType.TYPE_FOLDER);
                 f.setRemote_id(ws_f.ID);
-                f.setFilepath(ws_f.Name);
+                f.setFilePath(ws_f.Name);
                 mFolderList.add(f);
             }
             return result;
@@ -354,9 +354,9 @@ public class SelectPathActivity extends ListActivity implements View.OnClickList
             if (result == WsResultType.Success) {
                 for (WsFolder tmp_folder : r_wsFolderList) {
                     UploadFile f = new UploadFile();
-                    f.setFiletype(UploadFileType.TYPE_FOLDER);
+                    f.setFileType(UploadFileType.TYPE_FOLDER);
                     f.setRemote_id(tmp_folder.ID);
-                    f.setFilepath(tmp_folder.Name);
+                    f.setFilePath(tmp_folder.Name);
                     mFolderList.add(f);
                 }
             }

@@ -163,17 +163,17 @@ public class UploadFileDataSource {
         // TODO Judge the table have the same path/local_user_id/state!=uploaded(If have, not need insert)
         if (file.exists()) {
             try {
-                u_file.setFilepath(file.getAbsolutePath());
+                u_file.setFilePath(file.getAbsolutePath());
                 if (file.isFile())
                     u_file.setMd5(FileManager.generateMD5(new FileInputStream(file)));
                 else
                     u_file.setMd5("");
                 u_file.setParent_id(l_parent_id);
                 u_file.setRemote_parent_id(r_parent_id);
-                u_file.setFilesize(file.length());
+                u_file.setFileSize(file.length());
                 u_file.setState(UploadFileState.NotUpload);
-                u_file.setUploadedsize(0);
-                u_file.setFiletype(file.isFile() ? UploadFileType.TYPE_FILE : UploadFileType.TYPE_FOLDER);
+                u_file.setChangedSize(0);
+                u_file.setFileType(file.isFile() ? UploadFileType.TYPE_FILE : UploadFileType.TYPE_FOLDER);
                 u_file.setLocal_user_id(AppConfigs.current_local_user_id);
                 return addUploadFile(u_file);
             } catch (FileNotFoundException e) {
@@ -262,15 +262,15 @@ public class UploadFileDataSource {
     private UploadFile cursorToFile(Cursor cursor) {
         UploadFile file = new UploadFile();
         file.setId(cursor.getInt(0));
-        file.setFilepath(cursor.getString(1));
-        file.setFilesize(cursor.getLong(2));
-        file.setFiletype(cursor.getInt(3));
+        file.setFilePath(cursor.getString(1));
+        file.setFileSize(cursor.getLong(2));
+        file.setFileType(cursor.getInt(3));
         file.setMd5(cursor.getString(4));
         file.setParent_id(cursor.getInt(5));
         file.setRemote_id(cursor.getString(6));
         file.setRemote_parent_id(cursor.getString(7));
         file.setState(cursor.getInt(8));
-        file.setUploadedsize(cursor.getInt(9));
+        file.setChangedSize(cursor.getInt(9));
         file.setLocal_user_id(cursor.getInt(10));
         return file;
     }
@@ -304,15 +304,15 @@ public class UploadFileDataSource {
      */
     private ContentValues fileToContentValue(UploadFile file) {
         ContentValues cv = new ContentValues();
-        cv.put(UploadFileEntry.COLUMN_FILEPATH, file.getFilepath());
-        cv.put(UploadFileEntry.COLUMN_FILESIZE, file.getFilesize());
-        cv.put(UploadFileEntry.COLUMN_FILETYPE, file.getFiletype());
+        cv.put(UploadFileEntry.COLUMN_FILEPATH, file.getFilePath());
+        cv.put(UploadFileEntry.COLUMN_FILESIZE, file.getFileSize());
+        cv.put(UploadFileEntry.COLUMN_FILETYPE, file.getFileType());
         cv.put(UploadFileEntry.COLUMN_MD5, file.getMd5());
         cv.put(UploadFileEntry.COLUMN_PARENT_ID, file.getParent_id());
         cv.put(UploadFileEntry.COLUMN_REMOTE_ID, file.getRemote_id());
         cv.put(UploadFileEntry.COLUMN_REMOTE_PARENT_ID, file.getRemote_parent_id());
         cv.put(UploadFileEntry.COLUMN_STATE, file.getState());
-        cv.put(UploadFileEntry.COLUMN_UPLOADED_SIZE, file.getUploadedsize());
+        cv.put(UploadFileEntry.COLUMN_UPLOADED_SIZE, file.getChangedSize());
         cv.put(UploadFileEntry.COLUMN_USERID, file.getLocal_user_id());
         return cv;
     }

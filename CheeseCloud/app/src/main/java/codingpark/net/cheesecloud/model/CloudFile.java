@@ -5,7 +5,7 @@ package codingpark.net.cheesecloud.model;
  * The parent class of the DownloadFile and UploadFile
  * @author Ethan Shan
  * @version 1.0
- * @created 06-十一月-2014 15:15:44
+ * @created 06-十一月-2014 15:45:01
  */
 public class CloudFile {
 
@@ -22,17 +22,27 @@ public class CloudFile {
      */
     private long fileSize = 0;
     /**
+     * The file type
+     * 0: File
+     * 1: Folder
+     */
+    private int fileType = 0;
+    /**
      * The id(Index) at local table
      */
-    private int id = 0;
+    private long id = 0;
     /**
      * The file associated local user id
      */
-    private int local_user_id = 0;
+    private long local_user_id = 0;
     /**
      * The whole file MD5 value
      */
     private String md5 = "";
+    /**
+     * The file parent id on local table
+     */
+    private long parent_id = 0;
     /**
      * The guid at remote server
      */
@@ -66,19 +76,33 @@ public class CloudFile {
         return fileSize;
     }
 
+    public int getFileType(){
+        return fileType;
+    }
+
     /**
-     * The id(Index) at local table uploadfile
+     * The id(Index) at local table
      */
-    public int getId(){
+    public long getId(){
         return id;
     }
 
-    public int getLocal_user_id(){
+    /**
+     * The file associated local user id
+     */
+    public long getLocal_user_id(){
         return local_user_id;
     }
 
     public String getMd5(){
         return md5;
+    }
+
+    /**
+     * The file parent id on local table
+     */
+    public long getParent_id(){
+        return parent_id;
     }
 
     /**
@@ -121,19 +145,28 @@ public class CloudFile {
     }
 
     /**
-     * The id(Index) at local table uploadfile
      *
      * @param newVal
      */
-    public void setId(int newVal){
+    public void setFileType(int newVal){
+        fileType = newVal;
+    }
+
+    /**
+     * The id(Index) at local table
+     *
+     * @param newVal
+     */
+    public void setId(long newVal){
         id = newVal;
     }
 
     /**
+     * The file associated local user id
      *
      * @param newVal
      */
-    public void setLocal_user_id(int newVal){
+    public void setLocal_user_id(long newVal){
         local_user_id = newVal;
     }
 
@@ -143,6 +176,15 @@ public class CloudFile {
      */
     public void setMd5(String newVal){
         md5 = newVal;
+    }
+
+    /**
+     * The file parent id on local table
+     *
+     * @param newVal
+     */
+    public void setParent_id(long newVal){
+        parent_id = newVal;
     }
 
     /**
