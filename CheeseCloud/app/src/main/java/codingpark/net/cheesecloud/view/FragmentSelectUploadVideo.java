@@ -388,39 +388,17 @@ public class FragmentSelectUploadVideo extends ListFragment implements OnKeyDown
         }
     }
 
-    private long lastVideoId        = 0;
     private String getThumbPath(ItemVideo item) {
         String path = "";
-        Cursor cursor = null;
-        try {
-            Bitmap img = MediaStore.Video.Thumbnails.getThumbnail(
-                    cr, item.id,
-                    MediaStore.Images.Thumbnails.MINI_KIND, null);
-            if (cursor != null && cursor.getCount() > 0) {
-                cursor.moveToFirst();
-                String thumbPath = cursor.getString(cursor
-                        .getColumnIndex(MediaStore.Images.Thumbnails.DATA));
-                File thumb = new File(thumbPath);
-                if (thumb.exists())
-                    item.thumb_path = thumbPath;
-                else
-                    item.thumb_path = "";
-                Log.d(TAG, "getThumbPath: " + item.thumb_path);
-            } else {
-                if (lastVideoId == item.id) {
-                    item.thumb_path = "";
-                    Log.d(TAG, "getThumbPath: " + "empty");
-                } else {
-                    MediaStore.Images.Thumbnails.getThumbnail(cr,
-                            item.id, MediaStore.Images.Thumbnails.MINI_KIND, null);
-                    lastVideoId = item.id;
-                    getThumbPath(item);
-                }
-            }
-        } finally {
-            if(cursor != null && !cursor.isClosed()) {
-                cursor.close();
-            }
+        Bitmap img = MediaStore.Video.Thumbnails.getThumbnail(
+                cr, item.id,
+                MediaStore.Images.Thumbnails.MINI_KIND, null);
+        if (img != null) {
+            item.thumb_path = "";
+            Log.d(TAG, "getThumbPath: success");
+        } else {
+            item.thumb_path = "";
+            Log.d(TAG, "getThumbPath: failed");
         }
         return path;
     }
@@ -510,8 +488,11 @@ public class FragmentSelectUploadVideo extends ListFragment implements OnKeyDown
             } else {
                 holder = (CategoryViewHolder)convertView.getTag();
             }
-            holder.bucketThumbView.setImageResource(R.drawable.ic_launcher);
-            holder.bucketThumbView.setImageBitmap(MediaStore.Images.Thumbnails.getThumbnail(cr, item.id, MediaStore.Images.Thumbnails.MICRO_KIND, null));
+            Bitmap img = MediaStore.Video.Thumbnails.getThumbnail(cr, item.id, MediaStore.Video.Thumbnails.MICRO_KIND, null);
+            if (img == null)
+                holder.bucketThumbView.setImageResource(R.drawable.ic_launcher);
+            else
+                holder.bucketThumbView.setImageBitmap(img);
             holder.bucketNameView.setText(item.bucket_display_name);
             holder.countView.setText(item.item_count + "");
             return convertView;
@@ -556,11 +537,19 @@ public class FragmentSelectUploadVideo extends ListFragment implements OnKeyDown
             }
 
             String path = item.data;
+            /*
             if (path == null || path.isEmpty()) {
                 holder.itemThumbView.setImageResource(R.drawable.ic_launcher);
             } else {
                 holder.itemThumbView.setImageBitmap(MediaStore.Images.Thumbnails.getThumbnail(cr, item.id, MediaStore.Images.Thumbnails.MICRO_KIND, null));
             }
+            */
+
+            Bitmap img = MediaStore.Video.Thumbnails.getThumbnail(cr, item.id, MediaStore.Video.Thumbnails.MICRO_KIND, null);
+            if (img == null)
+                holder.itemThumbView.setImageResource(R.drawable.ic_launcher);
+            else
+                holder.itemThumbView.setImageBitmap(img);
             path = path.substring(path.lastIndexOf("/") + 1, path.length());
             holder.videoNameView.setText(path);
             holder.videoTakeDateView.setText(item.date_taken + "");
