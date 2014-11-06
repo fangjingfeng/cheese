@@ -11,7 +11,6 @@ import org.ksoap2.serialization.MarshalBase64;
 import org.ksoap2.serialization.MarshalFloat;
 import org.ksoap2.serialization.PropertyInfo;
 import org.ksoap2.serialization.SoapObject;
-import org.ksoap2.serialization.SoapPrimitive;
 import org.ksoap2.serialization.SoapSerializationEnvelope;
 import org.ksoap2.transport.HttpTransportSE;
 
@@ -25,11 +24,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import codingpark.net.cheesecloud.AppConfigs;
-import codingpark.net.cheesecloud.eumn.CheckedFileInfoType;
+import codingpark.net.cheesecloud.eumn.CheckedFileInfoResultType;
 import codingpark.net.cheesecloud.eumn.LoginResultType;
-import codingpark.net.cheesecloud.eumn.UploadFileType;
 import codingpark.net.cheesecloud.eumn.WsResultType;
-import codingpark.net.cheesecloud.model.UploadFile;
 import codingpark.net.cheesecloud.wsi.FileInfo;
 import codingpark.net.cheesecloud.wsi.SyncFileBlock;
 import codingpark.net.cheesecloud.wsi.WsFile;
@@ -241,8 +238,8 @@ public final class ClientWS {
             // Fetch operation result
             final SoapObject resp = (SoapObject) envelope.bodyIn;
             result = Integer.valueOf(resp.getProperty("CheckedFileInfoResult").toString());
-            if ((result == CheckedFileInfoType.RESULT_CHECK_SUCCESS)
-                    || (result == CheckedFileInfoType.RESULT_QUICK_UPLOAD)) {
+            if ((result == CheckedFileInfoResultType.RESULT_CHECK_SUCCESS)
+                    || (result == CheckedFileInfoResultType.RESULT_QUICK_UPLOAD)) {
                 // Fetch file info
                 SoapObject obj = (SoapObject) resp.getProperty("file");
                 wsFile.ID = obj.getProperty("ID").toString();

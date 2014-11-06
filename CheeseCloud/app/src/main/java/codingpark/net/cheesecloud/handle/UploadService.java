@@ -15,7 +15,7 @@ import java.util.Date;
 import java.util.List;
 
 import codingpark.net.cheesecloud.AppConfigs;
-import codingpark.net.cheesecloud.eumn.CheckedFileInfoType;
+import codingpark.net.cheesecloud.eumn.CheckedFileInfoResultType;
 import codingpark.net.cheesecloud.eumn.UploadFileState;
 import codingpark.net.cheesecloud.eumn.UploadFileType;
 import codingpark.net.cheesecloud.eumn.WsResultType;
@@ -213,7 +213,7 @@ public class UploadService extends IntentService {
                 // Update to database
                 uploadFileDataSource.updateUploadFile(file);
                 result = WsResultType.Success;
-                if (result == CheckedFileInfoType.RESULT_QUICK_UPLOAD) {
+                if (result == CheckedFileInfoResultType.RESULT_QUICK_UPLOAD) {
                     return result;
                 }
             }
@@ -305,11 +305,11 @@ public class UploadService extends IntentService {
         }
         result = ClientWS.getInstance(this).checkedFileInfo(wsFile);
         // Update UploadFile.remote_id
-        if (result == CheckedFileInfoType.RESULT_QUICK_UPLOAD) {
+        if (result == CheckedFileInfoResultType.RESULT_QUICK_UPLOAD) {
             file.setRemote_id(wsFile.ID);
             file.setState(UploadFileState.Uploaded);
             file.setUploadedsize(file.getFilesize());
-        } else if (result == CheckedFileInfoType.RESULT_CHECK_SUCCESS) {
+        } else if (result == CheckedFileInfoResultType.RESULT_CHECK_SUCCESS) {
             file.setRemote_id(wsFile.ID);
             file.setState(UploadFileState.Uploading);
         }

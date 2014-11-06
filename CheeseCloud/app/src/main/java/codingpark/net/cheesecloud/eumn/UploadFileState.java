@@ -22,4 +22,8 @@ public class UploadFileState {
      * folder: the folder created and sub file upload complete on server
      */
     public static final int Uploaded        = 2;
+    /**
+     * User cancel upload the file
+     */
+    public static final int UploadCanceled  = 3;
 }
