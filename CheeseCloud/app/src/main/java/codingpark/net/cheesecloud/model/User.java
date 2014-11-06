@@ -1,20 +1,22 @@
 package codingpark.net.cheesecloud.model;
 
+
 /**
- * Created by ethanshan on 14-10-16.
  * The user entity, fetch/store user profile from/to database.
+ * @author Ethan Shan
+ * @version 1.0
+ * @created 06-十一月-2014 15:22:01
  */
 public class User {
-
 
     /**
      * The user email(login username)
      */
-    public String email;
+    public String email = "";
     /**
      * Remote database user id
      */
-    public String guid;
+    public String guid = "";
     /**
      * Local database user id(index)
      */
@@ -22,7 +24,7 @@ public class User {
     /**
      * The user password
      */
-    public String password_md5;
+    public String password_md5 = "";
     /**
      * The web service address
      */
@@ -79,7 +81,7 @@ public class User {
     /**
      * The user email(login username)
      *
-     * @param newVal    newVal
+     * @param newVal
      */
     public void setEmail(String newVal){
         email = newVal;
@@ -88,7 +90,7 @@ public class User {
     /**
      * Remote database user id
      *
-     * @param newVal    newVal
+     * @param newVal
      */
     public void setGuid(String newVal){
         guid = newVal;
@@ -97,7 +99,7 @@ public class User {
     /**
      * Local database user id(index)
      *
-     * @param newVal    newVal
+     * @param newVal
      */
     public void setId(int newVal){
         id = newVal;
@@ -115,11 +117,10 @@ public class User {
     /**
      * The web service address
      *
-     * @param newVal    newVal
+     * @param newVal
      */
     public void setWs_address(String newVal){
         ws_address = newVal;
     }
-
 
 }
