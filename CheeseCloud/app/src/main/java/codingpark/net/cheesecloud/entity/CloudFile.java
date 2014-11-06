@@ -1,4 +1,4 @@
-package codingpark.net.cheesecloud.model;
+package codingpark.net.cheesecloud.entity;
 
 
 /**

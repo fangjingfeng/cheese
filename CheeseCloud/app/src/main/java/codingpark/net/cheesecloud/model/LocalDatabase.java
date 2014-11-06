@@ -4,10 +4,6 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import codingpark.net.cheesecloud.model.UploadFileDataSource;
-import codingpark.net.cheesecloud.model.User;
-import codingpark.net.cheesecloud.model.UserDataSource;
-
 /**
  * Created by ethanshan on 14-10-15.
  * This class used to create localdatabase(Database) and userinfo/

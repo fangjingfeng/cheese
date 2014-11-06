@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import codingpark.net.cheesecloud.AppConfigs;
+import codingpark.net.cheesecloud.entity.UploadFile;
 import codingpark.net.cheesecloud.enumr.UploadFileState;
 import codingpark.net.cheesecloud.enumr.UploadFileType;
 import codingpark.net.cheesecloud.handle.FileManager;

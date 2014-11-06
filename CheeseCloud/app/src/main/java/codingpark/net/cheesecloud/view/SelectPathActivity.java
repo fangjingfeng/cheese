@@ -26,7 +26,7 @@ import codingpark.net.cheesecloud.R;
 import codingpark.net.cheesecloud.enumr.UploadFileType;
 import codingpark.net.cheesecloud.enumr.WsResultType;
 import codingpark.net.cheesecloud.handle.ClientWS;
-import codingpark.net.cheesecloud.model.UploadFile;
+import codingpark.net.cheesecloud.entity.UploadFile;
 import codingpark.net.cheesecloud.wsi.WsFolder;
 
 /**
@@ -46,8 +46,6 @@ public class SelectPathActivity extends ListActivity implements View.OnClickList
     private Button select_path_ok_bt        = null;
 
     public static final String RESULT_SELECTED_REMOTE_FOLDER_ID    = "selected_remote_folder_id";
-    // TODO The value should fetch from server dynamic
-    //private String remote_parent_id                     = "395ED821-E528-42F0-8EA7-C59F258E7435";
     private ArrayList<String> mFolderNameList           = null;
     private ArrayList<UploadFile> mFolderList           = null;
     private Stack<UploadFile> mPathStack                = null;

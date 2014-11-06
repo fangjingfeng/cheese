@@ -20,7 +20,7 @@ import java.util.List;
 import codingpark.net.cheesecloud.R;
 import codingpark.net.cheesecloud.enumr.UploadFileState;
 import codingpark.net.cheesecloud.handle.OnFragmentInteractionListener;
-import codingpark.net.cheesecloud.model.UploadFile;
+import codingpark.net.cheesecloud.entity.UploadFile;
 import codingpark.net.cheesecloud.model.UploadFileDataSource;
 import codingpark.net.cheesecloud.view.dummy.DummyContent;
 

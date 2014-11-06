@@ -35,7 +35,7 @@ import codingpark.net.cheesecloud.enumr.WsResultType;
 import codingpark.net.cheesecloud.handle.ClientWS;
 import codingpark.net.cheesecloud.handle.OnKeyDownListener;
 import codingpark.net.cheesecloud.handle.OnSelectUploadChangedListener;
-import codingpark.net.cheesecloud.model.UploadFile;
+import codingpark.net.cheesecloud.entity.UploadFile;
 import codingpark.net.cheesecloud.wsi.WsFolder;
 
 public class SelectUploadActivity extends Activity implements OnSelectUploadChangedListener {
