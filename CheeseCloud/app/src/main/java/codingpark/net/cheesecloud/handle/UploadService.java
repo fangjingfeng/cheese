@@ -15,10 +15,10 @@ import java.util.Date;
 import java.util.List;
 
 import codingpark.net.cheesecloud.AppConfigs;
-import codingpark.net.cheesecloud.eumn.CheckedFileInfoResultType;
-import codingpark.net.cheesecloud.eumn.UploadFileState;
-import codingpark.net.cheesecloud.eumn.UploadFileType;
-import codingpark.net.cheesecloud.eumn.WsResultType;
+import codingpark.net.cheesecloud.enumr.CheckedFileInfoResultType;
+import codingpark.net.cheesecloud.enumr.UploadFileState;
+import codingpark.net.cheesecloud.enumr.UploadFileType;
+import codingpark.net.cheesecloud.enumr.WsResultType;
 import codingpark.net.cheesecloud.model.UploadFile;
 import codingpark.net.cheesecloud.model.UploadFileDataSource;
 import codingpark.net.cheesecloud.wsi.SyncFileBlock;

@@ -31,9 +31,8 @@ import java.util.Locale;
 
 import codingpark.net.cheesecloud.AppConfigs;
 import codingpark.net.cheesecloud.R;
-import codingpark.net.cheesecloud.eumn.WsResultType;
+import codingpark.net.cheesecloud.enumr.WsResultType;
 import codingpark.net.cheesecloud.handle.ClientWS;
-import codingpark.net.cheesecloud.handle.FileManager;
 import codingpark.net.cheesecloud.handle.OnKeyDownListener;
 import codingpark.net.cheesecloud.handle.OnSelectUploadChangedListener;
 import codingpark.net.cheesecloud.model.UploadFile;

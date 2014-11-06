@@ -23,8 +23,8 @@ import java.util.Stack;
 
 import codingpark.net.cheesecloud.AppConfigs;
 import codingpark.net.cheesecloud.R;
-import codingpark.net.cheesecloud.eumn.UploadFileType;
-import codingpark.net.cheesecloud.eumn.WsResultType;
+import codingpark.net.cheesecloud.enumr.UploadFileType;
+import codingpark.net.cheesecloud.enumr.WsResultType;
 import codingpark.net.cheesecloud.handle.ClientWS;
 import codingpark.net.cheesecloud.model.UploadFile;
 import codingpark.net.cheesecloud.wsi.WsFolder;
@@ -343,7 +343,7 @@ public class SelectPathActivity extends ListActivity implements View.OnClickList
          * Wrapper getFolderList(Web Service Interface)
          * Convert WsFolder to UploadFile
          * @return int, the getFolderList execute result
-         * {@link codingpark.net.cheesecloud.eumn.WsResultType}
+         * {@link codingpark.net.cheesecloud.enumr.WsResultType}
          */
         private int getFolderList_wrapper(UploadFile file) {
             int result = WsResultType.Success;

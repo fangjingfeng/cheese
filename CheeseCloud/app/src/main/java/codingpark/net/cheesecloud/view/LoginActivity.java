@@ -36,7 +36,7 @@ import java.util.List;
 
 import codingpark.net.cheesecloud.AppConfigs;
 import codingpark.net.cheesecloud.R;
-import codingpark.net.cheesecloud.eumn.LoginResultType;
+import codingpark.net.cheesecloud.enumr.LoginResultType;
 import codingpark.net.cheesecloud.handle.ClientWS;
 import codingpark.net.cheesecloud.model.User;
 import codingpark.net.cheesecloud.model.UserDataSource;

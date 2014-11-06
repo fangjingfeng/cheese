@@ -24,9 +24,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import codingpark.net.cheesecloud.AppConfigs;
-import codingpark.net.cheesecloud.eumn.CheckedFileInfoResultType;
-import codingpark.net.cheesecloud.eumn.LoginResultType;
-import codingpark.net.cheesecloud.eumn.WsResultType;
+import codingpark.net.cheesecloud.enumr.CheckedFileInfoResultType;
+import codingpark.net.cheesecloud.enumr.LoginResultType;
+import codingpark.net.cheesecloud.enumr.WsResultType;
 import codingpark.net.cheesecloud.wsi.FileInfo;
 import codingpark.net.cheesecloud.wsi.SyncFileBlock;
 import codingpark.net.cheesecloud.wsi.WsFile;
@@ -340,7 +340,7 @@ public final class ClientWS {
      * Pull disk list from web server
      * @param list The list save WsFolder object
      * @return
-     *  {@link codingpark.net.cheesecloud.eumn.WsResultType}
+     *  {@link codingpark.net.cheesecloud.enumr.WsResultType}
      */
     public int getDisk(List<WsFolder> list) {
         int result = WsResultType.Success;
@@ -415,7 +415,7 @@ public final class ClientWS {
      * @param folder the parent folder info
      * @param fileList the parent folder's sub files list
      * @param folderList the parent folder's sub folders list
-     * @return {@link codingpark.net.cheesecloud.eumn.WsResultType}
+     * @return {@link codingpark.net.cheesecloud.enumr.WsResultType}
      */
     public int getFolderList(WsFolder folder, ArrayList<WsFile> fileList,
                               ArrayList<WsFolder> folderList) {
@@ -576,7 +576,7 @@ public final class ClientWS {
      * Pull the folder/file information by the folder.ID from web server.
      * Save the information to folder.
      * @param folder the parent folder info(Need the ID)
-     * @return {@link codingpark.net.cheesecloud.eumn.WsResultType}
+     * @return {@link codingpark.net.cheesecloud.enumr.WsResultType}
      */
     public int getFolderInfo(WsFolder folder) {
         int result = WsResultType.Success;
