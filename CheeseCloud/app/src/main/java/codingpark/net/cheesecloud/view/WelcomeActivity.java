@@ -8,8 +8,6 @@ import android.view.View;
 import android.widget.Button;
 
 import codingpark.net.cheesecloud.R;
-import codingpark.net.cheesecloud.handle.ClientWS;
-import codingpark.net.cheesecloud.handle.LocalDatabase;
 
 
 public class WelcomeActivity extends Activity {

@@ -10,8 +10,6 @@ import android.provider.BaseColumns;
 import java.util.ArrayList;
 import java.util.List;
 
-import codingpark.net.cheesecloud.handle.LocalDatabase;
-
 /**
  * Created by ethanshan on 14-10-20.
  * The class provide user table operate API

@@ -1,4 +1,4 @@
-package codingpark.net.cheesecloud.handle;
+package codingpark.net.cheesecloud.model;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;

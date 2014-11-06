@@ -17,7 +17,6 @@ import codingpark.net.cheesecloud.AppConfigs;
 import codingpark.net.cheesecloud.eumn.UploadFileState;
 import codingpark.net.cheesecloud.eumn.UploadFileType;
 import codingpark.net.cheesecloud.handle.FileManager;
-import codingpark.net.cheesecloud.handle.LocalDatabase;
 
 /**
  * Created by ethanshan on 14-10-20.
