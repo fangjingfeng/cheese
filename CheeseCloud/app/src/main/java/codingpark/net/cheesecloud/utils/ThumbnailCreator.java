@@ -11,6 +11,7 @@ import android.util.Log;
 import android.widget.ImageView;
 import android.graphics.Matrix;
 
+import codingpark.net.cheesecloud.R;
 import codingpark.net.cheesecloud.model.MessageCache;
 
 public class ThumbnailCreator {
@@ -166,5 +167,74 @@ public class ThumbnailCreator {
         }catch(Exception e){
             return null;
         }
+    }
+
+    /**
+     * Create default(Not generate thumbnails for image and video) thumbnails for
+     * cloud files(Just file, not folder)
+     * @param fileName the file name for cloud file
+     * @return The default image resource id
+     */
+    public static int getDefThumbnailsByName(String fileName) {
+        int res_id = -1;
+        if (fileName.lastIndexOf(".") >= 0) {
+            String ext = fileName.substring(fileName.lastIndexOf(".") + 1);
+            if (TypeFilter.getInstance().isPdfFile(ext)) {
+
+                return R.drawable.pdf;
+
+            } else if (TypeFilter.getInstance().isMusicFile(ext)) {
+
+                return R.drawable.music;
+
+            } else if (TypeFilter.getInstance().isPictureFile(ext)) {
+
+                return R.drawable.image;
+
+            } else if (TypeFilter.getInstance().isZipFile(ext) ||
+                    TypeFilter.getInstance().isGZipFile(ext)) {
+
+                return R.drawable.zip;
+
+            } else if(TypeFilter.getInstance().isMovieFile(ext)) {
+
+                return R.drawable.movies;
+
+            } else if(TypeFilter.getInstance().isWordFile(ext)) {
+
+                return R.drawable.word;
+
+            } else if(TypeFilter.getInstance().isExcelFile(ext)) {
+
+                return R.drawable.excel;
+
+            } else if(TypeFilter.getInstance().isPptFile(ext)) {
+
+                return R.drawable.ppt;
+
+            } else if(TypeFilter.getInstance().isHtml32File(ext)) {
+
+                return R.drawable.html32;
+
+            } else if(TypeFilter.getInstance().isXml32File(ext)) {
+
+                return R.drawable.xml32;
+
+            } else if(TypeFilter.getInstance().isConfig32File(ext)) {
+                return R.drawable.config32;
+
+            } else if(TypeFilter.getInstance().isApkFile(ext)) {
+                return R.drawable.appicon;
+
+            } else if(TypeFilter.getInstance().isJarFile(ext)) {
+                return R.drawable.jar32;
+
+            } else {
+                return R.drawable.text;
+            }
+        } else {
+            return R.drawable.text;
+        }
+
     }
 }

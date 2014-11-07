@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 import codingpark.net.cheesecloud.CheeseConstants;
 import codingpark.net.cheesecloud.entity.CloudFile;
-import codingpark.net.cheesecloud.enumr.UploadFileType;
+import codingpark.net.cheesecloud.enumr.CloudFileType;
 import codingpark.net.cheesecloud.enumr.WsResultType;
 import codingpark.net.cheesecloud.wsi.WsFolder;
 
@@ -85,7 +85,7 @@ public class PullFileListTask extends AsyncTask<Void,Void,Integer> {
         result = ClientWS.getInstance(mContext).getDisk(r_wsFolder);
         for (WsFolder ws_f : r_wsFolder) {
             CloudFile f = new CloudFile();
-            f.setFileType(UploadFileType.TYPE_FOLDER);
+            f.setFileType(CloudFileType.TYPE_FOLDER);
             f.setRemote_id(ws_f.ID);
             f.setFilePath(ws_f.Name);
             mFolderList.add(f);
@@ -108,7 +108,7 @@ public class PullFileListTask extends AsyncTask<Void,Void,Integer> {
         if (result == WsResultType.Success) {
             for (WsFolder tmp_folder : r_wsFolderList) {
                 CloudFile f = new CloudFile();
-                f.setFileType(UploadFileType.TYPE_FOLDER);
+                f.setFileType(CloudFileType.TYPE_FOLDER);
                 f.setRemote_id(tmp_folder.ID);
                 f.setFilePath(tmp_folder.Name);
                 mFolderList.add(f);

@@ -23,7 +23,7 @@
         android:gravity="center_vertical" />
 
     <TextView
-        android:id="@+id/file_size_date_view"
+        android:id="@+id/file_size_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="false"
@@ -32,6 +32,18 @@
         android:text="Text"
         android:layout_below="@+id/file_name_view"
         android:layout_toRightOf="@+id/file_thumb" />
+
+    <TextView
+        android:id="@+id/file_date_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/file_size_view"
+        android:layout_alignParentTop="false"
+        android:layout_alignParentBottom="false"
+        android:textStyle="bold"
+        android:text="Text"
+        android:gravity="center_vertical"
+        android:layout_alignTop="@+id/file_size_view" />
 
     <CheckBox
         android:layout_width="wrap_content"

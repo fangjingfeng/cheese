@@ -16,8 +16,8 @@ import java.util.List;
 
 import codingpark.net.cheesecloud.AppConfigs;
 import codingpark.net.cheesecloud.enumr.CheckedFileInfoResultType;
+import codingpark.net.cheesecloud.enumr.CloudFileType;
 import codingpark.net.cheesecloud.enumr.UploadFileState;
-import codingpark.net.cheesecloud.enumr.UploadFileType;
 import codingpark.net.cheesecloud.enumr.WsResultType;
 import codingpark.net.cheesecloud.entity.UploadFile;
 import codingpark.net.cheesecloud.model.UploadFileDataSource;
@@ -122,14 +122,14 @@ public class UploadService extends IntentService {
         for (UploadFile file : rootFileList) {
             if (file.getLocal_user_id() == -2) {
                 // The root is file, upload directly
-                if (file.getFileType() == UploadFileType.TYPE_FILE) {
+                if (file.getFileType() == CloudFileType.TYPE_FILE) {
                     result = startUploading(file);
                     if (result != WsResultType.Success)
                         return;
                     break;
                 }
                 // The root is folder
-                else if (file.getFileType() == UploadFileType.TYPE_FOLDER) {
+                else if (file.getFileType() == CloudFileType.TYPE_FOLDER) {
                     result = upload(file);
                 }
                 if (result != WsResultType.Success) return;
@@ -163,7 +163,7 @@ public class UploadService extends IntentService {
     private int upload(UploadFile file) {
         int result = WsResultType.Success;
         // If the target is file, upload directly
-        if (file.getFileType() == UploadFileType.TYPE_FILE) {
+        if (file.getFileType() == CloudFileType.TYPE_FILE) {
             if (file.getState() != UploadFileState.Uploaded)
                 result = startUploading(file);
         }
@@ -178,14 +178,14 @@ public class UploadService extends IntentService {
             // Get sub files
             List<UploadFile> uploadFileList = uploadFileDataSource.getSubUploadFiles(file);
             for (UploadFile uFile : uploadFileList) {
-                if (uFile.getFileType() == UploadFileType.TYPE_FOLDER) {
+                if (uFile.getFileType() == CloudFileType.TYPE_FOLDER) {
                 }
                 if (uFile.getState() != UploadFileState.Uploaded) {
                     // Update the sub files remote parent id
                     uFile.setRemote_parent_id(file.getRemote_id());
                     result = startUploading(uFile);
                     if (result == WsResultType.Success) {
-                        if (uFile.getFileType() == UploadFileType.TYPE_FOLDER) {
+                        if (uFile.getFileType() == CloudFileType.TYPE_FOLDER) {
                             result = upload(file);
                         }
                     }
@@ -204,7 +204,7 @@ public class UploadService extends IntentService {
     private int startUploading(UploadFile file) {
         int result = WsResultType.Success;
         byte[] buffer;
-        if (file.getFileType() == UploadFileType.TYPE_FILE) {
+        if (file.getFileType() == CloudFileType.TYPE_FILE) {
             if (file.getState() == UploadFileState.NotUpload) {
                 result = this.checkedFileInfo_wrapper(file);
                 // Call WS occur error
@@ -250,7 +250,7 @@ public class UploadService extends IntentService {
                 e.printStackTrace();
                 return WsResultType.Faild;
             }
-        } else if (file.getFileType() == UploadFileType.TYPE_FOLDER) {
+        } else if (file.getFileType() == CloudFileType.TYPE_FOLDER) {
             result = createFolder_wrapper(file);
             if (result == WsResultType.Success) {
                 // Update database

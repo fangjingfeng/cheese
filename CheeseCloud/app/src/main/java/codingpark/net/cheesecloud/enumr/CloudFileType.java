@@ -9,7 +9,7 @@ package codingpark.net.cheesecloud.enumr;
  * @version 1.0
  * @created 06-十一月-2014 16:26:22
  */
-public class UploadFileType {
+public class CloudFileType {
 
     /**
      * Mark the file is file type
@@ -20,7 +20,7 @@ public class UploadFileType {
      */
     public static final int TYPE_FOLDER = 1;
 
-    public UploadFileType(){
+    public CloudFileType(){
 
     }
 

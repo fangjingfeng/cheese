@@ -42,7 +42,6 @@ public class SelectPathActivity extends ListActivity implements View.OnClickList
     private Button select_path_ok_bt        = null;
 
     public static final String RESULT_SELECTED_REMOTE_FOLDER_ID    = "selected_remote_folder_id";
-    private ArrayList<String> mFolderNameList           = null;
     private ArrayList<CloudFile> mFolderList           = null;
     private Stack<CloudFile> mPathStack                = null;
     // Path bar, use to show current directory path
@@ -62,11 +61,10 @@ public class SelectPathActivity extends ListActivity implements View.OnClickList
         getActionBar().setTitle(R.string.select_path_activity_action_bar_title);
 
         // Initial path list
-        mFolderNameList = new ArrayList<String>();
         mFolderList = new ArrayList<CloudFile>();
         mPathStack = new Stack<CloudFile>();
         // Initial mPathStack with ROOT_ID when not select any folder
-        UploadFile file = new UploadFile();
+        CloudFile file = new UploadFile();
         file.setRemote_id(CheeseConstants.ROOT_ID);
         file.setFilePath("磁盘");
         mPathStack.push(file);

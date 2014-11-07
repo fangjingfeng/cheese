@@ -15,8 +15,8 @@ import java.util.List;
 
 import codingpark.net.cheesecloud.AppConfigs;
 import codingpark.net.cheesecloud.entity.UploadFile;
+import codingpark.net.cheesecloud.enumr.CloudFileType;
 import codingpark.net.cheesecloud.enumr.UploadFileState;
-import codingpark.net.cheesecloud.enumr.UploadFileType;
 import codingpark.net.cheesecloud.handle.FileManager;
 
 /**
@@ -174,7 +174,7 @@ public class UploadFileDataSource {
                 u_file.setFileSize(file.length());
                 u_file.setState(UploadFileState.NotUpload);
                 u_file.setChangedSize(0);
-                u_file.setFileType(file.isFile() ? UploadFileType.TYPE_FILE : UploadFileType.TYPE_FOLDER);
+                u_file.setFileType(file.isFile() ? CloudFileType.TYPE_FILE : CloudFileType.TYPE_FOLDER);
                 u_file.setLocal_user_id(AppConfigs.current_local_user_id);
                 return addUploadFile(u_file);
             } catch (FileNotFoundException e) {
