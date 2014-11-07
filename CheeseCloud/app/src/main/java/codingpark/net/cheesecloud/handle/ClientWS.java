@@ -307,7 +307,7 @@ public final class ClientWS {
 
         // Initial http transport
         HttpTransportSE transport = new HttpTransportSE(mEndPoint);
-        transport.debug = true;
+        //transport.debug = true;
 
         // Set http header cookies values before call WS
         List<HeaderProperty> paraHttpHeaders = new ArrayList<HeaderProperty>();
@@ -316,13 +316,14 @@ public final class ClientWS {
         // Call WS
         try {
             transport.call(soapAction, envelope, paraHttpHeaders);
-            Log.d(TAG, "Request: \n" + transport.requestDump);
-            Log.d(TAG, "Response: \n" + transport.responseDump);
+            //Log.d(TAG, "Request: \n" + transport.requestDump);
+            //Log.d(TAG, "Response: \n" + transport.responseDump);
 
             final SoapObject resp = (SoapObject) envelope.bodyIn;
             // Process return data
             // Fetch operation result
             result = Integer.valueOf(resp.getProperty("UploadFileResult").toString());
+            Log.d(TAG, "UploadFile 100KB result: " + result);
         } catch (Exception e) {
             e.printStackTrace();
             result = WsResultType.Faild;

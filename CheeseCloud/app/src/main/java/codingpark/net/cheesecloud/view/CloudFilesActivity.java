@@ -27,7 +27,6 @@ import codingpark.net.cheesecloud.AppConfigs;
 import codingpark.net.cheesecloud.CheeseConstants;
 import codingpark.net.cheesecloud.R;
 import codingpark.net.cheesecloud.entity.CloudFile;
-import codingpark.net.cheesecloud.entity.UploadFile;
 import codingpark.net.cheesecloud.enumr.CloudFileType;
 import codingpark.net.cheesecloud.handle.OnWSTaskFinishListener;
 import codingpark.net.cheesecloud.handle.PullFileListTask;

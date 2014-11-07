@@ -15,6 +15,7 @@ import java.util.Date;
 import java.util.List;
 
 import codingpark.net.cheesecloud.AppConfigs;
+import codingpark.net.cheesecloud.CheeseConstants;
 import codingpark.net.cheesecloud.enumr.CheckedFileInfoResultType;
 import codingpark.net.cheesecloud.enumr.CloudFileType;
 import codingpark.net.cheesecloud.enumr.UploadFileState;
@@ -35,9 +36,9 @@ public class UploadService extends IntentService {
 
     /**
      * The upload block size in byte unit
-     * Default size 4KB
+     * Default size 100KB
      */
-    public static final int UPLOAD_BLOCK_SIZE           = 4096;
+    public static final int UPLOAD_BLOCK_SIZE           = 100 * CheeseConstants.KB;
 
     /**
      * Start upload command
