@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -62,10 +63,16 @@ public class CloudFilesActivity extends ListActivity implements View.OnClickList
      */
     private static int mListMode            = MY_CLOUD_LIST_MODE;
 
+    // Folder and File cloud file list, fill up by PullCloudFileTask
     private ArrayList<CloudFile> mFolderList            = null;
     private ArrayList<CloudFile> mFileList              = null;
+    // Store files + folders, used by ArrayAdapter, the data is mFolderList + mFileList
     private ArrayList<CloudFile> mFileFolderList        = null;
+    // Store user selected files object
     private ArrayList<CloudFile> mSelectFileList        = null;
+    // Store user selected files index in the ListView
+    private ArrayList<Integer> mSelectedPositions   = null;
+    // Remember current folder full path
     private Stack<CloudFile> mPathStack                 = null;
     // Path bar, use to show current directory path
     private LinearLayout path_bar_container             = null;
@@ -89,6 +96,7 @@ public class CloudFilesActivity extends ListActivity implements View.OnClickList
         mFileFolderList = new ArrayList<CloudFile>();
         mSelectFileList = new ArrayList<CloudFile>();
         mPathStack = new Stack<CloudFile>();
+        mSelectedPositions = new ArrayList<Integer>();
         mInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
         // Get the initial list mode
@@ -145,6 +153,7 @@ public class CloudFilesActivity extends ListActivity implements View.OnClickList
                 finish();
             } else {
                 mPathStack.pop();
+                mAdapter.clearMultiSelect();
                 refreshPathBar();
                 refreshList();
             }
@@ -210,18 +219,33 @@ public class CloudFilesActivity extends ListActivity implements View.OnClickList
     @Override
     protected void onListItemClick(ListView l, View v, int position, long id) {
         // 1. Refresh bottom bar select path button text
-        CloudFile file = mFolderList.get(position);
-        mPathStack.push(file);
-        refreshPathBar();
-        refreshList();
+        CloudFile file = mFileFolderList.get(position);
+        if (isMultiSelect()) {
+            //mSelectedPositions.add(position);
+            //mSelectFileList.add(file);
+            mAdapter.addMultiPosition(position);
+            mAdapter.notifyDataSetChanged();
+        } else {
+            if (file.getFileType() == CloudFileType.TYPE_FILE) {
+                //mSelectFileList.add(file);
+                mAdapter.addMultiPosition(position);
+                mAdapter.notifyDataSetChanged();
+            } else if (file.getFileType() == CloudFileType.TYPE_FOLDER) {
+                mPathStack.push(file);
+                refreshPathBar();
+                refreshList();
+            }
+        }
     }
 
     @Override
     public void onClick(View v) {
         Log.d(TAG, "Item clicked!");
         int index = Integer.valueOf(v.getTag().toString());
-        while (index < (mPathStack.size() - 1))
+        while (index < (mPathStack.size() - 1)) {
             mPathStack.pop();
+            mAdapter.clearMultiSelect();
+        }
         refreshPathBar();
         refreshList();
     }
@@ -229,6 +253,10 @@ public class CloudFilesActivity extends ListActivity implements View.OnClickList
     @Override
     public void onWSTaskDataFinish(CloudFile data) {
 
+    }
+
+    private boolean isMultiSelect() {
+        return mSelectFileList.size() > 0;
     }
 
     /**
@@ -243,9 +271,11 @@ public class CloudFilesActivity extends ListActivity implements View.OnClickList
     }
 
     private class CloudListAdapter extends ArrayAdapter<CloudFile> {
+        private ItemCheckedListener mCheckedListener    = null;
 
         private CloudListAdapter(Context context, int resource) {
             super(context, resource);
+            mCheckedListener = new ItemCheckedListener();
         }
 
         @Override
@@ -274,12 +304,20 @@ public class CloudFilesActivity extends ListActivity implements View.OnClickList
                 holder.fileSizeView = (TextView)convertView.findViewById(R.id.file_size_view);
                 holder.fileDateView = (TextView)convertView.findViewById(R.id.file_date_view);
                 holder.multiSelectCheckBox = (CheckBox)convertView.findViewById(R.id.multiselect_checkbox);
+                holder.multiSelectCheckBox.setOnCheckedChangeListener(mCheckedListener);
                 convertView.setTag(holder);
             } else {
                 holder = (ViewHolder)convertView.getTag();
             }
             // Update holder content
             CloudFile file = mFileFolderList.get(position);
+            // multiSelectCheckBox
+            holder.multiSelectCheckBox.setTag(position);
+            if (mSelectedPositions != null && mSelectedPositions.contains(position))
+                holder.multiSelectCheckBox.setChecked(true);
+            else
+                holder.multiSelectCheckBox.setChecked(false);
+            // fileThumb/fileSizeView
             if (file.getFileType() == CloudFileType.TYPE_FOLDER) {
                 holder.fileThumb.setImageResource(R.drawable.folder);
                 holder.fileSizeView.setVisibility(View.INVISIBLE);
@@ -287,10 +325,73 @@ public class CloudFilesActivity extends ListActivity implements View.OnClickList
                 holder.fileThumb.setImageResource(ThumbnailCreator.getDefThumbnailsByName(file.getFilePath()));
                 holder.fileSizeView.setText(file.getFileSize() + "");
             }
+            // fileNameView
             holder.fileNameView.setText(file.getFilePath());
+            // fileDateView
             holder.fileDateView.setText(file.getCreateDate());
 
             return convertView;
+        }
+
+        public void addMultiPosition(int index) {
+            CloudFile file = mFileFolderList.get(index);
+            if (mSelectedPositions.contains(index)) {
+                mSelectedPositions.remove(Integer.valueOf(index));
+                mSelectFileList.remove(file);
+            } else {
+                mSelectedPositions.add(index);
+                mSelectFileList.add(file);
+            }
+        }
+
+        /**
+         * This will turn off multi-select and hide the multi-select buttons at the
+         * bottom of the view.
+         */
+        public void clearMultiSelect() {
+            // TODO Handle multiple select
+
+            if(mSelectedPositions != null && !mSelectedPositions.isEmpty())
+                mSelectedPositions.clear();
+
+            if(mSelectFileList!= null && !mSelectFileList.isEmpty())
+                mSelectFileList.clear();
+
+        }
+        /**
+         * This class listening ListView item's select CheckBox checked event.
+         * When user checked a item, class add this item's index to {@link #mSelectedPositions},
+         * and add path which the item stand for to {@link #mSelectFileList}
+         */
+        private class ItemCheckedListener implements CompoundButton.OnCheckedChangeListener{
+            //private static final String TAG     = "ItemSelectedListener";
+
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                Log.d(TAG, "Index: " + buttonView.getTag() + "\nChecked: " + isChecked);
+                int r_index = Integer.valueOf(buttonView.getTag().toString());
+                boolean isChanged = false;
+                if (isChecked) {
+                    if (!mSelectedPositions.contains(r_index)) {
+                        mSelectedPositions.add(r_index);
+                        mSelectFileList.add(mFileFolderList.get(r_index));
+                        isChanged = true;
+                    }
+                } else {
+                    if (mSelectedPositions.contains(r_index)) {
+                        mSelectedPositions.remove((Integer)r_index);
+                        mSelectFileList.remove(mFileFolderList.get(r_index));
+                        isChanged = true;
+                    }
+                }
+                Log.d(TAG, "Current selected items: " + mSelectedPositions.toString());
+
+                /*
+                if (isChanged && mListener != null) {
+                    mListener.onSelectUploadChanged(mSelectedPath);
+                }
+                */
+            }
         }
     }
 }

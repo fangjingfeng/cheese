@@ -56,22 +56,22 @@ public class FragmentSelectUploadFiles extends ListFragment implements OnKeyDown
     private OnSelectUploadChangedListener mListener     = null;
     private Context mContext                            = null;
     private FileManager mFileMgr                        = null;
-    private FileListAdapter mAdapter              = null;
+    private FileListAdapter mAdapter                    = null;
     // Enable/disable show pictures/videos thumbnail
     private boolean thumbnail_flag                  = true;
-    private ThumbnailCreator thumbnail      = null;
+    private ThumbnailCreator thumbnail              = null;
 
     //the list used to feed info into the array adapter
     private ArrayList<String> mFileList             = null;
     // Store user selected all file/folder path
     private ArrayList<String> mSelectedPath         = null;
     // Store user selected files index in the ListView
-    private ArrayList<Integer> mSelectedPositions = null;
+    private ArrayList<Integer> mSelectedPositions   = null;
     private LinearLayout mPathBar                   = null;
 
     private PathBarItemClickListener mPathBatItemListener       = null;
-    private SelectedChangedListener mSelectedChangedListener    = null;
-    private SharedPreferences mSettings                 = null;
+    //private SelectedChangedListener mSelectedChangedListener    = null;
+    private SharedPreferences mSettings                         = null;
 
     // TODO: Rename and change types of parameters
     public static FragmentSelectUploadFiles newInstance(String param1, String param2) {
@@ -455,19 +455,18 @@ public class FragmentSelectUploadFiles extends ListFragment implements OnKeyDown
                 holder.bottomView = (TextView)convertView.findViewById(R.id.sub_files_count_view);
                 holder.icon = (ImageView)convertView.findViewById(R.id.file_thumb);
                 holder.mSelect = (CheckBox)convertView.findViewById(R.id.multiselect_checkbox);
-                // 1. Update CheckBox's tag, this tag used in ItemSelectedListener
-                holder.mSelect.setTag(position);
                 // 2. Set CheckBox's OnCheckedChangeListener
                 holder.mSelect.setOnCheckedChangeListener(mCheckedListener);
 
                 convertView.setTag(holder);
             } else {
                 holder = (ViewHolder)convertView.getTag();
-                // 1. Update CheckBox's tag, this tag used in ItemSelectedListener
-                holder.mSelect.setTag(position);
                 // 2. Set CheckBox's OnCheckedChangeListener
                 holder.mSelect.setOnCheckedChangeListener(mCheckedListener);
             }
+
+            // 1. Update CheckBox's tag, this tag used in ItemSelectedListener
+            holder.mSelect.setTag(position);
 
     		/* This will check if the thumbnail cache needs to be cleared by checking
     		 * if the user has changed directories. This way the cache wont show
