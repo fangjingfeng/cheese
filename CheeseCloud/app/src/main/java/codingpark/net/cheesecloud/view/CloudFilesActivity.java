@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -137,6 +138,20 @@ public class CloudFilesActivity extends ListActivity implements View.OnClickList
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if(keyCode == KeyEvent.KEYCODE_BACK) {
+            if (mPathStack.size() == 1) {
+                finish();
+            } else {
+                mPathStack.pop();
+                refreshPathBar();
+                refreshList();
+            }
+        }
+        return true;
+    }
+
     private void setPathbar() {
         // Intial mPathStack with current user id(My Cloud Folder) when user select my cloud disk
         if (mListMode == MY_CLOUD_LIST_MODE) {
@@ -235,11 +250,12 @@ public class CloudFilesActivity extends ListActivity implements View.OnClickList
 
         @Override
         public int getCount() {
-            return mFileList.size() + mFolderList.size();
+            return mFileFolderList.size();
         }
 
         @Override
         public void notifyDataSetChanged() {
+            Log.d(TAG, "notifyDataSetChanged");
             mFileFolderList.clear();
             mFileFolderList.addAll(mFolderList);
             mFileFolderList.addAll(mFileList);

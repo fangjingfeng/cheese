@@ -51,7 +51,11 @@ public class PullFileListTask extends AsyncTask<Void,Void,Integer> {
 
     @Override
     protected Integer doInBackground(Void... params) {
-        mFolderList.clear();
+        if (mFolderList != null)
+            mFolderList.clear();
+        if (mFileList != null)
+            mFileList.clear();
+
         int result = WsResultType.Success;
         if (mCurrentFolder.getRemote_id().equals(CheeseConstants.ROOT_ID)) {
             // Pull disk list
