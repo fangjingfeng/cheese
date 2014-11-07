@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 
 /**
  * Created by ethanshan on 14-9-25.
+ * Setting preferences of application runtime
  */
 public class AppConfigs {
     // Application settings info, stored in SharedPreferences

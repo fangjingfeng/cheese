@@ -23,14 +23,15 @@
         android:gravity="center_vertical" />
 
     <TextView
-        android:id="@+id/sub_files_count_view"
+        android:id="@+id/file_size_date_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
+        android:layout_alignParentTop="false"
         android:layout_alignParentBottom="false"
         android:gravity="bottom|right"
         android:text="Text"
-        android:layout_toLeftOf="@+id/multiselect_checkbox" />
+        android:layout_below="@+id/file_name_view"
+        android:layout_toRightOf="@+id/file_thumb" />
 
     <CheckBox
         android:layout_width="wrap_content"

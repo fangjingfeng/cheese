@@ -9,8 +9,6 @@ import java.util.Comparator;
 import android.content.Context;
 import android.os.Environment;
 
-import codingpark.net.cheesecloud.DevicePathUtils;
-
 
 public class CatalogList {
     public final static int TYPE_MUSIC = 1;

@@ -5,7 +5,7 @@ package codingpark.net.cheesecloud.entity;
  * The parent class of the DownloadFile and UploadFile
  * @author Ethan Shan
  * @version 1.0
- * @created 06-十一月-2014 15:45:01
+ * @created 06-十一月-2014 18:25:47
  */
 public class CloudFile {
 
@@ -13,6 +13,11 @@ public class CloudFile {
      * The processed data size
      */
     private long changedSize = 0;
+    /**
+     * This file created date.
+     * Format: To be confirmed
+     */
+    private String createDate = "";
     /**
      * The file path at local file system or remote logic disk
      */
@@ -66,6 +71,14 @@ public class CloudFile {
 
     public long getChangedSize(){
         return changedSize;
+    }
+
+    /**
+     * This file created date.
+     * Format: To be confirmed
+     */
+    public String getCreateDate(){
+        return createDate;
     }
 
     public String getFilePath(){
@@ -126,6 +139,16 @@ public class CloudFile {
      */
     public void setChangedSize(long newVal){
         changedSize = newVal;
+    }
+
+    /**
+     * This file created date.
+     * Format: To be confirmed
+     *
+     * @param newVal
+     */
+    public void setCreateDate(String newVal){
+        createDate = newVal;
     }
 
     /**

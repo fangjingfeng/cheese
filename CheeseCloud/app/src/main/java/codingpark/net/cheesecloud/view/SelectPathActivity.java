@@ -3,7 +3,6 @@ package codingpark.net.cheesecloud.view;
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -22,12 +21,11 @@ import java.util.ArrayList;
 import java.util.Stack;
 
 import codingpark.net.cheesecloud.AppConfigs;
+import codingpark.net.cheesecloud.CheeseConstants;
 import codingpark.net.cheesecloud.R;
-import codingpark.net.cheesecloud.enumr.UploadFileType;
-import codingpark.net.cheesecloud.enumr.WsResultType;
-import codingpark.net.cheesecloud.handle.ClientWS;
+import codingpark.net.cheesecloud.entity.CloudFile;
 import codingpark.net.cheesecloud.entity.UploadFile;
-import codingpark.net.cheesecloud.wsi.WsFolder;
+import codingpark.net.cheesecloud.handle.PullFileListTask;
 
 /**
  * The class used to list all folder in web server, user select one folder,
@@ -38,17 +36,15 @@ import codingpark.net.cheesecloud.wsi.WsFolder;
  * receive a null folder, it will use the user id as the destination folder id(My Cloud Folder).
  */
 public class SelectPathActivity extends ListActivity implements View.OnClickListener {
-    private static final String TAG     = "SelectPathActivity";
-
-    public static final String NULL_ID      = "/";
+    private static final String TAG     = SelectPathActivity.class.getSimpleName();
 
     private Button select_path_cancel_bt    = null;
     private Button select_path_ok_bt        = null;
 
     public static final String RESULT_SELECTED_REMOTE_FOLDER_ID    = "selected_remote_folder_id";
     private ArrayList<String> mFolderNameList           = null;
-    private ArrayList<UploadFile> mFolderList           = null;
-    private Stack<UploadFile> mPathStack                = null;
+    private ArrayList<CloudFile> mFolderList           = null;
+    private Stack<CloudFile> mPathStack                = null;
     // Path bar, use to show current directory path
     private LinearLayout path_bar_container = null;
 
@@ -67,11 +63,11 @@ public class SelectPathActivity extends ListActivity implements View.OnClickList
 
         // Initial path list
         mFolderNameList = new ArrayList<String>();
-        mFolderList = new ArrayList<UploadFile>();
-        mPathStack = new Stack<UploadFile>();
-        // Initial mPathStack with NULL_ID when not select any folder
+        mFolderList = new ArrayList<CloudFile>();
+        mPathStack = new Stack<CloudFile>();
+        // Initial mPathStack with ROOT_ID when not select any folder
         UploadFile file = new UploadFile();
-        file.setRemote_id(NULL_ID);
+        file.setRemote_id(CheeseConstants.ROOT_ID);
         file.setFilePath("磁盘");
         mPathStack.push(file);
 
@@ -88,7 +84,7 @@ public class SelectPathActivity extends ListActivity implements View.OnClickList
 
     private void refreshList() {
         Log.d(TAG, "Call execute.");
-        new PullFolderListTask().execute();
+        new PullFileListTask(this, mAdapter, mPathStack.peek(), null, mFolderList).execute();
     }
 
     private void initUI() {
@@ -132,7 +128,7 @@ public class SelectPathActivity extends ListActivity implements View.OnClickList
                 Intent intent = new Intent();
                 if (mPathStack.peek() != null) {
                     String id = mPathStack.peek().getRemote_id();
-                    if (id.equals(NULL_ID)) {
+                    if (id.equals(CheeseConstants.ROOT_ID)) {
                         intent.putExtra(RESULT_SELECTED_REMOTE_FOLDER_ID,
                                 AppConfigs.current_remote_user_id);
                     }
@@ -178,7 +174,7 @@ public class SelectPathActivity extends ListActivity implements View.OnClickList
     @Override
     protected void onListItemClick(ListView l, View v, int position, long id) {
         // 1. Refresh bottom bar select path button text
-        UploadFile file = mFolderList.get(position);
+        CloudFile file = mFolderList.get(position);
         mPathStack.push(file);
         refreshPathBar();
         refreshList();
@@ -246,7 +242,7 @@ public class SelectPathActivity extends ListActivity implements View.OnClickList
         TextView rightView;
     }
 
-    public class SelectPathAdapter extends ArrayAdapter<UploadFile> {
+    public class SelectPathAdapter extends ArrayAdapter<CloudFile> {
 
         public SelectPathAdapter() {
             super(SelectPathActivity.this, R.layout.upload_item_layout, mFolderList);
@@ -263,7 +259,7 @@ public class SelectPathActivity extends ListActivity implements View.OnClickList
                 convertView = inflater.inflate(R.layout.select_path_item_layout, parent, false);
 
                 holder = new ViewHolder();
-                holder.icon = (ImageView)convertView.findViewById(R.id.row_image);
+                holder.icon = (ImageView)convertView.findViewById(R.id.file_thumb);
                 // Update icon src
                 holder.icon.setImageResource(R.drawable.folder);
                 holder.rightView = (TextView)convertView.findViewById(R.id.fileNameView);
@@ -279,88 +275,6 @@ public class SelectPathActivity extends ListActivity implements View.OnClickList
         }
     }
 
-    /**
-     * This class used to pull folder from remote server and trigger
-     * refresh UI(ListView + Bottom Bar).
-     */
-    private class PullFolderListTask extends AsyncTask<Void,Void,Integer> {
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-        }
-
-        @Override
-        protected Integer doInBackground(Void... params) {
-            mFolderList.clear();
-            int result = WsResultType.Success;
-            UploadFile file = mPathStack.peek();
-            if (file.getRemote_id().equals(NULL_ID)) {
-                // Pull disk list
-                result = getDisk_wrapper();
-            } else {
-                // Pull the sub folder list
-                result = getFolderList_wrapper(mPathStack.peek());
-            }
-            return result;
-        }
-
-        @Override
-        protected void onPostExecute(Integer result) {
-            switch (result) {
-                case WsResultType.Success:
-                    // TODO Refresh ListView
-                    mAdapter.notifyDataSetChanged();
-                    return;
-                default:
-                    // TODO Warning pull error
-                    return;
-            }
-        }
-
-        /**
-         * Wrapper getDisk(Web Service Interface)
-         * Convert WsFolder to UploadFile
-         * @return int, the getDisk execute result
-         */
-        private int getDisk_wrapper() {
-            int result = WsResultType.Success;
-            ArrayList<WsFolder> r_wsFolder = new ArrayList<WsFolder>();
-            result = ClientWS.getInstance(SelectPathActivity.this).getDisk(r_wsFolder);
-            for (WsFolder ws_f : r_wsFolder) {
-                UploadFile f = new UploadFile();
-                f.setFileType(UploadFileType.TYPE_FOLDER);
-                f.setRemote_id(ws_f.ID);
-                f.setFilePath(ws_f.Name);
-                mFolderList.add(f);
-            }
-            return result;
-        }
-
-        /**
-         * Wrapper getFolderList(Web Service Interface)
-         * Convert WsFolder to UploadFile
-         * @return int, the getFolderList execute result
-         * {@link codingpark.net.cheesecloud.enumr.WsResultType}
-         */
-        private int getFolderList_wrapper(UploadFile file) {
-            int result = WsResultType.Success;
-            ArrayList<WsFolder> r_wsFolderList = new ArrayList<WsFolder>();
-            WsFolder wsFolder = new WsFolder();
-            wsFolder.ID = file.getRemote_id();
-            result = ClientWS.getInstance(SelectPathActivity.this).getFolderList(wsFolder, null, r_wsFolderList);
-            if (result == WsResultType.Success) {
-                for (WsFolder tmp_folder : r_wsFolderList) {
-                    UploadFile f = new UploadFile();
-                    f.setFileType(UploadFileType.TYPE_FOLDER);
-                    f.setRemote_id(tmp_folder.ID);
-                    f.setFilePath(tmp_folder.Name);
-                    mFolderList.add(f);
-                }
-            }
-            return result;
-        }
-    }
 
 
 }

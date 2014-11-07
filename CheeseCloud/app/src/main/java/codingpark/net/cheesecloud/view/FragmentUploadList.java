@@ -148,7 +148,7 @@ public class FragmentUploadList extends ListFragment {
             if (convertView == null) {
                 holder = new ViewHolder();
                 convertView= mInflater.inflate(R.layout.upload_state_item_layout, null);
-                holder.rowImage = (ImageView)convertView.findViewById(R.id.row_image);
+                holder.rowImage = (ImageView)convertView.findViewById(R.id.file_thumb);
                 holder.fileNameView = (TextView)convertView.findViewById(R.id.fileNameView);
                 holder.ratioView = (TextView)convertView.findViewById(R.id.ratioView);
                 holder.stateView = (TextView)convertView.findViewById(R.id.stateView);

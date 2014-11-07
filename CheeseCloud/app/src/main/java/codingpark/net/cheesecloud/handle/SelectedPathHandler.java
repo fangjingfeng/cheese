@@ -51,7 +51,7 @@ public class SelectedPathHandler {
                 convertView = inflater.inflate(R.layout.select_path_item_layout, parent, false);
 
                 holder = new ViewHolder();
-                holder.icon = (ImageView)convertView.findViewById(R.id.row_image);
+                holder.icon = (ImageView)convertView.findViewById(R.id.file_thumb);
                 // Update icon src
                 holder.icon.setImageResource(R.drawable.folder);
                 holder.rightView = (TextView)convertView.findViewById(R.id.fileNameView);

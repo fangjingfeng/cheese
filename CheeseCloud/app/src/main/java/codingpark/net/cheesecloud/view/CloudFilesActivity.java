@@ -2,18 +2,39 @@ package codingpark.net.cheesecloud.view;
 
 import android.app.ActionBar;
 import android.app.ListActivity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 
-import codingpark.net.cheesecloud.R;
+import java.util.ArrayList;
+import java.util.Stack;
 
+import codingpark.net.cheesecloud.R;
+import codingpark.net.cheesecloud.entity.CloudFile;
+import codingpark.net.cheesecloud.entity.UploadFile;
+
+/**
+ * The class display my cloud and resource library folder and files.
+ * CloudFilesActivity have 2 mode:
+ * MY_CLOUD_LIST_MODE: Initial the my cloud disk as root folder, and display the
+ * subdirectory one by one.
+ * RESOURCELIB_LIST_MODE: Display all disks at initial exclude my cloud disk.
+ * @author Ethan Shan
+ * @version 1.0
+ * @created 06-十一月-2014 18:12:41
+ */
 public class CloudFilesActivity extends ListActivity {
     private static final String TAG         = CloudFilesActivity.class.getSimpleName();
 
+    /**
+     * The key of CloudFilesActivity display files mode
+     */
     public static final String LIST_MODE_KEY        = "list_mode_key";
     /**
      * List user owned cloud folder files
@@ -28,20 +49,34 @@ public class CloudFilesActivity extends ListActivity {
      */
     private static int mListMode            = MY_CLOUD_LIST_MODE;
 
+    public static final String NULL_ID      = "/";
+
+
+    private ArrayList<String> mFolderNameList           = null;
+    private ArrayList<CloudFile> mFolderList            = null;
+    private Stack<CloudFile> mPathStack                 = null;
+    // Path bar, use to show current directory path
+    private LinearLayout path_bar_container = null;
+    // List adapter
+    private CloudListAdapter mAdapter                       = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         // Set up the action bar.
         final ActionBar actionBar = getActionBar();
-        // 1. Show back arrow
+        // Set action bar show back arrow
         getActionBar().setDisplayHomeAsUpEnabled(true);
+
+        setContentView(R.layout.activity_cloud_files);
 
         // Get the initial list mode
         Intent recIntent = getIntent();
         mListMode = recIntent.getIntExtra(LIST_MODE_KEY, MY_CLOUD_LIST_MODE);
 
-        setContentView(R.layout.activity_cloud_files);
+        // Initial list adapter
+        //mAdapter = new CloudListAdapter(this, )
     }
 
 
@@ -81,5 +116,10 @@ public class CloudFilesActivity extends ListActivity {
         super.onListItemClick(l, v, position, id);
     }
 
-    //private class CloudListAdapter extends ArrayAdapter<Download>
+    private class CloudListAdapter extends ArrayAdapter<CloudFile> {
+
+        public CloudListAdapter(Context context, int resource, CloudFile[] objects) {
+            super(context, resource, objects);
+        }
+    }
 }

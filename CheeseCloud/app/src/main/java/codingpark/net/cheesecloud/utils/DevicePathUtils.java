@@ -1,7 +1,7 @@
 /**
  * you can find the path of sdcard,flash in here
  */
-package codingpark.net.cheesecloud;
+package codingpark.net.cheesecloud.utils;
 
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;

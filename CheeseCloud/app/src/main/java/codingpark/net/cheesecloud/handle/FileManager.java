@@ -16,7 +16,7 @@ import java.util.Comparator;
 import java.util.Stack;
 
 import codingpark.net.cheesecloud.AppConfigs;
-import codingpark.net.cheesecloud.DevicePathUtils;
+import codingpark.net.cheesecloud.utils.DevicePathUtils;
 
 public class FileManager {
     private static final String TAG = "FileManager";

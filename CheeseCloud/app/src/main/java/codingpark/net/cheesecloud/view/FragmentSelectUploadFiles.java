@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.Stack;
 
 import codingpark.net.cheesecloud.AppConfigs;
-import codingpark.net.cheesecloud.DevicePathUtils;
+import codingpark.net.cheesecloud.utils.DevicePathUtils;
 import codingpark.net.cheesecloud.R;
 
 import codingpark.net.cheesecloud.handle.FileManager;
@@ -33,7 +33,6 @@ import codingpark.net.cheesecloud.handle.OnKeyDownListener;
 import codingpark.net.cheesecloud.handle.OnSelectUploadChangedListener;
 import codingpark.net.cheesecloud.utils.ThumbnailCreator;
 import codingpark.net.cheesecloud.utils.TypeFilter;
-import codingpark.net.cheesecloud.view.dummy.DummyContent;
 
 /**
  * A fragment representing a list of Items.
@@ -454,7 +453,7 @@ public class FragmentSelectUploadFiles extends ListFragment implements OnKeyDown
                 holder = new ViewHolder();
                 holder.topView = (TextView)convertView.findViewById(R.id.file_name_view);
                 holder.bottomView = (TextView)convertView.findViewById(R.id.sub_files_count_view);
-                holder.icon = (ImageView)convertView.findViewById(R.id.row_image);
+                holder.icon = (ImageView)convertView.findViewById(R.id.file_thumb);
                 holder.mSelect = (CheckBox)convertView.findViewById(R.id.multiselect_checkbox);
                 // 1. Update CheckBox's tag, this tag used in ItemSelectedListener
                 holder.mSelect.setTag(position);
