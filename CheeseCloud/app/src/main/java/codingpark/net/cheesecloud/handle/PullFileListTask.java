@@ -6,10 +6,12 @@ import android.widget.ArrayAdapter;
 
 import java.util.ArrayList;
 
+import codingpark.net.cheesecloud.AppConfigs;
 import codingpark.net.cheesecloud.CheeseConstants;
 import codingpark.net.cheesecloud.entity.CloudFile;
 import codingpark.net.cheesecloud.enumr.CloudFileType;
 import codingpark.net.cheesecloud.enumr.WsResultType;
+import codingpark.net.cheesecloud.wsi.WsFile;
 import codingpark.net.cheesecloud.wsi.WsFolder;
 
 /**
@@ -102,16 +104,30 @@ public class PullFileListTask extends AsyncTask<Void,Void,Integer> {
     private int getFolderList_wrapper(CloudFile file) {
         int result = WsResultType.Success;
         ArrayList<WsFolder> r_wsFolderList = new ArrayList<WsFolder>();
+        ArrayList<WsFile> r_wsFileList = new ArrayList<WsFile>();
         WsFolder wsFolder = new WsFolder();
         wsFolder.ID = file.getRemote_id();
-        result = ClientWS.getInstance(mContext).getFolderList(wsFolder, null, r_wsFolderList);
+        result = ClientWS.getInstance(mContext).getFolderList(wsFolder, r_wsFileList, r_wsFolderList);
         if (result == WsResultType.Success) {
-            for (WsFolder tmp_folder : r_wsFolderList) {
-                CloudFile f = new CloudFile();
-                f.setFileType(CloudFileType.TYPE_FOLDER);
-                f.setRemote_id(tmp_folder.ID);
-                f.setFilePath(tmp_folder.Name);
-                mFolderList.add(f);
+            if (mFolderList != null) {
+                for (WsFolder tmp_folder : r_wsFolderList) {
+                    CloudFile f = new CloudFile();
+                    f.setFileType(CloudFileType.TYPE_FOLDER);
+                    f.setRemote_id(tmp_folder.ID);
+                    f.setFilePath(tmp_folder.Name);
+                    mFolderList.add(f);
+                }
+            }
+
+            if (mFileList != null) {
+                for (WsFile tmp_file : r_wsFileList) {
+                    CloudFile f = new CloudFile();
+                    f.setFileType(CloudFileType.TYPE_FILE);
+                    f.setRemote_id(tmp_file.ID);
+                    f.setFilePath(tmp_file.FullName);
+                    f.setFileSize(tmp_file.SizeB);
+                    mFileList.add(f);
+                }
             }
         }
         return result;

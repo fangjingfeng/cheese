@@ -61,12 +61,10 @@ public class CloudFilesActivity extends ListActivity implements View.OnClickList
      */
     private static int mListMode            = MY_CLOUD_LIST_MODE;
 
-    public static final String NULL_ID      = "/";
-
-
     private ArrayList<CloudFile> mFolderList            = null;
     private ArrayList<CloudFile> mFileList              = null;
     private ArrayList<CloudFile> mFileFolderList        = null;
+    private ArrayList<CloudFile> mSelectFileList        = null;
     private Stack<CloudFile> mPathStack                 = null;
     // Path bar, use to show current directory path
     private LinearLayout path_bar_container             = null;
@@ -88,6 +86,7 @@ public class CloudFilesActivity extends ListActivity implements View.OnClickList
         mFolderList = new ArrayList<CloudFile>();
         mFileList = new ArrayList<CloudFile>();
         mFileFolderList = new ArrayList<CloudFile>();
+        mSelectFileList = new ArrayList<CloudFile>();
         mPathStack = new Stack<CloudFile>();
         mInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
@@ -227,19 +226,6 @@ public class CloudFilesActivity extends ListActivity implements View.OnClickList
         TextView fileDateView;
         CheckBox multiSelectCheckBox;
     }
-
-
-
-    /*
-    protected void onListItemClick(ListView l, View v, int position, long id) {
-        // 1. Refresh bottom bar select path button text
-        CloudFile file = mFolderList.get(position);
-        mPathStack.push(file);
-        refreshPathBar();
-        refreshList();
-        refreshBottomBar();
-    }
-    */
 
     private class CloudListAdapter extends ArrayAdapter<CloudFile> {
 

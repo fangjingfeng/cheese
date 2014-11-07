@@ -470,14 +470,14 @@ public final class ClientWS {
             if (result == WsResultType.Success) {
                 // Parse file list result
                 if (fileList != null) {
-                    SoapObject x_fileArr = (SoapObject)resp.getProperty("folders");
+                    SoapObject x_fileArr = (SoapObject)resp.getProperty("files");
                     for(int i = 0; i < x_fileArr.getPropertyCount(); i++) {
                         WsFile r_file = new WsFile();
                         SoapObject x_file = (SoapObject)x_fileArr.getProperty(i);
                         r_file.Extend = x_file.getPropertyAsString("Extend");
                         r_file.FullName = x_file.getPropertyAsString("FullName");
                         r_file.Name = x_file.getPropertyAsString("Name");
-                        r_file.SizeB = Long.valueOf(x_file.getPropertyAsString("SizeB"));
+                        r_file.SizeB = Long.valueOf(x_file.getPropertyAsString("UsedSpaceSizeKB"));
                         fileList.add(r_file);
                     }
                 }
