@@ -21,11 +21,48 @@
         </LinearLayout>
     </HorizontalScrollView>
 
-    <ListView
-        android:id="@+id/android:list"
-        android:layout_below="@id/horizontalScrollView"
+    <LinearLayout android:id="@+id/listcontainer"
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@+id/horizontalScrollView">
+
+        <ListView
+            android:id="@+id/android:list"
+            android:layout_below="@id/horizontalScrollView"
+            android:layout_width="wrap_content"
+            android:visibility="gone"
+            android:layout_height="wrap_content">
+        </ListView>
+
+        <RelativeLayout
+            android:id="@id/android:empty"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <ImageView
+                android:id="@+id/empty_view_iv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/list_view_empty_small_img"
+                android:layout_centerInParent="true" />
+            <TextView
+                android:id="@+id/empty_view_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="文件夹为空"
+                android:layout_gravity="center"
+                android:layout_below="@+id/empty_view_iv"
+                android:layout_centerInParent="true" />
+        </RelativeLayout>
+    </LinearLayout>
+
+    <!-- Loading progress -->
+    <ProgressBar
+        android:id="@+id/loading"
+        style="?android:attr/progressBarStyleLarge"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-    </ListView>
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:layout_centerInParent="true" />
 
 </RelativeLayout>

@@ -5,6 +5,8 @@ import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.util.AttributeSet;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -18,13 +20,12 @@ import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Stack;
 
-import codingpark.net.cheesecloud.AppConfigs;
-import codingpark.net.cheesecloud.CheeseConstants;
 import codingpark.net.cheesecloud.R;
 import codingpark.net.cheesecloud.entity.CloudFile;
 import codingpark.net.cheesecloud.enumr.CloudFileType;
@@ -66,7 +67,12 @@ public class CloudFilesActivity extends ListActivity implements View.OnClickList
     private LinearLayout path_bar_container             = null;
     // List adapter
     private CloudListAdapter mAdapter                   = null;
-    LayoutInflater mInflater                            = null;
+
+    // UI elements
+    private LayoutInflater mInflater                    = null;
+    private LinearLayout mListContainer                 = null;
+    private ProgressBar mLoadingView                    = null;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,6 +84,9 @@ public class CloudFilesActivity extends ListActivity implements View.OnClickList
         getActionBar().setDisplayHomeAsUpEnabled(true);
 
         setContentView(R.layout.activity_cloud_files);
+
+        mListContainer = (LinearLayout)findViewById(R.id.listcontainer);
+        mLoadingView = (ProgressBar)findViewById(R.id.loading);
 
         mFolderList = new ArrayList<CloudFile>();
         mFileList = new ArrayList<CloudFile>();
@@ -154,8 +163,17 @@ public class CloudFilesActivity extends ListActivity implements View.OnClickList
         mPathStack.push(mRootDisk);
     }
 
+    private void setLoadingViewVisible(boolean visible){
+        if(null != mLoadingView && null != mListContainer){
+            mListContainer.setVisibility(visible ? View.GONE : View.VISIBLE);
+            mLoadingView.setVisibility(visible ? View.VISIBLE : View.GONE);
+        }
+    }
+
     private void refreshList() {
         Log.d(TAG, "Call execute.");
+        // Hide list view and show loading view
+        setLoadingViewVisible(true);
         new PullFileListTask(this, mAdapter, mPathStack.peek(), mFileList, mFolderList).execute();
     }
 
@@ -259,6 +277,7 @@ public class CloudFilesActivity extends ListActivity implements View.OnClickList
             mFileFolderList.addAll(mFolderList);
             mFileFolderList.addAll(mFileList);
             super.notifyDataSetChanged();
+            setLoadingViewVisible(false);
         }
 
         @Override
