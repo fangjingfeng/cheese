@@ -59,7 +59,9 @@ public class SelectPathActivity extends ListActivity implements View.OnClickList
         getActionBar().setDisplayHomeAsUpEnabled(true);
         // 2. Set the title
         getActionBar().setTitle(R.string.select_path_activity_action_bar_title);
-
+        ImageView view = (ImageView)findViewById(android.R.id.home);
+        view.setPadding(0, 0, 0, 0);
+        Log.d(TAG, "Change up logo");
         // Initial path list
         mFolderList = new ArrayList<CloudFile>();
         mPathStack = new Stack<CloudFile>();

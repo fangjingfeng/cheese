@@ -127,14 +127,21 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
 
     @Override
     protected void onResume() {
-        mDataSource.open();
+        Log.d(TAG, "Login Activity Resume");
         super.onResume();
     }
 
     @Override
     protected void onPause() {
-        mDataSource.close();
+        Log.d(TAG, "Login Activity Pause");
         super.onPause();
+    }
+
+    @Override
+    protected void onDestroy() {
+        Log.d(TAG, "Login Activity Destroy");
+        mDataSource.close();
+        super.onDestroy();
     }
 
     private void populateAutoComplete() {

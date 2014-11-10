@@ -66,7 +66,7 @@ public class SelectUploadActivity extends Activity implements OnSelectUploadChan
     private PagerSlidingTabStrip tabs;
 
     private Drawable oldBackground = null;
-    private int currentColor = 0xFF3F9FE0;
+    private int currentColor = 0xFF2f95f7;
 
     private Fragment mActiveFragment        = null;
     private ArrayList<String> mSelectedFiles    = null;
@@ -128,13 +128,6 @@ public class SelectUploadActivity extends Activity implements OnSelectUploadChan
             }
         }
         return false;
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_select_upload, menu);
-        return true;
     }
 
     @Override
