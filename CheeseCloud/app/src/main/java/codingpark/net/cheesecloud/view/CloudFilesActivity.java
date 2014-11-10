@@ -46,21 +46,10 @@ public class CloudFilesActivity extends ListActivity implements View.OnClickList
     private static final String TAG         = CloudFilesActivity.class.getSimpleName();
 
     /**
-     * The key of CloudFilesActivity display files mode
+     * The user select disk object(CloudFile) key(Used by Intent.getExtra)
      */
-    public static final String LIST_MODE_KEY        = "list_mode_key";
-    /**
-     * List user owned cloud folder files
-     */
-    public static final int MY_CLOUD_LIST_MODE      = 0;
-    /**
-     * List cloud shared disks
-     */
-    public static final int RESOURCELIB_LIST_MODE   = 1;
-    /**
-     * Current list mode
-     */
-    private static int mListMode            = MY_CLOUD_LIST_MODE;
+    public static final String SELECT_DISK_KEY      = "select_disk_key";
+    private static CloudFile mRootDisk      = null;
 
     // Folder and File cloud file list, fill up by PullCloudFileTask
     private ArrayList<CloudFile> mFolderList            = null;
@@ -100,7 +89,8 @@ public class CloudFilesActivity extends ListActivity implements View.OnClickList
 
         // Get the initial list mode
         Intent recIntent = getIntent();
-        mListMode = recIntent.getIntExtra(LIST_MODE_KEY, MY_CLOUD_LIST_MODE);
+        //mListMode = recIntent.getIntExtra(LIST_MODE_KEY, MY_CLOUD_LIST_MODE);
+        mRootDisk = (CloudFile)recIntent.getParcelableExtra(SELECT_DISK_KEY);
         // Initial path bar
         path_bar_container = (LinearLayout)findViewById(R.id.pathBarContainer);
         setPathbar();
@@ -161,20 +151,7 @@ public class CloudFilesActivity extends ListActivity implements View.OnClickList
     }
 
     private void setPathbar() {
-        // Intial mPathStack with current user id(My Cloud Folder) when user select my cloud disk
-        if (mListMode == MY_CLOUD_LIST_MODE) {
-            CloudFile file = new CloudFile();
-            file.setRemote_id(AppConfigs.current_remote_user_id);
-            file.setFilePath(getResources().getString(R.string.tab_home_item_cloud_disk_title));
-            mPathStack.push(file);
-        }
-        // Initial mPathStack with ROOT_ID when user select resource library
-        else if(mListMode == RESOURCELIB_LIST_MODE) {
-            CloudFile file = new CloudFile();
-            file.setRemote_id(CheeseConstants.ROOT_ID);
-            file.setFilePath(getResources().getString(R.string.tab_home_item_res_lib_title));
-            mPathStack.push(file);
-        }
+        mPathStack.push(mRootDisk);
     }
 
     private void refreshList() {
@@ -184,13 +161,6 @@ public class CloudFilesActivity extends ListActivity implements View.OnClickList
 
     private void refreshPathBar() {
         Log.d(TAG, "Start refresh path bar");
-        /*
-        if (mListMode == MY_CLOUD_LIST_MODE) {
-
-        } else if(mListMode == RESOURCELIB_LIST_MODE) {
-
-        }
-        */
         int pathBarCount = path_bar_container.getChildCount();
         int pathStackCount = mPathStack.size();
         LayoutInflater inflater = (LayoutInflater)this.getSystemService

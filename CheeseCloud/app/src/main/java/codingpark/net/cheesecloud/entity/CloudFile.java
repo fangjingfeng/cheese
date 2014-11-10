@@ -1,13 +1,18 @@
 package codingpark.net.cheesecloud.entity;
 
 
+import android.content.Intent;
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * The parent class of the DownloadFile and UploadFile
+ * Field count: 12
  * @author Ethan Shan
  * @version 1.0
  * @created 06-十一月-2014 18:25:47
  */
-public class CloudFile {
+public class CloudFile implements Parcelable {
 
     /**
      * The processed data size
@@ -235,4 +240,50 @@ public class CloudFile {
         state = newVal;
     }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(changedSize);
+        dest.writeString(createDate);
+        dest.writeString(filePath);
+        dest.writeLong(fileSize);
+        dest.writeInt(fileType);
+        dest.writeLong(id);
+        dest.writeLong(local_user_id);
+        dest.writeString(md5);
+        dest.writeLong(parent_id);
+        dest.writeString(remote_id);
+        dest.writeString(remote_parent_id);
+        dest.writeInt(state);
+    }
+
+    private CloudFile(Parcel in) {
+        changedSize = in.readLong();
+        createDate = in.readString();
+        filePath = in.readString();
+        fileSize = in.readLong();
+        fileType = in.readInt();
+        id = in.readLong();
+        local_user_id = in.readLong();
+        md5 = in.readString();
+        parent_id = in.readLong();
+        remote_id = in.readString();
+        remote_parent_id = in.readString();
+        state = in.readInt();
+    }
+
+    public static final Parcelable.Creator<CloudFile> CREATOR
+            = new Parcelable.Creator<CloudFile>() {
+        public CloudFile createFromParcel(Parcel in) {
+            return new CloudFile(in);
+        }
+
+        public CloudFile[] newArray(int size) {
+            return new CloudFile[size];
+        }
+    };
 }

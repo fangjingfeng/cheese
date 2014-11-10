@@ -7,9 +7,15 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import java.util.ArrayList;
+
+import codingpark.net.cheesecloud.R;
+import codingpark.net.cheesecloud.entity.CloudFile;
 import codingpark.net.cheesecloud.handle.OnFragmentInteractionListener;
+import codingpark.net.cheesecloud.handle.PullFileListTask;
 import codingpark.net.cheesecloud.model.HomeListAdapter;
 
 /**
@@ -41,13 +47,15 @@ public class FragmentHome extends ListFragment {
             //TAB_HOME_ITEM_TEMP_SCREEN
     };
 
+    private ArrayList<CloudFile> mDiskList          = null;
+    private ArrayAdapter<CloudFile> mAdapter        = null;
+
     private OnFragmentInteractionListener mListener;
 
 
-    public static FragmentHome newInstance(Context context, String param2) {
+    public static FragmentHome newInstance(String param2) {
         FragmentHome fragment = new FragmentHome();
         Bundle args = new Bundle();
-        mContext = context;
         args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
@@ -58,6 +66,7 @@ public class FragmentHome extends ListFragment {
      * fragment (e.g. upon screen orientation changes).
      */
     public FragmentHome() {
+        mDiskList = new ArrayList<CloudFile>();
     }
 
     @Override
@@ -67,8 +76,10 @@ public class FragmentHome extends ListFragment {
         if (getArguments() != null) {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-
-        setListAdapter(new HomeListAdapter(mContext, values));
+        mAdapter = new HomeListAdapter(mContext, R.layout.home_item_layout, mDiskList);
+        setListAdapter(mAdapter);
+        // Current, just pull data(The all disks information) from server
+        new PullFileListTask(mContext, mAdapter, null, null, mDiskList).execute();
     }
 
 
@@ -77,6 +88,7 @@ public class FragmentHome extends ListFragment {
         super.onAttach(activity);
         try {
             mListener = (OnFragmentInteractionListener) activity;
+            mContext = activity;
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
                 + " must implement OnFragmentInteractionListener");
@@ -89,12 +101,23 @@ public class FragmentHome extends ListFragment {
         mListener = null;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        mAdapter.notifyDataSetChanged();
+    }
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
 
-        String tag = v.getTag().toString();
+        //String tag = v.getTag().toString();
+        Intent intent = new Intent();
+        //intent.putExtra(CloudFilesActivity.LIST_MODE_KEY, CloudFilesActivity.MY_CLOUD_LIST_MODE);
+        intent.putExtra(CloudFilesActivity.SELECT_DISK_KEY, mDiskList.get(position));
+        intent.setClass(mContext, CloudFilesActivity.class);
+        mContext.startActivity(intent);
+        /*
         if (tag.equals(TAB_HOME_ITEM_CLOUD_DISK)) {
             Intent intent = new Intent();
             intent.putExtra(CloudFilesActivity.LIST_MODE_KEY, CloudFilesActivity.MY_CLOUD_LIST_MODE);
@@ -106,6 +129,7 @@ public class FragmentHome extends ListFragment {
             intent.setClass(mContext, CloudFilesActivity.class);
             mContext.startActivity(intent);
         }
+        */
 
         if (null != mListener) {
             // Notify the active callbacks interface (the activity, if the
@@ -117,6 +141,9 @@ public class FragmentHome extends ListFragment {
         }
     }
 
+    private void refreshList() {
+        new PullFileListTask(mContext, mAdapter, null, null, mDiskList).execute();
+    }
 
 }
 

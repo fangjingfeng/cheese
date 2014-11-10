@@ -326,7 +326,7 @@ public class MainActivity extends Activity implements OnFragmentInteractionListe
             // Return a PlaceholderFragment (defined as a static inner class below).
             switch (position) {
                 case 0:
-                    return FragmentHome.newInstance(MainActivity.this, "");
+                    return FragmentHome.newInstance("");
                 case 1:
                     return FragmentContact.newInstance(MainActivity.this, "");
                 case 2:

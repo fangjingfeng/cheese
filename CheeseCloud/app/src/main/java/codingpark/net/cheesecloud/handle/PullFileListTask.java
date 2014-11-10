@@ -17,6 +17,11 @@ import codingpark.net.cheesecloud.wsi.WsFolder;
 /**
  * This class used to pull folders and files from remote server and trigger
  * refresh UI(ListView + Bottom Bar).
+ * In constructor,
+ * if currentFolder equals null or currentFolder.getRemote_id() == ROOT_ID
+ * return all disks list on remote server
+ * else
+ * return currentFolder.getRemote_id() folder's sub files list
  */
 public class PullFileListTask extends AsyncTask<Void,Void,Integer> {
 
@@ -27,7 +32,7 @@ public class PullFileListTask extends AsyncTask<Void,Void,Integer> {
     private Context mContext                = null;
 
     /**
-     * PullFolderListTask constructor
+     *
      * @param context Context object
      * @param adapter ArrayAdapter object
      * @param currentFolder User select folder object, the task will fetch sub folder/file in it
@@ -57,7 +62,7 @@ public class PullFileListTask extends AsyncTask<Void,Void,Integer> {
             mFileList.clear();
 
         int result = WsResultType.Success;
-        if (mCurrentFolder.getRemote_id().equals(CheeseConstants.ROOT_ID)) {
+        if (mCurrentFolder == null || mCurrentFolder.getRemote_id().equals(CheeseConstants.ROOT_ID)) {
             // Pull disk list
             result = getDisk_wrapper();
         } else {
@@ -72,7 +77,8 @@ public class PullFileListTask extends AsyncTask<Void,Void,Integer> {
         switch (result) {
             case WsResultType.Success:
                 // TODO Refresh ListView
-                mAdapter.notifyDataSetChanged();
+                if (mAdapter != null)
+                    mAdapter.notifyDataSetChanged();
                 return;
             default:
                 // TODO Warning pull error
