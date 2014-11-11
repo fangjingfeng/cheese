@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -25,6 +26,7 @@ import codingpark.net.cheesecloud.CheeseConstants;
 import codingpark.net.cheesecloud.R;
 import codingpark.net.cheesecloud.entity.CloudFile;
 import codingpark.net.cheesecloud.entity.UploadFile;
+import codingpark.net.cheesecloud.handle.OnPullDataReadyListener;
 import codingpark.net.cheesecloud.handle.PullFileListTask;
 
 /**
@@ -35,7 +37,7 @@ import codingpark.net.cheesecloud.handle.PullFileListTask;
  * which will received by UploadActivity. Default destination folder is null, so when UploadActivity
  * receive a null folder, it will use the user id as the destination folder id(My Cloud Folder).
  */
-public class SelectPathActivity extends ListActivity implements View.OnClickListener {
+public class SelectPathActivity extends ListActivity implements View.OnClickListener, OnPullDataReadyListener{
     private static final String TAG     = SelectPathActivity.class.getSimpleName();
 
     private Button select_path_cancel_bt    = null;
@@ -48,6 +50,9 @@ public class SelectPathActivity extends ListActivity implements View.OnClickList
     private LinearLayout path_bar_container = null;
 
     private SelectPathAdapter mAdapter                  = null;
+
+    private LinearLayout mListContainer                 = null;
+    private ProgressBar mLoadingView                    = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +76,7 @@ public class SelectPathActivity extends ListActivity implements View.OnClickList
         file.setFilePath("磁盘");
         mPathStack.push(file);
 
+
         // Initial list adapter
         mAdapter = new SelectPathAdapter();
         setListAdapter(mAdapter);
@@ -84,7 +90,8 @@ public class SelectPathActivity extends ListActivity implements View.OnClickList
 
     private void refreshList() {
         Log.d(TAG, "Call execute.");
-        new PullFileListTask(this, mAdapter, mPathStack.peek(), null, mFolderList).execute();
+        setLoadingViewVisible(true);
+        new PullFileListTask(this, mAdapter, mPathStack.peek(), null, mFolderList, this).execute();
     }
 
     private void initUI() {
@@ -103,7 +110,9 @@ public class SelectPathActivity extends ListActivity implements View.OnClickList
         //TextView emptyText = (TextView)findViewById(R.layout.select_path_activity_list_empty);
 
         // Set list view empty widget
-        getListView().setEmptyView(findViewById(android.R.id.empty));
+        //getListView().setEmptyView(findViewById(android.R.id.empty));
+        mLoadingView = (ProgressBar)findViewById(R.id.loading);
+        mListContainer = (LinearLayout)findViewById(R.id.listcontainer);
 
         select_path_cancel_bt = (Button) findViewById(R.id.select_upload_path_cancel_bt);
         select_path_ok_bt = (Button) findViewById(R.id.select_upload_path_ok_bt);
@@ -232,6 +241,18 @@ public class SelectPathActivity extends ListActivity implements View.OnClickList
         refreshPathBar();
         refreshList();
         refreshBottomBar();
+    }
+
+    private void setLoadingViewVisible(boolean visible){
+        if(null != mLoadingView && null != mListContainer){
+            mListContainer.setVisibility(visible ? View.GONE : View.VISIBLE);
+            mLoadingView.setVisibility(visible ? View.VISIBLE : View.GONE);
+        }
+    }
+
+    @Override
+    public void onPullDataReady() {
+        setLoadingViewVisible(false);
     }
 
     /**
