@@ -73,6 +73,8 @@
     <string name="welcome_login_bt_string">Login</string>
     <string name="welcome_about_bt_string">About</string>
     <string name="title_activity_select_upload">SelectUploadActivity</string>
-    <string name="title_activity_cloud_files">CloudFilesActivity</string>
+
+    <!-- CloudFilesActivity -->
+    <string name="title_activity_cloud_files">Cloud Disk</string>
 
 </resources>
