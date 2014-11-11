@@ -6,15 +6,20 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 
 import java.util.ArrayList;
 
 import codingpark.net.cheesecloud.R;
 import codingpark.net.cheesecloud.entity.CloudFile;
 import codingpark.net.cheesecloud.handle.OnFragmentInteractionListener;
+import codingpark.net.cheesecloud.handle.OnPullDataReadyListener;
 import codingpark.net.cheesecloud.handle.PullFileListTask;
 import codingpark.net.cheesecloud.model.HomeListAdapter;
 
@@ -25,7 +30,7 @@ import codingpark.net.cheesecloud.model.HomeListAdapter;
  * Activities containing this fragment MUST implement the {@link }
  * interface.
  */
-public class FragmentHome extends ListFragment {
+public class FragmentHome extends ListFragment implements OnPullDataReadyListener {
     private static final String TAG         = "FragmentHome";
     // TODO: Rename parameter arguments, choose names that match
     private static final String ARG_PARAM2 = "param2";
@@ -51,6 +56,9 @@ public class FragmentHome extends ListFragment {
     private ArrayAdapter<CloudFile> mAdapter        = null;
 
     private OnFragmentInteractionListener mListener;
+
+    private LinearLayout mListContainer                 = null;
+    private ProgressBar mLoadingView                    = null;
 
 
     public static FragmentHome newInstance(String param2) {
@@ -78,10 +86,18 @@ public class FragmentHome extends ListFragment {
         }
         mAdapter = new HomeListAdapter(mContext, R.layout.home_item_layout, mDiskList);
         setListAdapter(mAdapter);
-        // Current, just pull data(The all disks information) from server
-        new PullFileListTask(mContext, mAdapter, null, null, mDiskList).execute();
     }
 
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View rootView = inflater.inflate(R.layout.fragment_home, container, false);
+        mListContainer = (LinearLayout)rootView.findViewById(R.id.listcontainer);
+        mLoadingView = (ProgressBar)rootView.findViewById(R.id.loading);
+        // Current, just pull data(The all disks information) from server
+        if (mDiskList.size() == 0)
+            refreshList();
+        return rootView;
+    }
 
     @Override
     public void onAttach(Activity activity) {
@@ -141,9 +157,21 @@ public class FragmentHome extends ListFragment {
         }
     }
 
-    private void refreshList() {
-        new PullFileListTask(mContext, mAdapter, null, null, mDiskList).execute();
+    private void setLoadingViewVisible(boolean visible){
+        if(null != mLoadingView && null != mListContainer){
+            mListContainer.setVisibility(visible ? View.GONE : View.VISIBLE);
+            mLoadingView.setVisibility(visible ? View.VISIBLE : View.GONE);
+        }
     }
 
+    private void refreshList() {
+        setLoadingViewVisible(true);
+        new PullFileListTask(mContext, mAdapter, null, null, mDiskList, this).execute();
+    }
+
+    @Override
+    public void onPullDataReady() {
+        setLoadingViewVisible(false);
+    }
 }
 

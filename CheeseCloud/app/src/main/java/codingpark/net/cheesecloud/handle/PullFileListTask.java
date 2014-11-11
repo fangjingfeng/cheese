@@ -30,9 +30,10 @@ public class PullFileListTask extends AsyncTask<Void,Void,Integer> {
     private ArrayList<CloudFile> mFolderList= null;
     private CloudFile mCurrentFolder        = null;
     private Context mContext                = null;
+    private OnPullDataReadyListener mListener   = null;
 
     /**
-     *
+     * Constructor
      * @param context Context object
      * @param adapter ArrayAdapter object
      * @param currentFolder User select folder object, the task will fetch sub folder/file in it
@@ -47,6 +48,26 @@ public class PullFileListTask extends AsyncTask<Void,Void,Integer> {
         mCurrentFolder = currentFolder;
         mFileList = fileList;
         mFolderList = folderList;
+    }
+
+    /**
+     * Constructor
+     * @param context Context object
+     * @param adapter ArrayAdapter object
+     * @param currentFolder User select folder object, the task will fetch sub folder/file in it
+     * @param fileList The CloudFile list save the query files result
+     * @param folderList The CloudFile list save the query folder result
+     * @param listener When pull data task complete call this callback
+     */
+    public PullFileListTask(Context context, ArrayAdapter adapter,
+                            CloudFile currentFolder, ArrayList<CloudFile> fileList,
+                            ArrayList<CloudFile> folderList, OnPullDataReadyListener listener) {
+        mContext = context;
+        mAdapter = adapter;
+        mCurrentFolder = currentFolder;
+        mFileList = fileList;
+        mFolderList = folderList;
+        mListener = listener;
     }
 
     @Override
@@ -79,6 +100,8 @@ public class PullFileListTask extends AsyncTask<Void,Void,Integer> {
                 // TODO Refresh ListView
                 if (mAdapter != null)
                     mAdapter.notifyDataSetChanged();
+                if (mListener != null)
+                    mListener.onPullDataReady();
                 return;
             default:
                 // TODO Warning pull error
