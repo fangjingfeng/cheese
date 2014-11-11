@@ -6,7 +6,6 @@ import android.widget.ArrayAdapter;
 
 import java.util.ArrayList;
 
-import codingpark.net.cheesecloud.AppConfigs;
 import codingpark.net.cheesecloud.CheeseConstants;
 import codingpark.net.cheesecloud.entity.CloudFile;
 import codingpark.net.cheesecloud.enumr.CloudFileType;

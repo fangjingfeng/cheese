@@ -58,10 +58,6 @@ public class FragmentSelectUploadImage extends ListFragment implements LoaderMan
     private Context mContext = null;
 
     public static final String TAG = FragmentSelectUploadImage.class.getSimpleName();
-    /**
-     * Cursor used to access the results from querying for images on the SD card.
-     */
-    private Cursor cursor           = null;
     private ContentResolver cr      = null;
 
     private LinearLayout mPathBar                   = null;

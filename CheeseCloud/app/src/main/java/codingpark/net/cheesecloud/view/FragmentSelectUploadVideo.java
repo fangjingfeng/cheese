@@ -1,6 +1,7 @@
 package codingpark.net.cheesecloud.view;
 
 import android.app.Activity;
+import android.app.ListFragment;
 import android.app.LoaderManager;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -10,7 +11,6 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.app.ListFragment;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -29,11 +29,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import codingpark.net.cheesecloud.R;
-
 import codingpark.net.cheesecloud.handle.OnFragmentInteractionListener;
 import codingpark.net.cheesecloud.handle.OnKeyDownListener;
 import codingpark.net.cheesecloud.handle.OnSelectUploadChangedListener;
-import codingpark.net.cheesecloud.view.dummy.DummyContent;
 
 /**
  * A fragment representing a list of Items.
