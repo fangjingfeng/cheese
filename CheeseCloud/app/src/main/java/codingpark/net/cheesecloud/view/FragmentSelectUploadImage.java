@@ -8,6 +8,7 @@ import android.content.CursorLoader;
 import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.ListFragment;
 import android.provider.MediaStore;
@@ -21,6 +22,7 @@ import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.io.File;
@@ -65,6 +67,9 @@ public class FragmentSelectUploadImage extends ListFragment implements LoaderMan
     private LinearLayout mPathBar                   = null;
 
     private PathBarItemClickListener mPathBatItemListener       = null;
+
+    private LinearLayout mListContainer                 = null;
+    private ProgressBar mLoadingView                    = null;
 
     private String[] image_projection = {
             MediaStore.Images.Media._ID,
@@ -124,6 +129,8 @@ public class FragmentSelectUploadImage extends ListFragment implements LoaderMan
     private ArrayList<String> mSelectedPath         = null;
     // Store user selected files index in the ListView
     private ArrayList<Integer> mSelectedPositions = null;
+
+    private boolean isAlive                         = false;
 
     // TODO: Rename and change types of parameters
     public static FragmentSelectUploadImage newInstance(String param1, String param2) {
@@ -186,7 +193,15 @@ public class FragmentSelectUploadImage extends ListFragment implements LoaderMan
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Log.d(TAG, "onCreateView");
-        return inflater.inflate(R.layout.fragment_select_upload_images, null);
+        View rootView = inflater.inflate(R.layout.fragment_select_upload_images, null);
+        mListContainer = (LinearLayout)rootView.findViewById(R.id.listcontainer);
+        mLoadingView = (ProgressBar)rootView.findViewById(R.id.loading);
+
+        if (mListMode == CATEGORY_LIST_MODE && !isAlive) {
+            setLoadingViewVisible(true);
+        }
+        isAlive = true;
+        return rootView;
     }
 
     @Override
@@ -205,6 +220,7 @@ public class FragmentSelectUploadImage extends ListFragment implements LoaderMan
         }
         mPathBar = (LinearLayout)getView().findViewById(R.id.pathBarContainer);
         setUpdatePathBar(mPathBar);
+        refreshPathBar();
     }
 
     @Override
@@ -213,28 +229,17 @@ public class FragmentSelectUploadImage extends ListFragment implements LoaderMan
         mListener = null;
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        isAlive = false;
+    }
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
         if (mListMode == CATEGORY_LIST_MODE) {
-            // Get image item filtered by bucket_id
-            ItemImage category = mCategoryList.get(position);
-            mSubItemList.clear();
-            for (int i = 0; i < mAllItemList.size(); i++) {
-                ItemImage item = mAllItemList.get(i);
-                if (category.bucket_id == item.bucket_id) {
-                    try {
-                        mSubItemList.add((ItemImage) item.clone());
-                        getThumbPath(item);
-                    } catch (CloneNotSupportedException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-            setListAdapter(mItemAdapter);
-            mItemAdapter.notifyDataSetChanged();
-            mListMode = ITEM_LIST_MODE;
-            refreshPathBar();
+            setLoadingViewVisible(true);
+            new LoadThumbTask(position).execute();
         } else if (mListMode == ITEM_LIST_MODE) {
             addMultiPosition(position);
         }
@@ -320,6 +325,7 @@ public class FragmentSelectUploadImage extends ListFragment implements LoaderMan
             Log.d(TAG, "mCategoryList: " + mCategoryList.size());
             Log.d(TAG, "mAllItemList: " + mAllItemList.size());
             mCategoryAdapter.notifyDataSetChanged();
+            setLoadingViewVisible(false);
         }
     }
 
@@ -651,6 +657,14 @@ public class FragmentSelectUploadImage extends ListFragment implements LoaderMan
         }
     }
 
+    private void setLoadingViewVisible(boolean visible){
+        if(null != mLoadingView && null != mListContainer){
+            Log.d(TAG, "Show loading view: " + visible);
+            mListContainer.setVisibility(visible ? View.GONE : View.VISIBLE);
+            mLoadingView.setVisibility(visible ? View.VISIBLE : View.GONE);
+        }
+    }
+
     /**
      * This class listening path bar item click event.Path bar's item
      * stand for a folder of current path. When user click one item,
@@ -670,6 +684,43 @@ public class FragmentSelectUploadImage extends ListFragment implements LoaderMan
                 refreshPathBar();
             }
             //updateContent(mFileMgr.switchToDirByIndex(index));
+        }
+    }
+
+    private class LoadThumbTask extends AsyncTask<Void, Void, Integer> {
+
+        private int mPosition   = 0;
+
+        private LoadThumbTask(int position) {
+            mPosition = position;
+        }
+
+        @Override
+        protected Integer doInBackground(Void... params) {
+            // Get image item filtered by bucket_id
+            ItemImage category = mCategoryList.get(mPosition);
+            mSubItemList.clear();
+            for (int i = 0; i < mAllItemList.size(); i++) {
+                ItemImage item = mAllItemList.get(i);
+                if (category.bucket_id == item.bucket_id) {
+                    try {
+                        mSubItemList.add((ItemImage) item.clone());
+                        getThumbPath(item);
+                    } catch (CloneNotSupportedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+            return 0;
+        }
+
+        @Override
+        protected void onPostExecute(Integer integer) {
+            setLoadingViewVisible(false);
+            setListAdapter(mItemAdapter);
+            mItemAdapter.notifyDataSetChanged();
+            mListMode = ITEM_LIST_MODE;
+            refreshPathBar();
         }
     }
 }
