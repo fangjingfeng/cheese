@@ -76,5 +76,15 @@
 
     <!-- CloudFilesActivity -->
     <string name="title_activity_cloud_files">Cloud Disk</string>
+    <!-- CloudFilesActivity.CAB -->
+    <string name="cab_title">Select %d unit</string>
+    <string name="cab_subtitle">subtitle</string>
+    <string name="cab_delete_action">Delete</string>
+    <string name="cab_download_action">Download</string>
+    <string name="cab_edit_action">Edit</string>
+    <string name="cab_cut_action">Cut</string>
+    <string name="cab_copy_action">Copy</string>
+    <string name="cab_share_action">Share</string>
+    <string name="cab_more_action">More</string>
 
 </resources>

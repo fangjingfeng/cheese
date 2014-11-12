@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">TestContextualActionBar</string>
+    <string name="action_settings">设置</string>
+    <string name="cab_copy_action">复制</string>
+    <string name="cab_cut_action">移动</string>
+    <string name="cab_delete_action">删除</string>
+    <string name="cab_download_action">下载</string>
+    <string name="cab_edit_action">编辑</string>
+    <string name="cab_more_action">更多</string>
+    <string name="cab_share_action">共享</string>
+    <string name="cab_subtitle">子标题</string>
+    <string name="cab_title">已选择 %d 个</string>
+    <string name="hello_world"></string>
+</resources>
