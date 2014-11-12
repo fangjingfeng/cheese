@@ -15,6 +15,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -60,7 +61,7 @@ public class CloudFilesActivity extends ListActivity implements View.OnClickList
     // Store files + folders, used by ArrayAdapter, the data is mFolderList + mFileList
     private ArrayList<CloudFile> mFileFolderList        = null;
     // Store user selected files object
-    private ArrayList<CloudFile> mSelectFileList        = null;
+    private ArrayList<CloudFile> mSelectedFileList = null;
     // Store user selected files index in the ListView
     private ArrayList<Integer> mSelectedPositions   = null;
     // Remember current folder full path
@@ -95,18 +96,36 @@ public class CloudFilesActivity extends ListActivity implements View.OnClickList
         mFolderList = new ArrayList<CloudFile>();
         mFileList = new ArrayList<CloudFile>();
         mFileFolderList = new ArrayList<CloudFile>();
-        mSelectFileList = new ArrayList<CloudFile>();
+        mSelectedFileList = new ArrayList<CloudFile>();
         mPathStack = new Stack<CloudFile>();
         mSelectedPositions = new ArrayList<Integer>();
         mInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
         // Get the initial list mode
         Intent recIntent = getIntent();
-        //mListMode = recIntent.getIntExtra(LIST_MODE_KEY, MY_CLOUD_LIST_MODE);
         mRootDisk = (CloudFile)recIntent.getParcelableExtra(SELECT_DISK_KEY);
         // Initial path bar
         path_bar_container = (LinearLayout)findViewById(R.id.pathBarContainer);
         setPathbar();
+
+        getListView().setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                // 1. Refresh CAB
+                if (isMultiSelect()) {
+                    // In multiple select mode, didn't handle long item click event
+                } else {
+                    // Add selected data and refresh UI
+                    mAdapter.addMultiPosition(position);
+                    mAdapter.notifyDataSetChanged();
+                    // Show CAB
+                    //startActionMode(mActionModeCallback);
+                    refreshCAB();
+
+                }
+                return true;
+            }
+        });
 
         // Initial list adapter
         mAdapter = new CloudListAdapter(this, R.layout.cloud_item_layout);
@@ -158,6 +177,7 @@ public class CloudFilesActivity extends ListActivity implements View.OnClickList
                 mAdapter.clearMultiSelect();
                 refreshPathBar();
                 refreshList();
+                refreshCAB();
             }
         }
         return true;
@@ -171,6 +191,19 @@ public class CloudFilesActivity extends ListActivity implements View.OnClickList
         if(null != mLoadingView && null != mListContainer){
             mListContainer.setVisibility(visible ? View.GONE : View.VISIBLE);
             mLoadingView.setVisibility(visible ? View.VISIBLE : View.GONE);
+        }
+    }
+
+    private void refreshCAB() {
+        if (isMultiSelect()) {
+            if (mActionMode == null)
+                startActionMode(mActionModeCallback);
+            String title = getString(R.string.cab_title);
+            mActionMode.setTitle(String.format(title, mSelectedFileList.size()));
+            Log.d(TAG, "refreshCAB: " + title);
+        } else {
+            if (mActionMode != null)
+                mActionMode.finish();
         }
     }
 
@@ -212,15 +245,14 @@ public class CloudFilesActivity extends ListActivity implements View.OnClickList
         // 1. Refresh bottom bar select path button text
         CloudFile file = mFileFolderList.get(position);
         if (isMultiSelect()) {
-            //mSelectedPositions.add(position);
-            //mSelectFileList.add(file);
             mAdapter.addMultiPosition(position);
             mAdapter.notifyDataSetChanged();
+            refreshCAB();
         } else {
             if (file.getFileType() == CloudFileType.TYPE_FILE) {
-                //mSelectFileList.add(file);
                 mAdapter.addMultiPosition(position);
                 mAdapter.notifyDataSetChanged();
+                refreshCAB();
             } else if (file.getFileType() == CloudFileType.TYPE_FOLDER) {
                 mPathStack.push(file);
                 refreshPathBar();
@@ -228,6 +260,8 @@ public class CloudFilesActivity extends ListActivity implements View.OnClickList
             }
         }
     }
+
+
 
     @Override
     public void onClick(View v) {
@@ -239,6 +273,7 @@ public class CloudFilesActivity extends ListActivity implements View.OnClickList
         }
         refreshPathBar();
         refreshList();
+        refreshCAB();
     }
 
     @Override
@@ -247,7 +282,7 @@ public class CloudFilesActivity extends ListActivity implements View.OnClickList
     }
 
     private boolean isMultiSelect() {
-        return mSelectFileList.size() > 0;
+        return mSelectedFileList.size() > 0;
     }
 
     /**
@@ -329,10 +364,10 @@ public class CloudFilesActivity extends ListActivity implements View.OnClickList
             CloudFile file = mFileFolderList.get(index);
             if (mSelectedPositions.contains(index)) {
                 mSelectedPositions.remove(Integer.valueOf(index));
-                mSelectFileList.remove(file);
+                mSelectedFileList.remove(file);
             } else {
                 mSelectedPositions.add(index);
-                mSelectFileList.add(file);
+                mSelectedFileList.add(file);
             }
         }
 
@@ -346,14 +381,14 @@ public class CloudFilesActivity extends ListActivity implements View.OnClickList
             if(mSelectedPositions != null && !mSelectedPositions.isEmpty())
                 mSelectedPositions.clear();
 
-            if(mSelectFileList!= null && !mSelectFileList.isEmpty())
-                mSelectFileList.clear();
+            if(mSelectedFileList != null && !mSelectedFileList.isEmpty())
+                mSelectedFileList.clear();
 
         }
         /**
          * This class listening ListView item's select CheckBox checked event.
          * When user checked a item, class add this item's index to {@link #mSelectedPositions},
-         * and add path which the item stand for to {@link #mSelectFileList}
+         * and add path which the item stand for to {@link #mSelectedFileList}
          */
         private class ItemCheckedListener implements CompoundButton.OnCheckedChangeListener{
             //private static final String TAG     = "ItemSelectedListener";
@@ -365,21 +400,31 @@ public class CloudFilesActivity extends ListActivity implements View.OnClickList
                 if (isChecked) {
                     if (!mSelectedPositions.contains(r_index)) {
                         mSelectedPositions.add(r_index);
-                        mSelectFileList.add(mFileFolderList.get(r_index));
+                        mSelectedFileList.add(mFileFolderList.get(r_index));
                     }
                 } else {
                     if (mSelectedPositions.contains(r_index)) {
                         mSelectedPositions.remove((Integer)r_index);
-                        mSelectFileList.remove(mFileFolderList.get(r_index));
+                        mSelectedFileList.remove(mFileFolderList.get(r_index));
                     }
                 }
+                refreshCAB();
                 Log.d(TAG, "Current selected items: " + mSelectedPositions.toString());
             }
         }
     }
 
     private ActionMode.Callback mActionModeCallback = new ActionMode.Callback() {
+        private boolean selectValidAction = false;
 
+        /**
+         * TODO Do handler according to selected action
+         * For test: Just clear selected data and refresh UI
+         */
+        private void handleAction() {
+            mAdapter.clearMultiSelect();
+            mAdapter.notifyDataSetChanged();
+        }
         // Called when the action mode is created; startActionMode() was called
         @Override
         public boolean onCreateActionMode(ActionMode mode, Menu menu) {
@@ -401,6 +446,9 @@ public class CloudFilesActivity extends ListActivity implements View.OnClickList
         // Called when the user selects a contextual menu item
         @Override
         public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+            Log.d(TAG, "Action item clicked: " + item.getItemId());
+            selectValidAction = true;
+            handleAction();
             switch (item.getItemId()) {
                 case R.id.cab_menu_share:
                     Toast.makeText(CloudFilesActivity.this, "Share action", Toast.LENGTH_SHORT).show();
@@ -434,8 +482,18 @@ public class CloudFilesActivity extends ListActivity implements View.OnClickList
         // Called when the user exits the action mode
         @Override
         public void onDestroyActionMode(ActionMode mode) {
+            Log.d(TAG, "CAB destroy");
+            // Cancel multiple select mode, clear selected and refresh UI(Not need sync data from server)
+            if (!selectValidAction) {
+                mAdapter.clearMultiSelect();
+                mAdapter.notifyDataSetChanged();
+                Toast.makeText(CloudFilesActivity.this, "Cancel Selected!", Toast.LENGTH_SHORT).show();
+            }
+            selectValidAction = false;
             mActionMode = null;
         }
+
+
     };
 
 }
