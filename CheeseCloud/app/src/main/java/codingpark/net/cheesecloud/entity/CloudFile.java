@@ -1,7 +1,5 @@
 package codingpark.net.cheesecloud.entity;
 
-
-import android.content.Intent;
 import android.os.Parcel;
 import android.os.Parcelable;
 

@@ -39,8 +39,7 @@ import codingpark.net.cheesecloud.wsi.WsSyncFile;
 
 /**
  * Created by ethanshan on 14-10-15.
- * The class singleton pattern, used to support Web Service
- * function interface
+ * The class singleton pattern, used to call web service interface.
  */
 public final class ClientWS {
     private static final String TAG     = "ClientWS";
@@ -48,15 +47,40 @@ public final class ClientWS {
     private static ClientWS client      = null;
 
     // Web Services method name
-    public static final String METHOD_USERLOGIN             = "UserLogin";
+    /**
+     * Web service API name used by upload file process
+     */
     public static final String METHOD_CHECKEDFILEINFO       = "CheckedFileInfo";
-    public static final String METHOD_UPLOADFILE            = "UploadFile";
-    public static final String METHOD_GETDISK               = "GetDisk";
-    public static final String METHOD_GETFOLDERLIST         = "GetFolderList";
+    /**
+     * Web service API name used by create a folder on server process
+     */
     public static final String METHOD_CREATEFOLDER          = "CreateFolder";
+    /**
+     * Web service API name used by get all root disk list process from server
+     */
+    public static final String METHOD_GETDISK               = "GetDisk";
+    /**
+     * Web service API name used by get the folder information from server process
+     */
     public static final String METHOD_GETFOLDERINFO         = "GetFolderInfo";
+    /**
+     * Web service API name used by get folders and files of the parent folder on
+     * server
+     */
+    public static final String METHOD_GETFOLDERLIST         = "GetFolderList";
+    /**
+     * Web service API name used by upload file process
+     */
+    public static final String METHOD_UPLOADFILE            = "UploadFile";
+    /**
+     * Web service API name used by user login process
+     */
+    public static final String METHOD_USERLOGIN             = "UserLogin";
 
-    // Default server info
+    /**
+     * In reality, the endpoint address should dynamic fetch from SharedPreference,
+     * this const string used for SharedPrefernece.getString's default value parameter
+     */
     public static final String DEFAULT_ENDPOINT             = "http://192.168.0.101:22332/ClientWS.asmx";
 
     // Web services server configurations
@@ -66,7 +90,6 @@ public final class ClientWS {
     private String mEndPoint        = "http://192.168.0.108:22332/ClientWS.asmx";
 
     private static String session_id            = "";
-    private static WsFile s_file                = null;
     private static String s_id                  = "";
 
     private static Context mContext             = null;
@@ -74,9 +97,14 @@ public final class ClientWS {
     private ClientWS() {
         SharedPreferences prefs = mContext.getSharedPreferences(AppConfigs.PREFS_NAME, Context.MODE_PRIVATE);
         mEndPoint = prefs.getString(AppConfigs.SERVER_ADDRESS, DEFAULT_ENDPOINT);
-        //mEndPoint = "http://192.168.0.101:22332/ClientWS.asmx?wsdl";
     }
 
+    /**
+     * The ClientWS class creator(Singleton)
+     *
+     * @param context
+     * @return
+     */
     public static ClientWS getInstance(Context context) {
         mContext = context;
         if (client == null)
@@ -88,113 +116,21 @@ public final class ClientWS {
         mEndPoint = url;
     }
 
-    public void test_userLogin() {
-        WsGuidOwner owner = new WsGuidOwner();
-        //owner.CreateDate = "2014-10-17 16:44:23";
-        MessageDigest md = null;
-        try {
-            md = MessageDigest.getInstance("MD5");
-            userLogin("mrmsadmin@cheese.com", "cheese", owner);
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public int userLogin(String username, String password, WsGuidOwner userinfo) {
-        int result;
-        // Create SOAP Action
-        String soapAction = NAMESPACE + METHOD_USERLOGIN;//"http://tempuri.org/Test";
-
-        // Initial SoapObject
-        SoapObject rpc = new SoapObject(NAMESPACE, METHOD_USERLOGIN);
-        // add web service method parameter
-        rpc.addProperty("user", username);
-        rpc.addProperty("passwordMd5", password);
-        PropertyInfo p_userInfo = new PropertyInfo();
-        p_userInfo.setName("userInfo");
-        p_userInfo.setValue(userinfo);
-        p_userInfo.setType(WsGuidOwner.class);
-        rpc.addPropertyIfValue(p_userInfo);
-
-        // Initial envelope
-        // Create soap request object with soap version
-        SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(SoapEnvelope.VER12);
-        envelope.bodyOut = rpc;
-        envelope.dotNet = true;
-        envelope.setOutputSoapObject(rpc);
-        // Set Mapping
-        envelope.addMapping(NAMESPACE, WsGuidOwner.class.getSimpleName(), WsGuidOwner.class);
-        // Set MARSHALLING type
-        Marshal floatMarshal = new MarshalFloat();
-        floatMarshal.register(envelope);
-
-        // Initial http transport
-        HttpTransportSE transport = new HttpTransportSE(mEndPoint);
-        transport.debug = true;
-
-        // Set http header cookies values before call WS(null)
-        List<HeaderProperty> paraHttpHeaders = new ArrayList<HeaderProperty>();
-
-        // Call WS, store the return http header
-        // Store http header values after call WS
-        List resultHttpHeaderList = null;
-        try {
-            resultHttpHeaderList = transport.call(soapAction, envelope, paraHttpHeaders);
-            Log.d(TAG, "Request: \n" + transport.requestDump);
-            Log.d(TAG, "Response: \n" + transport.responseDump);
-            // Process return data
-            final SoapObject resp = (SoapObject) envelope.bodyIn;
-            // Fetch operation result
-            result = Integer.valueOf(resp.getProperty("UserLoginResult").toString());
-
-            if (result == LoginResultType.Success) {
-                // Fetch session id
-                for (Object o : resultHttpHeaderList) {
-                    HeaderProperty p = (HeaderProperty)o;
-                    if (p.getKey()!=null && p.getKey().equals("Set-Cookie")) {
-                        Log.d(TAG, "key: " + p.getKey() + "\t" + "values:" + p.getValue());
-                        session_id = p.getValue();
-                        break;
-                    }
-                }
-                // Fetch user info
-                SoapObject x_user = (SoapObject)resp.getProperty("userInfo");
-                userinfo.ID = x_user.getPropertyAsString("ID");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            result = WsResultType.Faild;
-        }
-        return result;
-    }
-
-
-    public void test_checkedFileInfo(String path) {
-        WsFile ws_file = new WsFile();
-        File file = new File(path);
-        if (file.exists()) {
-            ws_file.CreaterID = "395ED821-E528-42F0-8EA7-C59F258E7435";
-            ws_file.FatherID = "395ED821-E528-42F0-8EA7-C59F258E7435";
-            ws_file.Extend = path.substring(path.lastIndexOf(".") + 1);
-            ws_file.SizeB = file.length();
-            ws_file.FullName = file.getName();
-            ws_file.CreatDate = "2014/10/17 16:44:23";
-            try {
-                ws_file.MD5 = FileManager.generateMD5(new FileInputStream(file));
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
-        } else {
-            Log.d(TAG, "File: " + path + " \t" + " not exist!");
-        }
-        checkedFileInfo(ws_file);
-    }
-
-
+    /**
+     * Before start upload file, need call this function to make a record of the file
+     * on remote server. This function transfer the target WsFile object to server
+     * include whole file MD5 value. When server receive it, will check server is have
+     * the file. If already have it , will return 1. If not have return 2. For network
+     * access failed or other reason will return -1.
+     *
+     * @param wsFile    The target file information include whole file MD5 value.
+     * @return
+     */
     public int checkedFileInfo(WsFile wsFile) {
         int result;
 
-        wsFile.CreaterID = "395ED821-E528-42F0-8EA7-C59F258E7435";
+        //wsFile.CreaterID = "395ED821-E528-42F0-8EA7-C59F258E7435";
+        wsFile.CreaterID = AppConfigs.current_remote_user_id;
         // Create SOAP Action
         String soapAction = NAMESPACE + METHOD_CHECKEDFILEINFO;//"http://tempuri.org/Test";
 
@@ -251,44 +187,29 @@ public final class ClientWS {
         return result;
     }
 
-    public void test_uploadFile(String path) {
-        File file = new File(path);
-        Log.d(TAG, "filesize: " + file.length());
-        //long cutLength = 1446;
-        WsSyncFile ws_file = new WsSyncFile();
-        ws_file.ID = s_id;
-        ws_file.IsFinally = true;
 
-        ws_file.Blocks = new SyncFileBlock();
-        ws_file.Blocks.OffSet = 0;
-        try {
-            FileInputStream fis = new FileInputStream(file);
-            byte[] cache = new byte[(int)file.length()];
-            fis.read(cache, 0, (int)file.length());
-            ws_file.Blocks.UpdateData = cache;
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        uploadFile(ws_file);
-
-    }
-
-    public int uploadFile(WsSyncFile wsSyncFile) {
+    /**
+     ** Web service interface, call this function to create a folder on the current
+     * server. The wsFolder parameter point the creating folder's parent(Server need
+     * Folder guid).
+     *
+     * @param wsFolder    Store the to creat folder's parent folder information(Server
+     * need folder guid).
+     * @return
+     */
+    public int createFolder(WsFolder wsFolder) {
         int result;
         // Create SOAP Action
-        String soapAction = NAMESPACE + METHOD_UPLOADFILE;//"http://tempuri.org/Test";
+        String soapAction = NAMESPACE + METHOD_CREATEFOLDER;
 
         // Initial SoapObject
-        SoapObject rpc = new SoapObject(NAMESPACE, METHOD_UPLOADFILE);
+        SoapObject rpc = new SoapObject(NAMESPACE, METHOD_CREATEFOLDER);
         // add web service method parameter
-        PropertyInfo p_fileInfo = new PropertyInfo();
-        p_fileInfo.setName("file");
-        p_fileInfo.setValue(wsSyncFile);
-        p_fileInfo.setType(WsSyncFile.class);
-        rpc.addPropertyIfValue(p_fileInfo);
+        PropertyInfo p_folderInfo= new PropertyInfo();
+        p_folderInfo.setName("folder");
+        p_folderInfo.setValue(wsFolder);
+        p_folderInfo.setType(WsFolder.class);
+        rpc.addPropertyIfValue(p_folderInfo);
 
         // Initial envelope
         // Create soap request object with soap version
@@ -297,17 +218,18 @@ public final class ClientWS {
         envelope.dotNet = true;
         envelope.setOutputSoapObject(rpc);
         // Set Mapping
-        envelope.addMapping(NAMESPACE, WsSyncFile.class.getSimpleName(), WsSyncFile.class);
-        envelope.addMapping(NAMESPACE, WsPhyFileInfo.class.getSimpleName(), WsPhyFileInfo.class);
         envelope.addMapping(NAMESPACE, WsGuidOwner.class.getSimpleName(), WsGuidOwner.class);
-        envelope.addMapping(NAMESPACE, SyncFileBlock.class.getSimpleName(), SyncFileBlock.class);
+        envelope.addMapping(NAMESPACE, WsFolder.class.getSimpleName(), WsFolder.class);
+        envelope.addMapping(NAMESPACE, WsSpaceSizer.class.getSimpleName(), WsSpaceSizer.class);
+        envelope.addMapping(NAMESPACE, WsPermission.class.getSimpleName(), WsPermission.class);
+        envelope.addMapping(NAMESPACE, FileInfo.class.getSimpleName(), FileInfo.class);
         // Set MARSHALLING type
-        Marshal base64Marshal = new MarshalBase64();//MarshalFloat();
-        base64Marshal.register(envelope);
+        Marshal floatMarshal = new MarshalFloat();
+        floatMarshal.register(envelope);
 
         // Initial http transport
         HttpTransportSE transport = new HttpTransportSE(mEndPoint);
-        //transport.debug = true;
+        transport.debug = true;
 
         // Set http header cookies values before call WS
         List<HeaderProperty> paraHttpHeaders = new ArrayList<HeaderProperty>();
@@ -316,34 +238,31 @@ public final class ClientWS {
         // Call WS
         try {
             transport.call(soapAction, envelope, paraHttpHeaders);
-            //Log.d(TAG, "Request: \n" + transport.requestDump);
-            //Log.d(TAG, "Response: \n" + transport.responseDump);
-
-            final SoapObject resp = (SoapObject) envelope.bodyIn;
+            Log.d(TAG, "Request: \n" + transport.requestDump);
+            Log.d(TAG, "Response: \n" + transport.responseDump);
             // Process return data
-            // Fetch operation result
-            result = Integer.valueOf(resp.getProperty("UploadFileResult").toString());
-            Log.d(TAG, "UploadFile 100KB result: " + result);
+            // Get webservice return object
+            final SoapObject resp = (SoapObject) envelope.bodyIn;
+            result = Integer.valueOf(resp.getProperty("CreateFolderResult").toString());
+            if (result == WsResultType.Success) {
+                SoapObject r_folder = (SoapObject)resp.getProperty("folder");
+                wsFolder.ID = r_folder.getProperty("ID").toString();
+            }
         } catch (Exception e) {
             e.printStackTrace();
-            result = WsResultType.Faild;
+            return WsResultType.Faild;
         }
-
         return result;
     }
 
-    public void test_getDisk() {
-        getDisk(new ArrayList<WsFolder>());
-
-    }
-
     /**
-     * Pull disk list from web server
-     * @param list The list save WsFolder object
+     * Pull disk list from web server. Disk as root folder on server.
+     *
+     * @param folderList    WsFolder list used to store server return result
      * @return
      *  {@link codingpark.net.cheesecloud.enumr.WsResultType}
      */
-    public int getDisk(List<WsFolder> list) {
+    public int getDisk(List<WsFolder> folderList) {
         int result = WsResultType.Success;
         // Create SOAP Action
         String soapAction = NAMESPACE + METHOD_GETDISK;//"http://tempuri.org/Test";
@@ -394,7 +313,7 @@ public final class ClientWS {
                     WsFolder r_folder = new WsFolder();
                     r_folder.ID = folder.getProperty("ID").toString();
                     r_folder.Name = folder.getProperty("Name").toString();
-                    list.add(r_folder);
+                    folderList.add(r_folder);
                 }
             }
         } catch (Exception e) {
@@ -404,22 +323,88 @@ public final class ClientWS {
         return result;
     }
 
-    public void test_getFolderList() {
-        WsFolder folder = new WsFolder();
-        folder.FatherID = "395ED821-E528-42F0-8EA7-C59F258E7435";
-        folder.ID = "395ED821-E528-42F0-8EA7-C59F258E7435";
-        getFolderList(folder, null, null);
+    /**
+     * Pull the folder information by the folder.ID from web server. Save the
+     * information to folder.
+     *
+     * @param folder    The folder object stored the target folder guid and store the
+     * folder information when server return query result.
+     * @return {@link codingpark.net.cheesecloud.enumr.WsResultType}
+     */
+    public int getFolderInfo(WsFolder folder) {
+        int result = WsResultType.Success;
+        // Create SOAP Action
+        String soapAction = NAMESPACE + METHOD_GETFOLDERINFO;//"http://tempuri.org/Test";
+
+        // Initial SoapObject
+        SoapObject rpc = new SoapObject(NAMESPACE, METHOD_GETFOLDERINFO);
+        // add web service method parameter
+        PropertyInfo p_folderInfo = new PropertyInfo();
+        p_folderInfo.setType(WsFolder.class);
+        p_folderInfo.setName("folder");
+        p_folderInfo.setValue(folder);
+        rpc.addProperty(p_folderInfo);
+
+        // Initial envelope
+        // Create soap request object with soap version
+        SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(SoapEnvelope.VER12);
+        envelope.bodyOut = rpc;
+        envelope.dotNet = true;
+        envelope.setOutputSoapObject(rpc);
+
+        // Set Mapping
+        envelope.addMapping(NAMESPACE, WsGuidOwner.class.getSimpleName(), WsGuidOwner.class);
+        envelope.addMapping(NAMESPACE, WsFolder.class.getSimpleName(), WsFolder.class);
+        envelope.addMapping(NAMESPACE, WsSpaceSizer.class.getSimpleName(), WsSpaceSizer.class);
+        envelope.addMapping(NAMESPACE, WsPermission.class.getSimpleName(), WsPermission.class);
+        envelope.addMapping(NAMESPACE, FileInfo.class.getSimpleName(), FileInfo.class);
+
+        // Set MARSHALLING type
+        Marshal floatMarshal = new MarshalFloat();
+        floatMarshal.register(envelope);
+
+        // Initial http transport
+        HttpTransportSE transport = new HttpTransportSE(mEndPoint);
+        transport.debug = true;
+
+        // Set http header cookies values before call WS
+        List<HeaderProperty> paraHttpHeaders = new ArrayList<HeaderProperty>();
+        paraHttpHeaders.add(new HeaderProperty("Cookie", session_id));
+
+        // Call WS
+        try {
+            transport.call(soapAction, envelope, paraHttpHeaders);
+            Log.d(TAG, "Request: \n" + transport.requestDump);
+            Log.d(TAG, "Response: \n" + transport.responseDump);
+            // Process return data
+            // Get webservice return object
+            final SoapObject resp= (SoapObject) envelope.bodyIn;
+            result = Integer.valueOf(resp.getPropertyAsString("GetFolderInfoResult"));
+            if (result == WsResultType.Success) {
+                // Parse folder result
+                if (folder != null) {
+                    SoapObject x_folder = (SoapObject)resp.getProperty("folder");
+                    // Save the folder name
+                    folder.Name = x_folder.getPropertyAsString("Name");
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            result = WsResultType.Faild;
+        }
+        return result;
     }
 
     /**
-     * Pull the folder and file list from web server
-     * @param folder the parent folder info
-     * @param fileList the parent folder's sub files list
-     * @param folderList the parent folder's sub folders list
+     * Pull the parent's sub folder and file list from web server
+     *
+     * @param folderList    the parent folder's sub folders list
+     * @param fileList    the parent folder's sub files list
+     * @param folder    the parent folder info
      * @return {@link codingpark.net.cheesecloud.enumr.WsResultType}
      */
     public int getFolderList(WsFolder folder, ArrayList<WsFile> fileList,
-                              ArrayList<WsFolder> folderList) {
+                             ArrayList<WsFolder> folderList) {
         int result = WsResultType.Success;
         // Create SOAP Action
         String soapAction = NAMESPACE + METHOD_GETFOLDERLIST;//"http://tempuri.org/Test";
@@ -501,8 +486,221 @@ public final class ClientWS {
         return result;
     }
 
-    public void test_createFolder(String path) {
 
+
+    /**
+     * Before call this function, need make sure the target file already call
+     * checkedFileInfo function to create the record information on server. This
+     * function will upload the byte array stored in wsSyncFile to server.
+     *
+     * @param wsSyncFile    Store the target file information, The guid of the file
+     * record on server and the byte array of the part file.
+     * @return
+     */
+    public int uploadFile(WsSyncFile wsSyncFile) {
+        int result;
+        // Create SOAP Action
+        String soapAction = NAMESPACE + METHOD_UPLOADFILE;//"http://tempuri.org/Test";
+
+        // Initial SoapObject
+        SoapObject rpc = new SoapObject(NAMESPACE, METHOD_UPLOADFILE);
+        // add web service method parameter
+        PropertyInfo p_fileInfo = new PropertyInfo();
+        p_fileInfo.setName("file");
+        p_fileInfo.setValue(wsSyncFile);
+        p_fileInfo.setType(WsSyncFile.class);
+        rpc.addPropertyIfValue(p_fileInfo);
+
+        // Initial envelope
+        // Create soap request object with soap version
+        SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(SoapEnvelope.VER12);
+        envelope.bodyOut = rpc;
+        envelope.dotNet = true;
+        envelope.setOutputSoapObject(rpc);
+        // Set Mapping
+        envelope.addMapping(NAMESPACE, WsSyncFile.class.getSimpleName(), WsSyncFile.class);
+        envelope.addMapping(NAMESPACE, WsPhyFileInfo.class.getSimpleName(), WsPhyFileInfo.class);
+        envelope.addMapping(NAMESPACE, WsGuidOwner.class.getSimpleName(), WsGuidOwner.class);
+        envelope.addMapping(NAMESPACE, SyncFileBlock.class.getSimpleName(), SyncFileBlock.class);
+        // Set MARSHALLING type
+        Marshal base64Marshal = new MarshalBase64();//MarshalFloat();
+        base64Marshal.register(envelope);
+
+        // Initial http transport
+        HttpTransportSE transport = new HttpTransportSE(mEndPoint);
+        //transport.debug = true;
+
+        // Set http header cookies values before call WS
+        List<HeaderProperty> paraHttpHeaders = new ArrayList<HeaderProperty>();
+        paraHttpHeaders.add(new HeaderProperty("Cookie", session_id));
+
+        // Call WS
+        try {
+            transport.call(soapAction, envelope, paraHttpHeaders);
+            //Log.d(TAG, "Request: \n" + transport.requestDump);
+            //Log.d(TAG, "Response: \n" + transport.responseDump);
+
+            final SoapObject resp = (SoapObject) envelope.bodyIn;
+            // Process return data
+            // Fetch operation result
+            result = Integer.valueOf(resp.getProperty("UploadFileResult").toString());
+            Log.d(TAG, "UploadFile 100KB result: " + result);
+        } catch (Exception e) {
+            e.printStackTrace();
+            result = WsResultType.Faild;
+        }
+
+        return result;
+    }
+
+    /**
+     * Call this function to login in on server.
+     *
+     * @param username    The user name.(email address)
+     * @param password    The user password. Now transfer plain text, after sso
+     * completed, need convert to MD5 value.
+     * @param userInfo    Store the user information return from the remote server
+     * @return
+     */
+    public int userLogin(String username, String password, WsGuidOwner userInfo) {
+        int result;
+        // Create SOAP Action
+        String soapAction = NAMESPACE + METHOD_USERLOGIN;//"http://tempuri.org/Test";
+
+        // Initial SoapObject
+        SoapObject rpc = new SoapObject(NAMESPACE, METHOD_USERLOGIN);
+        // add web service method parameter
+        rpc.addProperty("user", username);
+        rpc.addProperty("passwordMd5", password);
+        PropertyInfo p_userInfo = new PropertyInfo();
+        p_userInfo.setName("userInfo");
+        p_userInfo.setValue(userInfo);
+        p_userInfo.setType(WsGuidOwner.class);
+        rpc.addPropertyIfValue(p_userInfo);
+
+        // Initial envelope
+        // Create soap request object with soap version
+        SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(SoapEnvelope.VER12);
+        envelope.bodyOut = rpc;
+        envelope.dotNet = true;
+        envelope.setOutputSoapObject(rpc);
+        // Set Mapping
+        envelope.addMapping(NAMESPACE, WsGuidOwner.class.getSimpleName(), WsGuidOwner.class);
+        // Set MARSHALLING type
+        Marshal floatMarshal = new MarshalFloat();
+        floatMarshal.register(envelope);
+
+        // Initial http transport
+        HttpTransportSE transport = new HttpTransportSE(mEndPoint);
+        transport.debug = true;
+
+        // Set http header cookies values before call WS(null)
+        List<HeaderProperty> paraHttpHeaders = new ArrayList<HeaderProperty>();
+
+        // Call WS, store the return http header
+        // Store http header values after call WS
+        List resultHttpHeaderList = null;
+        try {
+            resultHttpHeaderList = transport.call(soapAction, envelope, paraHttpHeaders);
+            Log.d(TAG, "Request: \n" + transport.requestDump);
+            Log.d(TAG, "Response: \n" + transport.responseDump);
+            // Process return data
+            final SoapObject resp = (SoapObject) envelope.bodyIn;
+            // Fetch operation result
+            result = Integer.valueOf(resp.getProperty("UserLoginResult").toString());
+
+            if (result == LoginResultType.Success) {
+                // Fetch session id
+                for (Object o : resultHttpHeaderList) {
+                    HeaderProperty p = (HeaderProperty)o;
+                    if (p.getKey()!=null && p.getKey().equals("Set-Cookie")) {
+                        Log.d(TAG, "key: " + p.getKey() + "\t" + "values:" + p.getValue());
+                        session_id = p.getValue();
+                        break;
+                    }
+                }
+                // Fetch user info
+                SoapObject x_user = (SoapObject)resp.getProperty("userInfo");
+                userInfo.ID = x_user.getPropertyAsString("ID");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            result = WsResultType.Faild;
+        }
+        return result;
+    }
+
+
+    /* ###########################################Unit Test#######################################*/
+    private void test_userLogin() {
+        WsGuidOwner owner = new WsGuidOwner();
+        //owner.CreateDate = "2014-10-17 16:44:23";
+        MessageDigest md = null;
+        try {
+            md = MessageDigest.getInstance("MD5");
+            userLogin("mrmsadmin@cheese.com", "cheese", owner);
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void test_checkedFileInfo(String path) {
+        WsFile ws_file = new WsFile();
+        File file = new File(path);
+        if (file.exists()) {
+            ws_file.CreaterID = "395ED821-E528-42F0-8EA7-C59F258E7435";
+            ws_file.FatherID = "395ED821-E528-42F0-8EA7-C59F258E7435";
+            ws_file.Extend = path.substring(path.lastIndexOf(".") + 1);
+            ws_file.SizeB = file.length();
+            ws_file.FullName = file.getName();
+            ws_file.CreatDate = "2014/10/17 16:44:23";
+            try {
+                ws_file.MD5 = FileManager.generateMD5(new FileInputStream(file));
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        } else {
+            Log.d(TAG, "File: " + path + " \t" + " not exist!");
+        }
+        checkedFileInfo(ws_file);
+    }
+
+    private void test_uploadFile(String path) {
+        File file = new File(path);
+        Log.d(TAG, "filesize: " + file.length());
+        //long cutLength = 1446;
+        WsSyncFile ws_file = new WsSyncFile();
+        ws_file.ID = s_id;
+        ws_file.IsFinally = true;
+
+        ws_file.Blocks = new SyncFileBlock();
+        ws_file.Blocks.OffSet = 0;
+        try {
+            FileInputStream fis = new FileInputStream(file);
+            byte[] cache = new byte[(int)file.length()];
+            fis.read(cache, 0, (int)file.length());
+            ws_file.Blocks.UpdateData = cache;
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        uploadFile(ws_file);
+    }
+
+    private void test_getDisk() {
+        getDisk(new ArrayList<WsFolder>());
+    }
+
+    private void test_getFolderList() {
+        WsFolder folder = new WsFolder();
+        folder.FatherID = "395ED821-E528-42F0-8EA7-C59F258E7435";
+        folder.ID = "395ED821-E528-42F0-8EA7-C59F258E7435";
+        getFolderList(folder, null, null);
+    }
+
+    private void test_createFolder(String path) {
         WsFolder folder = new WsFolder();
         File file = new File(path);
         if (file.exists()) {
@@ -513,134 +711,6 @@ public final class ClientWS {
             Log.d(TAG, "File: " + path + " \t" + " not exist!");
         }
         createFolder(folder);
-    }
-
-    public int createFolder(WsFolder folder) {
-        int result;
-        // Create SOAP Action
-        String soapAction = NAMESPACE + METHOD_CREATEFOLDER;
-
-        // Initial SoapObject
-        SoapObject rpc = new SoapObject(NAMESPACE, METHOD_CREATEFOLDER);
-        // add web service method parameter
-        PropertyInfo p_folderInfo= new PropertyInfo();
-        p_folderInfo.setName("folder");
-        p_folderInfo.setValue(folder);
-        p_folderInfo.setType(WsFolder.class);
-        rpc.addPropertyIfValue(p_folderInfo);
-
-        // Initial envelope
-        // Create soap request object with soap version
-        SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(SoapEnvelope.VER12);
-        envelope.bodyOut = rpc;
-        envelope.dotNet = true;
-        envelope.setOutputSoapObject(rpc);
-        // Set Mapping
-        envelope.addMapping(NAMESPACE, WsGuidOwner.class.getSimpleName(), WsGuidOwner.class);
-        envelope.addMapping(NAMESPACE, WsFolder.class.getSimpleName(), WsFolder.class);
-        envelope.addMapping(NAMESPACE, WsSpaceSizer.class.getSimpleName(), WsSpaceSizer.class);
-        envelope.addMapping(NAMESPACE, WsPermission.class.getSimpleName(), WsPermission.class);
-        envelope.addMapping(NAMESPACE, FileInfo.class.getSimpleName(), FileInfo.class);
-        // Set MARSHALLING type
-        Marshal floatMarshal = new MarshalFloat();
-        floatMarshal.register(envelope);
-
-        // Initial http transport
-        HttpTransportSE transport = new HttpTransportSE(mEndPoint);
-        transport.debug = true;
-
-        // Set http header cookies values before call WS
-        List<HeaderProperty> paraHttpHeaders = new ArrayList<HeaderProperty>();
-        paraHttpHeaders.add(new HeaderProperty("Cookie", session_id));
-
-        // Call WS
-        try {
-            transport.call(soapAction, envelope, paraHttpHeaders);
-            Log.d(TAG, "Request: \n" + transport.requestDump);
-            Log.d(TAG, "Response: \n" + transport.responseDump);
-            // Process return data
-            // Get webservice return object
-            final SoapObject resp = (SoapObject) envelope.bodyIn;
-            result = Integer.valueOf(resp.getProperty("CreateFolderResult").toString());
-            if (result == WsResultType.Success) {
-                SoapObject r_folder = (SoapObject)resp.getProperty("folder");
-                folder.ID = r_folder.getProperty("ID").toString();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return WsResultType.Faild;
-        }
-        return result;
-    }
-
-    /**
-     * Pull the folder/file information by the folder.ID from web server.
-     * Save the information to folder.
-     * @param folder the parent folder info(Need the ID)
-     * @return {@link codingpark.net.cheesecloud.enumr.WsResultType}
-     */
-    public int getFolderInfo(WsFolder folder) {
-        int result = WsResultType.Success;
-        // Create SOAP Action
-        String soapAction = NAMESPACE + METHOD_GETFOLDERINFO;//"http://tempuri.org/Test";
-
-        // Initial SoapObject
-        SoapObject rpc = new SoapObject(NAMESPACE, METHOD_GETFOLDERINFO);
-        // add web service method parameter
-        PropertyInfo p_folderInfo = new PropertyInfo();
-        p_folderInfo.setType(WsFolder.class);
-        p_folderInfo.setName("folder");
-        p_folderInfo.setValue(folder);
-        rpc.addProperty(p_folderInfo);
-
-        // Initial envelope
-        // Create soap request object with soap version
-        SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(SoapEnvelope.VER12);
-        envelope.bodyOut = rpc;
-        envelope.dotNet = true;
-        envelope.setOutputSoapObject(rpc);
-
-        // Set Mapping
-        envelope.addMapping(NAMESPACE, WsGuidOwner.class.getSimpleName(), WsGuidOwner.class);
-        envelope.addMapping(NAMESPACE, WsFolder.class.getSimpleName(), WsFolder.class);
-        envelope.addMapping(NAMESPACE, WsSpaceSizer.class.getSimpleName(), WsSpaceSizer.class);
-        envelope.addMapping(NAMESPACE, WsPermission.class.getSimpleName(), WsPermission.class);
-        envelope.addMapping(NAMESPACE, FileInfo.class.getSimpleName(), FileInfo.class);
-
-        // Set MARSHALLING type
-        Marshal floatMarshal = new MarshalFloat();
-        floatMarshal.register(envelope);
-
-        // Initial http transport
-        HttpTransportSE transport = new HttpTransportSE(mEndPoint);
-        transport.debug = true;
-
-        // Set http header cookies values before call WS
-        List<HeaderProperty> paraHttpHeaders = new ArrayList<HeaderProperty>();
-        paraHttpHeaders.add(new HeaderProperty("Cookie", session_id));
-
-        // Call WS
-        try {
-            transport.call(soapAction, envelope, paraHttpHeaders);
-            Log.d(TAG, "Request: \n" + transport.requestDump);
-            Log.d(TAG, "Response: \n" + transport.responseDump);
-            // Process return data
-            // Get webservice return object
-            final SoapObject resp= (SoapObject) envelope.bodyIn;
-            result = Integer.valueOf(resp.getPropertyAsString("GetFolderInfoResult"));
-            if (result == WsResultType.Success) {
-                // Parse folder result
-                if (folder != null) {
-                    SoapObject x_folder = (SoapObject)resp.getProperty("folder");
-                    // Save the folder name
-                    folder.Name = x_folder.getPropertyAsString("Name");
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            result = WsResultType.Faild;
-        }
-        return result;
     }
 
 }
