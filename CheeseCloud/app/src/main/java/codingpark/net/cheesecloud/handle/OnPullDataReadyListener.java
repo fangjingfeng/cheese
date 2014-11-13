@@ -7,6 +7,6 @@ package codingpark.net.cheesecloud.handle;
  */
 public interface OnPullDataReadyListener {
 
-    public void onPullDataReady();
+    public void onPullDataReady(int result);
 
 }

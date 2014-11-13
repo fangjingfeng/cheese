@@ -89,5 +89,12 @@
     <string name="cab_more_action">More</string>
     <!-- CloudFilesActivity.AB-->
     <string name="ab_create_folder_action">New Folder</string>
+    <!-- CloudFilesActivity.MakeDirDailog -->
+    <string name="cfa_make_dir_dialog_title">New Directory</string>
+    <string name="cfa_make_dir_dialog_def_dirName">New Directory</string>
+
+    <!-- single_input_layout -->
+    <string name="input_layout_cancel">Cancel</string>
+    <string name="input_layout_create">Create</string>
 
 </resources>

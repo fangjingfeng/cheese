@@ -1,6 +1,7 @@
 package codingpark.net.cheesecloud.view;
 
 import android.app.ActionBar;
+import android.app.Dialog;
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
@@ -17,8 +18,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -26,12 +29,15 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Stack;
 
 import codingpark.net.cheesecloud.R;
 import codingpark.net.cheesecloud.entity.CloudFile;
 import codingpark.net.cheesecloud.enumr.CloudFileType;
+import codingpark.net.cheesecloud.enumr.WsResultType;
+import codingpark.net.cheesecloud.handle.CreateDirTask;
 import codingpark.net.cheesecloud.handle.OnWSTaskFinishListener;
 import codingpark.net.cheesecloud.handle.PullFileListTask;
 import codingpark.net.cheesecloud.utils.ThumbnailCreator;
@@ -46,7 +52,8 @@ import codingpark.net.cheesecloud.utils.ThumbnailCreator;
  * @version 1.0
  * @created 06-十一月-2014 18:12:41
  */
-public class CloudFilesActivity extends ListActivity implements View.OnClickListener, OnWSTaskFinishListener<CloudFile>{
+public class CloudFilesActivity extends ListActivity implements View.OnClickListener, OnWSTaskFinishListener<CloudFile>, CreateDirTask.OnCreateFolderCompletedListener
+{
     private static final String TAG         = CloudFilesActivity.class.getSimpleName();
 
     /**
@@ -149,17 +156,16 @@ public class CloudFilesActivity extends ListActivity implements View.OnClickList
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
         // Handle action bar event
         // 1. R.id.home: Action Bar up button clicked
         switch (id) {
             case android.R.id.home:
                 setResult(RESULT_CANCELED);
                 this.finish();
+                return true;
+            case R.id.ab_menu_create_folder:
+                Toast.makeText(this, "Create folder", Toast.LENGTH_SHORT).show();
+                mkdir();
                 return true;
         }
 
@@ -280,8 +286,56 @@ public class CloudFilesActivity extends ListActivity implements View.OnClickList
 
     }
 
-    private boolean isMultiSelect() {
+    private void mkdir() {
+        final Dialog dialog = new Dialog(this);
+        dialog.setContentView(R.layout.single_input_layout);
+        dialog.setTitle(this.getString(R.string.cfa_make_dir_dialog_title));
+        ImageView mkdir_icon = (ImageView)dialog.findViewById(R.id.input_icon);
+        mkdir_icon.setImageResource(R.drawable.folder);
+        final EditText mkdir_input = (EditText) dialog
+                .findViewById(R.id.input_inputText);
+        mkdir_input.setText(R.string.cfa_make_dir_dialog_def_dirName);
+        Button mkdir_cancel = (Button) dialog.findViewById(R.id.input_cancel_b);
+        Button mkdir_create = (Button) dialog.findViewById(R.id.input_create_b);
+        mkdir_create.setText(this.getString(R.string.input_layout_create));
+        mkdir_create.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                if (mkdir_input.getText().length() < 1) {
+                    dialog.dismiss();
+                }
+                String name = mkdir_input.getText().toString();
+                CloudFile file = new CloudFile();
+                file.setFilePath(name);
+                file.setRemote_parent_id(mPathStack.peek().getRemote_id());
+                new CreateDirTask(CloudFilesActivity.this, mAdapter, file, CloudFilesActivity.this).execute();
+                // TODO According name call Web Service create folder API to create target folder
+                dialog.dismiss();
+                setLoadingViewVisible(true);
+            }
+        });
+        mkdir_cancel.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
+    }
+
+
+
+                private boolean isMultiSelect() {
         return mSelectedFileList.size() > 0;
+    }
+
+    @Override
+    public void onCreateFOlderCompleted(int result) {
+        if (result == WsResultType.Success) {
+            Log.d(TAG, "Create folder completed! refresh list");
+            refreshList();
+        } else {
+            Log.d(TAG, "Create folder failed: " + result);
+            mAdapter.notifyDataSetChanged();
+        }
     }
 
     /**

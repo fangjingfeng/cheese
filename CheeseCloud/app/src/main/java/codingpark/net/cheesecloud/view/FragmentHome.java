@@ -170,7 +170,7 @@ public class FragmentHome extends ListFragment implements OnPullDataReadyListene
     }
 
     @Override
-    public void onPullDataReady() {
+    public void onPullDataReady(int result) {
         setLoadingViewVisible(false);
     }
 }

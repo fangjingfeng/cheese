@@ -100,7 +100,7 @@ public class PullFileListTask extends AsyncTask<Void,Void,Integer> {
                 if (mAdapter != null)
                     mAdapter.notifyDataSetChanged();
                 if (mListener != null)
-                    mListener.onPullDataReady();
+                    mListener.onPullDataReady(result);
                 return;
             default:
                 // TODO Warning pull error

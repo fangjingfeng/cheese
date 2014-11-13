@@ -251,7 +251,7 @@ public class SelectPathActivity extends ListActivity implements View.OnClickList
     }
 
     @Override
-    public void onPullDataReady() {
+    public void onPullDataReady(int result) {
         setLoadingViewVisible(false);
     }
 
