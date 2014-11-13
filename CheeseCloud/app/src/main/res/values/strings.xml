@@ -47,6 +47,7 @@
 
     <!-- MainActivity title bar -->
     <string name="title_activity_main">Cheese Cloud</string>
+    <string name="double_click_exit_hint_msg">Please click BACK again to exit</string>
 
     <!-- MainActivity Home Fragment -->
     <string name="tab_home_item_news_title">News</string>
@@ -86,5 +87,7 @@
     <string name="cab_copy_action">Copy</string>
     <string name="cab_share_action">Share</string>
     <string name="cab_more_action">More</string>
+    <!-- CloudFilesActivity.AB-->
+    <string name="ab_create_folder_action">New Folder</string>
 
 </resources>

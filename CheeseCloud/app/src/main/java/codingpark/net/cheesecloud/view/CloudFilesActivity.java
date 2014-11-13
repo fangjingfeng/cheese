@@ -119,7 +119,6 @@ public class CloudFilesActivity extends ListActivity implements View.OnClickList
                     mAdapter.addMultiPosition(position);
                     mAdapter.notifyDataSetChanged();
                     // Show CAB
-                    //startActionMode(mActionModeCallback);
                     refreshCAB();
 
                 }
@@ -139,7 +138,7 @@ public class CloudFilesActivity extends ListActivity implements View.OnClickList
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_cloud_files, menu);
+        getMenuInflater().inflate(R.menu.cloud_files_activity_ab_menu, menu);
         return true;
     }
 

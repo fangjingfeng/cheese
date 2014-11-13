@@ -7,6 +7,7 @@ import android.app.FragmentManager;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v13.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
@@ -32,6 +33,7 @@ public class MainActivity extends Activity implements OnFragmentInteractionListe
     private static final String TAG                 = "MainActivity";
     private static String remote_parent_id          = "";
 
+
     // Application preferences key
     public static final String PREFS_NAME           = "ManagerPrefsFile";	//user preference file name
     public static final String PREFS_HIDDEN         = "hidden";
@@ -44,6 +46,9 @@ public class MainActivity extends Activity implements OnFragmentInteractionListe
     private Button copy_bt              = null;
     private Button paste_bt             = null;
     private Button more_bt              = null;
+
+    private boolean doubleBackToExitPressedOnce = false;
+    private static final int INTERNAL_DOUBLE_CLICK_EXIT_TIME    = 2000;
 
 
     // Tab activity headers
@@ -99,7 +104,30 @@ public class MainActivity extends Activity implements OnFragmentInteractionListe
         initHandler();
     }
 
+    @Override
+    public void onBackPressed() {
+        if (doubleBackToExitPressedOnce) {
+            super.onBackPressed();
+            return;
+        }
 
+        this.doubleBackToExitPressedOnce = true;
+        Toast.makeText(this, getString(R.string.double_click_exit_hint_msg), Toast.LENGTH_SHORT).show();
+
+        new Handler().postDelayed(new Runnable() {
+
+            @Override
+            public void run() {
+                doubleBackToExitPressedOnce=false;
+            }
+        }, INTERNAL_DOUBLE_CLICK_EXIT_TIME);
+    }
+
+    @Override
+    protected void onResume() {
+        doubleBackToExitPressedOnce = false;
+        super.onResume();
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
