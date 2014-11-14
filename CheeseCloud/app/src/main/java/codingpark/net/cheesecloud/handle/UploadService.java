@@ -250,6 +250,7 @@ public class UploadService extends IntentService {
                 uploadFileDataSource.updateUploadFile(file);
                 result = WsResultType.Success;
                 if (result == CheckedFileInfoResultType.RESULT_QUICK_UPLOAD) {
+                    sendChangedBroadcast(file, EVENT_UPLOAD_BLOCK_SUCCESS);
                     return result;
                 }
             }
