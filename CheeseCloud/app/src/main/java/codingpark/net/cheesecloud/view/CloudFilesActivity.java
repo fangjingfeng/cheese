@@ -266,8 +266,6 @@ public class CloudFilesActivity extends ListActivity implements View.OnClickList
         }
     }
 
-
-
     @Override
     public void onClick(View v) {
         Log.d(TAG, "Item clicked!");
@@ -322,8 +320,7 @@ public class CloudFilesActivity extends ListActivity implements View.OnClickList
     }
 
 
-
-                private boolean isMultiSelect() {
+    private boolean isMultiSelect() {
         return mSelectedFileList.size() > 0;
     }
 

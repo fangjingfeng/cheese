@@ -52,6 +52,10 @@ public class CloudFile implements Parcelable {
      */
     private long parent_id = 0;
     /**
+     * The date which upload/download file record insert to local database .
+     */
+    private String recordCreateDate = "";
+    /**
      * The guid at remote server
      */
     private String remote_id = "";
@@ -119,6 +123,10 @@ public class CloudFile implements Parcelable {
      */
     public long getParent_id(){
         return parent_id;
+    }
+
+    public String getRecordCreateDate(){
+        return recordCreateDate;
     }
 
     /**
@@ -211,6 +219,14 @@ public class CloudFile implements Parcelable {
      */
     public void setParent_id(long newVal){
         parent_id = newVal;
+    }
+
+    /**
+     *
+     * @param newVal
+     */
+    public void setRecordCreateDate(String newVal){
+        recordCreateDate = newVal;
     }
 
     /**
