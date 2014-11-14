@@ -270,6 +270,7 @@ public class CloudFile implements Parcelable {
         dest.writeLong(local_user_id);
         dest.writeString(md5);
         dest.writeLong(parent_id);
+        dest.writeString(recordCreateDate);
         dest.writeString(remote_id);
         dest.writeString(remote_parent_id);
         dest.writeInt(state);
@@ -285,6 +286,7 @@ public class CloudFile implements Parcelable {
         local_user_id = in.readLong();
         md5 = in.readString();
         parent_id = in.readLong();
+        recordCreateDate = in.readString();
         remote_id = in.readString();
         remote_parent_id = in.readString();
         state = in.readInt();

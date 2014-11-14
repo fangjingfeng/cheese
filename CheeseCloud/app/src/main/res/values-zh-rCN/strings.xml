@@ -85,6 +85,7 @@
     <string name="cab_subtitle">子标题</string>
     <string name="cab_title">已选择 %d 个</string>
     <string name="ab_create_folder_action">新建目录</string>
+    <string name="ab_upload_action">上传</string>
     <string name="input_layout_cancel">取消</string>
     <string name="input_layout_create">创建</string>
     <string name="cfa_make_dir_dialog_title">新建文件夹</string>
