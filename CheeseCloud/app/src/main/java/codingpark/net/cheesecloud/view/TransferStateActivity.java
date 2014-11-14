@@ -5,6 +5,9 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v13.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -13,7 +16,9 @@ import android.view.MenuItem;
 import java.util.Locale;
 
 import codingpark.net.cheesecloud.R;
+import codingpark.net.cheesecloud.entity.UploadFile;
 import codingpark.net.cheesecloud.handle.OnFragmentInteractionListener;
+import codingpark.net.cheesecloud.handle.UploadService;
 
 /**
  * This activity show the upload/download file state to user.
@@ -118,6 +123,7 @@ public class TransferStateActivity extends Activity implements ActionBar.TabList
     public void onFragmentInteraction(String id) {
 
     }
+
 
     /**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to

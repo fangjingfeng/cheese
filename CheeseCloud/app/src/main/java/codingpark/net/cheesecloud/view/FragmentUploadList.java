@@ -2,8 +2,12 @@ package codingpark.net.cheesecloud.view;
 
 import android.app.Activity;
 import android.app.ListFragment;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,6 +25,7 @@ import codingpark.net.cheesecloud.R;
 import codingpark.net.cheesecloud.entity.UploadFile;
 import codingpark.net.cheesecloud.enumr.UploadFileState;
 import codingpark.net.cheesecloud.handle.OnFragmentInteractionListener;
+import codingpark.net.cheesecloud.handle.UploadService;
 import codingpark.net.cheesecloud.model.UploadFileDataSource;
 
 /**
@@ -45,6 +50,8 @@ public class FragmentUploadList extends ListFragment {
     private List<UploadFile> mFileList              = null;
     private UploadStateAdapter mAdapter             = null;
     private LayoutInflater mInflater                = null;
+    private UploadStateReceiver mReceiver           = null;
+    private IntentFilter mFilter                    = null;
 
     public static FragmentUploadList newInstance(int position) {
         FragmentUploadList fragment = new FragmentUploadList();
@@ -60,6 +67,9 @@ public class FragmentUploadList extends ListFragment {
      */
     public FragmentUploadList() {
         mFileList = new ArrayList<UploadFile>();
+        mReceiver = new UploadStateReceiver();
+        mFilter = new IntentFilter();
+        mFilter.addAction(UploadService.ACTION_UPLOAD_STATE_CHANGE);
     }
 
     @Override
@@ -111,6 +121,20 @@ public class FragmentUploadList extends ListFragment {
     }
 
     @Override
+    public void onResume() {
+        Log.d(TAG, "onResume: registerReceiver");
+        super.onResume();
+        mContext.registerReceiver(mReceiver, mFilter);
+    }
+
+    @Override
+    public void onStop() {
+        Log.d(TAG, "onStop: unregisterReceiver");
+        super.onStop();
+        mContext.unregisterReceiver(mReceiver);
+    }
+
+    @Override
     public void onDetach() {
         super.onDetach();
         mListener = null;
@@ -124,6 +148,30 @@ public class FragmentUploadList extends ListFragment {
         super.onListItemClick(l, v, position, id);
         Log.d(TAG, "FragmentUploadList item " + position + " clicked!");
         if (null != mListener) {
+        }
+    }
+
+
+    private class UploadStateReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if (action.equals(UploadService.ACTION_UPLOAD_STATE_CHANGE)) {
+                int event = intent.getIntExtra(UploadService.EXTRA_UPLOAD_STATE, UploadService.EVENT_UPLOAD_BLOCK_SUCCESS);
+                UploadFile file = (UploadFile)intent.getExtras().get(UploadService.EXTRA_UPLOAD_FILE);
+                if (event == UploadService.EVENT_UPLOAD_BLOCK_SUCCESS) {
+                     for (int i = 0; i < mFileList.size(); i++) {
+                         if (mFileList.get(i).getId() == file.getId()) {
+                             mFileList.set(i, file);
+                             mAdapter.notifyDataSetChanged();
+                             break;
+                         }
+                     }
+                } else if(event == UploadService.EVENT_UPLOAD_BLOCK_FAILED){
+
+                }
+            }
         }
     }
 

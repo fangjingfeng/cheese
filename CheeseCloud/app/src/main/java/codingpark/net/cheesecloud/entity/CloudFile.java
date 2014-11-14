@@ -276,7 +276,7 @@ public class CloudFile implements Parcelable {
         dest.writeInt(state);
     }
 
-    private CloudFile(Parcel in) {
+    public CloudFile(Parcel in) {
         changedSize = in.readLong();
         createDate = in.readString();
         filePath = in.readString();

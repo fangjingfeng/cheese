@@ -49,6 +49,24 @@ public class UploadService extends IntentService {
      */
     private static final String ACTION_PAUSE_UPLOAD     = "codingpark.net.cheesecloud.handle.ACTION_PAUSE_UPLOAD";
 
+    public static final String ACTION_UPLOAD_STATE_CHANGE       = "codingpark.net.cheesecloud.handle.ACTION_PAUSE_SUCCESS";
+
+    public static final String EXTRA_UPLOAD_FILE                = "uploadfile";
+
+    public static final String EXTRA_UPLOAD_STATE               = "uploadstate";
+
+    public static final int EVENT_UPLOAD_BLOCK_SUCCESS                  = 0;
+
+    public static final int EVENT_UPLOAD_BLOCK_FAILED                   = 1;
+
+    public static final int EVENT_PAUSE_UPLOAD_SUCCESS                  = 2;
+
+    public static final int EVENT_PAUSE_UPLOAD_FAILED                   = 3;
+
+    public static final int EVENT_CANCEL_UPLOAD_SUCCESS                 = 4;
+
+    public static final int EVENT_CANCEL_UPLOAD_FAILED                  = 5;
+
     private UploadFileDataSource uploadFileDataSource   = null;
 
     /**
@@ -109,6 +127,23 @@ public class UploadService extends IntentService {
      */
     private void handleActionPauseUpload() {
         Log.d(TAG, "Pause uploading");
+    }
+
+    @Override
+    public void onDestroy() {
+        Log.d(TAG, "UploadService destroy");
+        if (uploadFileDataSource != null) {
+            uploadFileDataSource.close();
+        }
+        super.onDestroy();
+    }
+
+    private void sendChangedBroadcast(UploadFile file, int event) {
+        Intent intent = new Intent(ACTION_UPLOAD_STATE_CHANGE);
+        intent.putExtra(EXTRA_UPLOAD_FILE, file);
+        intent.putExtra(EXTRA_UPLOAD_STATE, event);
+        getApplicationContext().sendBroadcast(intent);
+        Log.d(TAG, "Send upload state changed broadcast: " + event);
     }
 
     /**
@@ -231,8 +266,10 @@ public class UploadService extends IntentService {
                     count = stream.read(buffer, 0, UPLOAD_BLOCK_SIZE);
                     if (count != -1) {
                         result = uploadFile_wrapper(file, buffer, count);
-                        if (result != WsResultType.Success)
+                        if (result != WsResultType.Success) {
+                            sendChangedBroadcast(file, EVENT_UPLOAD_BLOCK_FAILED);
                             return result;
+                        }
                         // Increase index
                         file.setChangedSize(file.getChangedSize() + count);
                         // Upload completed
@@ -241,6 +278,7 @@ public class UploadService extends IntentService {
                         }
                         // Update to database
                         uploadFileDataSource.updateUploadFile(file);
+                        sendChangedBroadcast(file, EVENT_UPLOAD_BLOCK_SUCCESS);
                     } else
                         break;// Upload completed
                 }
