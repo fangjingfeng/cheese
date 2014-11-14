@@ -5,20 +5,16 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v13.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.MenuItem;
 
 import java.util.Locale;
 
 import codingpark.net.cheesecloud.R;
-import codingpark.net.cheesecloud.entity.UploadFile;
 import codingpark.net.cheesecloud.handle.OnFragmentInteractionListener;
-import codingpark.net.cheesecloud.handle.UploadService;
 
 /**
  * This activity show the upload/download file state to user.
@@ -31,6 +27,7 @@ import codingpark.net.cheesecloud.handle.UploadService;
  *  record.
  */
 public class TransferStateActivity extends Activity implements ActionBar.TabListener,OnFragmentInteractionListener {
+    private static final String TAG             = TransferStateActivity.class.getSimpleName();
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -98,6 +95,10 @@ public class TransferStateActivity extends Activity implements ActionBar.TabList
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            return true;
+        } else if (id == android.R.id.home) {
+            Log.d(TAG, "Click back arrow");
+            this.finish();
             return true;
         }
 
