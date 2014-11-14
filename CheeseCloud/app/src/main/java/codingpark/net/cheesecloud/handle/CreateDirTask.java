@@ -9,9 +9,11 @@ import codingpark.net.cheesecloud.enumr.WsResultType;
 import codingpark.net.cheesecloud.wsi.WsFolder;
 
 /**
- * This class used to create a folder on remote server
- * refresh UI(ListView + Bottom Bar).
- * In constructor,
+ * This class used to create a folder on remote server refresh UI(ListView +
+ * Bottom Bar).
+ * @author Ethan Shan
+ * @version 1.0
+ * @created 14-十一月-2014 14:36:29
  */
 public class CreateDirTask extends AsyncTask<Void,Void,Integer> {
 
@@ -21,9 +23,12 @@ public class CreateDirTask extends AsyncTask<Void,Void,Integer> {
     private OnCreateFolderCompletedListener mListener   = null;
 
     /**
-     * Constructor
-     * @param context Context object
-     * @param adapter ArrayAdapter object
+     * The Constructor
+     *
+     * @param folder    The CloudFile object which store the to be created folder
+     * information.
+     * @param adapter    The list view ArrayAdapter
+     * @param context    The application context
      */
     public CreateDirTask(Context context, ArrayAdapter adapter,
                          CloudFile folder) {
@@ -33,11 +38,13 @@ public class CreateDirTask extends AsyncTask<Void,Void,Integer> {
     }
 
     /**
-     * Constructor
-     * @param context Context object
-     * @param adapter ArrayAdapter object
-     * @param folder To be created folder information
-     * @param listener When pull data task complete call this callback
+     * The constructor
+     *
+     * @param listener    When pull data task complete call this callback
+     * @param folder    The CloudFile object which store the to be created folder
+     * information.
+     * @param adapter    The list view ArrayAdapter
+     * @param context    The application context
      */
     public CreateDirTask(Context context, ArrayAdapter adapter,
                          CloudFile folder, OnCreateFolderCompletedListener listener) {
@@ -67,7 +74,7 @@ public class CreateDirTask extends AsyncTask<Void,Void,Integer> {
                 if (mAdapter != null)
                     mAdapter.notifyDataSetChanged();
                 if (mListener != null)
-                    mListener.onCreateFOlderCompleted(result);
+                    mListener.onCreateFolderCompleted(result);
                 return;
             default:
                 // TODO Warning pull error
@@ -84,8 +91,15 @@ public class CreateDirTask extends AsyncTask<Void,Void,Integer> {
         return result;
     }
 
+    /**
+     * The object who start CreateDirTask may be interested in the task completed
+     * action. If care, it should implement this interface and implement
+     * onCreateFolderCompleted function. Set implementation as parameter of the
+     * constructor.When task finish, CreateDirTask will call onCreateFolderCompleted
+     * function and pass the task return result as a parameter.
+     */
     public static interface OnCreateFolderCompletedListener {
-        public void onCreateFOlderCompleted(int result);
+        public void onCreateFolderCompleted(int result);
     }
 }
 

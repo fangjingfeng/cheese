@@ -325,7 +325,7 @@ public class CloudFilesActivity extends ListActivity implements View.OnClickList
     }
 
     @Override
-    public void onCreateFOlderCompleted(int result) {
+    public void onCreateFolderCompleted(int result) {
         if (result == WsResultType.Success) {
             Log.d(TAG, "Create folder completed! refresh list");
             refreshList();

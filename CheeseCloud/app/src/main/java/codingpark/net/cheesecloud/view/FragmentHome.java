@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import codingpark.net.cheesecloud.R;
 import codingpark.net.cheesecloud.entity.CloudFile;
 import codingpark.net.cheesecloud.handle.OnFragmentInteractionListener;
-import codingpark.net.cheesecloud.handle.OnPullDataReadyListener;
 import codingpark.net.cheesecloud.handle.PullFileListTask;
 import codingpark.net.cheesecloud.model.HomeListAdapter;
 
@@ -30,7 +29,7 @@ import codingpark.net.cheesecloud.model.HomeListAdapter;
  * Activities containing this fragment MUST implement the {@link }
  * interface.
  */
-public class FragmentHome extends ListFragment implements OnPullDataReadyListener {
+public class FragmentHome extends ListFragment implements PullFileListTask.OnPullDataReadyListener {
     private static final String TAG         = "FragmentHome";
     // TODO: Rename parameter arguments, choose names that match
     private static final String ARG_PARAM2 = "param2";

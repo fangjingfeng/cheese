@@ -26,7 +26,6 @@ import codingpark.net.cheesecloud.CheeseConstants;
 import codingpark.net.cheesecloud.R;
 import codingpark.net.cheesecloud.entity.CloudFile;
 import codingpark.net.cheesecloud.entity.UploadFile;
-import codingpark.net.cheesecloud.handle.OnPullDataReadyListener;
 import codingpark.net.cheesecloud.handle.PullFileListTask;
 
 /**
@@ -37,7 +36,7 @@ import codingpark.net.cheesecloud.handle.PullFileListTask;
  * which will received by UploadActivity. Default destination folder is null, so when UploadActivity
  * receive a null folder, it will use the user id as the destination folder id(My Cloud Folder).
  */
-public class SelectPathActivity extends ListActivity implements View.OnClickListener, OnPullDataReadyListener{
+public class SelectPathActivity extends ListActivity implements View.OnClickListener, PullFileListTask.OnPullDataReadyListener {
     private static final String TAG     = SelectPathActivity.class.getSimpleName();
 
     private Button select_path_cancel_bt    = null;
