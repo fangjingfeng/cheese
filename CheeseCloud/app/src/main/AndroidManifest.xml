@@ -42,11 +42,11 @@
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:theme="@style/AppTheme"
             android:name="codingpark.net.cheesecloud.view.SelectPathActivity"
             android:label="@string/title_activity_select_path"
             android:parentActivityName="android.app.ListActivity"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="android.app.ListActivity" />
@@ -82,6 +82,11 @@
             android:name="codingpark.net.cheesecloud.view.CloudFilesActivity"
             android:label="@string/title_activity_cloud_files" >
         </activity>
+
+        <service
+            android:name="codingpark.net.cheesecloud.handle.DownloadService"
+            android:exported="false" >
+        </service>
     </application>
 
 </manifest>
