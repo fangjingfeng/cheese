@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -207,11 +206,11 @@ public class FragmentUploadList extends ListFragment {
             holder.fileNameView.setText(fileName);
             holder.ratioView.setText(file.getChangedSize() + "/" + file.getFileSize());
             switch (file.getState()) {
-                case UploadFileState.NotUpload:
-                case UploadFileState.Uploading:
+                case UploadFileState.NOT_UPLOAD:
+                case UploadFileState.WAIT_UPLOAD:
                     holder.stateView.setText("上传中");
                     break;
-                case UploadFileState.Uploaded:
+                case UploadFileState.UPLOADED:
                 default:
                     holder.stateView.setText("上传完成");
             }

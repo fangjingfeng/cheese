@@ -10,11 +10,14 @@ import android.support.v13.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 
 import java.util.Locale;
 
 import codingpark.net.cheesecloud.R;
 import codingpark.net.cheesecloud.handle.OnFragmentInteractionListener;
+import codingpark.net.cheesecloud.handle.UploadService;
 
 /**
  * This activity show the upload/download file state to user.
@@ -43,6 +46,20 @@ public class TransferStateActivity extends Activity implements ActionBar.TabList
      * The {@link ViewPager} that will host the section contents.
      */
     ViewPager mViewPager;
+
+    /**
+     * Send message to UploadService/DownloadService to start/pause transfer(All)
+     */
+    private Button trans_control_bt             = null;
+    /**
+     * Send message to UploadService/DownloadService to cancel transfer(All)
+     */
+    private Button trans_pause_all_bt           = null;
+    /**
+     * Clear all transfer(Download/Upload) record from local upload_table/download_table(All)
+     * Only all record transfer completed, this widget is visible
+     */
+    private Button trans_clear_all_bt           = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,9 +99,9 @@ public class TransferStateActivity extends Activity implements ActionBar.TabList
                             .setText(mSectionsPagerAdapter.getPageTitle(i))
                             .setTabListener(this));
         }
+        initUI();
+        initHanlder();
     }
-
-
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -123,6 +140,23 @@ public class TransferStateActivity extends Activity implements ActionBar.TabList
     @Override
     public void onFragmentInteraction(String id) {
 
+    }
+
+    private void initUI() {
+        trans_control_bt = (Button)findViewById(R.id.trans_control_bt);
+        trans_pause_all_bt = (Button)findViewById(R.id.trans_cancel_bt);
+        trans_clear_all_bt = (Button)findViewById(R.id.trans_clear_rec_bt);
+    }
+
+    private void initHanlder() {
+        trans_control_bt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // TODO handle download
+                Log.d(TAG, "KKKKK");
+                UploadService.startActionPause(TransferStateActivity.this);
+            }
+        });
     }
 
 

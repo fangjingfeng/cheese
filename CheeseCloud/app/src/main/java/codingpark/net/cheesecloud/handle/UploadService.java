@@ -11,6 +11,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -69,6 +70,10 @@ public class UploadService extends IntentService {
 
     private UploadFileDataSource uploadFileDataSource   = null;
 
+    private ArrayList<UploadFile> mWaitTask                             = null;
+
+    private static UploadTask mTask            = null;
+
     /**
      * Starts this service to perform action ACTION_START_UPLOAD with the
      * given parameters. If the service is already performing a task this
@@ -95,6 +100,8 @@ public class UploadService extends IntentService {
 
     public UploadService() {
         super("UploadService");
+        if (mTask != null)
+            mTask = new UploadTask();
         //Context c = getApplicationContext();
     }
 
@@ -115,6 +122,7 @@ public class UploadService extends IntentService {
      * parameters.
      */
     private void handleActionStartUpload() {
+        Log.d(TAG, "handle action start upload");
         uploadFileDataSource = new UploadFileDataSource(this);
         uploadFileDataSource.open();
         Log.d(TAG, "Start uploading");
@@ -126,6 +134,7 @@ public class UploadService extends IntentService {
      * parameters.
      */
     private void handleActionPauseUpload() {
+        Log.d(TAG, "handle action pause upload");
         Log.d(TAG, "Pause uploading");
     }
 
@@ -175,7 +184,7 @@ public class UploadService extends IntentService {
                 break;
             }
         }
-        // 2. Traverse fileList the NotUpload file
+        // 2. Traverse fileList the NOT_UPLOAD file
         for (UploadFile file : rootFileList) {
             if (file.getParent_id() == -1) {
                 result = startUploading(file);
@@ -200,13 +209,13 @@ public class UploadService extends IntentService {
         int result = WsResultType.Success;
         // If the target is file, upload directly
         if (file.getFileType() == CloudFileType.TYPE_FILE) {
-            if (file.getState() != UploadFileState.Uploaded)
+            if (file.getState() != UploadFileState.UPLOADED)
                 result = startUploading(file);
         }
         // If the target is folder, upload sub files recursion
         else {
             // Create the folder, remember the folder's local id
-            if (file.getState() != UploadFileState.Uploaded) {
+            if (file.getState() != UploadFileState.UPLOADED) {
                 result = startUploading(file);
                 if (result != WsResultType.Success)
                     return result;
@@ -216,7 +225,7 @@ public class UploadService extends IntentService {
             for (UploadFile uFile : uploadFileList) {
                 if (uFile.getFileType() == CloudFileType.TYPE_FOLDER) {
                 }
-                if (uFile.getState() != UploadFileState.Uploaded) {
+                if (uFile.getState() != UploadFileState.UPLOADED) {
                     // Update the sub files remote parent id
                     uFile.setRemote_parent_id(file.getRemote_id());
                     result = startUploading(uFile);
@@ -241,7 +250,7 @@ public class UploadService extends IntentService {
         int result = WsResultType.Success;
         byte[] buffer;
         if (file.getFileType() == CloudFileType.TYPE_FILE) {
-            if (file.getState() == UploadFileState.NotUpload) {
+            if (file.getState() == UploadFileState.NOT_UPLOAD) {
                 result = this.checkedFileInfo_wrapper(file);
                 // Call WS occur error
                 if (result < 0)
@@ -275,7 +284,7 @@ public class UploadService extends IntentService {
                         file.setChangedSize(file.getChangedSize() + count);
                         // Upload completed
                         if (file.getChangedSize() == file.getFileSize()) {
-                            file.setState(UploadFileState.Uploaded);
+                            file.setState(UploadFileState.UPLOADED);
                         }
                         // Update to database
                         uploadFileDataSource.updateUploadFile(file);
@@ -294,7 +303,7 @@ public class UploadService extends IntentService {
             result = createFolder_wrapper(file);
             if (result == WsResultType.Success) {
                 // Update database
-                file.setState(UploadFileState.Uploaded);
+                file.setState(UploadFileState.UPLOADED);
                 uploadFileDataSource.updateUploadFile(file);
             }
         }
@@ -347,11 +356,11 @@ public class UploadService extends IntentService {
         // Update UploadFile.remote_id
         if (result == CheckedFileInfoResultType.RESULT_QUICK_UPLOAD) {
             file.setRemote_id(wsFile.ID);
-            file.setState(UploadFileState.Uploaded);
+            file.setState(UploadFileState.UPLOADED);
             file.setChangedSize(file.getFileSize());
         } else if (result == CheckedFileInfoResultType.RESULT_CHECK_SUCCESS) {
             file.setRemote_id(wsFile.ID);
-            file.setState(UploadFileState.Uploading);
+            file.setState(UploadFileState.WAIT_UPLOAD);
         }
         return result;
     }
@@ -364,6 +373,20 @@ public class UploadService extends IntentService {
         wsFolder.Name = r_file.getName();
         result = ClientWS.getInstance(this).createFolder(wsFolder);
         return result;
+    }
+
+    private class UploadTask extends Thread {
+        @Override
+        public void run() {
+            while (true) {
+                Log.d(TAG, "UploadTask run, start sleep 5s");
+                try {
+                    Thread.sleep(5000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 }
 

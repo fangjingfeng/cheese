@@ -172,7 +172,7 @@ public class UploadFileDataSource {
                 u_file.setParent_id(l_parent_id);
                 u_file.setRemote_parent_id(r_parent_id);
                 u_file.setFileSize(file.length());
-                u_file.setState(UploadFileState.NotUpload);
+                u_file.setState(UploadFileState.NOT_UPLOAD);
                 u_file.setChangedSize(0);
                 u_file.setFileType(file.isFile() ? CloudFileType.TYPE_FILE : CloudFileType.TYPE_FOLDER);
                 u_file.setLocal_user_id(AppConfigs.current_local_user_id);
@@ -288,7 +288,7 @@ public class UploadFileDataSource {
                 UploadFileEntry.COLUMN_STATE + "!=? and "
                         + UploadFileEntry.COLUMN_USERID + "=? and "
                         + UploadFileEntry.COLUMN_PARENT_ID + " < 0 ",
-                new String[]{String.valueOf(UploadFileState.Uploaded),
+                new String[]{String.valueOf(UploadFileState.UPLOADED),
                         String.valueOf(AppConfigs.current_local_user_id)}, null, null, null);
         while (cursor.moveToNext())  {
             fileList.add(cursorToFile(cursor));

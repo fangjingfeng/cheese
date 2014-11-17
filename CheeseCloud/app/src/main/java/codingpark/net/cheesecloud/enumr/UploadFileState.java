@@ -3,6 +3,8 @@ package codingpark.net.cheesecloud.enumr;
 
 /**
  * Mark the upload file state.
+ * For folder: NOT_UPLOAD/UPLOADED
+ * For file: NOT_UPLOAD/WAIT_UPLOAD/UPLOADING/UPLOADED/PAUSE_UPLOAD
  * @author Ethan Shan
  * @version 1.0
  * @created 06-十一月-2014 16:23:09
@@ -10,23 +12,31 @@ package codingpark.net.cheesecloud.enumr;
 public class UploadFileState {
 
     /**
-     * Prepare to upload
+     * For file: Not call checkedFileInfo
+     * For folder: Not call createFolder
+     * Warning: Current not use
      */
-    public static final int NotUpload = 0;
+    public static final int NOT_UPLOAD = 0;
     /**
-     * User cancel upload the file
+     * For file: Already call checkedFileInfo, and the upload thread not run(wait run)
+     * For folder: Not available
      */
-    public static final int UploadCanceled = 3;
+    public static final int WAIT_UPLOAD = 1;
     /**
-     * Upload completed file: the file already uploaded complete folder: the folder
-     * created and sub file upload complete on server
+     * For file: Already call checkedFileInfo, and the upload thread run on it
+     * For folder: Not available
      */
-    public static final int Uploaded = 2;
+    public static final int UPLOADING   = 2;
     /**
-     * In process uploading file: the file is uploading, and created on server folder:
-     * the folder already created on server, but sub fille not upload complete.
+     * For file: Already call checkedFileInfo, and all file block uploaded
+     * For folder: Already call createFolder
      */
-    public static final int Uploading = 1;
+    public static final int UPLOADED    = 3;
+    /**
+     * For file: Already call checkedFileInfo, and the upload thread not run(User pause file uploading)
+     * For folder: Not available
+     */
+    public static final int PAUSE_UPLOAD    = 4;
 
     public UploadFileState(){
 

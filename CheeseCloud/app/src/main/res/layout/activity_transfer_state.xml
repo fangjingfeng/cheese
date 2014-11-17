@@ -22,17 +22,17 @@
         android:layout_alignParentBottom="true">
 
         <Button
-            android:id="@+id/trans_pause_bt"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="pause all"
-            android:layout_weight="1" />
-
-        <Button
-            android:id="@+id/trans_start_bt"
+            android:id="@+id/trans_control_bt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="start all"
+            android:layout_weight="1" />
+
+        <Button
+            android:id="@+id/trans_cancel_bt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="cancel all"
             android:layout_weight="1" />
 
         <Button
