@@ -55,6 +55,10 @@
     <!-- TransferStateActivity -->
     <string name="transfer_state_activity_download_section_title">下载列表</string>
     <string name="transfer_state_activity_upload_section_title">上传列表</string>
+    <string name="transfer_state_activity_control_start_all_bt_text">全部恢复</string>
+    <string name="transfer_state_activity_control_pause_all_bt_text">全部暂停</string>
+    <string name="transfer_state_activity_control_cancel_all_bt_text">全部终止</string>
+    <string name="transfer_state_activity_control_clear_all_bt_text">清除所有记录</string>
     <string name="title_activity_transfer_state">传输状态</string>
     <!-- FragmentUploadList -->
     <string name="fragment_upload_list_wait_upload_state">等待上传</string>

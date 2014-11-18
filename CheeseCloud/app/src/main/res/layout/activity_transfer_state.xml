@@ -25,14 +25,14 @@
             android:id="@+id/trans_control_bt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="start all"
+            android:text="@string/transfer_state_activity_control_pause_all_bt_text"
             android:layout_weight="1" />
 
         <Button
             android:id="@+id/trans_cancel_bt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="cancel all"
+            android:text="@string/transfer_state_activity_control_cancel_all_bt_text"
             android:layout_weight="1" />
 
         <Button
@@ -40,7 +40,7 @@
             android:visibility="gone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Clear all"
+            android:text="@string/transfer_state_activity_control_clear_all_bt_text"
             android:layout_weight="1" />
     </LinearLayout>
 

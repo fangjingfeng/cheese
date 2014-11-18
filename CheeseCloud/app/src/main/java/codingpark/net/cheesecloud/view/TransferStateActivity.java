@@ -110,10 +110,7 @@ public class TransferStateActivity extends Activity implements ActionBar.TabList
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        } else if (id == android.R.id.home) {
+        if (id == android.R.id.home) {
             Log.d(TAG, "Click back arrow");
             this.finish();
             return true;
@@ -163,6 +160,14 @@ public class TransferStateActivity extends Activity implements ActionBar.TabList
             public void onClick(View v) {
                 Log.d(TAG, "cancel all");
                 UploadService.stopUploadService(TransferStateActivity.this);
+            }
+        });
+
+        trans_clear_all_bt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // TODO clear all uploaded record from local table
+                Log.d(TAG, "Clear all record");
             }
         });
     }

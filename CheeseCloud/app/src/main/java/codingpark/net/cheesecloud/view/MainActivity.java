@@ -132,28 +132,6 @@ public class MainActivity extends Activity implements OnFragmentInteractionListe
         super.onResume();
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        switch(item.getItemId()) {
-            case R.id.action_new_dir:
-                return true;
-
-            case R.id.action_search:
-                return true;
-
-            case R.id.action_logout:
-                finish();
-                return true;
-            case R.id.action_help:
-                Intent intent = new Intent(this, HelpActivity.class);
-                this.startActivity(intent);
-                return true;
-        }
-        return false;
-    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

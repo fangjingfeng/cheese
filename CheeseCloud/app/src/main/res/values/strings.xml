@@ -59,6 +59,10 @@
     <!-- TransferStateActivity -->
     <string name="transfer_state_activity_download_section_title">Download List</string>
     <string name="transfer_state_activity_upload_section_title">Upload List</string>
+    <string name="transfer_state_activity_control_start_all_bt_text">Resume all</string>
+    <string name="transfer_state_activity_control_pause_all_bt_text">Pause all</string>
+    <string name="transfer_state_activity_control_cancel_all_bt_text">Cancel all</string>
+    <string name="transfer_state_activity_control_clear_all_bt_text">Clear all</string>
     <string name="title_activity_transfer_state">Transfer State</string>
     <!-- FragmentUploadList -->
     <string name="fragment_upload_list_wait_upload_state">Waiting</string>
@@ -72,7 +76,6 @@
     <string name="Email_Developer">Email Developer</string>
     <string name="Website">Website</string>
     <string name="title_activity_select_path">SelectPathActivity</string>
-    <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
 
     <!-- Welcome Activity -->
