@@ -23,6 +23,9 @@ import java.io.File;
 import java.util.ArrayList;
 
 import codingpark.net.cheesecloud.R;
+import codingpark.net.cheesecloud.entity.UploadFile;
+import codingpark.net.cheesecloud.enumr.WsResultType;
+import codingpark.net.cheesecloud.handle.ClientWS;
 import codingpark.net.cheesecloud.handle.OnFragmentInteractionListener;
 import codingpark.net.cheesecloud.handle.UploadService;
 import codingpark.net.cheesecloud.model.UploadFileDataSource;
@@ -432,17 +435,35 @@ public class MainActivity extends Activity implements OnFragmentInteractionListe
 
         private void scan(File file, long l_parent_id, String r_parent_id) {
             Log.d(TAG, "Scan");
-            long id = mDataSource.addUploadFile(file, l_parent_id, r_parent_id);
+            UploadFile uFile = UploadFileDataSource.createUploadFile(file, l_parent_id, r_parent_id);
+            int result = WsResultType.Success; // Web service call result
+            long l_id = -1;     // insert to local DB return value
+            // If is folder
+            // 1. create record on server
+            // 2. insert record on local table
+            // 3. scan sub files and folders
             if (file.isDirectory()) {
-                File[] fileArray = file.listFiles();
-                File subFile = null;
-                for (int i = 0; i < fileArray.length; i++) {
-                    subFile = fileArray[i];
-                    if (subFile.isFile()) {
-                        mDataSource.addUploadFile(subFile, id, "");
-                    } else {
-                        scan(subFile, id, "");
+                result = ClientWS.getInstance(MainActivity.this).createFolder_wrapper(uFile);
+                if (result != WsResultType.Success)
+                    return;     // Create folder failed, return.
+                else {
+                    l_id = mDataSource.addUploadFile(file, l_parent_id, r_parent_id);
+                    File[] fileArray = file.listFiles();
+                    File subFile = null;
+                    // Scan file's sub folders and files recursively
+                    for (int i = 0; i < fileArray.length; i++) {
+                        subFile = fileArray[i];
+                        scan(subFile, l_id, uFile.getRemote_id());
                     }
+                }
+            }
+            // If is file;
+            // 1. create record on server
+            // 2. insert record on local table
+            else if (file.isFile()){
+                result = ClientWS.getInstance(MainActivity.this).checkedFileInfo_wrapper(uFile);
+                if (result == WsResultType.Success) {
+                    mDataSource.addUploadFile(uFile);
                 }
             }
             return;

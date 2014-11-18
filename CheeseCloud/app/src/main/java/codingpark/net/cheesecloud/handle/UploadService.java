@@ -70,9 +70,11 @@ public class UploadService extends IntentService {
 
     private UploadFileDataSource uploadFileDataSource   = null;
 
-    private ArrayList<UploadFile> mWaitTask                             = null;
+    private ArrayList<UploadFile> mWaitTask             = null;
 
-    private static UploadTask mTask            = null;
+    private static UploadTask mTask                     = null;
+
+    private static Context mContext                     = null;
 
     /**
      * Starts this service to perform action ACTION_START_UPLOAD with the
@@ -100,7 +102,7 @@ public class UploadService extends IntentService {
 
     public UploadService() {
         super("UploadService");
-        if (mTask != null)
+        if (mTask == null)
             mTask = new UploadTask();
         //Context c = getApplicationContext();
     }
@@ -117,25 +119,64 @@ public class UploadService extends IntentService {
         }
     }
 
+    @Override
+    public void onCreate() {
+        Log.d(TAG, "UploadService created");
+        if (mTask == null) {
+            Log.d(TAG, "UploadTask is null, create new");
+            mTask = new UploadTask();
+        }
+        super.onCreate();
+    }
+
     /**
      * Handle action ACTION_START_UPLOAD in the provided background thread with the provided
      * parameters.
      */
     private void handleActionStartUpload() {
-        Log.d(TAG, "handle action start upload");
+        // If task is running, do nothing
+        if (mTask.isAlive()) {
+            Log.d(TAG, "UploadThread running, do nothing");
+            return;
+        }
+        // If task stop and not NEW state, just create new UploadTask
+        if (mTask.getState() != Thread.State.NEW) {
+            Log.d(TAG, "upload thread have completed, new ThreadTask");
+            mTask = null;
+            mTask = new UploadTask();
+        }
+        Log.d(TAG, "Start uploading");
+        // Start upload
+        mTask.start();
+        /*
         uploadFileDataSource = new UploadFileDataSource(this);
         uploadFileDataSource.open();
         Log.d(TAG, "Start uploading");
         root_upload();
+        */
     }
 
     /**
      * Handle action ACTION_PAUSE_UPLOAD in the provided background thread with the provided
      * parameters.
      */
-    private void handleActionPauseUpload() {
+    private synchronized  void handleActionPauseUpload() {
         Log.d(TAG, "handle action pause upload");
         Log.d(TAG, "Pause uploading");
+        if (mTask.isAlive()) {
+            mTask.interrupt();
+            try {
+                mTask.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            Log.d(TAG, "Pause upload thread success");
+        }
+        /*
+        if (state != Thread.State.TERMINATED && state == Thread.State.NEW) {
+            Log.d(TAG, "upload thread is running, stopit");
+        }
+        */
     }
 
     @Override
@@ -251,7 +292,7 @@ public class UploadService extends IntentService {
         byte[] buffer;
         if (file.getFileType() == CloudFileType.TYPE_FILE) {
             if (file.getState() == UploadFileState.NOT_UPLOAD) {
-                result = this.checkedFileInfo_wrapper(file);
+                result = ClientWS.getInstance(mContext).checkedFileInfo_wrapper(file);
                 // Call WS occur error
                 if (result < 0)
                     return result;
@@ -300,7 +341,7 @@ public class UploadService extends IntentService {
                 return WsResultType.Faild;
             }
         } else if (file.getFileType() == CloudFileType.TYPE_FOLDER) {
-            result = createFolder_wrapper(file);
+            result = ClientWS.getInstance(mContext).createFolder_wrapper(file);
             if (result == WsResultType.Success) {
                 // Update database
                 file.setState(UploadFileState.UPLOADED);
@@ -328,52 +369,7 @@ public class UploadService extends IntentService {
         return result;
     }
 
-    /**
-     * Get current date format string
-     * @return
-     *  String: current date string, such as 2014/10/17 16:44:23
-     */
-    private String getDateString() {
-        return DateFormat.format("yyyy/MM/dd HH:mm:ss", new Date(System.currentTimeMillis())).toString();
-    }
-    private int checkedFileInfo_wrapper(UploadFile file) {
-        int result;
-        WsFile wsFile = new WsFile();
-        String path = file.getFilePath();
-        File r_file = new File(path);
-        wsFile.CreaterID = AppConfigs.current_remote_user_id;
-        wsFile.FatherID = file.getRemote_parent_id();
-        wsFile.Extend = path.substring(path.lastIndexOf(".") + 1);
-        wsFile.SizeB = r_file.length();
-        wsFile.FullName = r_file.getName();
-        wsFile.CreatDate = getDateString();
-        try {
-            wsFile.MD5 = FileManager.generateMD5(new FileInputStream(r_file));
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        result = ClientWS.getInstance(this).checkedFileInfo(wsFile);
-        // Update UploadFile.remote_id
-        if (result == CheckedFileInfoResultType.RESULT_QUICK_UPLOAD) {
-            file.setRemote_id(wsFile.ID);
-            file.setState(UploadFileState.UPLOADED);
-            file.setChangedSize(file.getFileSize());
-        } else if (result == CheckedFileInfoResultType.RESULT_CHECK_SUCCESS) {
-            file.setRemote_id(wsFile.ID);
-            file.setState(UploadFileState.WAIT_UPLOAD);
-        }
-        return result;
-    }
 
-    private int createFolder_wrapper(UploadFile file) {
-        int result;
-        WsFolder wsFolder = new WsFolder();
-        wsFolder.FatherID = file.getRemote_parent_id();
-        File r_file = new File(file.getFilePath());
-        wsFolder.Name = r_file.getName();
-        result = ClientWS.getInstance(this).createFolder(wsFolder);
-        return result;
-    }
 
     private class UploadTask extends Thread {
         @Override
@@ -381,13 +377,21 @@ public class UploadService extends IntentService {
             while (true) {
                 Log.d(TAG, "UploadTask run, start sleep 5s");
                 try {
-                    Thread.sleep(5000);
+                    if (!isInterrupted()) {
+                        // Do work
+                        Thread.sleep(5000);
+                    } else {
+                        Log.d(TAG, "UploadTask interrupt occurred and no exception");
+                        return;
+                    }
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    Log.d(TAG, "Thread exception, set interrupt again");
+                    Thread.currentThread().interrupt();
                 }
             }
         }
     }
+
 }
 
 

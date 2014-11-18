@@ -25,31 +25,31 @@ import codingpark.net.cheesecloud.handle.FileManager;
  */
 public class UploadFileDataSource {
 
-    private Context mContext            = null;
-    private SQLiteDatabase database     = null;
-    private SQLiteOpenHelper dbHelper   = null;
+    private Context mContext = null;
+    private SQLiteDatabase database = null;
+    private SQLiteOpenHelper dbHelper = null;
 
     public static final class UploadFileEntry implements BaseColumns {
         /**
          * The table name which to store the user selected files information.
          */
-        public static final String TABLE_NAME   = "upload_files";
+        public static final String TABLE_NAME = "upload_files";
         /**
          * The user guid at the server database(Current not use)
          */
-        public static final String COLUMN_REMOTE_ID    = "remote_id";
+        public static final String COLUMN_REMOTE_ID = "remote_id";
         /**
          * Type: TEXT
          * Description: The file absolutely path in local file system
          * Default: ""(String.Empty)
          */
-        public static final String COLUMN_FILEPATH     = "filepath";
+        public static final String COLUMN_FILEPATH = "filepath";
         /**
          * Type: VARCHAR(50)
          * Description: The whole file MD5 value
          * Default: ""(String.Empty)
          */
-        public static final String COLUMN_MD5          = "md5";
+        public static final String COLUMN_MD5 = "md5";
         /**
          * Type: INTEGER
          * Description: The file parent folder id. Associate with {@link #_ID}
@@ -57,7 +57,7 @@ public class UploadFileDataSource {
          * >=0:
          * Default: -1
          */
-        public static final String COLUMN_PARENT_ID    = "parent_id";
+        public static final String COLUMN_PARENT_ID = "parent_id";
         /**
          * Type: INTEGER
          * Description: The file parent folder id. Associate with {@link #_ID}
@@ -65,13 +65,13 @@ public class UploadFileDataSource {
          * >=0:
          * Default: -1
          */
-        public static final String COLUMN_REMOTE_PARENT_ID    = "remote_parent_id";
+        public static final String COLUMN_REMOTE_PARENT_ID = "remote_parent_id";
         /**
          * Type: INTEGER
          * Description: The whole file size in Byte unit
          * Default: 0
          */
-        public static final String COLUMN_FILESIZE     = "filesize";
+        public static final String COLUMN_FILESIZE = "filesize";
         /**
          * Type: INTEGER
          * Description: The file current upload state
@@ -80,13 +80,13 @@ public class UploadFileDataSource {
          * 2: uploaded
          * Default: 0
          */
-        public static final String COLUMN_STATE        = "state";
+        public static final String COLUMN_STATE = "state";
         /**
          * Type: INTEGER
          * Description: The file current uploaded size(offset from head)
          * Default: 0
          */
-        public static final String COLUMN_UPLOADED_SIZE    = "uploaded_size";
+        public static final String COLUMN_UPLOADED_SIZE = "uploaded_size";
         /**
          * Type: INTEGER
          * Description: The file type(not extension type)
@@ -94,18 +94,18 @@ public class UploadFileDataSource {
          * 1: folder
          * Default: 0
          */
-        public static final String COLUMN_FILETYPE     = "filetype";
+        public static final String COLUMN_FILETYPE = "filetype";
         /**
          * Type: INTEGER
          * Description: The user id(local database) who insert this item. Associate with user table's _ID
          * Default: -1
          */
-        public static final String COLUMN_USERID       = "local_user_id";
+        public static final String COLUMN_USERID = "local_user_id";
 
         /**
          * UploadFile table columns array
          */
-        public static final String[] COLUMN_ARRAY = new String[] {
+        public static final String[] COLUMN_ARRAY = new String[]{
                 _ID,
                 COLUMN_FILEPATH,
                 COLUMN_FILESIZE,
@@ -134,10 +134,10 @@ public class UploadFileDataSource {
 
     /**
      * Insert upload info to uploadfile table
+     *
      * @param file
-     * @return
-     *  -1: Insert error occured
-     *  >0: Insert success
+     * @return -1: Insert error occured
+     * >0: Insert success
      */
     public long addUploadFile(UploadFile file) {
         // 1. Judge the file is exist
@@ -150,14 +150,11 @@ public class UploadFileDataSource {
 
     /**
      * Insert a new record to uploadfile table
-     * @param file
-     *  The File object
-     * @param l_parent_id
-     *  The local parent id reference to uploadfile._ID column
-     * @param r_parent_id
-     *  The remote parent id reference to server's folder ID
-     * @return
-     *  The insert column's id
+     *
+     * @param file        The File object
+     * @param l_parent_id The local parent id reference to uploadfile._ID column
+     * @param r_parent_id The remote parent id reference to server's folder ID
+     * @return The insert column's id
      */
     public long addUploadFile(File file, long l_parent_id, String r_parent_id) {
         UploadFile u_file = new UploadFile();
@@ -187,11 +184,10 @@ public class UploadFileDataSource {
 
     /**
      * Delete the record by local uploadfile._ID column
-     * @param id
-     *  The target record _ID
-     * @return
-     *  true: delete success
-     *  false: delete failed
+     *
+     * @param id The target record _ID
+     * @return true: delete success
+     * false: delete failed
      */
     public boolean deleteUploadFile(int id) {
         int result = database.delete(UploadFileEntry.TABLE_NAME, UploadFileEntry._ID + "=?", new String[]{String.valueOf(id)});
@@ -201,24 +197,24 @@ public class UploadFileDataSource {
     /**
      * Update the file record to database.
      * Identify by UploadFileEntry._ID
+     *
      * @param file UploadFile object
-     * @return
-     *  true: Update success
-     *  false: Update failed
+     * @return true: Update success
+     * false: Update failed
      */
     public boolean updateUploadFile(UploadFile file) {
         ContentValues cv = fileToContentValue(file);
         int result = database.update(UploadFileEntry.TABLE_NAME, cv,
                 UploadFileEntry._ID + "=?",
-                new String[] {String.valueOf(file.getId())});
+                new String[]{String.valueOf(file.getId())});
         return result > 0;
     }
 
     /**
      * Get all upload file list
-     * @return
-     *  List<UploadFile>: The list include all upload file record
-     *  in database
+     *
+     * @return List<UploadFile>: The list include all upload file record
+     * in database
      */
     public List<UploadFile> getAllUploadFile() {
         List<UploadFile> fileList = new ArrayList<UploadFile>();
@@ -233,9 +229,9 @@ public class UploadFileDataSource {
 
     /**
      * Get the file's sub file list
+     *
      * @param file the parent file
-     * @return
-     *  List<UploadFile>: UploadFile object list
+     * @return List<UploadFile>: UploadFile object list
      */
     public List<UploadFile> getSubUploadFiles(UploadFile file) {
         List<UploadFile> fileList = new ArrayList<UploadFile>();
@@ -256,9 +252,9 @@ public class UploadFileDataSource {
 
     /**
      * Convert Cursor to UploadFile object
+     *
      * @param cursor The cursor fetch from database
-     * @return
-     *  UploadFile: The UploadFile object
+     * @return UploadFile: The UploadFile object
      */
     private UploadFile cursorToFile(Cursor cursor) {
         UploadFile file = new UploadFile();
@@ -278,8 +274,8 @@ public class UploadFileDataSource {
 
     /**
      * Get not upload completed root folder from database
-     * @return
-     *  List<UploadFile>: The UploadFile object list
+     *
+     * @return List<UploadFile>: The UploadFile object list
      */
     public List<UploadFile> getNotUploadedRootFiles() {
         List<UploadFile> fileList = new ArrayList<UploadFile>();
@@ -290,7 +286,7 @@ public class UploadFileDataSource {
                         + UploadFileEntry.COLUMN_PARENT_ID + " < 0 ",
                 new String[]{String.valueOf(UploadFileState.UPLOADED),
                         String.valueOf(AppConfigs.current_local_user_id)}, null, null, null);
-        while (cursor.moveToNext())  {
+        while (cursor.moveToNext()) {
             fileList.add(cursorToFile(cursor));
         }
         return fileList;
@@ -298,10 +294,9 @@ public class UploadFileDataSource {
 
     /**
      * Convert UploadFile object to ContentValues object
-     * @param file
-     *  UploadFile object
-     * @return
-     *  ContentValues object
+     *
+     * @param file UploadFile object
+     * @return ContentValues object
      */
     private ContentValues fileToContentValue(UploadFile file) {
         ContentValues cv = new ContentValues();
@@ -316,5 +311,29 @@ public class UploadFileDataSource {
         cv.put(UploadFileEntry.COLUMN_UPLOADED_SIZE, file.getChangedSize());
         cv.put(UploadFileEntry.COLUMN_USERID, file.getLocal_user_id());
         return cv;
+    }
+
+    public static UploadFile createUploadFile(File file, long l_parent_id, String r_parent_id) {
+        UploadFile u_file = new UploadFile();
+        // TODO Judge the table have the same path/local_user_id/state!=uploaded(If have, not need insert)
+        if (file.exists()) {
+            try {
+                u_file.setFilePath(file.getAbsolutePath());
+                if (file.isFile())
+                    u_file.setMd5(FileManager.generateMD5(new FileInputStream(file)));
+                else
+                    u_file.setMd5("");
+                u_file.setParent_id(l_parent_id);
+                u_file.setRemote_parent_id(r_parent_id);
+                u_file.setFileSize(file.length());
+                u_file.setState(UploadFileState.NOT_UPLOAD);
+                u_file.setChangedSize(0);
+                u_file.setFileType(file.isFile() ? CloudFileType.TYPE_FILE : CloudFileType.TYPE_FOLDER);
+                u_file.setLocal_user_id(AppConfigs.current_local_user_id);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+        return u_file;
     }
 }

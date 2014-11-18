@@ -24,9 +24,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import codingpark.net.cheesecloud.AppConfigs;
+import codingpark.net.cheesecloud.entity.UploadFile;
 import codingpark.net.cheesecloud.enumr.CheckedFileInfoResultType;
 import codingpark.net.cheesecloud.enumr.LoginResultType;
+import codingpark.net.cheesecloud.enumr.UploadFileState;
 import codingpark.net.cheesecloud.enumr.WsResultType;
+import codingpark.net.cheesecloud.utils.Misc;
 import codingpark.net.cheesecloud.wsi.FileInfo;
 import codingpark.net.cheesecloud.wsi.SyncFileBlock;
 import codingpark.net.cheesecloud.wsi.WsFile;
@@ -631,7 +634,60 @@ public final class ClientWS {
     }
 
 
-    /* ###########################################Unit Test#######################################*/
+    /* #########################################Web Service API Wrapper########################## */
+
+    /**
+     * When user select upload file is a folder, call createFolder_wrapper and
+     * set UploadFile as a parameter, this function convert UploadFile to WsFolder,
+     * then call createFolder(WsFolder) do real create action. If create success, will
+     * fill up UploadFile.remote_id
+     * @param file
+     * @return
+     */
+    public int createFolder_wrapper(UploadFile file) {
+        int result;
+        WsFolder wsFolder = new WsFolder();
+        wsFolder.FatherID = file.getRemote_parent_id();
+        File r_file = new File(file.getFilePath());
+        wsFolder.Name = r_file.getName();
+        result = createFolder(wsFolder);
+        if (result == WsResultType.Success) {
+            file.setRemote_id(wsFolder.ID);
+        }
+        return result;
+    }
+
+    public int checkedFileInfo_wrapper(UploadFile file) {
+        int result = -1;
+        WsFile wsFile = new WsFile();
+        String path = file.getFilePath();
+        File r_file = new File(path);
+        wsFile.CreaterID = AppConfigs.current_remote_user_id;
+        wsFile.FatherID = file.getRemote_parent_id();
+        wsFile.Extend = path.substring(path.lastIndexOf(".") + 1);
+        wsFile.SizeB = r_file.length();
+        wsFile.FullName = r_file.getName();
+        wsFile.CreatDate = Misc.getDateString();
+        try {
+            wsFile.MD5 = FileManager.generateMD5(new FileInputStream(r_file));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        checkedFileInfo(wsFile);
+        // Update UploadFile.remote_id
+        if (result == CheckedFileInfoResultType.RESULT_QUICK_UPLOAD) {
+            file.setRemote_id(wsFile.ID);
+            file.setState(UploadFileState.UPLOADED);
+            file.setChangedSize(file.getFileSize());
+        } else if (result == CheckedFileInfoResultType.RESULT_CHECK_SUCCESS) {
+            file.setRemote_id(wsFile.ID);
+            file.setState(UploadFileState.WAIT_UPLOAD);
+        }
+        return result;
+    }
+
+
+    /* ###########################################Unit Test###################################### */
     private void test_userLogin() {
         WsGuidOwner owner = new WsGuidOwner();
         //owner.CreateDate = "2014-10-17 16:44:23";
