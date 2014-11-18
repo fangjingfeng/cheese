@@ -673,7 +673,7 @@ public final class ClientWS {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-        checkedFileInfo(wsFile);
+        result = checkedFileInfo(wsFile);
         // Update UploadFile.remote_id
         if (result == CheckedFileInfoResultType.RESULT_QUICK_UPLOAD) {
             file.setRemote_id(wsFile.ID);

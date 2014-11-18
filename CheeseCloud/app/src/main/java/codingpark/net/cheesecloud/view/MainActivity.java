@@ -11,7 +11,6 @@ import android.os.Handler;
 import android.support.v13.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
@@ -24,6 +23,7 @@ import java.util.ArrayList;
 
 import codingpark.net.cheesecloud.R;
 import codingpark.net.cheesecloud.entity.UploadFile;
+import codingpark.net.cheesecloud.enumr.CheckedFileInfoResultType;
 import codingpark.net.cheesecloud.enumr.WsResultType;
 import codingpark.net.cheesecloud.handle.ClientWS;
 import codingpark.net.cheesecloud.handle.OnFragmentInteractionListener;
@@ -422,7 +422,7 @@ public class MainActivity extends Activity implements OnFragmentInteractionListe
                 case SCAN_SUCCESS:
                     Toast.makeText(MainActivity.this, "扫描插入完成", Toast.LENGTH_SHORT).show();
                     Log.d(TAG, "Scan complete, send upload action to UploadService!");
-                    UploadService.startActionUpload(MainActivity.this);
+                    UploadService.startActionUploadAll(MainActivity.this);
                     break;
                 case SCAN_FAILED:
                     break;
@@ -447,7 +447,7 @@ public class MainActivity extends Activity implements OnFragmentInteractionListe
                 if (result != WsResultType.Success)
                     return;     // Create folder failed, return.
                 else {
-                    l_id = mDataSource.addUploadFile(file, l_parent_id, r_parent_id);
+                    l_id = mDataSource.addUploadFile(uFile);
                     File[] fileArray = file.listFiles();
                     File subFile = null;
                     // Scan file's sub folders and files recursively
@@ -462,7 +462,8 @@ public class MainActivity extends Activity implements OnFragmentInteractionListe
             // 2. insert record on local table
             else if (file.isFile()){
                 result = ClientWS.getInstance(MainActivity.this).checkedFileInfo_wrapper(uFile);
-                if (result == WsResultType.Success) {
+                if (result == CheckedFileInfoResultType.RESULT_CHECK_SUCCESS ||
+                        result == CheckedFileInfoResultType.RESULT_QUICK_UPLOAD) {
                     mDataSource.addUploadFile(uFile);
                 }
             }

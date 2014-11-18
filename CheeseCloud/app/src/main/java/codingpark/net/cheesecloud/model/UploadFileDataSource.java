@@ -140,9 +140,7 @@ public class UploadFileDataSource {
      * >0: Insert success
      */
     public long addUploadFile(UploadFile file) {
-        // 1. Judge the file is exist
-        //String sql = "SELECT * FROM " ;
-        // 2. Insert the file to local database
+        file.setLocal_user_id(AppConfigs.current_local_user_id);
         ContentValues cv = fileToContentValue(file);
         long result = database.insert(UploadFileEntry.TABLE_NAME, null, cv);
         return result;
@@ -213,11 +211,11 @@ public class UploadFileDataSource {
     /**
      * Get all upload file list
      *
-     * @return List<UploadFile>: The list include all upload file record
+     * @return ArrayList<UploadFile>: The list include all upload file record
      * in database
      */
-    public List<UploadFile> getAllUploadFile() {
-        List<UploadFile> fileList = new ArrayList<UploadFile>();
+    public ArrayList<UploadFile> getAllUploadFile() {
+        ArrayList<UploadFile> fileList = new ArrayList<UploadFile>();
         Cursor cursor = database.query(UploadFileEntry.TABLE_NAME,
                 UploadFileEntry.COLUMN_ARRAY,
                 null, null, null, null, null);
@@ -291,6 +289,45 @@ public class UploadFileDataSource {
         }
         return fileList;
     }
+
+    /**
+     * Get not upload completed files from database
+     *
+     * @return ArrayList<UploadFile>: The UploadFile object list
+     */
+    public ArrayList<UploadFile> getNotUploadedFiles() {
+        ArrayList<UploadFile> fileList = new ArrayList<UploadFile>();
+        Cursor cursor = database.query(UploadFileEntry.TABLE_NAME,
+                UploadFileEntry.COLUMN_ARRAY,
+                UploadFileEntry.COLUMN_STATE + " !=? and "
+                        + UploadFileEntry.COLUMN_USERID + " =? and "
+                        + UploadFileEntry.COLUMN_FILETYPE + " =? ",
+                new String[]{String.valueOf(UploadFileState.UPLOADED),
+                        String.valueOf(AppConfigs.current_local_user_id),
+                        String.valueOf(CloudFileType.TYPE_FILE)}, null, null, null);
+        while (cursor.moveToNext()) {
+            fileList.add(cursorToFile(cursor));
+        }
+        return fileList;
+    }
+
+    /*
+    public List<UploadFile> getWaitUploadFiles() {
+        List<UploadFile> fileList = new ArrayList<UploadFile>();
+        Cursor cursor = database.query(UploadFileEntry.TABLE_NAME,
+                UploadFileEntry.COLUMN_ARRAY,
+                UploadFileEntry.COLUMN_STATE + "==? and "
+                        + UploadFileEntry.COLUMN_USERID + "=? and ",
+                new String[]{String.valueOf(UploadFileState.UPLOADED),
+                        String.valueOf(AppConfigs.current_local_user_id)}, null, null, null);
+        while (cursor.moveToNext()) {
+            fileList.add(cursorToFile(cursor));
+        }
+        return fileList;
+    }
+    */
+
+
 
     /**
      * Convert UploadFile object to ContentValues object

@@ -54,7 +54,7 @@ public class TransferStateActivity extends Activity implements ActionBar.TabList
     /**
      * Send message to UploadService/DownloadService to cancel transfer(All)
      */
-    private Button trans_pause_all_bt           = null;
+    private Button trans_cancel_all_bt = null;
     /**
      * Clear all transfer(Download/Upload) record from local upload_table/download_table(All)
      * Only all record transfer completed, this widget is visible
@@ -144,7 +144,7 @@ public class TransferStateActivity extends Activity implements ActionBar.TabList
 
     private void initUI() {
         trans_control_bt = (Button)findViewById(R.id.trans_control_bt);
-        trans_pause_all_bt = (Button)findViewById(R.id.trans_cancel_bt);
+        trans_cancel_all_bt = (Button)findViewById(R.id.trans_cancel_bt);
         trans_clear_all_bt = (Button)findViewById(R.id.trans_clear_rec_bt);
     }
 
@@ -153,8 +153,16 @@ public class TransferStateActivity extends Activity implements ActionBar.TabList
             @Override
             public void onClick(View v) {
                 // TODO handle download
-                Log.d(TAG, "KKKKK");
-                UploadService.startActionPause(TransferStateActivity.this);
+                Log.d(TAG, "start/pause all");
+                UploadService.startActionPauseAll(TransferStateActivity.this);
+            }
+        });
+
+        trans_cancel_all_bt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG, "cancel all");
+                UploadService.stopUploadService(TransferStateActivity.this);
             }
         });
     }

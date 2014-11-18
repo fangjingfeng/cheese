@@ -1,21 +1,19 @@
 package codingpark.net.cheesecloud.handle;
 
 import android.app.IntentService;
+import android.app.Service;
 import android.content.Intent;
 import android.content.Context;
-import android.text.format.DateFormat;
+import android.os.IBinder;
 import android.util.Log;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
-import codingpark.net.cheesecloud.AppConfigs;
 import codingpark.net.cheesecloud.CheeseConstants;
 import codingpark.net.cheesecloud.enumr.CheckedFileInfoResultType;
 import codingpark.net.cheesecloud.enumr.CloudFileType;
@@ -24,15 +22,13 @@ import codingpark.net.cheesecloud.enumr.WsResultType;
 import codingpark.net.cheesecloud.entity.UploadFile;
 import codingpark.net.cheesecloud.model.UploadFileDataSource;
 import codingpark.net.cheesecloud.wsi.SyncFileBlock;
-import codingpark.net.cheesecloud.wsi.WsFile;
-import codingpark.net.cheesecloud.wsi.WsFolder;
 import codingpark.net.cheesecloud.wsi.WsSyncFile;
 
 /**
- * An {@link IntentService} subclass for handling asynchronous upload
+ * An {@link Service} subclass for handling asynchronous upload
  * task requests in a service on a separate handler thread.
  */
-public class UploadService extends IntentService {
+public class UploadService extends Service {
     public static final String TAG      = UploadService.class.getSimpleName();
 
     /**
@@ -44,11 +40,17 @@ public class UploadService extends IntentService {
     /**
      * Start upload command
      */
-    private static final String ACTION_START_UPLOAD     = "codingpark.net.cheesecloud.handle.ACTION_START_UPLOAD";
+    private static final String ACTION_START_ALL_UPLOAD         = "codingpark.net.cheesecloud.handle.ACTION_START_ALL_UPLOAD";
     /**
      * Pause upload command
      */
-    private static final String ACTION_PAUSE_UPLOAD     = "codingpark.net.cheesecloud.handle.ACTION_PAUSE_UPLOAD";
+    private static final String ACTION_PAUSE_ALL_UPLOAD         = "codingpark.net.cheesecloud.handle.ACTION_PAUSE_ALL_UPLOAD";
+
+    private static final String ACTION_CANCEL_ALL_UPLOAD        = "codingpark.net.cheesecloud.handle.ACTION_CANCEL_ALL_UPLOAD";
+
+    private static final String ACTION_CANCEL_ONE_UPLOAD        = "codingpark.net.cheesecloud.handle.ACTION_CANCEL_ONE_UPLOAD";
+
+    private static final String ACTION_CLEAR_ALL_UPLOAD_RECORD  = "codingpark.net.cheesecloud.handle.ACTION_CLEAR_ALL_UPLOAD_RECORD";
 
     public static final String ACTION_UPLOAD_STATE_CHANGE       = "codingpark.net.cheesecloud.handle.ACTION_PAUSE_SUCCESS";
 
@@ -60,61 +62,110 @@ public class UploadService extends IntentService {
 
     public static final int EVENT_UPLOAD_BLOCK_FAILED                   = 1;
 
-    public static final int EVENT_PAUSE_UPLOAD_SUCCESS                  = 2;
+    public static final int EVENT_PAUSE_ALL_UPLOAD_SUCCESS              = 2;
 
-    public static final int EVENT_PAUSE_UPLOAD_FAILED                   = 3;
+    public static final int EVENT_PAUSE_ALL_UPLOAD_FAILED               = 3;
 
-    public static final int EVENT_CANCEL_UPLOAD_SUCCESS                 = 4;
+    public static final int EVENT_CANCEL_ALL_UPLOAD_SUCCESS             = 4;
 
-    public static final int EVENT_CANCEL_UPLOAD_FAILED                  = 5;
+    public static final int EVENT_CANCEL_ALL_UPLOAD_FAILED              = 5;
+
+    public static final int EVENT_CANCEL_ONE_UPLOAD_SUCCESS             = 6;
+
+    public static final int EVENT_CANCEL_ONE_UPLOAD_FAILED              = 7;
+
+    public static final int EVENT_CLEAR_ALL_UPLOAD_RECORD_SUCCESS       = 8;
+
+    public static final int EVENT_CLEAR_ALL_UPLOAD_RECORD_FAILED        = 9;
 
     private UploadFileDataSource uploadFileDataSource   = null;
 
-    private ArrayList<UploadFile> mWaitTask             = null;
+    private static ArrayList<UploadFile> mWaitDataList  = null;
 
     private static UploadTask mTask                     = null;
 
     private static Context mContext                     = null;
 
     /**
-     * Starts this service to perform action ACTION_START_UPLOAD with the
+     * Starts this service to perform action ACTION_START_ALL_UPLOAD with the
      * given parameters. If the service is already performing a task this
      * action will be queued.
      * @see IntentService
      */
-    public static void startActionUpload(Context context) {
+    public static void startActionUploadAll(Context context) {
         Intent intent = new Intent(context, UploadService.class);
-        intent.setAction(ACTION_START_UPLOAD);
+        intent.setAction(ACTION_START_ALL_UPLOAD);
         context.startService(intent);
     }
 
     /**
-     * Starts this service to perform action ACTION_START_PAUSE with the
+     * Starts this service to perform action ACTION_PAUSE_ALL_UPLOAD with the
      * given parameters. If the service is already performing a task this
      * action will be queued.
      * @see IntentService
      */
-    public static void startActionPause(Context context) {
+    public static void startActionPauseAll(Context context) {
         Intent intent = new Intent(context, UploadService.class);
-        intent.setAction(ACTION_PAUSE_UPLOAD);
+        intent.setAction(ACTION_PAUSE_ALL_UPLOAD);
         context.startService(intent);
     }
 
-    public UploadService() {
-        super("UploadService");
-        if (mTask == null)
-            mTask = new UploadTask();
-        //Context c = getApplicationContext();
+    /**
+     * Starts this service to perform action ACTION_CANCEL_ALL_UPLOAD with the
+     * given parameters. If the service is already performing a task this
+     * action will be queued.
+     * @see IntentService
+     */
+    public static void startActionCancelAll(Context context) {
+        Intent intent = new Intent(context, UploadService.class);
+        intent.setAction(ACTION_CANCEL_ALL_UPLOAD);
+        context.startService(intent);
     }
 
-    @Override
-    protected void onHandleIntent(Intent intent) {
+
+    /**
+     * Starts this service to perform action ACTION_CANCEL_ONE_UPLOAD with the
+     * given parameters. If the service is already performing a task this
+     * action will be queued.
+     * @see IntentService
+     */
+    public static void startActionCancelOne(Context context) {
+        Intent intent = new Intent(context, UploadService.class);
+        intent.setAction(ACTION_CANCEL_ALL_UPLOAD);
+        context.startService(intent);
+    }
+
+    /**
+     * Starts this service to perform action ACTION_CLEAR_ALL_UPLOAD_RECORD with the
+     * given parameters. If the service is already performing a task this
+     * action will be queued.
+     * @see IntentService
+     */
+    public static void startActionClearAll(Context context) {
+        Intent intent = new Intent(context, UploadService.class);
+        intent.setAction(ACTION_CLEAR_ALL_UPLOAD_RECORD);
+        context.startService(intent);
+    }
+
+    public static void stopUploadService(Context context) {
+        Intent intent = new Intent(context, UploadService.class);
+        context.stopService(intent);
+    }
+
+
+    private void onHandleIntent(Intent intent) {
         if (intent != null) {
             final String action = intent.getAction();
-            if (ACTION_START_UPLOAD.equals(action)) {
-                handleActionStartUpload();
-            } else if (ACTION_PAUSE_UPLOAD.equals(action)) {
-                handleActionPauseUpload();
+            if (ACTION_START_ALL_UPLOAD.equals(action)) {
+                handleActionStartAllUpload();
+            } else if (ACTION_PAUSE_ALL_UPLOAD.equals(action)) {
+                handleActionPauseAllUpload();
+            } else if (ACTION_CANCEL_ALL_UPLOAD.equals(action)) {
+                handleActionCancelAllUpload();
+            } else if (ACTION_CANCEL_ONE_UPLOAD.equals(action)) {
+                handleActionCancelOneUpload();
+            } else if (ACTION_CLEAR_ALL_UPLOAD_RECORD.equals(action)) {
+                handleActionClearAllUploadRecord();
             }
         }
     }
@@ -126,17 +177,76 @@ public class UploadService extends IntentService {
             Log.d(TAG, "UploadTask is null, create new");
             mTask = new UploadTask();
         }
+        Log.d(TAG, "Create UploadFileDataSource success");
+        uploadFileDataSource = new UploadFileDataSource(this);
+        uploadFileDataSource.open();
+        // 1. Stop upload thread
+        //handleActionPauseAllUpload();
+        // 2. Update mWaitDataList data
+        //mWaitDataList =
         super.onCreate();
     }
 
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        Log.d(TAG, "onStartCommand");
+        onHandleIntent(intent);
+        return super.onStartCommand(intent, flags, startId);
+    }
+
     /**
-     * Handle action ACTION_START_UPLOAD in the provided background thread with the provided
+     * Handle action ACTION_START_ALL_UPLOAD in the provided background thread with the provided
      * parameters.
      */
-    private void handleActionStartUpload() {
-        // If task is running, do nothing
+    private synchronized void handleActionStartAllUpload() {
+        // For sync, we stop upload thread first
+        // 1. Pause mTask
+        pauseUploadThread();
+        // 2. Refresh mWaitDataList from local table upload_table
+        refreshWaitData();
+        // 3. Start mTask again
+        startUploadThread();
+    }
+
+    /**
+     * Handle action ACTION_PAUSE_ALL_UPLOAD in the provided background thread with the provided
+     * parameters.
+     */
+    private synchronized  void handleActionPauseAllUpload() {
+        Log.d(TAG, "handle action pause upload");
+        pauseUploadThread();
+    }
+
+    private synchronized void handleActionCancelAllUpload() {
+        Log.d(TAG, "handle action cancel all upload");
+    }
+
+    private synchronized void handleActionCancelOneUpload() {
+        Log.d(TAG, "handle action cancel one upload");
+    }
+
+    private synchronized void handleActionClearAllUploadRecord() {
+        Log.d(TAG, "handle action clear all upload record");
+    }
+
+    private void pauseUploadThread() {
+        if (mTask != null && mTask.isAlive()) {
+            mTask.interrupt();
+            try {
+                mTask.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            Log.d(TAG, "Pause upload thread success");
+        }
+    }
+
+    private void startUploadThread() {
+        if (mTask == null) {
+            mTask = new UploadTask();
+        }
         if (mTask.isAlive()) {
-            Log.d(TAG, "UploadThread running, do nothing");
+            Log.d(TAG, "UploadThread is running, not need start again");
             return;
         }
         // If task stop and not NEW state, just create new UploadTask
@@ -148,44 +258,34 @@ public class UploadService extends IntentService {
         Log.d(TAG, "Start uploading");
         // Start upload
         mTask.start();
-        /*
-        uploadFileDataSource = new UploadFileDataSource(this);
-        uploadFileDataSource.open();
-        Log.d(TAG, "Start uploading");
-        root_upload();
-        */
     }
 
-    /**
-     * Handle action ACTION_PAUSE_UPLOAD in the provided background thread with the provided
-     * parameters.
-     */
-    private synchronized  void handleActionPauseUpload() {
-        Log.d(TAG, "handle action pause upload");
-        Log.d(TAG, "Pause uploading");
-        if (mTask.isAlive()) {
+    private void refreshWaitData() {
+        mWaitDataList = uploadFileDataSource.getNotUploadedFiles();
+        //mWaitDataList = uploadFileDataSource.getAllUploadFile();
+        Log.d(TAG, "refreshWaitData: mWaitDataList.size = " + mWaitDataList.size());
+    }
+
+    @Override
+    public void onDestroy() {
+        Log.d(TAG, "UploadService destroy[Close UploadFileDataSource]");
+        if (uploadFileDataSource != null) {
+            uploadFileDataSource.close();
+        }
+        if (mTask != null && mTask.isAlive()) {
             mTask.interrupt();
             try {
                 mTask.join();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            Log.d(TAG, "Pause upload thread success");
         }
-        /*
-        if (state != Thread.State.TERMINATED && state == Thread.State.NEW) {
-            Log.d(TAG, "upload thread is running, stopit");
-        }
-        */
+        super.onDestroy();
     }
 
     @Override
-    public void onDestroy() {
-        Log.d(TAG, "UploadService destroy");
-        if (uploadFileDataSource != null) {
-            uploadFileDataSource.close();
-        }
-        super.onDestroy();
+    public IBinder onBind(Intent intent) {
+        return null;
     }
 
     private void sendChangedBroadcast(UploadFile file, int event) {
@@ -373,21 +473,10 @@ public class UploadService extends IntentService {
 
     private class UploadTask extends Thread {
         @Override
+
         public void run() {
-            while (true) {
-                Log.d(TAG, "UploadTask run, start sleep 5s");
-                try {
-                    if (!isInterrupted()) {
-                        // Do work
-                        Thread.sleep(5000);
-                    } else {
-                        Log.d(TAG, "UploadTask interrupt occurred and no exception");
-                        return;
-                    }
-                } catch (InterruptedException e) {
-                    Log.d(TAG, "Thread exception, set interrupt again");
-                    Thread.currentThread().interrupt();
-                }
+            for (int i = 0; i < mWaitDataList.size(); i++) {
+                UploadFile file = mWaitDataList.get(i);
             }
         }
     }

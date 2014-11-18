@@ -7,6 +7,7 @@ package codingpark.net.cheesecloud.enumr;
  * @created 06-十一月-2014 16:33:41
  */
 public class WsResultType {
+    public static final int NetworkError = -1;
 
     /**
      * Operation permission denied
