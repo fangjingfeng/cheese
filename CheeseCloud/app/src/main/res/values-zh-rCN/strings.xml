@@ -52,6 +52,16 @@
     <string name="tab_home_item_small_class_title">微课吧</string>
     <string name="tab_home_item_temp_screen_title">临时屏</string>
 
+    <!-- TransferStateActivity -->
+    <string name="transfer_state_activity_download_section_title">下载列表</string>
+    <string name="transfer_state_activity_upload_section_title">上传列表</string>
+    <string name="title_activity_transfer_state">传输状态</string>
+    <!-- FragmentUploadList -->
+    <string name="fragment_upload_list_wait_upload_state">等待上传</string>
+    <string name="fragment_upload_list_uploading_state">正在上传</string>
+    <string name="fragment_upload_list_pause_upload_state">暂停上传</string>
+    <string name="fragment_upload_list_uploaded_state">上传完成</string>
+
     <!--Help page-->
     <string name="product_info">"Cheese 资源管理系统移动客户端,功能稳定,易用, 是您管理多媒体资源的好帮手.\n\n"</string>
     <string name="version_info">版本: 1.0 beta</string>
@@ -67,9 +77,6 @@
     <string name="select_path_activity_cancel_bt_string">取消</string>
     <string name="select_path_activity_ok_bt_prefix_string">选定: </string>
     <string name="title_activity_select_path">选择上传路径</string>
-    <string name="title_activity_transfer_state">传输状态</string>
-    <string name="transfer_state_activity_download_section_title">下载列表</string>
-    <string name="transfer_state_activity_upload_section_title">上传列表</string>
     <string name="title_files">其它文件</string>
 
     <!-- CloudFilesActivity -->

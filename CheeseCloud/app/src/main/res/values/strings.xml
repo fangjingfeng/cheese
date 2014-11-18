@@ -60,6 +60,11 @@
     <string name="transfer_state_activity_download_section_title">Download List</string>
     <string name="transfer_state_activity_upload_section_title">Upload List</string>
     <string name="title_activity_transfer_state">Transfer State</string>
+    <!-- FragmentUploadList -->
+    <string name="fragment_upload_list_wait_upload_state">Waiting</string>
+    <string name="fragment_upload_list_uploading_state">Uploading</string>
+    <string name="fragment_upload_list_pause_upload_state">Pause</string>
+    <string name="fragment_upload_list_uploaded_state">Uploaded</string>
 
     <!-- Help page -->
     <string name="product_info">Cheese Cloud description</string>
