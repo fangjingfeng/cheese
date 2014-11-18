@@ -208,9 +208,17 @@ public class FragmentUploadList extends ListFragment {
             switch (file.getState()) {
                 case UploadFileState.NOT_UPLOAD:
                 case UploadFileState.WAIT_UPLOAD:
-                    holder.stateView.setText("上传中");
+                    holder.stateView.setText("等待上传");
+                    break;
+                case UploadFileState.UPLOADING:
+                    holder.stateView.setText("正在上传");
                     break;
                 case UploadFileState.UPLOADED:
+                    holder.stateView.setText("上传完成");
+                    break;
+                case UploadFileState.PAUSE_UPLOAD:
+                    holder.stateView.setText("暂停上传");
+                    break;
                 default:
                     holder.stateView.setText("上传完成");
             }

@@ -476,7 +476,46 @@ public class UploadService extends Service {
 
         public void run() {
             for (int i = 0; i < mWaitDataList.size(); i++) {
+                int result = WsResultType.Success;
                 UploadFile file = mWaitDataList.get(i);
+                //Upload block one by one
+                byte[] buffer = new byte[UPLOAD_BLOCK_SIZE];
+                File r_file = new File(file.getFilePath());
+                int count = 0;
+                try {
+                    while (true) {
+                        //FileInputStream stream = new FileInputStream(r_file);
+                        RandomAccessFile stream = new RandomAccessFile(r_file, "r");
+                        Log.d(TAG, "Array size:" + buffer.length + "\n" + "uploadedsize: " + (int)file.getChangedSize());
+                        stream.seek(file.getChangedSize());
+                        count = stream.read(buffer, 0, UPLOAD_BLOCK_SIZE);
+                        if (count != -1) {
+                            if (isInterrupted()) {
+                                Log.d(TAG, "isInterrupted");
+                                return;
+                            }
+                            result = uploadFile_wrapper(file, buffer, count);
+                            if (result != WsResultType.Success) {
+                                sendChangedBroadcast(file, EVENT_UPLOAD_BLOCK_FAILED);
+                                break;
+                            }
+                            // Increase index
+                            file.setChangedSize(file.getChangedSize() + count);
+                            // Upload completed
+                            if (file.getChangedSize() == file.getFileSize()) {
+                                file.setState(UploadFileState.UPLOADED);
+                            }
+                            // Update to database
+                            uploadFileDataSource.updateUploadFile(file);
+                            sendChangedBroadcast(file, EVENT_UPLOAD_BLOCK_SUCCESS);
+                        } else
+                            break;// Upload completed
+                    }
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
