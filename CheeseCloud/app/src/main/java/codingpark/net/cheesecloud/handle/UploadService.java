@@ -478,6 +478,11 @@ public class UploadService extends Service {
             for (int i = 0; i < mWaitDataList.size(); i++) {
                 int result = WsResultType.Success;
                 UploadFile file = mWaitDataList.get(i);
+                // Update file state to UPLOADING
+                if (file.getState() == UploadFileState.WAIT_UPLOAD) {
+                    file.setState(UploadFileState.UPLOADING);
+                    uploadFileDataSource.updateUploadFile(file);
+                }
                 //Upload block one by one
                 byte[] buffer = new byte[UPLOAD_BLOCK_SIZE];
                 File r_file = new File(file.getFilePath());

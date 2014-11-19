@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import codingpark.net.cheesecloud.R;
 import codingpark.net.cheesecloud.entity.UploadFile;
 import codingpark.net.cheesecloud.enumr.CheckedFileInfoResultType;
+import codingpark.net.cheesecloud.enumr.UploadFileState;
 import codingpark.net.cheesecloud.enumr.WsResultType;
 import codingpark.net.cheesecloud.handle.ClientWS;
 import codingpark.net.cheesecloud.handle.OnFragmentInteractionListener;
@@ -425,6 +426,7 @@ public class MainActivity extends Activity implements OnFragmentInteractionListe
                 if (result != WsResultType.Success)
                     return;     // Create folder failed, return.
                 else {
+                    uFile.setState(UploadFileState.UPLOADED);
                     l_id = mDataSource.addUploadFile(uFile);
                     File[] fileArray = file.listFiles();
                     File subFile = null;

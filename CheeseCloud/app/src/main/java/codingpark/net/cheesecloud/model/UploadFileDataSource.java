@@ -218,8 +218,10 @@ public class UploadFileDataSource {
         ArrayList<UploadFile> fileList = new ArrayList<UploadFile>();
         Cursor cursor = database.query(UploadFileEntry.TABLE_NAME,
                 UploadFileEntry.COLUMN_ARRAY,
-                UploadFileEntry.COLUMN_FILETYPE + " =? ",
-                new String[] {String.valueOf(CloudFileType.TYPE_FILE)},
+                UploadFileEntry.COLUMN_FILETYPE + " =? and " +
+                UploadFileEntry.COLUMN_USERID + " =? ",
+                new String[] {String.valueOf(CloudFileType.TYPE_FILE),
+                        String.valueOf(AppConfigs.current_local_user_id)},
                 null, null, null);
         while (cursor.moveToNext()) {
             fileList.add(cursorToFile(cursor));
