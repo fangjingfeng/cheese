@@ -296,6 +296,12 @@ public class UploadService extends Service {
 
     private synchronized void handleActionClearAllUploadRecord() {
         Log.d(TAG, "handle action clear all upload record");
+        // 1. Pause upload thread
+        pauseUploadThread();
+        // 2. Delete uploaded state record from database
+        uploadFileDataSource.deleteUploadFileByState(UploadFileState.UPLOADED);
+        // 3. Send broadcast
+        sendChangedBroadcast(EVENT_CLEAR_ALL_UPLOAD_RECORD_SUCCESS);
     }
 
     private void pauseUploadThread() {

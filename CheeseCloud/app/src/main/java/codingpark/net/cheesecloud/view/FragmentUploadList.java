@@ -167,6 +167,15 @@ public class FragmentUploadList extends ListFragment {
 
 
     @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        if (isVisibleToUser) {
+            if (mListener != null)
+                mListener.refreshUploadBottomBar(mWaitUploadFileList, mUploadingFileList, mPauseUploadFileList, mUploadedFileList);
+        }
+        super.setUserVisibleHint(isVisibleToUser);
+    }
+
+    @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
         Log.d(TAG, "FragmentUploadList item " + position + " clicked!");

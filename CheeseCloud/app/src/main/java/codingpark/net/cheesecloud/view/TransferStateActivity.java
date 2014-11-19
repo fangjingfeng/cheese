@@ -207,6 +207,8 @@ public class TransferStateActivity extends Activity implements ActionBar.TabList
 
     @Override
     public void refreshUploadBottomBar(ArrayList<UploadFile> waitUploadFile, ArrayList<UploadFile> uploadingFile, ArrayList<UploadFile> pauseUploadFile, ArrayList<UploadFile> uploadedFile) {
+        if (mActivePagePos != UPLOAD_LIST_PAGE_ID)
+            return;
         Log.d(TAG, "Receive update bottom bar request from FragmentUploadList");
         if (waitUploadFile.size() > 0 || uploadingFile.size() > 0 || pauseUploadFile.size() > 0) {
             trans_control_bt.setVisibility(View.VISIBLE);
