@@ -11,7 +11,6 @@ import android.os.Handler;
 import android.support.v13.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
@@ -427,7 +426,7 @@ public class MainActivity extends Activity implements OnFragmentInteractionListe
             // 2. insert record on local table
             // 3. scan sub files and folders
             if (file.isDirectory()) {
-                result = ClientWS.getInstance(MainActivity.this).createFolder_wrapper(uFile);
+                result = ClientWS.getInstance(MainActivity.this).createFolderUpload_wrapper(uFile);
                 if (result != WsResultType.Success)
                     return;     // Create folder failed, return.
                 else {

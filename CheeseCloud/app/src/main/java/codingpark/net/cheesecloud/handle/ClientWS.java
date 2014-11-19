@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import codingpark.net.cheesecloud.AppConfigs;
+import codingpark.net.cheesecloud.entity.CloudFile;
 import codingpark.net.cheesecloud.entity.UploadFile;
 import codingpark.net.cheesecloud.enumr.CheckedFileInfoResultType;
 import codingpark.net.cheesecloud.enumr.LoginResultType;
@@ -79,6 +80,11 @@ public final class ClientWS {
      * Web service API name used by user login process
      */
     public static final String METHOD_USERLOGIN             = "UserLogin";
+
+    /**
+     * Web service API name used by delete folders and files batched
+     */
+    public static final String METHOD_DELETE_FOLDER_AND_FILE    = "DeleteFolderAndFile";
 
     /**
      * In reality, the endpoint address should dynamic fetch from SharedPreference,
@@ -251,6 +257,78 @@ public final class ClientWS {
                 SoapObject r_folder = (SoapObject)resp.getProperty("folder");
                 wsFolder.ID = r_folder.getProperty("ID").toString();
             }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return WsResultType.Faild;
+        }
+        return result;
+    }
+
+    /**
+     * Delete folders and files batched
+     * @param delFileIds The file's to be deleted remote id list
+     * @param delFolderIds The folder's to be deleted remote id list
+     * @return WsResultType
+     *
+     */
+    public int deleteFolderAndFile(ArrayList<String> delFileIds, ArrayList<String> delFolderIds) {
+        int result = WsResultType.Success;
+        // Create SOAP Action
+        String soapAction = NAMESPACE + METHOD_DELETE_FOLDER_AND_FILE;
+
+        // Initial SoapObject
+        SoapObject rpc = new SoapObject(NAMESPACE, METHOD_DELETE_FOLDER_AND_FILE);
+        String id_str = "";
+        String type_str = "";
+        for (int i = 0; i < delFileIds.size(); i++) {
+            id_str += delFileIds.get(i);
+            type_str += "file";
+            if (i != (delFileIds.size() - 1)) {
+                id_str += ",";
+                type_str += ",";
+            }
+        }
+        for (int i = 0; i < delFolderIds.size(); i++) {
+            id_str += delFolderIds.get(i);
+            type_str += "folder";
+            if (i != (delFileIds.size() - 1)) {
+                id_str += ",";
+                type_str += ",";
+            }
+        }
+        // add web service method parameter
+        rpc.addProperty("ids", id_str);
+        rpc.addProperty("types", type_str);
+
+
+        // Initial envelope
+        // Create soap request object with soap version
+        SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(SoapEnvelope.VER12);
+        envelope.bodyOut = rpc;
+        envelope.dotNet = true;
+        envelope.setOutputSoapObject(rpc);
+        // Set Mapping
+        // Set MARSHALLING type
+        Marshal floatMarshal = new MarshalFloat();
+        floatMarshal.register(envelope);
+
+        // Initial http transport
+        HttpTransportSE transport = new HttpTransportSE(mEndPoint);
+        transport.debug = true;
+
+        // Set http header cookies values before call WS
+        List<HeaderProperty> paraHttpHeaders = new ArrayList<HeaderProperty>();
+        paraHttpHeaders.add(new HeaderProperty("Cookie", session_id));
+
+        // Call WS
+        try {
+            transport.call(soapAction, envelope, paraHttpHeaders);
+            Log.d(TAG, "Request: \n" + transport.requestDump);
+            Log.d(TAG, "Response: \n" + transport.responseDump);
+            // Process return data
+            // Get webservice return object
+            final SoapObject resp = (SoapObject) envelope.bodyIn;
+            result = Integer.valueOf(resp.getProperty("DeleteFolderAndFileResult").toString());
         } catch (Exception e) {
             e.printStackTrace();
             return WsResultType.Faild;
@@ -637,14 +715,14 @@ public final class ClientWS {
     /* #########################################Web Service API Wrapper########################## */
 
     /**
-     * When user select upload file is a folder, call createFolder_wrapper and
+     * When user select upload file is a folder, call createFolderUpload_wrapper and
      * set UploadFile as a parameter, this function convert UploadFile to WsFolder,
      * then call createFolder(WsFolder) do real create action. If create success, will
      * fill up UploadFile.remote_id
      * @param file
      * @return
      */
-    public int createFolder_wrapper(UploadFile file) {
+    public int createFolderUpload_wrapper(UploadFile file) {
         int result;
         WsFolder wsFolder = new WsFolder();
         wsFolder.FatherID = file.getRemote_parent_id();
@@ -653,6 +731,18 @@ public final class ClientWS {
         result = createFolder(wsFolder);
         if (result == WsResultType.Success) {
             file.setRemote_id(wsFolder.ID);
+        }
+        return result;
+    }
+
+    public int createFolderCloud_wrapper(CloudFile folder) {
+        int result = WsResultType.Success;
+        WsFolder wsFolder = new WsFolder();
+        wsFolder.Name = folder.getFilePath();
+        wsFolder.FatherID = folder.getRemote_parent_id();
+        result = createFolder(wsFolder);
+        if (result == WsResultType.Success) {
+            folder.setRemote_id(wsFolder.ID);
         }
         return result;
     }

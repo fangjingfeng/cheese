@@ -38,6 +38,7 @@ import codingpark.net.cheesecloud.entity.CloudFile;
 import codingpark.net.cheesecloud.enumr.CloudFileType;
 import codingpark.net.cheesecloud.enumr.WsResultType;
 import codingpark.net.cheesecloud.handle.CreateDirTask;
+import codingpark.net.cheesecloud.handle.DeleteFileTask;
 import codingpark.net.cheesecloud.handle.OnWSTaskFinishListener;
 import codingpark.net.cheesecloud.handle.PullFileListTask;
 import codingpark.net.cheesecloud.utils.ThumbnailCreator;
@@ -52,7 +53,9 @@ import codingpark.net.cheesecloud.utils.ThumbnailCreator;
  * @version 1.0
  * @created 06-十一月-2014 18:12:41
  */
-public class CloudFilesActivity extends ListActivity implements View.OnClickListener, OnWSTaskFinishListener<CloudFile>, CreateDirTask.OnCreateFolderCompletedListener
+public class CloudFilesActivity extends ListActivity implements View.OnClickListener,
+        OnWSTaskFinishListener<CloudFile>, CreateDirTask.OnCreateFolderCompletedListener,
+        DeleteFileTask.OnDeleteFileCompletedListener
 {
     private static final String TAG         = CloudFilesActivity.class.getSimpleName();
 
@@ -167,6 +170,8 @@ public class CloudFilesActivity extends ListActivity implements View.OnClickList
                 Toast.makeText(this, "Create folder", Toast.LENGTH_SHORT).show();
                 mkdir();
                 return true;
+            default:
+                break;
         }
 
         return super.onOptionsItemSelected(item);
@@ -305,7 +310,7 @@ public class CloudFilesActivity extends ListActivity implements View.OnClickList
                 CloudFile file = new CloudFile();
                 file.setFilePath(name);
                 file.setRemote_parent_id(mPathStack.peek().getRemote_id());
-                new CreateDirTask(CloudFilesActivity.this, mAdapter, file, CloudFilesActivity.this).execute();
+                new CreateDirTask(CloudFilesActivity.this, null, file, CloudFilesActivity.this).execute();
                 // TODO According name call Web Service create folder API to create target folder
                 dialog.dismiss();
                 setLoadingViewVisible(true);
@@ -317,6 +322,15 @@ public class CloudFilesActivity extends ListActivity implements View.OnClickList
             }
         });
         dialog.show();
+    }
+
+    private void delFile() {
+        // TODO the mSelectedFileList will be cleared sometime, so new a ArrayList, add item one by one
+        ArrayList<CloudFile> mFiles = new ArrayList<CloudFile>();
+        for (CloudFile file : mSelectedFileList)
+            mFiles.add(file);
+        new DeleteFileTask(CloudFilesActivity.this, null, mFiles, CloudFilesActivity.this).execute();
+        setLoadingViewVisible(true);
     }
 
 
@@ -334,6 +348,18 @@ public class CloudFilesActivity extends ListActivity implements View.OnClickList
             mAdapter.notifyDataSetChanged();
         }
     }
+
+    @Override
+    public void onDeleteFileCompleted(int result) {
+        if (result == WsResultType.Success) {
+            Log.d(TAG, "Delete files/folders completed! refresh list");
+            refreshList();
+        } else {
+            Log.d(TAG, "Delete files/folders failed: " + result);
+            mAdapter.notifyDataSetChanged();
+        }
+    }
+
 
     /**
      * File/Directory list item view encapsulate
@@ -498,35 +524,37 @@ public class CloudFilesActivity extends ListActivity implements View.OnClickList
         public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
             Log.d(TAG, "Action item clicked: " + item.getItemId());
             selectValidAction = true;
-            handleAction();
             switch (item.getItemId()) {
                 case R.id.cab_menu_share:
                     Toast.makeText(CloudFilesActivity.this, "Share action", Toast.LENGTH_SHORT).show();
                     mode.finish(); // Action picked, so close the CAB
-                    return true;
+                    break;
                 case R.id.cab_menu_delete:
+                    delFile();
                     Toast.makeText(CloudFilesActivity.this, "Delete action", Toast.LENGTH_SHORT).show();
                     mode.finish(); // Action picked, so close the CAB
-                    return true;
+                    break;
                 case R.id.cab_menu_download:
                     Toast.makeText(CloudFilesActivity.this, "Download action", Toast.LENGTH_SHORT).show();
                     mode.finish(); // Action picked, so close the CAB
-                    return true;
+                    break;
                 case R.id.cab_menu_cut:
                     Toast.makeText(CloudFilesActivity.this, "Cut action", Toast.LENGTH_SHORT).show();
                     mode.finish(); // Action picked, so close the CAB
-                    return true;
+                    break;
                 case R.id.cab_menu_edit:
                     Toast.makeText(CloudFilesActivity.this, "Edit action", Toast.LENGTH_SHORT).show();
                     mode.finish(); // Action picked, so close the CAB
-                    return true;
+                    break;
                 case R.id.cab_menu_copy:
                     Toast.makeText(CloudFilesActivity.this, "Copy action", Toast.LENGTH_SHORT).show();
                     mode.finish(); // Action picked, so close the CAB
-                    return true;
+                    break;
                 default:
                     return false;
             }
+            handleAction();
+            return true;
         }
 
         // Called when the user exits the action mode

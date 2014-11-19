@@ -525,7 +525,7 @@ public class UploadService extends Service {
                 return WsResultType.Faild;
             }
         } else if (file.getFileType() == CloudFileType.TYPE_FOLDER) {
-            result = ClientWS.getInstance(mContext).createFolder_wrapper(file);
+            result = ClientWS.getInstance(mContext).createFolderUpload_wrapper(file);
             if (result == WsResultType.Success) {
                 // Update database
                 file.setState(UploadFileState.UPLOADED);
