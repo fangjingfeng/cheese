@@ -31,11 +31,13 @@ import codingpark.net.cheesecloud.wsi.WsSyncFile;
 public class UploadService extends Service {
     public static final String TAG      = UploadService.class.getSimpleName();
 
+    public static final int MAX_RETRY_TIME                  = 3;
+
     /**
      * The upload block size in byte unit
      * Default size 100KB
      */
-    public static final int UPLOAD_BLOCK_SIZE           = 100 * CheeseConstants.KB;
+    public static final int UPLOAD_BLOCK_SIZE               = 100 * CheeseConstants.KB;
 
     /**
      * Start upload command
@@ -554,11 +556,12 @@ public class UploadService extends Service {
 
 
     private class UploadTask extends Thread {
+        private int mTry = 0;
         @Override
-
         public void run() {
             for (int i = 0; i < mWaitDataList.size(); i++) {
                 int result = WsResultType.Success;
+                mTry = 0;
                 UploadFile file = mWaitDataList.get(i);
                 // Update file state to UPLOADING
                 if (file.getState() == UploadFileState.WAIT_UPLOAD) {
@@ -584,8 +587,16 @@ public class UploadService extends Service {
                             result = uploadFile_wrapper(file, buffer, count);
                             if (result != WsResultType.Success) {
                                 sendChangedBroadcast(file, EVENT_UPLOAD_BLOCK_FAILED);
-                                break;
+                                if (mTry < MAX_RETRY_TIME) {
+                                    Log.d(TAG, "Upload failed, retry: " + mTry);
+                                    continue;
+                                }
+                                else {
+                                    Log.d(TAG, "Upload failed, reach limit:" + MAX_RETRY_TIME + "\t" + " stop: " + file.getFilePath());
+                                    break;
+                                }
                             }
+                            mTry = 0;
                             // Increase index
                             file.setChangedSize(file.getChangedSize() + count);
                             // Upload completed
