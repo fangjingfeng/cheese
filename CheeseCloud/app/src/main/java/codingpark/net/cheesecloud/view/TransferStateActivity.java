@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.v13.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -124,6 +125,7 @@ public class TransferStateActivity extends Activity implements ActionBar.TabList
         // When the given tab is selected, switch to the corresponding page in
         // the ViewPager.
         mViewPager.setCurrentItem(tab.getPosition());
+        Log.d(TAG, "current selected tab position: " + tab.getPosition());
     }
 
     @Override
@@ -137,6 +139,15 @@ public class TransferStateActivity extends Activity implements ActionBar.TabList
     @Override
     public void onFragmentInteraction(String id) {
 
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            finish();
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
     }
 
     private void initUI() {
