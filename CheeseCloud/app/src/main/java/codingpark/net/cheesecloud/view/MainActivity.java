@@ -133,6 +133,11 @@ public class MainActivity extends Activity implements OnFragmentInteractionListe
         super.onResume();
     }
 
+    @Override
+    public void finish() {
+        UploadService.stopUploadService(MainActivity.this);
+        super.finish();
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

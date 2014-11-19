@@ -208,6 +208,24 @@ public class UploadFileDataSource {
         return result > 0;
     }
 
+    public boolean updateUploadFileState(int orig_state, int new_state) {
+        ContentValues cv = new ContentValues();
+        cv.put(UploadFileEntry.COLUMN_STATE, new_state);
+        int result = database.update(UploadFileEntry.TABLE_NAME, cv,
+                UploadFileEntry.COLUMN_STATE + "=?",
+                new String[]{String.valueOf(orig_state)});
+        return result > 0;
+    }
+
+    public boolean deleteUploadFileByState(int state) {
+        int result = database.delete(UploadFileEntry.TABLE_NAME,
+                UploadFileEntry.COLUMN_STATE + "=?",
+                new String[]{String.valueOf(state)});
+        return result > 0;
+    }
+
+
+
     /**
      * Get all upload file list
      *

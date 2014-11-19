@@ -23,7 +23,7 @@ import java.util.List;
 import codingpark.net.cheesecloud.R;
 import codingpark.net.cheesecloud.entity.UploadFile;
 import codingpark.net.cheesecloud.enumr.UploadFileState;
-import codingpark.net.cheesecloud.handle.OnFragmentInteractionListener;
+import codingpark.net.cheesecloud.handle.OnTransFragmentInteractionListener;
 import codingpark.net.cheesecloud.handle.UploadService;
 import codingpark.net.cheesecloud.model.UploadFileDataSource;
 
@@ -31,7 +31,7 @@ import codingpark.net.cheesecloud.model.UploadFileDataSource;
  * A fragment representing a list of uploading/uploaded/upload record
  * <p/>
  * <p/>
- * Activities containing this fragment MUST implement the {@link OnFragmentInteractionListener}
+ * Activities containing this fragment MUST implement the {@link OnTransFragmentInteractionListener}
  * interface.
  */
 public class FragmentUploadList extends ListFragment {
@@ -45,12 +45,17 @@ public class FragmentUploadList extends ListFragment {
 
     private Context mContext                        = null;
     private UploadFileDataSource mUploadDataSource  = null;
-    private OnFragmentInteractionListener mListener = null;
-    private List<UploadFile> mFileList              = null;
+    private OnTransFragmentInteractionListener mListener = null;
     private UploadStateAdapter mAdapter             = null;
     private LayoutInflater mInflater                = null;
     private UploadStateReceiver mReceiver           = null;
     private IntentFilter mFilter                    = null;
+
+    private ArrayList<UploadFile> mAllFileList              = null;
+    private ArrayList<UploadFile> mWaitUploadFileList       = null;
+    private ArrayList<UploadFile> mUploadingFileList        = null;
+    private ArrayList<UploadFile> mUploadedFileList         = null;
+    private ArrayList<UploadFile> mPauseUploadFileList      = null;
 
     public static FragmentUploadList newInstance(int position) {
         FragmentUploadList fragment = new FragmentUploadList();
@@ -65,7 +70,12 @@ public class FragmentUploadList extends ListFragment {
      * fragment (e.g. upon screen orientation changes).
      */
     public FragmentUploadList() {
-        mFileList = new ArrayList<UploadFile>();
+        mAllFileList = new ArrayList<UploadFile>();
+        mWaitUploadFileList = new ArrayList<UploadFile>();
+        mUploadingFileList = new ArrayList<UploadFile>();
+        mPauseUploadFileList = new ArrayList<UploadFile>();
+        mUploadedFileList = new ArrayList<UploadFile>();
+
         mReceiver = new UploadStateReceiver();
         mFilter = new IntentFilter();
         mFilter.addAction(UploadService.ACTION_UPLOAD_STATE_CHANGE);
@@ -80,7 +90,7 @@ public class FragmentUploadList extends ListFragment {
         }
 
         mContext = getActivity();
-        mAdapter = new UploadStateAdapter(mContext, R.layout.upload_state_item_layout, mFileList);
+        mAdapter = new UploadStateAdapter(mContext, R.layout.upload_state_item_layout, mAllFileList);
         mUploadDataSource = new UploadFileDataSource(mContext);
         mUploadDataSource.open();
         mInflater = (LayoutInflater) mContext
@@ -96,9 +106,23 @@ public class FragmentUploadList extends ListFragment {
     }
 
     private void refreshList() {
-        mFileList = mUploadDataSource.getAllUploadFile();
-        Log.d(TAG, "refreshList:" + mFileList.size());
+        Log.d(TAG, "refreshList:" + mAllFileList.size());
+        updateData();
         mAdapter.notifyDataSetChanged();
+        if (mListener != null)
+            mListener.refreshUploadBottomBar(mWaitUploadFileList, mUploadingFileList, mPauseUploadFileList, mUploadedFileList);
+    }
+
+    private void updateData() {
+        mWaitUploadFileList = mUploadDataSource.getAllUploadFileByState(UploadFileState.WAIT_UPLOAD);
+        mUploadingFileList = mUploadDataSource.getAllUploadFileByState(UploadFileState.UPLOADING);
+        mPauseUploadFileList = mUploadDataSource.getAllUploadFileByState(UploadFileState.PAUSE_UPLOAD);
+        mUploadedFileList = mUploadDataSource.getAllUploadFileByState(UploadFileState.UPLOADED);
+        mAllFileList.clear();
+        mAllFileList.addAll(mUploadingFileList);
+        mAllFileList.addAll(mPauseUploadFileList);
+        mAllFileList.addAll(mWaitUploadFileList);
+        mAllFileList.addAll(mUploadedFileList);
     }
 
     @Override
@@ -112,7 +136,7 @@ public class FragmentUploadList extends ListFragment {
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         try {
-            mListener = (OnFragmentInteractionListener) activity;
+            mListener = (OnTransFragmentInteractionListener) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
                     + " must implement OnFragmentInteractionListener");
@@ -160,17 +184,29 @@ public class FragmentUploadList extends ListFragment {
                 int event = intent.getIntExtra(UploadService.EXTRA_UPLOAD_STATE, UploadService.EVENT_UPLOAD_BLOCK_SUCCESS);
                 UploadFile file = (UploadFile)intent.getExtras().get(UploadService.EXTRA_UPLOAD_FILE);
                 if (event == UploadService.EVENT_UPLOAD_BLOCK_SUCCESS) {
-                     for (int i = 0; i < mFileList.size(); i++) {
-                         if (mFileList.get(i).getId() == file.getId()) {
-                             mFileList.set(i, file);
-                             mAdapter.notifyDataSetChanged();
+                    Log.d(TAG, "upload block success");
+                     for (int i = 0; i < mAllFileList.size(); i++) {
+                         if (mAllFileList.get(i).getId() == file.getId()) {
+                             mAllFileList.set(i, file);
+                             //mAdapter.notifyDataSetChanged();
                              break;
                          }
                      }
                 } else if(event == UploadService.EVENT_UPLOAD_BLOCK_FAILED){
-
+                    Log.d(TAG, "upload block failed");
+                } else if (event == UploadService.EVENT_RESUME_ALL_UPLOAD_SUCCESS) {
+                    Log.d(TAG, "resume all upload success");
+                } else if (event == UploadService.EVENT_RESUME_ALL_UPLOAD_FAILED) {
+                    Log.d(TAG, "resume all upload failed");
+                } else if (event == UploadService.EVENT_PAUSE_ALL_UPLOAD_SUCCESS) {
+                    Log.d(TAG, "pause all upload success");
+                } else if (event == UploadService.EVENT_PAUSE_ALL_UPLOAD_FAILED) {
+                    Log.d(TAG, "pause all upload failed");
                 }
+
             }
+            // TODO Current update bottom bar state when receive broadcast from UploadService every time, need optimize
+            refreshList();
         }
     }
 
@@ -182,7 +218,7 @@ public class FragmentUploadList extends ListFragment {
 
         @Override
         public int getCount() {
-            return mFileList.size();
+            return mAllFileList.size();
         }
 
         @Override
@@ -200,7 +236,7 @@ public class FragmentUploadList extends ListFragment {
             } else {
                 holder = (ViewHolder)convertView.getTag();
             }
-            UploadFile file = mFileList.get(position);
+            UploadFile file = mAllFileList.get(position);
             String fileName = file.getFilePath();
             fileName = fileName.substring(fileName.lastIndexOf("/")+1);
             holder.fileNameView.setText(fileName);

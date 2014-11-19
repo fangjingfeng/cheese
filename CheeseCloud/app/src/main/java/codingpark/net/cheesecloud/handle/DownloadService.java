@@ -42,7 +42,6 @@ public class DownloadService extends Service {
      * parameters.
      */
     private void handleActionFoo() {
-        // TODO: Handle action Foo
         throw new UnsupportedOperationException("Not yet implemented");
     }
 
@@ -51,7 +50,6 @@ public class DownloadService extends Service {
      * parameters.
      */
     private void handleActionBaz() {
-        // TODO: Handle action Baz
         throw new UnsupportedOperationException("Not yet implemented");
     }
 

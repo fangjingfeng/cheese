@@ -14,10 +14,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
+import java.util.ArrayList;
 import java.util.Locale;
 
 import codingpark.net.cheesecloud.R;
-import codingpark.net.cheesecloud.handle.OnFragmentInteractionListener;
+import codingpark.net.cheesecloud.entity.UploadFile;
+import codingpark.net.cheesecloud.handle.OnTransFragmentInteractionListener;
 import codingpark.net.cheesecloud.handle.UploadService;
 
 /**
@@ -30,7 +32,7 @@ import codingpark.net.cheesecloud.handle.UploadService;
  *  This section contain a list view to show uploading/uploaded state
  *  record.
  */
-public class TransferStateActivity extends Activity implements ActionBar.TabListener,OnFragmentInteractionListener {
+public class TransferStateActivity extends Activity implements ActionBar.TabListener, OnTransFragmentInteractionListener {
     private static final String TAG             = TransferStateActivity.class.getSimpleName();
 
     /**
@@ -61,6 +63,13 @@ public class TransferStateActivity extends Activity implements ActionBar.TabList
      * Only all record transfer completed, this widget is visible
      */
     private Button trans_clear_all_bt           = null;
+
+    private static final int CONTROL_BUTTON_PAUSE_ACTIVE    = 0;
+    private static final int CONTROL_BUTTON_START_ACTIVE    = 1;
+
+    private static final int DOWNLOAD_LIST_PAGE_ID  = 0;
+    private static final int UPLOAD_LIST_PAGE_ID    = 1;
+    private int mActivePagePos                  = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -126,6 +135,7 @@ public class TransferStateActivity extends Activity implements ActionBar.TabList
         // the ViewPager.
         mViewPager.setCurrentItem(tab.getPosition());
         Log.d(TAG, "current selected tab position: " + tab.getPosition());
+        mActivePagePos = tab.getPosition();
     }
 
     @Override
@@ -136,10 +146,6 @@ public class TransferStateActivity extends Activity implements ActionBar.TabList
     public void onTabReselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
     }
 
-    @Override
-    public void onFragmentInteraction(String id) {
-
-    }
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -162,7 +168,17 @@ public class TransferStateActivity extends Activity implements ActionBar.TabList
             public void onClick(View v) {
                 // TODO handle download
                 Log.d(TAG, "start/pause all");
-                UploadService.startActionPauseAll(TransferStateActivity.this);
+                int curr_positive_state = Integer.valueOf(trans_control_bt.getTag().toString());
+                switch (curr_positive_state) {
+                    case CONTROL_BUTTON_PAUSE_ACTIVE:
+                        UploadService.startActionPauseAll(TransferStateActivity.this);
+                        break;
+                    case CONTROL_BUTTON_START_ACTIVE:
+                        UploadService.startActionResumeAll(TransferStateActivity.this);
+                        break;
+                    default:
+                        break;
+                }
             }
         });
 
@@ -170,7 +186,7 @@ public class TransferStateActivity extends Activity implements ActionBar.TabList
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "cancel all");
-                UploadService.stopUploadService(TransferStateActivity.this);
+                UploadService.startActionCancelAll(TransferStateActivity.this);
             }
         });
 
@@ -179,8 +195,42 @@ public class TransferStateActivity extends Activity implements ActionBar.TabList
             public void onClick(View v) {
                 // TODO clear all uploaded record from local table
                 Log.d(TAG, "Clear all record");
+                UploadService.startActionClearAll(TransferStateActivity.this);
             }
         });
+    }
+
+    @Override
+    public void onFragmentInteraction(String id) {
+
+    }
+
+    @Override
+    public void refreshUploadBottomBar(ArrayList<UploadFile> waitUploadFile, ArrayList<UploadFile> uploadingFile, ArrayList<UploadFile> pauseUploadFile, ArrayList<UploadFile> uploadedFile) {
+        Log.d(TAG, "Receive update bottom bar request from FragmentUploadList");
+        if (waitUploadFile.size() > 0 || uploadingFile.size() > 0 || pauseUploadFile.size() > 0) {
+            trans_control_bt.setVisibility(View.VISIBLE);
+            trans_cancel_all_bt.setVisibility(View.VISIBLE);
+            trans_clear_all_bt.setVisibility(View.GONE);
+
+            if (waitUploadFile.size() > 0 || uploadingFile.size() > 0) {
+                trans_control_bt.setText(R.string.transfer_state_activity_control_pause_all_bt_text);
+                trans_control_bt.setTag(CONTROL_BUTTON_PAUSE_ACTIVE);
+            } else {
+                trans_control_bt.setText(R.string.transfer_state_activity_control_start_all_bt_text);
+                trans_control_bt.setTag(CONTROL_BUTTON_START_ACTIVE);
+            }
+        } else {
+            trans_control_bt.setVisibility(View.GONE);
+            trans_cancel_all_bt.setVisibility(View.GONE);
+            trans_clear_all_bt.setVisibility(View.VISIBLE);
+        }
+    }
+
+
+    @Override
+    public void refreshDownloadBottomBar() {
+
     }
 
 

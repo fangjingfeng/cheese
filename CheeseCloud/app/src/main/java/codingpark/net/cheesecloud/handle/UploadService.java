@@ -42,6 +42,10 @@ public class UploadService extends Service {
      */
     private static final String ACTION_START_ALL_UPLOAD         = "codingpark.net.cheesecloud.handle.ACTION_START_ALL_UPLOAD";
     /**
+     * Resume all upload
+     */
+    private static final String ACTION_RESUME_ALL_UPLOAD        = "codingpark.net.cheesecloud.handle.ACTION_RESUME_ALL_UPLOAD";
+    /**
      * Pause upload command
      */
     private static final String ACTION_PAUSE_ALL_UPLOAD         = "codingpark.net.cheesecloud.handle.ACTION_PAUSE_ALL_UPLOAD";
@@ -62,21 +66,25 @@ public class UploadService extends Service {
 
     public static final int EVENT_UPLOAD_BLOCK_FAILED                   = 1;
 
-    public static final int EVENT_PAUSE_ALL_UPLOAD_SUCCESS              = 2;
+    public static final int EVENT_RESUME_ALL_UPLOAD_SUCCESS             = 2;
 
-    public static final int EVENT_PAUSE_ALL_UPLOAD_FAILED               = 3;
+    public static final int EVENT_RESUME_ALL_UPLOAD_FAILED              = 3;
 
-    public static final int EVENT_CANCEL_ALL_UPLOAD_SUCCESS             = 4;
+    public static final int EVENT_PAUSE_ALL_UPLOAD_SUCCESS              = 4;
 
-    public static final int EVENT_CANCEL_ALL_UPLOAD_FAILED              = 5;
+    public static final int EVENT_PAUSE_ALL_UPLOAD_FAILED               = 5;
 
-    public static final int EVENT_CANCEL_ONE_UPLOAD_SUCCESS             = 6;
+    public static final int EVENT_CANCEL_ALL_UPLOAD_SUCCESS             = 6;
 
-    public static final int EVENT_CANCEL_ONE_UPLOAD_FAILED              = 7;
+    public static final int EVENT_CANCEL_ALL_UPLOAD_FAILED              = 7;
 
-    public static final int EVENT_CLEAR_ALL_UPLOAD_RECORD_SUCCESS       = 8;
+    public static final int EVENT_CANCEL_ONE_UPLOAD_SUCCESS             = 8;
 
-    public static final int EVENT_CLEAR_ALL_UPLOAD_RECORD_FAILED        = 9;
+    public static final int EVENT_CANCEL_ONE_UPLOAD_FAILED              = 9;
+
+    public static final int EVENT_CLEAR_ALL_UPLOAD_RECORD_SUCCESS       = 10;
+
+    public static final int EVENT_CLEAR_ALL_UPLOAD_RECORD_FAILED        = 11;
 
     private UploadFileDataSource uploadFileDataSource   = null;
 
@@ -95,6 +103,18 @@ public class UploadService extends Service {
     public static void startActionUploadAll(Context context) {
         Intent intent = new Intent(context, UploadService.class);
         intent.setAction(ACTION_START_ALL_UPLOAD);
+        context.startService(intent);
+    }
+
+    /**
+     * Starts this service to perform action ACTION_START_ALL_UPLOAD with the
+     * given parameters. If the service is already performing a task this
+     * action will be queued.
+     * @see IntentService
+     */
+    public static void startActionResumeAll(Context context) {
+        Intent intent = new Intent(context, UploadService.class);
+        intent.setAction(ACTION_RESUME_ALL_UPLOAD);
         context.startService(intent);
     }
 
@@ -158,6 +178,8 @@ public class UploadService extends Service {
             final String action = intent.getAction();
             if (ACTION_START_ALL_UPLOAD.equals(action)) {
                 handleActionStartAllUpload();
+            } else if(ACTION_RESUME_ALL_UPLOAD.equals(action)) {
+                handleActionResumeAllUpload();
             } else if (ACTION_PAUSE_ALL_UPLOAD.equals(action)) {
                 handleActionPauseAllUpload();
             } else if (ACTION_CANCEL_ALL_UPLOAD.equals(action)) {
@@ -190,6 +212,7 @@ public class UploadService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d(TAG, "onStartCommand");
+        refreshWaitData();
         onHandleIntent(intent);
         return super.onStartCommand(intent, flags, startId);
     }
@@ -199,6 +222,7 @@ public class UploadService extends Service {
      * parameters.
      */
     private synchronized void handleActionStartAllUpload() {
+        Log.d(TAG, "handle action start all action");
         // For sync, we stop upload thread first
         // 1. Pause mTask
         pauseUploadThread();
@@ -209,16 +233,61 @@ public class UploadService extends Service {
     }
 
     /**
+     * Handle action ACTION_RESUME_ALL_UPLOAD in the provided background thread with the provided
+     * parameters.
+     */
+    private synchronized void handleActionResumeAllUpload() {
+        Log.d(TAG, "handle resume all action");
+        // For sync, we stop upload thread first
+        // 1. Pause mTask
+        pauseUploadThread();
+        // 2. Update all pause state record to wait
+        ArrayList<UploadFile> tmp_datas = uploadFileDataSource.getAllUploadFileByState(UploadFileState.PAUSE_UPLOAD);
+        for (int i = 0; i < tmp_datas.size(); i++) {
+            UploadFile file = tmp_datas.get(i);
+            file.setState(UploadFileState.WAIT_UPLOAD);
+            uploadFileDataSource.updateUploadFile(file);
+        }
+        // 3. Refresh mWaitDataList from local table upload_table
+        refreshWaitData();
+        // 4. Start mTask again
+        startUploadThread();
+        // 5. Send broadcast
+        sendChangedBroadcast(EVENT_RESUME_ALL_UPLOAD_SUCCESS);
+    }
+
+    /**
      * Handle action ACTION_PAUSE_ALL_UPLOAD in the provided background thread with the provided
      * parameters.
      */
     private synchronized  void handleActionPauseAllUpload() {
-        Log.d(TAG, "handle action pause upload");
+        Log.d(TAG, "handle pause all action");
+        // 1. Pause upload thread
         pauseUploadThread();
+        // 2. Set all wait and uploading state record to pause state
+        for (int i = 0; i < mWaitDataList.size(); i++) {
+            UploadFile file = mWaitDataList.get(i);
+            int state = file.getState();
+            if (state == UploadFileState.UPLOADING || state == UploadFileState.WAIT_UPLOAD)
+                file.setState(UploadFileState.PAUSE_UPLOAD);
+            uploadFileDataSource.updateUploadFile(file);
+        }
+        sendChangedBroadcast(EVENT_PAUSE_ALL_UPLOAD_SUCCESS);
     }
 
     private synchronized void handleActionCancelAllUpload() {
         Log.d(TAG, "handle action cancel all upload");
+        // 1. Pause upload thread
+        pauseUploadThread();
+        // 2. Delete uploading and wait state record from database
+        // TODO Need delete rubbish records/datas from server
+        uploadFileDataSource.deleteUploadFileByState(UploadFileState.UPLOADING);
+        uploadFileDataSource.deleteUploadFileByState(UploadFileState.WAIT_UPLOAD);
+        uploadFileDataSource.deleteUploadFileByState(UploadFileState.PAUSE_UPLOAD);
+        // 3. Update mWaitDataList
+        refreshWaitData();
+        // 4. Send broadcast
+        sendChangedBroadcast(EVENT_CANCEL_ALL_UPLOAD_SUCCESS);
     }
 
     private synchronized void handleActionCancelOneUpload() {
@@ -293,7 +362,14 @@ public class UploadService extends Service {
         intent.putExtra(EXTRA_UPLOAD_FILE, file);
         intent.putExtra(EXTRA_UPLOAD_STATE, event);
         getApplicationContext().sendBroadcast(intent);
-        Log.d(TAG, "Send upload state changed broadcast: " + event);
+        Log.d(TAG, "Send upload state changed broadcast with file: " + event);
+    }
+
+    private void sendChangedBroadcast(int event) {
+        Intent intent = new Intent(ACTION_UPLOAD_STATE_CHANGE);
+        intent.putExtra(EXTRA_UPLOAD_STATE, event);
+        getApplicationContext().sendBroadcast(intent);
+        Log.d(TAG, "Send upload state changed broadcast without file: " + event);
     }
 
     /**

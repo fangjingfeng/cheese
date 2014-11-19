@@ -8,14 +8,14 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-import codingpark.net.cheesecloud.handle.OnFragmentInteractionListener;
+import codingpark.net.cheesecloud.handle.OnTransFragmentInteractionListener;
 import codingpark.net.cheesecloud.view.dummy.DummyContent;
 
 /**
  * A fragment representing a list of download/downloading/downloaded record.
  * <p/>
  * <p/>
- * Activities containing this fragment MUST implement the {@link OnFragmentInteractionListener}
+ * Activities containing this fragment MUST implement the {@link OnTransFragmentInteractionListener}
  * interface.
  */
 public class FragmentDownloadList extends ListFragment {
@@ -26,7 +26,7 @@ public class FragmentDownloadList extends ListFragment {
     // The fragment index in TransferStateActivity
     private int section_number;
 
-    private OnFragmentInteractionListener mListener = null;
+    private OnTransFragmentInteractionListener mListener = null;
     private Context mContext                        = null;
 
     public static FragmentDownloadList newInstance(int number) {
@@ -62,7 +62,7 @@ public class FragmentDownloadList extends ListFragment {
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         try {
-            mListener = (OnFragmentInteractionListener) activity;
+            mListener = (OnTransFragmentInteractionListener) activity;
             mContext = activity;
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
