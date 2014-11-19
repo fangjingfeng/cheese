@@ -230,6 +230,30 @@ public class UploadFileDataSource {
     }
 
     /**
+     * Get all upload file filtered by the state
+     * @param state Target file upload state
+     * @return ArrayList<UploadFile>: The list include all the state file record
+     * in database
+     */
+    public ArrayList<UploadFile> getAllUploadFileByState(int state) {
+        ArrayList<UploadFile> fileList = new ArrayList<UploadFile>();
+        Cursor cursor = database.query(UploadFileEntry.TABLE_NAME,
+                UploadFileEntry.COLUMN_ARRAY,
+                UploadFileEntry.COLUMN_FILETYPE + " =? and " +
+                        UploadFileEntry.COLUMN_USERID + " =? and " +
+                        UploadFileEntry.COLUMN_STATE + " =? ",
+                new String[] {String.valueOf(CloudFileType.TYPE_FILE),
+                        String.valueOf(AppConfigs.current_local_user_id),
+                        String.valueOf(state)},
+                null, null, null);
+        while (cursor.moveToNext()) {
+            fileList.add(cursorToFile(cursor));
+        }
+        return fileList;
+    }
+
+
+    /**
      * Get the file's sub file list
      *
      * @param file the parent file
