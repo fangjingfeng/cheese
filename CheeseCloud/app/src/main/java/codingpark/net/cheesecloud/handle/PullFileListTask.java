@@ -96,7 +96,6 @@ public class PullFileListTask extends AsyncTask<Void,Void,Integer> {
     protected void onPostExecute(Integer result) {
         switch (result) {
             case WsResultType.Success:
-                // TODO Refresh ListView
                 if (mAdapter != null)
                     mAdapter.notifyDataSetChanged();
                 if (mListener != null)
@@ -104,6 +103,10 @@ public class PullFileListTask extends AsyncTask<Void,Void,Integer> {
                 return;
             default:
                 // TODO Warning pull error
+                if (mAdapter != null)
+                    mAdapter.notifyDataSetChanged();
+                if (mListener != null)
+                    mListener.onPullDataReady(result);
                 return;
         }
     }

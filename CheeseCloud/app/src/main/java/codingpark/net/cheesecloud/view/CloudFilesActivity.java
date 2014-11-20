@@ -16,6 +16,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -40,6 +42,7 @@ import codingpark.net.cheesecloud.handle.CreateDirTask;
 import codingpark.net.cheesecloud.handle.DeleteFileTask;
 import codingpark.net.cheesecloud.handle.OnWSTaskFinishListener;
 import codingpark.net.cheesecloud.handle.PullFileListTask;
+import codingpark.net.cheesecloud.handle.RenameFileTask;
 import codingpark.net.cheesecloud.utils.ThumbnailCreator;
 
 /**
@@ -54,7 +57,7 @@ import codingpark.net.cheesecloud.utils.ThumbnailCreator;
  */
 public class CloudFilesActivity extends ListActivity implements View.OnClickListener,
         OnWSTaskFinishListener<CloudFile>, CreateDirTask.OnCreateFolderCompletedListener,
-        DeleteFileTask.OnDeleteFileCompletedListener
+        DeleteFileTask.OnDeleteFileCompletedListener, RenameFileTask.OnRenameFileCompletedListener
 {
     private static final String TAG         = CloudFilesActivity.class.getSimpleName();
 
@@ -290,8 +293,10 @@ public class CloudFilesActivity extends ListActivity implements View.OnClickList
 
     private void mkdir() {
         final Dialog dialog = new Dialog(this);
+        dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.single_input_layout);
-        dialog.setTitle(this.getString(R.string.cfa_make_dir_dialog_title));
+        TextView titleView = (TextView)dialog.findViewById(R.id.single_input_dialog_title);
+        titleView.setText(this.getString(R.string.cfa_make_dir_dialog_title));
         ImageView mkdir_icon = (ImageView)dialog.findViewById(R.id.input_icon);
         mkdir_icon.setImageResource(R.drawable.folder);
         final EditText mkdir_input = (EditText) dialog
@@ -334,19 +339,35 @@ public class CloudFilesActivity extends ListActivity implements View.OnClickList
 
     private void editFile() {
         final Dialog dialog = new Dialog(this);
+        dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.single_input_layout);
-        dialog.setTitle(this.getString(R.string.cfa_rename_dialog_title));
+        //dialog.setTitle(this.getString(R.string.cfa_rename_dialog_title));
+        TextView titleView = (TextView)dialog.findViewById(R.id.single_input_dialog_title);
+        titleView.setText(R.string.cfa_rename_dialog_title);
         ImageView rename_icon = (ImageView)dialog.findViewById(R.id.input_icon);
         rename_icon.setImageResource(R.drawable.folder);
         final EditText rename_input = (EditText) dialog
                 .findViewById(R.id.input_inputText);
         // TODO Change the default text to current selected file name
         rename_input.setText(R.string.cfa_make_dir_dialog_def_dirName);
+        final CloudFile file;
+        if (mSelectedFileList.size() > 0) {
+            file = mSelectedFileList.get(0);
+            rename_input.setText(file.getFilePath());
+        } else {
+            file = null;
+        }
         Button rename_cancel = (Button) dialog.findViewById(R.id.input_cancel_b);
         Button rename_confirm = (Button) dialog.findViewById(R.id.input_confirm_b);
         rename_confirm.setText(this.getString(R.string.input_layout_confirm));
         rename_confirm.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+                if (file != null) {
+                    file.setFilePath(rename_input.getText().toString());
+                    new RenameFileTask(CloudFilesActivity.this, null, file, CloudFilesActivity.this).execute();
+                    setLoadingViewVisible(true);
+                }
+                // TODO According name call Web Service create folder API to create target folder
                 dialog.dismiss();
             }
         });
@@ -385,6 +406,16 @@ public class CloudFilesActivity extends ListActivity implements View.OnClickList
         }
     }
 
+    @Override
+    public void onRenameFileCompleted(int result) {
+        if (result == WsResultType.Success) {
+            Log.d(TAG, "Rename files/folders completed! refresh list");
+            refreshList();
+        } else {
+            Log.d(TAG, "Rename files/folders failed: " + result);
+            mAdapter.notifyDataSetChanged();
+        }
+    }
 
     /**
      * File/Directory list item view encapsulate
@@ -596,8 +627,6 @@ public class CloudFilesActivity extends ListActivity implements View.OnClickList
             selectValidAction = false;
             mActionMode = null;
         }
-
-
     };
 
 }

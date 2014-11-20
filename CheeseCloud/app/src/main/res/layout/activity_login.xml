@@ -33,7 +33,7 @@
                     android:inputType="textEmailAddress"
                     android:maxLines="1"
                     android:singleLine="true"
-                    android:text="liuqiwu@cheese.com" />
+                    android:text="mrmsadmin@cheese.com" />
 
                 <EditText
                     android:id="@+id/password"
@@ -46,7 +46,7 @@
                     android:inputType="textPassword"
                     android:maxLines="1"
                     android:singleLine="true"
-                    android:text="liu" />
+                    android:text="cheese" />
 
                 <EditText
                     android:id="@+id/web_url"
@@ -56,7 +56,7 @@
                     android:maxLines="1"
                     android:inputType="textUri"
                     android:singleLine="true"
-                    android:text="http://58.116.52.8:8989/ClientWS.asmx?wsdl" />
+                    android:text="http://192.168.0.149:8989/ClientWS.asmx?wsdl" />
 
                 <Button
                     android:id="@+id/email_sign_in_button"

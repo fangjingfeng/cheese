@@ -604,6 +604,7 @@ public final class ClientWS {
                         r_file.FullName = x_file.getPropertyAsString("FullName");
                         r_file.Name = x_file.getPropertyAsString("Name");
                         r_file.SizeB = Long.valueOf(x_file.getPropertyAsString("UsedSpaceSizeKB"));
+                        r_file.ID = x_file.getPropertyAsString("ID");
                         fileList.add(r_file);
                     }
                 }
@@ -918,7 +919,7 @@ public final class ClientWS {
         createFolder(folder);
     }
 
-    private int renameObj_wrapper(CloudFile file) {
+    public int renameObj_wrapper(CloudFile file) {
         int result = WsResultType.Success;
         result =renameObj(file.getRemote_id(),
                 file.getFileType()== CloudFileType.TYPE_FILE ? "file" : "folder", file.getFilePath());

@@ -8,48 +8,48 @@ import codingpark.net.cheesecloud.entity.CloudFile;
 import codingpark.net.cheesecloud.enumr.WsResultType;
 
 /**
- * This class used to create a folder on remote server refresh UI(ListView +
+ * This class used to rename file or folder on remote server refresh UI(ListView +
  * Bottom Bar).
  * @author Ethan Shan
  * @version 1.0
  * @created 14-十一月-2014 14:36:29
  */
-public class CreateDirTask extends AsyncTask<Void,Void,Integer> {
+public class RenameFileTask extends AsyncTask<Void,Void,Integer> {
 
-    private ArrayAdapter mAdapter        = null;
-    private CloudFile mFolder = null;
+    private ArrayAdapter mAdapter           = null;
+    private CloudFile mFile                 = null;
     private Context mContext                = null;
-    private OnCreateFolderCompletedListener mListener   = null;
+    private OnRenameFileCompletedListener mListener     = null;
 
     /**
      * The Constructor
      *
-     * @param folder    The CloudFile object which store the to be created folder
+     * @param file The CloudFile object which store the to be renamed file with new filename
      * information.
      * @param adapter    The list view ArrayAdapter
      * @param context    The application context
      */
-    public CreateDirTask(Context context, ArrayAdapter adapter,
-                         CloudFile folder) {
+    public RenameFileTask(Context context, ArrayAdapter adapter,
+                          CloudFile file) {
         mContext = context;
         mAdapter = adapter;
-        mFolder = folder;
+        mFile = file;
     }
 
     /**
      * The constructor
      *
-     * @param listener    When pull data task complete call this callback
-     * @param folder    The CloudFile object which store the to be created folder
+     * @param listener    When rename file task complete call this callback
+     * @param file The CloudFile object which store the to be renamed file with new filename
      * information.
      * @param adapter    The list view ArrayAdapter
      * @param context    The application context
      */
-    public CreateDirTask(Context context, ArrayAdapter adapter,
-                         CloudFile folder, OnCreateFolderCompletedListener listener) {
+    public RenameFileTask(Context context, ArrayAdapter adapter,
+                          CloudFile file, OnRenameFileCompletedListener listener) {
         mContext = context;
         mAdapter = adapter;
-        mFolder = folder;
+        mFile = file;
         mListener = listener;
     }
 
@@ -61,7 +61,7 @@ public class CreateDirTask extends AsyncTask<Void,Void,Integer> {
     @Override
     protected Integer doInBackground(Void... params) {
         int result = WsResultType.Success;
-        result = ClientWS.getInstance(mContext).createFolderCloud_wrapper(mFolder);
+        result = ClientWS.getInstance(mContext).renameObj_wrapper(mFile);
         return result;
     }
 
@@ -72,28 +72,28 @@ public class CreateDirTask extends AsyncTask<Void,Void,Integer> {
                 if (mAdapter != null)
                     mAdapter.notifyDataSetChanged();
                 if (mListener != null)
-                    mListener.onCreateFolderCompleted(result);
+                    mListener.onRenameFileCompleted(result);
                 return;
             default:
-                // TODO Warning pull error
+                // TODO Refresh ListView
                 if (mAdapter != null)
                     mAdapter.notifyDataSetChanged();
                 if (mListener != null)
-                    mListener.onCreateFolderCompleted(result);
+                    mListener.onRenameFileCompleted(result);
                 return;
         }
     }
 
 
     /**
-     * The object who start CreateDirTask may be interested in the task completed
+     * The object who start RenameFileTask may be interested in the task completed
      * action. If care, it should implement this interface and implement
-     * onCreateFolderCompleted function. Set implementation as parameter of the
-     * constructor.When task finish, CreateDirTask will call onCreateFolderCompleted
+     * onRenameFileCompleted function. Set implementation as parameter of the
+     * constructor.When task finish, RenameFileTask will call oRenameFileCompleted
      * function and pass the task return result as a parameter.
      */
-    public static interface OnCreateFolderCompletedListener {
-        public void onCreateFolderCompleted(int result);
+    public static interface OnRenameFileCompletedListener {
+        public void onRenameFileCompleted(int result);
     }
 }
 
