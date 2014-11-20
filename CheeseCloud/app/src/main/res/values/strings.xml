@@ -101,9 +101,12 @@
     <!-- CloudFilesActivity.MakeDirDailog -->
     <string name="cfa_make_dir_dialog_title">New Directory</string>
     <string name="cfa_make_dir_dialog_def_dirName">New Directory</string>
+    <!-- CloudFilesActivity.EditFileDialog -->
+    <string name="cfa_rename_dialog_title">Rename</string>
 
     <!-- single_input_layout -->
     <string name="input_layout_cancel">Cancel</string>
     <string name="input_layout_create">Create</string>
+    <string name="input_layout_confirm">Confirm</string>
 
 </resources>

@@ -29,7 +29,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Stack;
 
@@ -299,7 +298,7 @@ public class CloudFilesActivity extends ListActivity implements View.OnClickList
                 .findViewById(R.id.input_inputText);
         mkdir_input.setText(R.string.cfa_make_dir_dialog_def_dirName);
         Button mkdir_cancel = (Button) dialog.findViewById(R.id.input_cancel_b);
-        Button mkdir_create = (Button) dialog.findViewById(R.id.input_create_b);
+        Button mkdir_create = (Button) dialog.findViewById(R.id.input_confirm_b);
         mkdir_create.setText(this.getString(R.string.input_layout_create));
         mkdir_create.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -331,6 +330,32 @@ public class CloudFilesActivity extends ListActivity implements View.OnClickList
             mFiles.add(file);
         new DeleteFileTask(CloudFilesActivity.this, null, mFiles, CloudFilesActivity.this).execute();
         setLoadingViewVisible(true);
+    }
+
+    private void editFile() {
+        final Dialog dialog = new Dialog(this);
+        dialog.setContentView(R.layout.single_input_layout);
+        dialog.setTitle(this.getString(R.string.cfa_rename_dialog_title));
+        ImageView rename_icon = (ImageView)dialog.findViewById(R.id.input_icon);
+        rename_icon.setImageResource(R.drawable.folder);
+        final EditText rename_input = (EditText) dialog
+                .findViewById(R.id.input_inputText);
+        // TODO Change the default text to current selected file name
+        rename_input.setText(R.string.cfa_make_dir_dialog_def_dirName);
+        Button rename_cancel = (Button) dialog.findViewById(R.id.input_cancel_b);
+        Button rename_confirm = (Button) dialog.findViewById(R.id.input_confirm_b);
+        rename_confirm.setText(this.getString(R.string.input_layout_confirm));
+        rename_confirm.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        rename_cancel.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
     }
 
 
@@ -545,6 +570,7 @@ public class CloudFilesActivity extends ListActivity implements View.OnClickList
                 case R.id.cab_menu_edit:
                     Toast.makeText(CloudFilesActivity.this, "Edit action", Toast.LENGTH_SHORT).show();
                     mode.finish(); // Action picked, so close the CAB
+                    editFile();
                     break;
                 case R.id.cab_menu_copy:
                     Toast.makeText(CloudFilesActivity.this, "Copy action", Toast.LENGTH_SHORT).show();

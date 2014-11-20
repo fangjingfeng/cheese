@@ -14,7 +14,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="4"
-            android:src="@drawable/folder" />"
+            android:src="@drawable/folder" />
         <EditText
             android:id="@+id/input_inputText"
             android:layout_width="fill_parent"
@@ -41,7 +41,7 @@
             android:layout_weight="1"
             android:text="@string/input_layout_create"
             android:enabled="true"
-            android:id="@+id/input_create_b"
+            android:id="@+id/input_confirm_b"
             />
     </LinearLayout>
 </LinearLayout>

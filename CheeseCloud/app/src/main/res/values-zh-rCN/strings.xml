@@ -101,4 +101,6 @@
     <string name="input_layout_create">创建</string>
     <string name="cfa_make_dir_dialog_title">新建文件夹</string>
     <string name="cfa_make_dir_dialog_def_dirName">新建文件夹</string>
+    <string name="cfa_rename_dialog_title">重命名</string>
+    <string name="input_layout_confirm">确认</string>
 </resources>

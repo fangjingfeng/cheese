@@ -27,6 +27,7 @@ import codingpark.net.cheesecloud.AppConfigs;
 import codingpark.net.cheesecloud.entity.CloudFile;
 import codingpark.net.cheesecloud.entity.UploadFile;
 import codingpark.net.cheesecloud.enumr.CheckedFileInfoResultType;
+import codingpark.net.cheesecloud.enumr.CloudFileType;
 import codingpark.net.cheesecloud.enumr.LoginResultType;
 import codingpark.net.cheesecloud.enumr.UploadFileState;
 import codingpark.net.cheesecloud.enumr.WsResultType;
@@ -85,6 +86,8 @@ public final class ClientWS {
      * Web service API name used by delete folders and files batched
      */
     public static final String METHOD_DELETE_FOLDER_AND_FILE    = "DeleteFolderAndFile";
+
+    public static final String METHOD_RENAME_OBJ            = "RenameObj";
 
     /**
      * In reality, the endpoint address should dynamic fetch from SharedPreference,
@@ -192,6 +195,62 @@ public final class ClientWS {
         } catch (Exception e) {
             e.printStackTrace();
             result = -1;
+        }
+        return result;
+    }
+
+
+    /**
+     * Rename target file
+     * @param id The target file id on remote server
+     * @param type "file" or "folder"
+     * @param newName The new file name
+     * @return {@link codingpark.net.cheesecloud.enumr.WsResultType}
+     */
+    public int renameObj(String id, String type, String newName) {
+        int result = WsResultType.Success;
+
+        // Create SOAP Action
+        String soapAction = NAMESPACE + METHOD_RENAME_OBJ;
+
+        // Initial SoapObject
+        SoapObject rpc = new SoapObject(NAMESPACE, METHOD_RENAME_OBJ);
+        // add web service method parameter
+        rpc.addProperty("id", id);
+        rpc.addProperty("type", type);
+        rpc.addProperty("newName", newName);
+
+        // Initial envelope
+        // Create soap request object with soap version
+        SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(SoapEnvelope.VER12);
+        envelope.bodyOut = rpc;
+        envelope.dotNet = true;
+        envelope.setOutputSoapObject(rpc);
+        // Set Mapping
+        // Set MARSHALLING type
+        Marshal floatMarshal = new MarshalFloat();
+        floatMarshal.register(envelope);
+
+        // Initial http transport
+        HttpTransportSE transport = new HttpTransportSE(mEndPoint);
+        transport.debug = true;
+
+        // Set http header cookies values before call WS
+        List<HeaderProperty> paraHttpHeaders = new ArrayList<HeaderProperty>();
+        paraHttpHeaders.add(new HeaderProperty("Cookie", session_id));
+
+        // Call WS
+        try {
+            transport.call(soapAction, envelope, paraHttpHeaders);
+            Log.d(TAG, "Request: \n" + transport.requestDump);
+            Log.d(TAG, "Response: \n" + transport.responseDump);
+            // Process return data
+            // Get webservice return object
+            final SoapObject resp = (SoapObject) envelope.bodyIn;
+            result = Integer.valueOf(resp.getProperty("CreateFolderResult").toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return WsResultType.Faild;
         }
         return result;
     }
@@ -857,6 +916,13 @@ public final class ClientWS {
             Log.d(TAG, "File: " + path + " \t" + " not exist!");
         }
         createFolder(folder);
+    }
+
+    private int renameObj_wrapper(CloudFile file) {
+        int result = WsResultType.Success;
+        result =renameObj(file.getRemote_id(),
+                file.getFileType()== CloudFileType.TYPE_FILE ? "file" : "folder", file.getFilePath());
+        return result;
     }
 
 }
