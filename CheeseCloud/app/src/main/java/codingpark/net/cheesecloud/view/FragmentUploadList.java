@@ -168,6 +168,7 @@ public class FragmentUploadList extends ListFragment {
 
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
+        Log.d(TAG, "serUserVisibleHint:" + isVisibleToUser);
         if (isVisibleToUser) {
             if (mListener != null)
                 mListener.refreshUploadBottomBar(mWaitUploadFileList, mUploadingFileList, mPauseUploadFileList, mUploadedFileList);

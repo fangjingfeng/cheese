@@ -140,10 +140,18 @@ public class TransferStateActivity extends Activity implements ActionBar.TabList
 
     @Override
     public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
+        Log.d(TAG, "onTabUnselected");
+        if (tab.getPosition() == 0)
+            mActivePagePos = 1;
+        else
+            mActivePagePos = 0;
     }
+
+
 
     @Override
     public void onTabReselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
+        Log.d(TAG, "onTabReselected");
     }
 
 
