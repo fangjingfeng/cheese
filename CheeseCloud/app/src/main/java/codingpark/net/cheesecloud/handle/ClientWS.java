@@ -87,7 +87,16 @@ public final class ClientWS {
      */
     public static final String METHOD_DELETE_FOLDER_AND_FILE    = "DeleteFolderAndFile";
 
+    /**
+     * Web service API name used to rename file or folder
+     */
     public static final String METHOD_RENAME_OBJ            = "RenameObj";
+
+    /**
+     * Web service API name used to copy or clip files or folders to other folder
+     */
+    public static final String METHOD_PASTE_OBJ             = "PasteObjs";
+
 
     /**
      * In reality, the endpoint address should dynamic fetch from SharedPreference,
@@ -141,7 +150,6 @@ public final class ClientWS {
     public int checkedFileInfo(WsFile wsFile) {
         int result;
 
-        //wsFile.CreaterID = "395ED821-E528-42F0-8EA7-C59F258E7435";
         wsFile.CreaterID = AppConfigs.current_remote_user_id;
         // Create SOAP Action
         String soapAction = NAMESPACE + METHOD_CHECKEDFILEINFO;//"http://tempuri.org/Test";
@@ -247,7 +255,65 @@ public final class ClientWS {
             // Process return data
             // Get webservice return object
             final SoapObject resp = (SoapObject) envelope.bodyIn;
-            result = Integer.valueOf(resp.getProperty("CreateFolderResult").toString());
+            result = Integer.valueOf(resp.getProperty("RenameObjResult").toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return WsResultType.Faild;
+        }
+        return result;
+    }
+
+    /**
+     * Copy or clip remote files and folders to target folder
+     * @param ids The files or folders remote GUID string, separate with ","(1111,22222,33333)
+     * @param types The file type string, value of "file" or "folder", separate with ","(file,folder,folder)
+     * @param identity The operation type("copy" or "clip")
+     * @param parentID The moved file target folder GUID
+     * @return {@link codingpark.net.cheesecloud.enumr.WsResultType}
+     */
+    public int pasteObj(String ids, String types, String identity, String parentID) {
+        int result = WsResultType.Success;
+
+        // Create SOAP Action
+        String soapAction = NAMESPACE + METHOD_PASTE_OBJ;
+
+        // Initial SoapObject
+        SoapObject rpc = new SoapObject(NAMESPACE, METHOD_PASTE_OBJ);
+        // add web service method parameter
+        // string ids, string types, string identity, Guid parentID
+        rpc.addProperty("ids", ids);
+        rpc.addProperty("types", types);
+        rpc.addProperty("identity", identity);
+        rpc.addProperty("parentID", parentID);
+
+        // Initial envelope
+        // Create soap request object with soap version
+        SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(SoapEnvelope.VER12);
+        envelope.bodyOut = rpc;
+        envelope.dotNet = true;
+        envelope.setOutputSoapObject(rpc);
+        // Set Mapping
+        // Set MARSHALLING type
+        Marshal floatMarshal = new MarshalFloat();
+        floatMarshal.register(envelope);
+
+        // Initial http transport
+        HttpTransportSE transport = new HttpTransportSE(mEndPoint);
+        transport.debug = true;
+
+        // Set http header cookies values before call WS
+        List<HeaderProperty> paraHttpHeaders = new ArrayList<HeaderProperty>();
+        paraHttpHeaders.add(new HeaderProperty("Cookie", session_id));
+
+        // Call WS
+        try {
+            transport.call(soapAction, envelope, paraHttpHeaders);
+            Log.d(TAG, "Request: \n" + transport.requestDump);
+            Log.d(TAG, "Response: \n" + transport.responseDump);
+            // Process return data
+            // Get webservice return object
+            final SoapObject resp = (SoapObject) envelope.bodyIn;
+            result = Integer.valueOf(resp.getProperty("PasteObjsResult").toString());
         } catch (Exception e) {
             e.printStackTrace();
             return WsResultType.Faild;
