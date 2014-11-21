@@ -38,12 +38,11 @@ public class RenameFileTask extends AsyncTask<Void,Void,Integer> {
 
     /**
      * The constructor
-     *
-     * @param listener    When rename file task complete call this callback
+     * @param context    The application context
+     * @param adapter    The list view ArrayAdapter
      * @param file The CloudFile object which store the to be renamed file with new filename
      * information.
-     * @param adapter    The list view ArrayAdapter
-     * @param context    The application context
+     * @param listener    When rename file task complete call this callback
      */
     public RenameFileTask(Context context, ArrayAdapter adapter,
                           CloudFile file, OnRenameFileCompletedListener listener) {

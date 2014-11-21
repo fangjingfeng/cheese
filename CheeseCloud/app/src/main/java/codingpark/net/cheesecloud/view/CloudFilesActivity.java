@@ -17,7 +17,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -40,7 +39,6 @@ import codingpark.net.cheesecloud.enumr.CloudFileType;
 import codingpark.net.cheesecloud.enumr.WsResultType;
 import codingpark.net.cheesecloud.handle.CreateDirTask;
 import codingpark.net.cheesecloud.handle.DeleteFileTask;
-import codingpark.net.cheesecloud.handle.OnWSTaskFinishListener;
 import codingpark.net.cheesecloud.handle.PullFileListTask;
 import codingpark.net.cheesecloud.handle.RenameFileTask;
 import codingpark.net.cheesecloud.utils.ThumbnailCreator;
@@ -56,7 +54,7 @@ import codingpark.net.cheesecloud.utils.ThumbnailCreator;
  * @created 06-十一月-2014 18:12:41
  */
 public class CloudFilesActivity extends ListActivity implements View.OnClickListener,
-        OnWSTaskFinishListener<CloudFile>, CreateDirTask.OnCreateFolderCompletedListener,
+        CreateDirTask.OnCreateFolderCompletedListener,
         DeleteFileTask.OnDeleteFileCompletedListener, RenameFileTask.OnRenameFileCompletedListener
 {
     private static final String TAG         = CloudFilesActivity.class.getSimpleName();
@@ -284,11 +282,6 @@ public class CloudFilesActivity extends ListActivity implements View.OnClickList
         refreshPathBar();
         refreshList();
         refreshCAB();
-    }
-
-    @Override
-    public void onWSTaskDataFinish(CloudFile data) {
-
     }
 
     private void mkdir() {

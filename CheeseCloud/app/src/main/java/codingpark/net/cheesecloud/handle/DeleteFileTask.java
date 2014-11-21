@@ -13,7 +13,7 @@ import codingpark.net.cheesecloud.wsi.WsFolder;
 
 // TODO Comment this class
 /**
- * This class used to create a folder on remote server refresh UI(ListView +
+ * This class used to delete files and folders on remote server and refresh UI(ListView +
  * Bottom Bar).
  * @author Ethan Shan
  * @version 1.0
@@ -31,6 +31,7 @@ public class DeleteFileTask extends AsyncTask<Void,Void,Integer> {
      * information.
      * @param context    The application context
      * @param adapter    The list view ArrayAdapter
+     * @param files      The CloudFile object list which to be deleted
      */
     public DeleteFileTask(Context context, ArrayAdapter adapter,
                           ArrayList<CloudFile> files) {
@@ -41,12 +42,10 @@ public class DeleteFileTask extends AsyncTask<Void,Void,Integer> {
 
     /**
      * The constructor
-     *
-     * @param listener    When pull data task complete call this callback
-     * @param files The CloudFile object which store the to be created folder
-     * information.
-     * @param adapter    The list view ArrayAdapter
      * @param context    The application context
+     * @param adapter    The list view ArrayAdapter
+     * @param files      The CloudFile object list which to be deleted
+     * @param listener    When delete files and folders task complete call this callback
      */
     public DeleteFileTask(Context context, ArrayAdapter adapter,
                           ArrayList<CloudFile> files, OnDeleteFileCompletedListener listener) {
@@ -97,6 +96,13 @@ public class DeleteFileTask extends AsyncTask<Void,Void,Integer> {
     }
 
 
+    /**
+     * DeleteFileTask is async, when host create and execute the task, host maybe
+     * want to know this task execute result. This interface for this reason.
+     * The host need implement this interface, and pass itself as parameter to
+     * the DeleteFileTask's constructor. After the task execute completed, will
+     * call onDeleteFileCompleted with the execute result(int).
+     */
     public static interface OnDeleteFileCompletedListener {
         public void onDeleteFileCompleted(int result);
     }

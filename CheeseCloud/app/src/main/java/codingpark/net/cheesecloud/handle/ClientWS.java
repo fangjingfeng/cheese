@@ -53,6 +53,11 @@ public final class ClientWS {
 
     // Web Services method name
     /**
+     * In reality, the endpoint address should dynamic fetch from SharedPreference,
+     * this const string used for SharedPrefernece.getString's default value parameter
+     */
+    public static final String DEFAULT_ENDPOINT             = "http://192.168.0.101:22332/ClientWS.asmx";
+    /**
      * Web service API name used by upload file process
      */
     public static final String METHOD_CHECKEDFILEINFO       = "CheckedFileInfo";
@@ -60,6 +65,10 @@ public final class ClientWS {
      * Web service API name used by create a folder on server process
      */
     public static final String METHOD_CREATEFOLDER          = "CreateFolder";
+    /**
+     * Web service API name used by delete folders and files batched
+     */
+    public String METHOD_DELETE_FOLDER_AND_FILE             = "DeleteFolderAndFile";
     /**
      * Web service API name used by get all root disk list process from server
      */
@@ -74,6 +83,14 @@ public final class ClientWS {
      */
     public static final String METHOD_GETFOLDERLIST         = "GetFolderList";
     /**
+     * Web service API name used to copy or clip files or folders to other folder
+     */
+    public String METHOD_PASTE_OBJ                          = "PasteObjs";
+    /**
+     * Web service API name used to rename file or folder
+     */
+    public String METHOD_RENAME_OBJ                         = "RenameObj";
+    /**
      * Web service API name used by upload file process
      */
     public static final String METHOD_UPLOADFILE            = "UploadFile";
@@ -82,27 +99,6 @@ public final class ClientWS {
      */
     public static final String METHOD_USERLOGIN             = "UserLogin";
 
-    /**
-     * Web service API name used by delete folders and files batched
-     */
-    public static final String METHOD_DELETE_FOLDER_AND_FILE    = "DeleteFolderAndFile";
-
-    /**
-     * Web service API name used to rename file or folder
-     */
-    public static final String METHOD_RENAME_OBJ            = "RenameObj";
-
-    /**
-     * Web service API name used to copy or clip files or folders to other folder
-     */
-    public static final String METHOD_PASTE_OBJ             = "PasteObjs";
-
-
-    /**
-     * In reality, the endpoint address should dynamic fetch from SharedPreference,
-     * this const string used for SharedPrefernece.getString's default value parameter
-     */
-    public static final String DEFAULT_ENDPOINT             = "http://192.168.0.101:22332/ClientWS.asmx";
 
     // Web services server configurations
     // Namespace
