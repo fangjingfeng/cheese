@@ -3,16 +3,13 @@
  */
 package codingpark.net.cheesecloud.utils;
 
-import java.io.File;
+import android.content.Context;
+import android.os.Environment;
+import android.os.storage.StorageManager;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-
-import android.content.Context;
-import android.os.Environment;
-import android.os.StatFs;
-import android.os.storage.StorageManager;
-import android.util.Log;
 /**
  * define the root path of flash,sdcard
  */
