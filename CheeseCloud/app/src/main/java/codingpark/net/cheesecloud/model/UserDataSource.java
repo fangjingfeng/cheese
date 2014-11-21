@@ -26,13 +26,22 @@ public class UserDataSource {
         dbHelper = new LocalDatabase(mContext);
     }
 
+    /**
+     * Call open to open Database, and initial related resource
+     */
     public void open() {
         if (database == null)
             database = dbHelper.getWritableDatabase();
     }
 
+    /**
+     * Call close to close the opened
+     */
     public void close() {
-        dbHelper.close();
+        if (database != null)
+            database.close();
+        if (dbHelper != null)
+            dbHelper.close();
     }
 
     /**

@@ -129,7 +129,10 @@ public class UploadFileDataSource {
     }
 
     public void close() {
-        dbHelper.close();
+        if (database != null)
+            database.close();
+        if (dbHelper != null)
+            dbHelper.close();
     }
 
     /**
