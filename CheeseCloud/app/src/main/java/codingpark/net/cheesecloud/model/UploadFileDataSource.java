@@ -11,7 +11,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.List;
 
 import codingpark.net.cheesecloud.AppConfigs;
 import codingpark.net.cheesecloud.entity.UploadFile;
@@ -120,15 +119,28 @@ public class UploadFileDataSource {
                 COLUMN_USERID};
     }
 
+    /**
+     * Constructor
+     * @param context The application context
+     */
     public UploadFileDataSource(Context context) {
         mContext = context;
         dbHelper = new LocalDatabase(mContext);
     }
 
+    /**
+     * First new UploadFileDataSource object, the internal database object is null.
+     * Before manipulate the upload_files table, need get writable database object from
+     * DatabaseHelper object.
+     */
     public void open() {
         database = dbHelper.getWritableDatabase();
     }
 
+    /**
+     * As the host manipulate upload_files table completed, call
+     * close to free the related system resource
+     */
     public void close() {
         if (database != null)
             database.close();
@@ -212,6 +224,15 @@ public class UploadFileDataSource {
         return result > 0;
     }
 
+    /**
+     * Update the origin record where the state equals orig_state to
+     * new_state
+     * @param orig_state Origin state
+     * @param new_state New state
+     * @return
+     *      true: When affect record number > 0;
+     *      false: When affect record number == 0;
+     */
     public boolean updateUploadFileState(int orig_state, int new_state) {
         ContentValues cv = new ContentValues();
         cv.put(UploadFileEntry.COLUMN_STATE, new_state);
@@ -221,6 +242,14 @@ public class UploadFileDataSource {
         return result > 0;
     }
 
+
+    /**
+     * Delete the record by local uploadfile.state column
+     *
+     * @param state The target record state
+     * @return true: delete success
+     * false: delete failed
+     */
     public boolean deleteUploadFileByState(int state) {
         int result = database.delete(UploadFileEntry.TABLE_NAME,
                 UploadFileEntry.COLUMN_STATE + "=?",
@@ -281,6 +310,7 @@ public class UploadFileDataSource {
      * @param file the parent file
      * @return List<UploadFile>: UploadFile object list
      */
+    /*
     public List<UploadFile> getSubUploadFiles(UploadFile file) {
         List<UploadFile> fileList = new ArrayList<UploadFile>();
         Cursor cursor = database.query(UploadFileEntry.TABLE_NAME,
@@ -297,6 +327,7 @@ public class UploadFileDataSource {
         }
         return fileList;
     }
+    */
 
     /**
      * Convert Cursor to UploadFile object
@@ -325,6 +356,7 @@ public class UploadFileDataSource {
      *
      * @return List<UploadFile>: The UploadFile object list
      */
+    /*
     public List<UploadFile> getNotUploadedRootFiles() {
         List<UploadFile> fileList = new ArrayList<UploadFile>();
         Cursor cursor = database.query(UploadFileEntry.TABLE_NAME,
@@ -339,6 +371,7 @@ public class UploadFileDataSource {
         }
         return fileList;
     }
+    */
 
     /**
      * Get not upload completed files from database
@@ -360,23 +393,6 @@ public class UploadFileDataSource {
         }
         return fileList;
     }
-
-    /*
-    public List<UploadFile> getWaitUploadFiles() {
-        List<UploadFile> fileList = new ArrayList<UploadFile>();
-        Cursor cursor = database.query(UploadFileEntry.TABLE_NAME,
-                UploadFileEntry.COLUMN_ARRAY,
-                UploadFileEntry.COLUMN_STATE + "==? and "
-                        + UploadFileEntry.COLUMN_USERID + "=? and ",
-                new String[]{String.valueOf(UploadFileState.UPLOADED),
-                        String.valueOf(AppConfigs.current_local_user_id)}, null, null, null);
-        while (cursor.moveToNext()) {
-            fileList.add(cursorToFile(cursor));
-        }
-        return fileList;
-    }
-    */
-
 
 
     /**

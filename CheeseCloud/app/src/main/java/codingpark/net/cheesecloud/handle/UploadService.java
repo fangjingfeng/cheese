@@ -383,6 +383,7 @@ public class UploadService extends Service {
     /**
      * Scan tree root
      */
+    /*
     private void root_upload() {
         Log.d(TAG, "Start root_upload");
         List<UploadFile> rootFileList = uploadFileDataSource.getNotUploadedRootFiles();
@@ -424,12 +425,14 @@ public class UploadService extends Service {
             }
         }
     }
+    */
 
     /**
      * Scan the tree
      * @param file
      * @return
      */
+    /*
     private int upload(UploadFile file) {
         int result = WsResultType.Success;
         // If the target is file, upload directly
@@ -464,6 +467,7 @@ public class UploadService extends Service {
         }
         return result;
     }
+    */
 
 
     /**
@@ -471,6 +475,7 @@ public class UploadService extends Service {
      * @param file
      * @return
      */
+    /*
     private int startUploading(UploadFile file) {
         int result = WsResultType.Success;
         byte[] buffer;
@@ -534,6 +539,7 @@ public class UploadService extends Service {
         }
         return result;
     }
+    */
 
     private int uploadFile_wrapper(UploadFile file, byte[] buf, int size) {
         int result = 0;
