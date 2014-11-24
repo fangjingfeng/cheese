@@ -60,6 +60,18 @@ public class LocalDatabase extends  SQLiteOpenHelper {
     /**
      * download_files_table
      */
+    private static final String CREATE_DOWNLOAD_FILES_TABLE_SQL     =
+            "CREATE TABLE " + DownloadFileDataSource.DownloadFileEntry.TABLE_NAME + " ( " +
+                    DownloadFileDataSource.DownloadFileEntry._ID + " INTEGER PRIMARY KEY, " +
+                    DownloadFileDataSource.DownloadFileEntry.COLUMN_DOWNLOADED_SIZE + " INTEGER, " +
+                    DownloadFileDataSource.DownloadFileEntry.COLUMN_FILENAME + " VARCHAR(255), " +
+                    DownloadFileDataSource.DownloadFileEntry.COLUMN_FILEPATH + " VARCHAR(1024), " +
+                    DownloadFileDataSource.DownloadFileEntry.COLUMN_FILESIZE + " INTEGER, " +
+                    DownloadFileDataSource.DownloadFileEntry.COLUMN_LOCAL_USER_ID + " INTEGER, " +
+                    DownloadFileDataSource.DownloadFileEntry.COLUMN_REMOTE_USER_ID + " VARCHAR(50), " +
+                    DownloadFileDataSource.DownloadFileEntry.COLUMN_REMOTE_USER_ID + " VARCHAR(50), " +
+                    DownloadFileDataSource.DownloadFileEntry.COLUMN_STATE + " INTEGER " +
+                    ")";
 
     public LocalDatabase(Context context) {
         super(context, DATABASE_NAME , null, DATABASE_VERSION_1);
@@ -80,7 +92,7 @@ public class LocalDatabase extends  SQLiteOpenHelper {
         db.execSQL(CREATE_UPLOAD_FILES_TABLE_SQL);
         // 3. Create download_files table
         // TODO Create download_files table
-        //db.execSQL(CREATE_DOWNLOAD_FILES_TABLE_SQL);
+        db.execSQL(CREATE_DOWNLOAD_FILES_TABLE_SQL);
     }
 
     @Override
