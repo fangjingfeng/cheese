@@ -68,9 +68,9 @@ public class UploadFileDataSource {
          */
         public static final String COLUMN_LOCAL_PARENT_FOLDER_ID = "local_parent_folder_id";
         /**
-         * The user guid at the server database(Current not use)
+         * The file guid at the remote server database
          */
-        public static final String COLUMN_REMOTE_USER_ID = "remote_user_id";
+        public static final String COLUMN_REMOTE_ID = "remote_id";
         /**
          * Type: INTEGER
          * Description: The file parent folder id. Associate with {@link #_ID}
@@ -112,7 +112,7 @@ public class UploadFileDataSource {
                 COLUMN_FILETYPE,
                 COLUMN_MD5,
                 COLUMN_LOCAL_PARENT_FOLDER_ID,
-                COLUMN_REMOTE_USER_ID,
+                COLUMN_REMOTE_ID,
                 COLUMN_REMOTE_PARENT_FOLDER_ID,
                 COLUMN_STATE,
                 COLUMN_UPLOADED_SIZE,
@@ -408,7 +408,7 @@ public class UploadFileDataSource {
         cv.put(UploadFileEntry.COLUMN_FILETYPE, file.getFileType());
         cv.put(UploadFileEntry.COLUMN_MD5, file.getMd5());
         cv.put(UploadFileEntry.COLUMN_LOCAL_PARENT_FOLDER_ID, file.getParent_id());
-        cv.put(UploadFileEntry.COLUMN_REMOTE_USER_ID, file.getRemote_id());
+        cv.put(UploadFileEntry.COLUMN_REMOTE_ID, file.getRemote_id());
         cv.put(UploadFileEntry.COLUMN_REMOTE_PARENT_FOLDER_ID, file.getRemote_parent_id());
         cv.put(UploadFileEntry.COLUMN_STATE, file.getState());
         cv.put(UploadFileEntry.COLUMN_UPLOADED_SIZE, file.getChangedSize());

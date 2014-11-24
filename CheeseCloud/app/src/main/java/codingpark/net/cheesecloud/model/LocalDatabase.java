@@ -45,7 +45,7 @@ public class LocalDatabase extends  SQLiteOpenHelper {
     private static final String CREATE_UPLOAD_FILES_TABLE_SQL   =
             "CREATE TABLE " + UploadFileDataSource.UploadFileEntry.TABLE_NAME + " (" +
                     UploadFileDataSource.UploadFileEntry._ID + " INTEGER PRIMARY KEY, " +
-                    UploadFileDataSource.UploadFileEntry.COLUMN_REMOTE_USER_ID + " VARCHAR(50), " +
+                    UploadFileDataSource.UploadFileEntry.COLUMN_REMOTE_ID + " VARCHAR(50), " +
                     UploadFileDataSource.UploadFileEntry.COLUMN_FILEPATH + " TEXT, " +
                     UploadFileDataSource.UploadFileEntry.COLUMN_MD5 + " VARCHAR(50), " +
                     UploadFileDataSource.UploadFileEntry.COLUMN_LOCAL_PARENT_FOLDER_ID + " INTEGER, " +
