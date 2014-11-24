@@ -19,32 +19,179 @@ public class DownloadService extends Service {
      */
     public static final int DOWNLOAD_BLOCK_SIZE             = 100 * CheeseConstants.KB;
 
-    private static final String ACTION_FOO = "codingpark.net.cheesecloud.handle.action.FOO";
-    private static final String ACTION_BAZ = "codingpark.net.cheesecloud.handle.action.BAZ";
+    /**
+     * In TransferStateActivity, when havel download file item in wait or downloading
+     * state, user can click cancel all button, then trigger send
+     * ACTION_CANCEL_ALL_DOWNLOAD action to DownloadService, DownloadService will stop
+     * current download thread and remove all download record which state is wait or
+     * downloading  in download table. In addition, DownloadService update wait list.
+     */
+    public static final String ACTION_CANCEL_ALL_DOWNLOAD = "codingpark.net.cheesecloud.handle.ACTION_CANCEL_ALL_DOWNLOAD";
+    /**
+     * In TransferStateActivity, when have download file item in
+     * wait/pause/downloading  state, user can click one of the item, then trigger
+     * send ACTION_CANCEL_ALL_DOWNLOAD action to DownloadService with the selected
+     * item data, DownloadService will stop current download thread and remove the
+     * selectedl download record which state is wait or downloading  in download table.
+     * In addition, DownloadService update wait list, and then restart the download
+     * thread.
+     */
+    public static final String ACTION_CANCEL_ONE_DOWNLOAD = "codingpark.net.cheesecloud.handle.ACTION_CANCEL_ONE_DOWNLOAD";
+    /**
+     * In TransferStateActivity, when all download item record in downloaded state,
+     * user can click clear all button , then trigger send ACTION_CLEAR_ALL_DOWNLOAD
+     * action to DownloadService, DownloadService will stop current download thread
+     * and remove the  download record which state is downloaded  in download table.
+     * In addition, DownloadService update wait list.
+     */
+    public static final String ACTION_CLEAR_ALL_DOWNLOAD = "codingpark.net.cheesecloud.handle.ACTION_CLEAR_ALL_DOWNLOAD";
+    /**
+     * In TransferStateActivity, when havel download file item in wait or downloading
+     * state, user can click pause all button, then trigger send
+     * ACTION_PAUSE_ALL_DOWNLOAD action to DownloadService, DownloadService will stop
+     * current download thread and udpate all download record in download table. In
+     * addition, DownloadService update wait list.
+     */
+    public static final String ACTION_PAUSE_ALL_DOWNLOAD = "codingpark.net.cheesecloud.handle.ACTION_PAUSE_ALL_DOWNLOAD";
+    /**
+     * In TransferStateActivity, when all download file item is pause state, user
+     * click resume all button, then trigger send ACTION_RESUME_ALL_DOWNLOAD action to
+     * DownloadService, DownloadService will update all record state to wait in
+     * download table. In addition, DownloadService update wait list.
+     */
+    public static final String ACTION_RESUME_ALL_DOWNLOAD = "codingpark.net.cheesecloud.handle.ACTION_RESUME_ALL_DOWNLOAD";
+    /**
+     * When insert all file which to be download to local database, send
+     * ACTION_START_ALL_DOWNLOAD to DownloadService, to notify this service to update
+     * download wait file list.
+     */
+    public static final String ACTION_START_ALL_DOWNLOAD = "codingpark.net.cheesecloud.handle.ACTION_START_ALL_DOWNLOAD";
 
 
-    public static void startActionFoo(Context context, String param1, String param2) {
-        Intent intent = new Intent(context, DownloadService.class);
-        intent.setAction(ACTION_FOO);
-        context.startService(intent);
-    }
+    public static final int EVENT_CANCEL_ALL_DOWNLOAD_FAILED = 1;
+    public static final int EVENT_CANCEL_ALL_DOWNLOAD_SUCCESS = 0;
+    public static final int EVENT_CANCEL_ONE_DOWNLOAD_FAILED = 3;
+    public static final int EVENT_CANCEL_ONE_DOWNLOAD_SUCCESS = 2;
+    public static final int EVENT_CLEAR_ALL_DOWNLOAD_FAILED = 5;
+    public static final int EVENT_CLEAR_ALL_DOWNLOAD_SUCCESS = 4;
+    public static final int EVENT_PAUSE_ALL_DOWNLOAD_FAILED = 7;
+    public static final int EVENT_PAUSE_ALL_DOWNLOAD_SUCCESS = 6;
+    public static final int EVENT_RESUME_ALL_DOWNLOAD_FAILED = 9;
+    public static final int EVENT_RESUME_ALL_DOWNLOAD_SUCCESS = 8;
+    public static final int EVENT_START_ALL_DOWNLOAD_FAILED = 11;
+    public static final int EVENT_START_ALL_DOWNLOAD_SUCCESS = 10;
 
-    public static void startActionBaz(Context context, String param1, String param2) {
-        Intent intent = new Intent(context, DownloadService.class);
-        intent.setAction(ACTION_BAZ);
-        context.startService(intent);
-    }
+    /**
+     * When send download related action with extra data download file object, use
+     * EXTRA_DOWNLOAD_FILE as the data key.
+     */
+    public static final String EXTRA_DOWNLOAD_FILE = "download_file";
+    /**
+     * When send download related action with extra state information, use
+     * EXTRA_DOWNLOAD_STATE as the data key.
+     */
+    public static final String EXTRA_DOWNLOAD_STATE = "download_file";
 
-
-    protected void onHandleIntent(Intent intent) {
+    /**
+     * Instance method, dispatch the intent request to local command hanlder
+     *
+     * @param intent    The Intent object, include download related action and data
+     * information
+     */
+    private void onHandleIntent(Intent intent){
+        // TODO Implement the handle function for every action
         if (intent != null) {
             final String action = intent.getAction();
-            if (ACTION_FOO.equals(action)) {
-                handleActionFoo();
-            } else if (ACTION_BAZ.equals(action)) {
-                handleActionBaz();
+            if (ACTION_CANCEL_ALL_DOWNLOAD.equals(action)) {
+                return;
+            } else if (ACTION_CANCEL_ONE_DOWNLOAD.equals(action)) {
+                return;
+            } else if (ACTION_CLEAR_ALL_DOWNLOAD.equals(action)) {
+                return;
+            } else if (ACTION_PAUSE_ALL_DOWNLOAD.equals(action)) {
+                return;
+            } else if (ACTION_START_ALL_DOWNLOAD.equals(action)) {
+                return;
+            } else if (ACTION_START_ALL_DOWNLOAD.equals(action)) {
+                return;
             }
         }
+    }
+
+    /**
+     * Call this function to send ACTION_CANCEL_ALL_DOWNLOAD to DownloadService.
+     *
+     * @param context    The application context
+     */
+    public static void startActionCancelAll(Context context){
+        Intent intent = new Intent(context, DownloadService.class);
+        intent.setAction(ACTION_CANCEL_ALL_DOWNLOAD);
+        context.startService(intent);
+    }
+
+    /**
+     * Call this function to send ACTION_CANCEL_ONE_DOWNLOAD to DownloadService.
+     *
+     * @param context    The application context
+     */
+    public static void startActionCancelOne(Context context){
+        Intent intent = new Intent(context, DownloadService.class);
+        intent.setAction(ACTION_CANCEL_ONE_DOWNLOAD);
+        context.startService(intent);
+    }
+
+    /**
+     * Call this function to send ACTION_CLEAR_ALL_DOWNLOAD to DownloadService.
+     *
+     * @param context    The application context
+     */
+    public static void startActionClearAll(Context context){
+        Intent intent = new Intent(context, DownloadService.class);
+        intent.setAction(ACTION_CLEAR_ALL_DOWNLOAD);
+        context.startService(intent);
+    }
+
+    /**
+     * Call this function to send ACTION_PAUSE_ALL_DOWNLOAD to DownloadService.
+     *
+     * @param context    The application context
+     */
+    public static void startActionPauseAll(Context context){
+        Intent intent = new Intent(context, DownloadService.class);
+        intent.setAction(ACTION_PAUSE_ALL_DOWNLOAD);
+        context.startService(intent);
+    }
+
+    /**
+     * Call this function to send ACTION_RESUME_ALL_DOWNLOAD to DownloadService.
+     *
+     * @param context    The application context
+     */
+    public static void startActionResumeAll(Context context){
+        Intent intent = new Intent(context, DownloadService.class);
+        intent.setAction(ACTION_RESUME_ALL_DOWNLOAD);
+        context.startService(intent);
+    }
+
+    /**
+     * Call this function to send ACTION_START_ALL_DOWNLOAD to DownloadService.
+     *
+     * @param context    The application context
+     */
+    public static void startActionStartAll(Context context){
+        Intent intent = new Intent(context, DownloadService.class);
+        intent.setAction(ACTION_START_ALL_DOWNLOAD);
+        context.startService(intent);
+    }
+
+    /**
+     * Call this function to stop the DownloadService.
+     *
+     * @param context    The application context
+     */
+    public static void stopUploadService(Context context){
+        Intent intent = new Intent(context, DownloadService.class);
+        context.stopService(intent);
     }
 
     /**
