@@ -5,10 +5,20 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
 
+import codingpark.net.cheesecloud.CheeseConstants;
+
 /**
  * The service download file from remote server
  */
 public class DownloadService extends Service {
+
+
+    /**
+     * The download block size in byte unit
+     * Default size 100KB
+     */
+    public static final int DOWNLOAD_BLOCK_SIZE             = 100 * CheeseConstants.KB;
+
     private static final String ACTION_FOO = "codingpark.net.cheesecloud.handle.action.FOO";
     private static final String ACTION_BAZ = "codingpark.net.cheesecloud.handle.action.BAZ";
 

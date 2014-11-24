@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
+import org.kobjects.base64.Base64;
 import org.ksoap2.HeaderProperty;
 import org.ksoap2.SoapEnvelope;
 import org.ksoap2.serialization.Marshal;
@@ -56,48 +57,53 @@ public final class ClientWS {
      * In reality, the endpoint address should dynamic fetch from SharedPreference,
      * this const string used for SharedPrefernece.getString's default value parameter
      */
-    public static final String DEFAULT_ENDPOINT             = "http://192.168.0.101:22332/ClientWS.asmx";
+    public static final String DEFAULT_ENDPOINT = "http://192.168.0.101:22332/ClientWS.asmx";
     /**
      * Web service API name used by upload file process
      */
-    public static final String METHOD_CHECKEDFILEINFO       = "CheckedFileInfo";
+    public static final String METHOD_CHECKEDFILEINFO = "CheckedFileInfo";
     /**
      * Web service API name used by create a folder on server process
      */
-    public static final String METHOD_CREATEFOLDER          = "CreateFolder";
+    public static final String METHOD_CREATEFOLDER = "CreateFolder";
     /**
      * Web service API name used by delete folders and files batched
      */
-    public String METHOD_DELETE_FOLDER_AND_FILE             = "DeleteFolderAndFile";
-    /**
-     * Web service API name used by get all root disk list process from server
-     */
-    public static final String METHOD_GETDISK               = "GetDisk";
-    /**
-     * Web service API name used by get the folder information from server process
-     */
-    public static final String METHOD_GETFOLDERINFO         = "GetFolderInfo";
+    public static final String METHOD_DELETE_FOLDER_AND_FILE = "DeleteFolderAndFile";
     /**
      * Web service API name used by get folders and files of the parent folder on
      * server
      */
-    public static final String METHOD_GETFOLDERLIST         = "GetFolderList";
+    public static final String METHOD_DOWNLOAD_FILE = "DownloadFile";
+    /**
+     * Web service API name used by get all root disk list process from server
+     */
+    public static final String METHOD_GETDISK = "GetDisk";
+    /**
+     * Web service API name used by get the folder information from server process
+     */
+    public static final String METHOD_GETFOLDERINFO = "GetFolderInfo";
+    /**
+     * Web service API name used by get folders and files of the parent folder on
+     * server
+     */
+    public static final String METHOD_GETFOLDERLIST = "GetFolderList";
     /**
      * Web service API name used to copy or clip files or folders to other folder
      */
-    public String METHOD_PASTE_OBJ                          = "PasteObjs";
+    public static final String METHOD_PASTE_OBJ = "PasteObjs";
     /**
      * Web service API name used to rename file or folder
      */
-    public String METHOD_RENAME_OBJ                         = "RenameObj";
+    public static final String METHOD_RENAME_OBJ = "RenameObj";
     /**
      * Web service API name used by upload file process
      */
-    public static final String METHOD_UPLOADFILE            = "UploadFile";
+    public static final String METHOD_UPLOADFILE = "UploadFile";
     /**
      * Web service API name used by user login process
      */
-    public static final String METHOD_USERLOGIN             = "UserLogin";
+    public static final String METHOD_USERLOGIN = "UserLogin";
 
 
     // Web services server configurations
@@ -453,6 +459,86 @@ public final class ClientWS {
         } catch (Exception e) {
             e.printStackTrace();
             return WsResultType.Faild;
+        }
+        return result;
+    }
+
+    /**
+     * Download target file from server to local. This function will
+     * parse the web service response message, and fetch download block
+     * data and IsFinally. In the end, set the parameter to file object.
+     * WsSyncFile object need follow parameters :
+     * file.ID:The target file GUID
+     * file.Blocks.OffSet: The request block of file offset
+     * file.Blocks.SourceSize:The request block size(Client set)
+     *
+     * @param file    Store the target file information, The guid of the file
+     * @return {@link codingpark.net.cheesecloud.enumr.WsResultType}
+     */
+    public int downloadFile(WsSyncFile file){
+        int result = WsResultType.Success;
+
+        // Create SOAP Action
+        String soapAction = NAMESPACE + METHOD_DOWNLOAD_FILE;//"http://tempuri.org/Test";
+
+        // Initial SoapObject
+        SoapObject rpc = new SoapObject(NAMESPACE, METHOD_DOWNLOAD_FILE);
+        // add web service method parameter
+        PropertyInfo p_fileInfo = new PropertyInfo();
+        p_fileInfo.setName("file");
+        p_fileInfo.setValue(file);
+        p_fileInfo.setType(WsSyncFile.class);
+        rpc.addPropertyIfValue(p_fileInfo);
+
+        // Initial envelope
+        // Create soap request object with soap version
+        SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(SoapEnvelope.VER12);
+        envelope.bodyOut = rpc;
+        envelope.dotNet = true;
+        envelope.setOutputSoapObject(rpc);
+        // Set Mapping
+        envelope.addMapping(NAMESPACE, WsSyncFile.class.getSimpleName(), WsSyncFile.class);
+        envelope.addMapping(NAMESPACE, WsPhyFileInfo.class.getSimpleName(), WsPhyFileInfo.class);
+        envelope.addMapping(NAMESPACE, WsGuidOwner.class.getSimpleName(), WsGuidOwner.class);
+        envelope.addMapping(NAMESPACE, SyncFileBlock.class.getSimpleName(), SyncFileBlock.class);
+        // Set MARSHALLING type
+        Marshal base64Marshal = new MarshalBase64();//MarshalFloat();
+        base64Marshal.register(envelope);
+
+        // Initial http transport
+        HttpTransportSE transport = new HttpTransportSE(mEndPoint);
+        //transport.debug = true;
+
+        // Set http header cookies values before call WS
+        List<HeaderProperty> paraHttpHeaders = new ArrayList<HeaderProperty>();
+        paraHttpHeaders.add(new HeaderProperty("Cookie", session_id));
+
+        // Call WS
+        try {
+            transport.call(soapAction, envelope, paraHttpHeaders);
+            Log.d(TAG, "Request: \n" + transport.requestDump);
+            //Log.d(TAG, "Response: \n" + transport.responseDump);
+
+            final SoapObject resp = (SoapObject) envelope.bodyIn;
+            // Process return data
+            // Fetch operation result
+            result = Integer.valueOf(resp.getProperty("DownloadFileResult").toString());
+            if (result == WsResultType.Success) {
+                SoapObject r_file = (SoapObject)resp.getProperty("file");
+                if (r_file != null) {
+                    SoapObject syncBlock = (SoapObject)r_file.getProperty("Blocks");
+                    String base64_stream = syncBlock.getProperty("UpdateData").toString();
+                    if (base64_stream != "") {
+                        byte[] bloc = Base64.decode(base64_stream);
+                        file.Blocks.UpdateData = bloc;
+                    }
+                    file.IsFinally = Boolean.parseBoolean(r_file.getPropertyAsString("IsFinally"));
+                }
+            }
+            Log.d(TAG, "DownloadFile result : " + result);
+        } catch (Exception e) {
+            e.printStackTrace();
+            result = WsResultType.Faild;
         }
         return result;
     }
