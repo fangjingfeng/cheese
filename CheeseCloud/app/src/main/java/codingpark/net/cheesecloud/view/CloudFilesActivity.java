@@ -6,6 +6,7 @@ import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ActionMode;
@@ -30,17 +31,24 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Stack;
 
+import codingpark.net.cheesecloud.CheeseConstants;
 import codingpark.net.cheesecloud.R;
 import codingpark.net.cheesecloud.entity.CloudFile;
+import codingpark.net.cheesecloud.entity.DownloadFile;
 import codingpark.net.cheesecloud.enumr.CloudFileType;
 import codingpark.net.cheesecloud.enumr.WsResultType;
+import codingpark.net.cheesecloud.handle.ClientWS;
 import codingpark.net.cheesecloud.handle.CreateDirTask;
 import codingpark.net.cheesecloud.handle.DeleteFileTask;
+import codingpark.net.cheesecloud.handle.DownloadService;
 import codingpark.net.cheesecloud.handle.PullFileListTask;
 import codingpark.net.cheesecloud.handle.RenameFileTask;
+import codingpark.net.cheesecloud.model.DownloadFileDataSource;
+import codingpark.net.cheesecloud.model.UploadFileDataSource;
 import codingpark.net.cheesecloud.utils.ThumbnailCreator;
 
 /**
@@ -586,6 +594,11 @@ public class CloudFilesActivity extends ListActivity implements View.OnClickList
                 case R.id.cab_menu_download:
                     Toast.makeText(CloudFilesActivity.this, "Download action", Toast.LENGTH_SHORT).show();
                     mode.finish(); // Action picked, so close the CAB
+                    String r_path = "";
+                    for (CloudFile file : mPathStack) {
+                        r_path = file.getFilePath() + CheeseConstants.SEPARATOR;
+                    }
+                    new ScanDownloadFilesTask(mSelectedFileList, r_path);
                     break;
                 case R.id.cab_menu_cut:
                     Toast.makeText(CloudFilesActivity.this, "Cut action", Toast.LENGTH_SHORT).show();
@@ -621,5 +634,78 @@ public class CloudFilesActivity extends ListActivity implements View.OnClickList
             mActionMode = null;
         }
     };
+
+    private class ScanDownloadFilesTask extends AsyncTask<Void, Void, Integer> {
+
+        public static final int SCAN_SUCCESS    = 0;
+        public static final int SCAN_FAILED     = 1;
+
+        private ArrayList<CloudFile> mFileList          = null;
+        private String mPath                            = null;
+        private DownloadFileDataSource mDataSource      = null;
+
+        public ScanDownloadFilesTask(ArrayList<CloudFile> fileList, String path) {
+            mFileList = fileList;
+            mDataSource = new DownloadFileDataSource(CloudFilesActivity.this);
+            mPath = path;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            mDataSource.open();
+        }
+
+        protected Integer doInBackground(Void... params) {
+            for (CloudFile file: mFileList) {
+                Log.d(TAG, "scan: " + file.getFilePath());
+                scan(file, mPath);
+            }
+            return SCAN_SUCCESS;
+        }
+
+        @Override
+        protected void onProgressUpdate(Void... values) {
+            super.onProgressUpdate(values);
+        }
+
+        @Override
+        protected void onPostExecute(Integer result) {
+            switch (result) {
+                case SCAN_SUCCESS:
+                    Toast.makeText(CloudFilesActivity.this, "扫描插入完成", Toast.LENGTH_SHORT).show();
+                    Log.d(TAG, "Scan complete, send upload action to UploadService!");
+                    DownloadService.startActionStartAll(CloudFilesActivity.this);
+                    break;
+                case SCAN_FAILED:
+                    break;
+                default:
+                    break;
+            }
+            mDataSource.close();
+        }
+
+        private void scan(CloudFile file, String path) {
+            Log.d(TAG, "Scan");
+            int result = WsResultType.Success; // Web service call result
+            // If is folder
+            // 1. Pull sub files and folders
+            // 2. Add the folder name to path(Such as path + "/A")
+            // 3. Call scan with sub files object and new path
+            if (file.getFileType() == CloudFileType.TYPE_FOLDER) {
+                //ArrayList<CloudFile> files = ClientWS.getInstance(CloudFilesActivity.this).get
+                // TODO Scan sub directory
+            }
+            // If is file;
+            // 1. insert record on local table
+            else if (file.getFileType() == CloudFileType.TYPE_FILE){
+                DownloadFile r_file = DownloadFileDataSource.convertToDownloadFile(file);
+                // The filePath property pull from server just have the file name,
+                // in there, we add the parent folder path in the header
+                r_file.setFilePath(path + r_file.getFilePath()); // Add the full parent folder path to the
+                mDataSource.addDownloadFile(r_file);
+            }
+            return;
+        }
+    }
 
 }

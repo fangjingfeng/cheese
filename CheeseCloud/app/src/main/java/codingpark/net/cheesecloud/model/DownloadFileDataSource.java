@@ -5,6 +5,7 @@ import android.provider.BaseColumns;
 
 import java.util.ArrayList;
 
+import codingpark.net.cheesecloud.entity.CloudFile;
 import codingpark.net.cheesecloud.entity.DownloadFile;
 
 /**
@@ -143,6 +144,11 @@ public class DownloadFileDataSource {
      * deleted
      */
     public boolean updateDownloadFile(DownloadFile file){
+
         return false;
+    }
+
+    public static DownloadFile convertToDownloadFile(CloudFile file) {
+        return (DownloadFile)file;
     }
 }

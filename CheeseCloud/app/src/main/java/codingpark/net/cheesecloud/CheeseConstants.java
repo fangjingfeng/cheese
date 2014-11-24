@@ -8,4 +8,5 @@ public class CheeseConstants {
     public static final int KB              = 1024;
     public static final int MB              = KB * KB;
     public static final String ROOT_ID      = "/";
+    public static final String SEPARATOR    = "/";
 }

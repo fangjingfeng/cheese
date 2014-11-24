@@ -147,7 +147,7 @@ public class MainActivity extends Activity implements OnFragmentInteractionListe
             Log.d(TAG, "User selected upload file: \n" + selectFiles.toString());
             Log.d(TAG, "User selected remote parent id: " + remote_parent_id);
 
-            new ScanFilesTask(selectFiles).execute();
+            new ScanUploadFilesTask(selectFiles).execute();
             /*
             Log.d(TAG, "*****Test CheckedFileInfo and UploadFile******");
             Thread t = new Thread(new Runnable() {
@@ -368,7 +368,7 @@ public class MainActivity extends Activity implements OnFragmentInteractionListe
 
 
 
-    private class ScanFilesTask extends AsyncTask<Void, Void, Integer> {
+    private class ScanUploadFilesTask extends AsyncTask<Void, Void, Integer> {
 
         public static final int SCAN_SUCCESS    = 0;
         public static final int SCAN_FAILED     = 1;
@@ -376,7 +376,7 @@ public class MainActivity extends Activity implements OnFragmentInteractionListe
         private ArrayList<String> mFileList         = null;
         private UploadFileDataSource mDataSource    = null;
 
-        public ScanFilesTask(ArrayList<String> fileList) {
+        public ScanUploadFilesTask(ArrayList<String> fileList) {
             mFileList = fileList;
             mDataSource = new UploadFileDataSource(MainActivity.this);
         }
