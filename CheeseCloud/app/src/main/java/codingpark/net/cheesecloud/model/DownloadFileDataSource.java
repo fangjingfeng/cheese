@@ -1,6 +1,11 @@
 package codingpark.net.cheesecloud.model;
 
+import android.content.Context;
 import android.provider.BaseColumns;
+
+import java.util.ArrayList;
+
+import codingpark.net.cheesecloud.entity.DownloadFile;
 
 /**
  * The "download_files" table column description class
@@ -68,5 +73,76 @@ public class DownloadFileDataSource {
                 COLUMN_REMOTE_USER_ID,
                 COLUMN_STATE
         };
+    }
+
+    /**
+     * The constructor
+     *
+     * @param context    The application context
+     */
+    public DownloadFileDataSource(Context context){
+
+    }
+
+    /**
+     * Add DownloadFile record to download_files table.
+     *
+     * @param file    The DownloadFile object, stored to be downloaded file's
+     * information
+     */
+    public boolean addDownloadFile(DownloadFile file){
+        return false;
+    }
+
+    /**
+     * As the object owner manipulate download_files table finish, call this function
+     * to free related system resources
+     */
+    public void close(){
+
+    }
+
+    /**
+     * Delete the record by the given parameter file
+     *
+     * @param file    The DownloadFile object which stored the record information to
+     * be deleted
+     */
+    public boolean deleteDownloadFile(DownloadFile file){
+        return false;
+    }
+
+    /**
+     * Query all record
+     */
+    public ArrayList<DownloadFile> getAllDownloadFile(){
+        return null;
+    }
+
+    /**
+     * Query all record by the target state
+     *
+     * @param state    The target state
+     */
+    public ArrayList<DownloadFile> getAllDownloadFileByState(int state){
+        return null;
+    }
+
+    /**
+     * Before manipulate download_files table, need call this function to prepare a
+     * writable database object.
+     */
+    public void open(){
+
+    }
+
+    /**
+     * Update the record by the given parameter file.
+     *
+     * @param file    The DownloadFile object stored the record information to be
+     * deleted
+     */
+    public boolean updateDownloadFile(DownloadFile file){
+        return false;
     }
 }
