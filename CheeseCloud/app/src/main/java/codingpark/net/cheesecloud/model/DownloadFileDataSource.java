@@ -37,6 +37,10 @@ public class DownloadFileDataSource {
          */
         public static final String COLUMN_LOCAL_USER_ID = "local_user_id";
         /**
+         * The download file md5, computed from  remote server
+         */
+        public static final String COLUMN_MD5 = "md5";
+        /**
          * The file guid in remote server
          */
         public static final String COLUMN_REMOTE_ID = "remote_id";
@@ -59,6 +63,7 @@ public class DownloadFileDataSource {
                 COLUMN_FILEPATH,
                 COLUMN_FILESIZE,
                 COLUMN_LOCAL_USER_ID,
+                COLUMN_MD5,
                 COLUMN_REMOTE_ID,
                 COLUMN_REMOTE_USER_ID,
                 COLUMN_STATE

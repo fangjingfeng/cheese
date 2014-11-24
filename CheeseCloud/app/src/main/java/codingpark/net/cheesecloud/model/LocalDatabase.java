@@ -68,6 +68,7 @@ public class LocalDatabase extends  SQLiteOpenHelper {
                     DownloadFileDataSource.DownloadFileEntry.COLUMN_FILEPATH + " VARCHAR(1024), " +
                     DownloadFileDataSource.DownloadFileEntry.COLUMN_FILESIZE + " INTEGER, " +
                     DownloadFileDataSource.DownloadFileEntry.COLUMN_LOCAL_USER_ID + " INTEGER, " +
+                    DownloadFileDataSource.DownloadFileEntry.COLUMN_MD5 + " VARCHAR(50), " +
                     DownloadFileDataSource.DownloadFileEntry.COLUMN_REMOTE_USER_ID + " VARCHAR(50), " +
                     DownloadFileDataSource.DownloadFileEntry.COLUMN_REMOTE_USER_ID + " VARCHAR(50), " +
                     DownloadFileDataSource.DownloadFileEntry.COLUMN_STATE + " INTEGER " +
