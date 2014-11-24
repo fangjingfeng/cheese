@@ -35,15 +35,25 @@ public class UploadFileDataSource {
          */
         public static final String TABLE_NAME = "upload_files";
         /**
-         * The user guid at the server database(Current not use)
-         */
-        public static final String COLUMN_REMOTE_ID = "remote_id";
-        /**
          * Type: TEXT
          * Description: The file absolutely path in local file system
          * Default: ""(String.Empty)
          */
         public static final String COLUMN_FILEPATH = "filepath";
+        /**
+         * Type: INTEGER
+         * Description: The whole file size in Byte unit
+         * Default: 0
+         */
+        public static final String COLUMN_FILESIZE = "filesize";
+        /**
+         * Type: INTEGER
+         * Description: The file type(not extension type)
+         * 0: file
+         * 1: folder
+         * Default: 0
+         */
+        public static final String COLUMN_FILETYPE = "filetype";
         /**
          * Type: VARCHAR(50)
          * Description: The whole file MD5 value
@@ -59,6 +69,10 @@ public class UploadFileDataSource {
          */
         public static final String COLUMN_PARENT_ID = "parent_id";
         /**
+         * The user guid at the server database(Current not use)
+         */
+        public static final String COLUMN_REMOTE_ID = "remote_id";
+        /**
          * Type: INTEGER
          * Description: The file parent folder id. Associate with {@link #_ID}
          * -1: The selected root
@@ -66,12 +80,6 @@ public class UploadFileDataSource {
          * Default: -1
          */
         public static final String COLUMN_REMOTE_PARENT_ID = "remote_parent_id";
-        /**
-         * Type: INTEGER
-         * Description: The whole file size in Byte unit
-         * Default: 0
-         */
-        public static final String COLUMN_FILESIZE = "filesize";
         /**
          * Type: INTEGER
          * Description: The file current upload state
@@ -89,15 +97,8 @@ public class UploadFileDataSource {
         public static final String COLUMN_UPLOADED_SIZE = "uploaded_size";
         /**
          * Type: INTEGER
-         * Description: The file type(not extension type)
-         * 0: file
-         * 1: folder
-         * Default: 0
-         */
-        public static final String COLUMN_FILETYPE = "filetype";
-        /**
-         * Type: INTEGER
-         * Description: The user id(local database) who insert this item. Associate with user table's _ID
+         * Description: The user id(local database) who insert this item. Associate with
+         * user table's _ID
          * Default: -1
          */
         public static final String COLUMN_USERID = "local_user_id";
