@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import codingpark.net.cheesecloud.AppConfigs;
 import codingpark.net.cheesecloud.entity.CloudFile;
 import codingpark.net.cheesecloud.entity.DownloadFile;
+import codingpark.net.cheesecloud.enumr.DownloadFileState;
 
 /**
  * The "download_files" table column description class
@@ -139,7 +140,23 @@ public class DownloadFileDataSource {
         ArrayList<DownloadFile> fileList = new ArrayList<DownloadFile>();
         Cursor cursor = database.query(DownloadFileEntry.TABLE_NAME,
                 DownloadFileEntry.COLUMN_ARRAY,
-                null, null,//DownloadFileEntry.COLUMN_LOCAL_USER_ID + " =? ", new String[] {String.valueOf(AppConfigs.current_local_user_id)},
+                DownloadFileEntry.COLUMN_LOCAL_USER_ID + " =? ", new String[] {String.valueOf(AppConfigs.current_local_user_id)},
+                null, null, DownloadFileEntry._ID);
+        while(cursor.moveToNext()) {
+            fileList.add(cursorToFile(cursor));
+        }
+        return fileList;
+    }
+
+    /**
+     * Query all not download completed record which belong to current login user
+     */
+    public ArrayList<DownloadFile> getNotDownloadedFile(){
+        ArrayList<DownloadFile> fileList = new ArrayList<DownloadFile>();
+        Cursor cursor = database.query(DownloadFileEntry.TABLE_NAME,
+                DownloadFileEntry.COLUMN_ARRAY,
+                DownloadFileEntry.COLUMN_LOCAL_USER_ID + " =? and " + DownloadFileEntry.COLUMN_STATE + " !=? ",
+                new String[] {String.valueOf(AppConfigs.current_local_user_id), String.valueOf(DownloadFileState.DOWNLOADED)},
                 null, null, DownloadFileEntry._ID);
         while(cursor.moveToNext()) {
             fileList.add(cursorToFile(cursor));

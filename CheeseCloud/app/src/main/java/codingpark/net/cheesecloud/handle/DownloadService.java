@@ -6,11 +6,17 @@ import android.content.Intent;
 import android.os.IBinder;
 import android.util.Log;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.util.ArrayList;
 
 import codingpark.net.cheesecloud.CheeseConstants;
 import codingpark.net.cheesecloud.entity.CloudFile;
 import codingpark.net.cheesecloud.entity.DownloadFile;
+import codingpark.net.cheesecloud.enumr.DownloadFileState;
+import codingpark.net.cheesecloud.enumr.WsResultType;
 import codingpark.net.cheesecloud.model.DownloadFileDataSource;
 
 /**
@@ -18,6 +24,7 @@ import codingpark.net.cheesecloud.model.DownloadFileDataSource;
  */
 public class DownloadService extends Service {
     private static final String TAG         = DownloadService.class.getSimpleName();
+    public static final int MAX_RETRY_TIME                  = 3;
 
     /**
      * The download block size in byte unit
@@ -165,8 +172,7 @@ public class DownloadService extends Service {
     }
 
     private void refreshWaitData() {
-        mWaitDataList = downloadFileDataSource.getAllDownloadFile();
-        //mWaitDataList = downloadFileDataSource.getAllUploadFile();
+        mWaitDataList = downloadFileDataSource.getNotDownloadedFile();
         Log.d(TAG, "refreshWaitData: mWaitDataList.size = " + mWaitDataList.size());
     }
     // TODO Implement follow handle action function
@@ -290,6 +296,14 @@ public class DownloadService extends Service {
         context.stopService(intent);
     }
 
+    private void sendChangedBroadcast(DownloadFile file, int event) {
+        Intent intent = new Intent(ACTION_DOWNLOAD_STATE_CHANGE);
+        intent.putExtra(EXTRA_DOWNLOAD_FILE, file);
+        intent.putExtra(EXTRA_DOWNLOAD_STATE, event);
+        getApplicationContext().sendBroadcast(intent);
+        Log.d(TAG, "Send download state changed broadcast with file: " + event);
+    }
+
     @Override
     public IBinder onBind(Intent intent) {
         return null;
@@ -297,9 +311,67 @@ public class DownloadService extends Service {
 
 
     private class DownloadTask extends Thread {
+        private int mTry = 0;
+
         @Override
         public void run() {
-            super.run();
+            for (int i = 0; i < mWaitDataList.size(); i++) {
+                int result = WsResultType.Success;
+                mTry = 0;
+                DownloadFile file = mWaitDataList.get(i);
+                // 1. Update file state to DOWNLOADING
+                if (file.getState() == DownloadFileState.WAIT_DOWNLOAD) {
+                    file.setState(DownloadFileState.DOWNLOADING);
+                    downloadFileDataSource.updateDownloadFile(file);
+                }
+                // 2. Create local full directory
+                //Download block one by one
+                byte[] buffer = new byte[DOWNLOAD_BLOCK_SIZE];
+                File r_file = new File(file.getFilePath());
+                int count = 0;
+                try {
+                    while (true) {
+                        //FileInputStream stream = new FileInputStream(r_file);
+                        RandomAccessFile stream = new RandomAccessFile(r_file, "r");
+                        Log.d(TAG, "Array size:" + buffer.length + "\n" + "downloadedsize: " + (int)file.getChangedSize());
+                        stream.seek(file.getChangedSize());
+                        count = stream.read(buffer, 0, DOWNLOAD_BLOCK_SIZE);
+                        if (count != -1) {
+                            if (isInterrupted()) {
+                                Log.d(TAG, "isInterrupted");
+                                return;
+                            }
+                            result = ClientWS.getInstance(DownloadService.this).downloadFile_wrapper(file, buffer, count);
+                            if (result != WsResultType.Success) {
+                                sendChangedBroadcast(file, EVENT_DOWNLOAD_BLOCK_FAILED);
+                                if (mTry < MAX_RETRY_TIME) {
+                                    Log.d(TAG, "Download failed, retry: " + mTry);
+                                    continue;
+                                }
+                                else {
+                                    Log.d(TAG, "Download failed, reach limit:" + MAX_RETRY_TIME + "\t" + " stop: " + file.getFilePath());
+                                    break;
+                                }
+                            }
+                            mTry = 0;
+                            // Increase index
+                            file.setChangedSize(file.getChangedSize() + count);
+                            // Download completed
+                            if (file.getChangedSize() == file.getFileSize()) {
+                                file.setState(DownloadFileState.DOWNLOADED);
+                            }
+                            // Update to database
+                            downloadFileDataSource.updateDownloadFile(file);
+                            sendChangedBroadcast(file, EVENT_DOWNLOAD_BLOCK_SUCCESS);
+                        } else
+                            break;// Download completed
+                    }
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 }

@@ -26,6 +26,7 @@ import java.util.List;
 
 import codingpark.net.cheesecloud.AppConfigs;
 import codingpark.net.cheesecloud.entity.CloudFile;
+import codingpark.net.cheesecloud.entity.DownloadFile;
 import codingpark.net.cheesecloud.entity.UploadFile;
 import codingpark.net.cheesecloud.enumr.CheckedFileInfoResultType;
 import codingpark.net.cheesecloud.enumr.CloudFileType;
@@ -1024,6 +1025,13 @@ public final class ClientWS {
                 }
             }
         }
+        return result;
+    }
+
+    public int downloadFile_wrapper(DownloadFile file, byte[] data, int count) {
+        int result = WsResultType.Success;
+        WsSyncFile syncFile = new WsSyncFile();
+        result = downloadFile(syncFile);
         return result;
     }
 

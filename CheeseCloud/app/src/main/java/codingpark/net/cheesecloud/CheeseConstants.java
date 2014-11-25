@@ -9,4 +9,5 @@ public class CheeseConstants {
     public static final int MB              = KB * KB;
     public static final String ROOT_ID      = "/";
     public static final String SEPARATOR    = "/";
+    public static final String DOWNLOAD_ROOT_DIR_NAME   = "CheeseCloudDownload";
 }
