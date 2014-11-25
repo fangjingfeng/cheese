@@ -596,7 +596,7 @@ public class CloudFilesActivity extends ListActivity implements View.OnClickList
                     mode.finish(); // Action picked, so close the CAB
                     String r_path = "";
                     for (CloudFile file : mPathStack) {
-                        r_path = file.getFilePath() + CheeseConstants.SEPARATOR;
+                        r_path += file.getFilePath() + CheeseConstants.SEPARATOR;
                     }
                     ArrayList<CloudFile> r_selectedFiles = new ArrayList<CloudFile>();
                     for (CloudFile file : mSelectedFileList)
@@ -676,7 +676,7 @@ public class CloudFilesActivity extends ListActivity implements View.OnClickList
             switch (result) {
                 case SCAN_SUCCESS:
                     Toast.makeText(CloudFilesActivity.this, "扫描插入完成", Toast.LENGTH_SHORT).show();
-                    Log.d(TAG, "Scan complete, send upload action to UploadService!");
+                    Log.d(TAG, "Scan complete, send download action to DownloadService!");
                     DownloadService.startActionStartAll(CloudFilesActivity.this);
                     break;
                 case SCAN_FAILED:

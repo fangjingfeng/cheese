@@ -56,7 +56,7 @@
                     android:maxLines="1"
                     android:inputType="textUri"
                     android:singleLine="true"
-                    android:text="http://192.168.0.149:8989/ClientWS.asmx?wsdl" />
+                    android:text="http://58.116.52.8:8989/ClientWS.asmx" />
 
                 <Button
                     android:id="@+id/email_sign_in_button"
