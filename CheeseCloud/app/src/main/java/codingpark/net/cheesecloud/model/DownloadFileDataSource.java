@@ -1,10 +1,15 @@
 package codingpark.net.cheesecloud.model;
 
+import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
 import android.provider.BaseColumns;
 
 import java.util.ArrayList;
 
+import codingpark.net.cheesecloud.AppConfigs;
 import codingpark.net.cheesecloud.entity.CloudFile;
 import codingpark.net.cheesecloud.entity.DownloadFile;
 
@@ -14,6 +19,10 @@ import codingpark.net.cheesecloud.entity.DownloadFile;
  * @version 1.0
  */
 public class DownloadFileDataSource {
+
+    private Context mContext = null;
+    private SQLiteDatabase database = null;
+    private SQLiteOpenHelper dbHelper = null;
 
     public static final class DownloadFileEntry implements BaseColumns {
 
@@ -82,7 +91,8 @@ public class DownloadFileDataSource {
      * @param context    The application context
      */
     public DownloadFileDataSource(Context context){
-
+        mContext = context;
+        dbHelper = new LocalDatabase(mContext);
     }
 
     /**
@@ -92,7 +102,8 @@ public class DownloadFileDataSource {
      * information
      */
     public boolean addDownloadFile(DownloadFile file){
-        return false;
+        long l_id = database.insert(DownloadFileEntry.TABLE_NAME, null, fileToContentValue(file));
+        return l_id >= 0;
     }
 
     /**
@@ -100,7 +111,10 @@ public class DownloadFileDataSource {
      * to free related system resources
      */
     public void close(){
-
+        if (database != null)
+            database.close();
+        if (dbHelper != null)
+            dbHelper.close();
     }
 
     /**
@@ -108,16 +122,27 @@ public class DownloadFileDataSource {
      *
      * @param file    The DownloadFile object which stored the record information to
      * be deleted
+     * @return If deleted rows > 0, return true. else return false;
      */
     public boolean deleteDownloadFile(DownloadFile file){
-        return false;
+        int rows = database.delete(DownloadFileEntry.TABLE_NAME, DownloadFileEntry._ID + " =? ",
+                new String[] {String.valueOf(file.getId())});
+        return rows > 0;
     }
 
     /**
      * Query all record
      */
     public ArrayList<DownloadFile> getAllDownloadFile(){
-        return null;
+        ArrayList<DownloadFile> fileList = new ArrayList<DownloadFile>();
+        Cursor cursor = database.query(DownloadFileEntry.TABLE_NAME,
+                DownloadFileEntry.COLUMN_ARRAY,
+                DownloadFileEntry.COLUMN_LOCAL_USER_ID + " =? ", new String[] {String.valueOf(AppConfigs.current_local_user_id)},
+                null, null, DownloadFileEntry._ID);
+        while(cursor.moveToNext()) {
+            fileList.add(cursorToFile(cursor));
+        }
+        return fileList;
     }
 
     /**
@@ -126,7 +151,15 @@ public class DownloadFileDataSource {
      * @param state    The target state
      */
     public ArrayList<DownloadFile> getAllDownloadFileByState(int state){
-        return null;
+        ArrayList<DownloadFile> fileList = new ArrayList<DownloadFile>();
+        Cursor cursor = database.query(DownloadFileEntry.TABLE_NAME,
+                DownloadFileEntry.COLUMN_ARRAY,
+                DownloadFileEntry.COLUMN_STATE + " =? and " + DownloadFileEntry.COLUMN_LOCAL_USER_ID + " =?" ,
+                new String[] {String.valueOf(state), String.valueOf(AppConfigs.current_local_user_id)}, null, null, DownloadFileEntry._ID);
+        while(cursor.moveToNext()) {
+            fileList.add(cursorToFile(cursor));
+        }
+        return fileList;
     }
 
     /**
@@ -134,7 +167,7 @@ public class DownloadFileDataSource {
      * writable database object.
      */
     public void open(){
-
+        database = dbHelper.getWritableDatabase();
     }
 
     /**
@@ -142,13 +175,64 @@ public class DownloadFileDataSource {
      *
      * @param file    The DownloadFile object stored the record information to be
      * deleted
+     * @return If affected record number > 0, return true, else return false;
      */
     public boolean updateDownloadFile(DownloadFile file){
-
-        return false;
+        int rows = database.update(DownloadFileEntry.TABLE_NAME, fileToContentValue(file),
+                DownloadFileEntry._ID + " =? ",new String[] {String.valueOf(file.getId())});
+        return rows > 0;
     }
 
+    /**
+     * Convert DownloadFile object to ContentValues object
+     *
+     * @param file DownloadFile object
+     * @return ContentValues object
+     */
+    private ContentValues fileToContentValue(DownloadFile file) {
+        ContentValues cv = new ContentValues();
+        cv.put(DownloadFileEntry.COLUMN_DOWNLOADED_SIZE, file.getChangedSize());
+        cv.put(DownloadFileEntry.COLUMN_FILENAME, file.getFilePath());
+        cv.put(DownloadFileEntry.COLUMN_FILEPATH, file.getFilePath());
+        cv.put(DownloadFileEntry.COLUMN_FILESIZE, file.getFileSize());
+        cv.put(DownloadFileEntry.COLUMN_LOCAL_USER_ID, file.getLocal_user_id());
+        cv.put(DownloadFileEntry.COLUMN_MD5, file.getMd5());
+        cv.put(DownloadFileEntry.COLUMN_REMOTE_ID, file.getRemote_id());
+        // Current local table not need remote user id
+        cv.put(DownloadFileEntry.COLUMN_REMOTE_USER_ID, "");
+        cv.put(DownloadFileEntry.COLUMN_STATE, file.getState());
+        return cv;
+    }
+
+    /**
+     * Convert CloudFile object to DownloadFile object
+     * Current DownloadFile property completely equals CloudFile,
+     * just need force type cast
+     * @param file The CloudFile object
+     * @return The DownloadFile object
+     */
     public static DownloadFile convertToDownloadFile(CloudFile file) {
         return (DownloadFile)file;
+    }
+
+
+    /**
+     * Convert Cursor to DownloadFile object
+     *
+     * @param cursor The cursor fetch from database
+     * @return DownloadFile: The DownloadFile object
+     */
+    private DownloadFile cursorToFile(Cursor cursor) {
+        DownloadFile file = new DownloadFile();
+        file.setChangedSize(cursor.getLong(0));
+        // No fileName
+        file.setFilePath(cursor.getString(1));
+        file.setFileSize(cursor.getLong(2));
+        file.setLocal_user_id(cursor.getLong(3));
+        file.setMd5(cursor.getString(4));
+        file.setRemote_id(cursor.getString(5));
+        // No remote user id
+        file.setState(cursor.getInt(6));
+        return file;
     }
 }
