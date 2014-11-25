@@ -42,7 +42,7 @@ public class FragmentDownloadList extends ListFragment {
     private Context mContext                        = null;
     private DownloadFileDataSource mDownloadDataSource      = null;
     private OnTransFragmentInteractionListener mListener = null;
-    private DownloadStateAdapter mAdapter             = null;
+    private DownloadListAdapter mAdapter             = null;
     private LayoutInflater mInflater                = null;
     private DownloadStateReceiver mReceiver           = null;
     private IntentFilter mFilter                    = null;
@@ -85,7 +85,7 @@ public class FragmentDownloadList extends ListFragment {
         }
 
         mContext = getActivity();
-        mAdapter = new DownloadStateAdapter(mContext, R.layout.upload_state_item_layout, mAllFileList);
+        mAdapter = new DownloadListAdapter(mContext, R.layout.upload_state_item_layout, mAllFileList);
         mDownloadDataSource = new DownloadFileDataSource(mContext);
         mDownloadDataSource.open();
         mInflater = (LayoutInflater) mContext
@@ -179,9 +179,12 @@ public class FragmentDownloadList extends ListFragment {
         mAllFileList.addAll(mDownloadedFileList);
     }
 
-    public class DownloadStateAdapter extends ArrayAdapter<DownloadFile> {
+    /**
+     *
+     */
+    public class DownloadListAdapter extends ArrayAdapter<DownloadFile> {
 
-        public DownloadStateAdapter(Context context, int resource, List<DownloadFile> objects) {
+        public DownloadListAdapter(Context context, int resource, List<DownloadFile> objects) {
             super(context, resource, objects);
         }
 

@@ -42,7 +42,7 @@ public class FragmentUploadList extends ListFragment {
     private Context mContext                        = null;
     private UploadFileDataSource mUploadDataSource  = null;
     private OnTransFragmentInteractionListener mListener = null;
-    private UploadStateAdapter mAdapter             = null;
+    private UploadListAdapter mAdapter             = null;
     private LayoutInflater mInflater                = null;
     private UploadStateReceiver mReceiver           = null;
     private IntentFilter mFilter                    = null;
@@ -85,7 +85,7 @@ public class FragmentUploadList extends ListFragment {
         }
 
         mContext = getActivity();
-        mAdapter = new UploadStateAdapter(mContext, R.layout.upload_state_item_layout, mAllFileList);
+        mAdapter = new UploadListAdapter(mContext, R.layout.upload_state_item_layout, mAllFileList);
         mUploadDataSource = new UploadFileDataSource(mContext);
         mUploadDataSource.open();
         mInflater = (LayoutInflater) mContext
@@ -215,9 +215,9 @@ public class FragmentUploadList extends ListFragment {
         }
     }
 
-    public class UploadStateAdapter extends ArrayAdapter<UploadFile> {
+    public class UploadListAdapter extends ArrayAdapter<UploadFile> {
 
-        public UploadStateAdapter(Context context, int resource, List<UploadFile> objects) {
+        public UploadListAdapter(Context context, int resource, List<UploadFile> objects) {
             super(context, resource, objects);
         }
 
