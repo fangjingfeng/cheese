@@ -1,9 +1,8 @@
 package codingpark.net.cheesecloud.handle;
 
-import android.app.IntentService;
 import android.app.Service;
-import android.content.Intent;
 import android.content.Context;
+import android.content.Intent;
 import android.os.IBinder;
 import android.util.Log;
 
@@ -12,14 +11,11 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.ArrayList;
-import java.util.List;
 
 import codingpark.net.cheesecloud.CheeseConstants;
-import codingpark.net.cheesecloud.enumr.CheckedFileInfoResultType;
-import codingpark.net.cheesecloud.enumr.CloudFileType;
+import codingpark.net.cheesecloud.entity.UploadFile;
 import codingpark.net.cheesecloud.enumr.UploadFileState;
 import codingpark.net.cheesecloud.enumr.WsResultType;
-import codingpark.net.cheesecloud.entity.UploadFile;
 import codingpark.net.cheesecloud.model.UploadFileDataSource;
 import codingpark.net.cheesecloud.wsi.SyncFileBlock;
 import codingpark.net.cheesecloud.wsi.WsSyncFile;

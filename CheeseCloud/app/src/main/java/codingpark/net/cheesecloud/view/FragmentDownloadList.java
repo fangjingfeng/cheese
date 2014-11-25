@@ -180,7 +180,7 @@ public class FragmentDownloadList extends ListFragment {
     }
 
     /**
-     *
+     * The FragmentDownloadList's ListView adapter
      */
     public class DownloadListAdapter extends ArrayAdapter<DownloadFile> {
 
@@ -242,6 +242,9 @@ public class FragmentDownloadList extends ListFragment {
         }
     }
 
+    /**
+     * Listen DownloadService broadcast, then refresh list view
+     */
     private class DownloadStateReceiver extends BroadcastReceiver {
 
         @Override

@@ -20,6 +20,7 @@ import java.util.Locale;
 import codingpark.net.cheesecloud.R;
 import codingpark.net.cheesecloud.entity.DownloadFile;
 import codingpark.net.cheesecloud.entity.UploadFile;
+import codingpark.net.cheesecloud.handle.DownloadService;
 import codingpark.net.cheesecloud.handle.OnTransFragmentInteractionListener;
 import codingpark.net.cheesecloud.handle.UploadService;
 
@@ -70,7 +71,7 @@ public class TransferStateActivity extends Activity implements ActionBar.TabList
 
     private static final int DOWNLOAD_LIST_PAGE_ID  = 0;
     private static final int UPLOAD_LIST_PAGE_ID    = 1;
-    private int mActivePagePos                  = 0;
+    private int mActivePagePos                  = DOWNLOAD_LIST_PAGE_ID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -141,7 +142,7 @@ public class TransferStateActivity extends Activity implements ActionBar.TabList
 
     @Override
     public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
-        Log.d(TAG, "onTabUnselected");
+        Log.d(TAG, "onTabUnselected:" + tab.getPosition());
         if (tab.getPosition() == 0)
             mActivePagePos = 1;
         else
@@ -152,7 +153,8 @@ public class TransferStateActivity extends Activity implements ActionBar.TabList
 
     @Override
     public void onTabReselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
-        Log.d(TAG, "onTabReselected");
+        Log.d(TAG, "onTabReselected:" + tab.getPosition());
+        mActivePagePos = tab.getPosition();
     }
 
 
@@ -180,10 +182,18 @@ public class TransferStateActivity extends Activity implements ActionBar.TabList
                 int curr_positive_state = Integer.valueOf(trans_control_bt.getTag().toString());
                 switch (curr_positive_state) {
                     case CONTROL_BUTTON_PAUSE_ACTIVE:
-                        UploadService.startActionPauseAll(TransferStateActivity.this);
+                        if (mActivePagePos == DOWNLOAD_LIST_PAGE_ID) {
+                            DownloadService.startActionPauseAll(TransferStateActivity.this);
+                        } else if (mActivePagePos == UPLOAD_LIST_PAGE_ID){
+                            UploadService.startActionPauseAll(TransferStateActivity.this);
+                        }
                         break;
                     case CONTROL_BUTTON_START_ACTIVE:
-                        UploadService.startActionResumeAll(TransferStateActivity.this);
+                        if (mActivePagePos == DOWNLOAD_LIST_PAGE_ID) {
+                            DownloadService.startActionResumeAll(TransferStateActivity.this);
+                        } else if (mActivePagePos == UPLOAD_LIST_PAGE_ID) {
+                            UploadService.startActionResumeAll(TransferStateActivity.this);
+                        }
                         break;
                     default:
                         break;
@@ -195,7 +205,11 @@ public class TransferStateActivity extends Activity implements ActionBar.TabList
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "cancel all");
-                UploadService.startActionCancelAll(TransferStateActivity.this);
+                if (mActivePagePos == DOWNLOAD_LIST_PAGE_ID) {
+                    DownloadService.startActionCancelAll(TransferStateActivity.this);
+                } else if (mActivePagePos == UPLOAD_LIST_PAGE_ID) {
+                    UploadService.startActionCancelAll(TransferStateActivity.this);
+                }
             }
         });
 
@@ -204,7 +218,11 @@ public class TransferStateActivity extends Activity implements ActionBar.TabList
             public void onClick(View v) {
                 // TODO clear all uploaded record from local table
                 Log.d(TAG, "Clear all record");
-                UploadService.startActionClearAll(TransferStateActivity.this);
+                if (mActivePagePos == DOWNLOAD_LIST_PAGE_ID) {
+                    DownloadService.startActionClearAll(TransferStateActivity.this);
+                } else if (mActivePagePos == UPLOAD_LIST_PAGE_ID) {
+                    UploadService.startActionClearAll(TransferStateActivity.this);
+                }
             }
         });
     }

@@ -4,14 +4,20 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
+import android.util.Log;
+
+import java.util.ArrayList;
 
 import codingpark.net.cheesecloud.CheeseConstants;
+import codingpark.net.cheesecloud.entity.CloudFile;
+import codingpark.net.cheesecloud.entity.DownloadFile;
+import codingpark.net.cheesecloud.model.DownloadFileDataSource;
 
 /**
  * The service download file from remote server
  */
 public class DownloadService extends Service {
-
+    private static final String TAG         = DownloadService.class.getSimpleName();
 
     /**
      * The download block size in byte unit
@@ -99,6 +105,14 @@ public class DownloadService extends Service {
      */
     public static final String EXTRA_DOWNLOAD_STATE = "download_file";
 
+    private DownloadFileDataSource downloadFileDataSource     = null;
+
+    private static ArrayList<DownloadFile> mWaitDataList       = null;
+
+    private static DownloadTask mTask                       = null;
+
+    private static Context mContext                         = null;
+
     /**
      * Instance method, dispatch the intent request to local command hanlder
      *
@@ -110,63 +124,93 @@ public class DownloadService extends Service {
         if (intent != null) {
             final String action = intent.getAction();
             if (ACTION_START_ALL_DOWNLOAD.equals(action)) {
-                handleActionStartAllDownload();
+                handleActionStartAllDownload(intent);
             } else if(ACTION_RESUME_ALL_DOWNLOAD.equals(action)) {
-                handleActionResumeAllDownload();
+                handleActionResumeAllDownload(intent);
             } else if (ACTION_PAUSE_ALL_DOWNLOAD.equals(action)) {
-                handleActionPauseAllDownload();
+                handleActionPauseAllDownload(intent);
             } else if (ACTION_CANCEL_ALL_DOWNLOAD.equals(action)) {
-                handleActionCancelAllDownload();
+                handleActionCancelAllDownload(intent);
             } else if (ACTION_CANCEL_ONE_DOWNLOAD.equals(action)) {
-                handleActionCancelOneDownload();
+                handleActionCancelOneDownload(intent);
             } else if (ACTION_CLEAR_ALL_DOWNLOAD_RECORD.equals(action)) {
-                handleActionClearAllDownloadRecord();
+                handleActionClearAllDownloadRecord(intent);
             }
         }
     }
 
+    @Override
+    public void onCreate() {
+        Log.d(TAG, "DownloadService created");
+        if (mTask == null) {
+            Log.d(TAG, "DownloadTask is null, create new");
+            mTask = new DownloadTask();
+        }
+        Log.d(TAG, "Create DownloadFileDataSource success");
+        downloadFileDataSource = new DownloadFileDataSource(this);
+        downloadFileDataSource.open();
+        // 1. Stop download thread
+        //handleActionPauseAllDownload();
+        // 2. Update mWaitDataList data
+        //mWaitDataList =
+        super.onCreate();
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        Log.d(TAG, "onStartCommand");
+        refreshWaitData();
+        onHandleIntent(intent);
+        return super.onStartCommand(intent, flags, startId);
+    }
+
+    private void refreshWaitData() {
+        mWaitDataList = downloadFileDataSource.getAllDownloadFile();
+        //mWaitDataList = downloadFileDataSource.getAllUploadFile();
+        Log.d(TAG, "refreshWaitData: mWaitDataList.size = " + mWaitDataList.size());
+    }
     // TODO Implement follow handle action function
 
     /**
      * Handle ACTION_START_ALL_DOWNLOAD
      */
-    private void handleActionStartAllDownload() {
-
+    private void handleActionStartAllDownload(Intent intent) {
+        Log.d(TAG, "handelActionStartAllDownload");
     }
 
     /**
      * Handle ACTION_RESUME_ALL_DOWNLOAD
      */
-    private void handleActionResumeAllDownload() {
-
+    private void handleActionResumeAllDownload(Intent intent) {
+        Log.d(TAG, "handleActionResumeAllDownload");
     }
 
     /**
      * Handle ACTION_PAUSE_ALL_DOWNLOAD
      */
-    private void handleActionPauseAllDownload() {
-
+    private void handleActionPauseAllDownload(Intent intent) {
+        Log.d(TAG, "handleActionPauseAllDownload");
     }
 
     /**
      * Handle ACTION_CANCEL_ALL_DOWNLOAD
      */
-    private void handleActionCancelAllDownload() {
-
+    private void handleActionCancelAllDownload(Intent intent) {
+        Log.d(TAG, "handleActionCancelAllDownload");
     }
 
     /**
      * Handle ACTION_CANCEL_ONE_DOWNLOAD
      */
-    private void handleActionCancelOneDownload() {
-
+    private void handleActionCancelOneDownload(Intent intent) {
+        Log.d(TAG, "handleActionCancelOneDownload");
     }
 
     /**
      * Handle ACTION_CLEAR_ALL_DOWNLOAD_RECORD
      */
-    private void handleActionClearAllDownloadRecord() {
-
+    private void handleActionClearAllDownloadRecord(Intent intent) {
+        Log.d(TAG, "handleActionClearAllDownloadRecord");
     }
 
     /**
@@ -208,6 +252,7 @@ public class DownloadService extends Service {
      * @param context    The application context
      */
     public static void startActionPauseAll(Context context){
+        Log.d(TAG, "startActionPauseAll:");
         Intent intent = new Intent(context, DownloadService.class);
         intent.setAction(ACTION_PAUSE_ALL_DOWNLOAD);
         context.startService(intent);
@@ -248,5 +293,13 @@ public class DownloadService extends Service {
     @Override
     public IBinder onBind(Intent intent) {
         return null;
+    }
+
+
+    private class DownloadTask extends Thread {
+        @Override
+        public void run() {
+            super.run();
+        }
     }
 }

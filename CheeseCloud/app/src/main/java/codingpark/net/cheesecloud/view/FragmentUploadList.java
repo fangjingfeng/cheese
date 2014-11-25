@@ -180,6 +180,9 @@ public class FragmentUploadList extends ListFragment {
     }
 
 
+    /**
+     * Listen the UploadService broadcast, then refresh list view
+     */
     private class UploadStateReceiver extends BroadcastReceiver {
 
         @Override
@@ -215,6 +218,9 @@ public class FragmentUploadList extends ListFragment {
         }
     }
 
+    /**
+     * FragmentUploadList's ListView adapter
+     */
     public class UploadListAdapter extends ArrayAdapter<UploadFile> {
 
         public UploadListAdapter(Context context, int resource, List<UploadFile> objects) {
