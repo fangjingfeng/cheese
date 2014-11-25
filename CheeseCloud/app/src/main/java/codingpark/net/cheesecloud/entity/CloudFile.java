@@ -302,4 +302,5 @@ public class CloudFile implements Parcelable {
             return new CloudFile[size];
         }
     };
+
 }

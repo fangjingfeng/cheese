@@ -598,7 +598,10 @@ public class CloudFilesActivity extends ListActivity implements View.OnClickList
                     for (CloudFile file : mPathStack) {
                         r_path = file.getFilePath() + CheeseConstants.SEPARATOR;
                     }
-                    new ScanDownloadFilesTask(mSelectedFileList, r_path);
+                    ArrayList<CloudFile> r_selectedFiles = new ArrayList<CloudFile>();
+                    for (CloudFile file : mSelectedFileList)
+                        r_selectedFiles.add(file);
+                    new ScanDownloadFilesTask(r_selectedFiles, r_path).execute();
                     break;
                 case R.id.cab_menu_cut:
                     Toast.makeText(CloudFilesActivity.this, "Cut action", Toast.LENGTH_SHORT).show();
@@ -692,8 +695,18 @@ public class CloudFilesActivity extends ListActivity implements View.OnClickList
             // 2. Add the folder name to path(Such as path + "/A")
             // 3. Call scan with sub files object and new path
             if (file.getFileType() == CloudFileType.TYPE_FOLDER) {
-                //ArrayList<CloudFile> files = ClientWS.getInstance(CloudFilesActivity.this).get
+                // Concat the the full path
+                path = path + file.getFilePath() + CheeseConstants.SEPARATOR;
                 // TODO Scan sub directory
+                ArrayList<CloudFile> fileList = new ArrayList<CloudFile>();
+                ArrayList<CloudFile> folderList = new ArrayList<CloudFile>();
+                result = ClientWS.getInstance(CloudFilesActivity.this).getFolderList_wrapper(file, fileList, folderList);
+                if (result == WsResultType.Success) {
+                    for (CloudFile tmp_file : fileList)
+                        scan(tmp_file, path);
+                    for (CloudFile tmp_file : folderList)
+                        scan(tmp_file, path);
+                }
             }
             // If is file;
             // 1. insert record on local table
@@ -702,7 +715,9 @@ public class CloudFilesActivity extends ListActivity implements View.OnClickList
                 // The filePath property pull from server just have the file name,
                 // in there, we add the parent folder path in the header
                 r_file.setFilePath(path + r_file.getFilePath()); // Add the full parent folder path to the
-                mDataSource.addDownloadFile(r_file);
+                if (mDataSource.addDownloadFile(r_file)) {
+                    Log.d(TAG, "Scan download files: add " + r_file.getFilePath() + " to download_files table success!");
+                }
             }
             return;
         }

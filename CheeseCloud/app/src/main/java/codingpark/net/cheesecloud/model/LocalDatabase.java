@@ -69,10 +69,10 @@ public class LocalDatabase extends  SQLiteOpenHelper {
                     DownloadFileDataSource.DownloadFileEntry.COLUMN_FILESIZE + " INTEGER, " +
                     DownloadFileDataSource.DownloadFileEntry.COLUMN_LOCAL_USER_ID + " INTEGER, " +
                     DownloadFileDataSource.DownloadFileEntry.COLUMN_MD5 + " VARCHAR(50), " +
-                    DownloadFileDataSource.DownloadFileEntry.COLUMN_REMOTE_USER_ID + " VARCHAR(50), " +
+                    DownloadFileDataSource.DownloadFileEntry.COLUMN_REMOTE_ID + " VARCHAR(50), " +
                     DownloadFileDataSource.DownloadFileEntry.COLUMN_REMOTE_USER_ID + " VARCHAR(50), " +
                     DownloadFileDataSource.DownloadFileEntry.COLUMN_STATE + " INTEGER " +
-                    ")";
+                    " )";
 
     public LocalDatabase(Context context) {
         super(context, DATABASE_NAME , null, DATABASE_VERSION_1);
@@ -92,7 +92,6 @@ public class LocalDatabase extends  SQLiteOpenHelper {
         // 2. Create upload_files table
         db.execSQL(CREATE_UPLOAD_FILES_TABLE_SQL);
         // 3. Create download_files table
-        // TODO Create download_files table
         db.execSQL(CREATE_DOWNLOAD_FILES_TABLE_SQL);
     }
 

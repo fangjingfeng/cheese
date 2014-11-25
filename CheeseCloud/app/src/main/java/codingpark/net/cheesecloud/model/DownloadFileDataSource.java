@@ -212,7 +212,8 @@ public class DownloadFileDataSource {
      * @return The DownloadFile object
      */
     public static DownloadFile convertToDownloadFile(CloudFile file) {
-        return (DownloadFile)file;
+        DownloadFile d_file = new DownloadFile(file);
+        return d_file;
     }
 
 

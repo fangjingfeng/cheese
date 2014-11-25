@@ -753,6 +753,7 @@ public final class ClientWS {
                         r_file.Name = x_file.getPropertyAsString("Name");
                         r_file.SizeB = Long.valueOf(x_file.getPropertyAsString("UsedSpaceSizeKB"));
                         r_file.ID = x_file.getPropertyAsString("ID");
+                        r_file.MD5 = "";//x_file.getPropertyAsString("MD5");
                         fileList.add(r_file);
                     }
                 }
@@ -984,6 +985,47 @@ public final class ClientWS {
         return result;
     }
 
+    /**
+     * Wrapper getFolderList(Web Service Interface)
+     * Convert WsFolder to CloudFile
+     * @param file The CloudFile object, include target parent remote folder information
+     * @param fileList The sub files(CloudFile) object list
+     * @param folderList The sub folders(CloudFile) object list
+     * @return int, the getFolderList execute result
+     * {@link codingpark.net.cheesecloud.enumr.WsResultType}
+     */
+    public int getFolderList_wrapper(CloudFile file, ArrayList<CloudFile> fileList, ArrayList<CloudFile> folderList) {
+        int result = WsResultType.Success;
+        ArrayList<WsFolder> r_wsFolderList = new ArrayList<WsFolder>();
+        ArrayList<WsFile> r_wsFileList = new ArrayList<WsFile>();
+        WsFolder wsFolder = new WsFolder();
+        wsFolder.ID = file.getRemote_id();
+        result = ClientWS.getInstance(mContext).getFolderList(wsFolder, r_wsFileList, r_wsFolderList);
+        if (result == WsResultType.Success) {
+            if (folderList != null) {
+                for (WsFolder tmp_folder : r_wsFolderList) {
+                    CloudFile f = new CloudFile();
+                    f.setFileType(CloudFileType.TYPE_FOLDER);
+                    f.setRemote_id(tmp_folder.ID);
+                    f.setFilePath(tmp_folder.Name);
+                    folderList.add(f);
+                }
+            }
+
+            if (fileList != null) {
+                for (WsFile tmp_file : r_wsFileList) {
+                    CloudFile f = new CloudFile();
+                    f.setFileType(CloudFileType.TYPE_FILE);
+                    f.setRemote_id(tmp_file.ID);
+                    f.setFilePath(tmp_file.FullName);
+                    f.setFileSize(tmp_file.SizeB);
+                    f.setMd5(tmp_file.MD5);
+                    fileList.add(f);
+                }
+            }
+        }
+        return result;
+    }
 
     /* ###########################################Unit Test###################################### */
     private void test_userLogin() {
