@@ -19,6 +19,7 @@ public class DownloadService extends Service {
      */
     public static final int DOWNLOAD_BLOCK_SIZE             = 100 * CheeseConstants.KB;
 
+    public static final String ACTION_DOWNLOAD_STATE_CHANGE   = "codingpark.net.cheesecloud.handle.ACTION_DOWNLOAD_STATE_CHANGE";
     /**
      * In TransferStateActivity, when havel download file item in wait or downloading
      * state, user can click cancel all button, then trigger send
@@ -80,6 +81,9 @@ public class DownloadService extends Service {
     public static final int EVENT_RESUME_ALL_DOWNLOAD_SUCCESS = 8;
     public static final int EVENT_START_ALL_DOWNLOAD_FAILED = 11;
     public static final int EVENT_START_ALL_DOWNLOAD_SUCCESS = 10;
+    public static final int EVENT_DOWNLOAD_BLOCK_SUCCESS                  = 12;
+
+    public static final int EVENT_DOWNLOAD_BLOCK_FAILED                   = 13;
 
     /**
      * When send download related action with extra data download file object, use

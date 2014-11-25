@@ -40,6 +40,7 @@ import codingpark.net.cheesecloud.R;
 import codingpark.net.cheesecloud.entity.CloudFile;
 import codingpark.net.cheesecloud.entity.DownloadFile;
 import codingpark.net.cheesecloud.enumr.CloudFileType;
+import codingpark.net.cheesecloud.enumr.DownloadFileState;
 import codingpark.net.cheesecloud.enumr.WsResultType;
 import codingpark.net.cheesecloud.handle.ClientWS;
 import codingpark.net.cheesecloud.handle.CreateDirTask;
@@ -638,6 +639,10 @@ public class CloudFilesActivity extends ListActivity implements View.OnClickList
         }
     };
 
+    /**
+     * Scan selected file list, and insert the files and sub files
+     * to download_files table recursively.
+     */
     private class ScanDownloadFilesTask extends AsyncTask<Void, Void, Integer> {
 
         public static final int SCAN_SUCCESS    = 0;
@@ -715,6 +720,7 @@ public class CloudFilesActivity extends ListActivity implements View.OnClickList
                 // The filePath property pull from server just have the file name,
                 // in there, we add the parent folder path in the header
                 r_file.setFilePath(path + r_file.getFilePath()); // Add the full parent folder path to the
+                r_file.setState(DownloadFileState.WAIT_DOWNLOAD);
                 if (mDataSource.addDownloadFile(r_file)) {
                     Log.d(TAG, "Scan download files: add " + r_file.getFilePath() + " to download_files table success!");
                 }

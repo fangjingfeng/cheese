@@ -367,7 +367,10 @@ public class MainActivity extends Activity implements OnFragmentInteractionListe
     }
 
 
-
+    /**
+     * Scan the selected files and folders, and then insert the record to
+     * upload_files table recursively.
+     */
     private class ScanUploadFilesTask extends AsyncTask<Void, Void, Integer> {
 
         public static final int SCAN_SUCCESS    = 0;

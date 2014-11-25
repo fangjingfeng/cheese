@@ -102,7 +102,9 @@ public class DownloadFileDataSource {
      * information
      */
     public boolean addDownloadFile(DownloadFile file){
-        long l_id = database.insert(DownloadFileEntry.TABLE_NAME, null, fileToContentValue(file));
+        ContentValues cv = fileToContentValue(file);
+        cv.put(DownloadFileEntry.COLUMN_LOCAL_USER_ID, AppConfigs.current_local_user_id);
+        long l_id = database.insert(DownloadFileEntry.TABLE_NAME, null, cv);
         return l_id >= 0;
     }
 
@@ -137,7 +139,7 @@ public class DownloadFileDataSource {
         ArrayList<DownloadFile> fileList = new ArrayList<DownloadFile>();
         Cursor cursor = database.query(DownloadFileEntry.TABLE_NAME,
                 DownloadFileEntry.COLUMN_ARRAY,
-                DownloadFileEntry.COLUMN_LOCAL_USER_ID + " =? ", new String[] {String.valueOf(AppConfigs.current_local_user_id)},
+                null, null,//DownloadFileEntry.COLUMN_LOCAL_USER_ID + " =? ", new String[] {String.valueOf(AppConfigs.current_local_user_id)},
                 null, null, DownloadFileEntry._ID);
         while(cursor.moveToNext()) {
             fileList.add(cursorToFile(cursor));
@@ -225,15 +227,16 @@ public class DownloadFileDataSource {
      */
     private DownloadFile cursorToFile(Cursor cursor) {
         DownloadFile file = new DownloadFile();
-        file.setChangedSize(cursor.getLong(0));
-        // No fileName
-        file.setFilePath(cursor.getString(1));
-        file.setFileSize(cursor.getLong(2));
-        file.setLocal_user_id(cursor.getLong(3));
-        file.setMd5(cursor.getString(4));
-        file.setRemote_id(cursor.getString(5));
-        // No remote user id
-        file.setState(cursor.getInt(6));
+        file.setId(cursor.getLong(0));
+        file.setChangedSize(cursor.getLong(1));
+        // No fileName 2
+        file.setFilePath(cursor.getString(3));
+        file.setFileSize(cursor.getLong(4));
+        file.setLocal_user_id(cursor.getLong(5));
+        file.setMd5(cursor.getString(6));
+        file.setRemote_id(cursor.getString(7));
+        // No remote user id 8
+        file.setState(cursor.getInt(9));
         return file;
     }
 }

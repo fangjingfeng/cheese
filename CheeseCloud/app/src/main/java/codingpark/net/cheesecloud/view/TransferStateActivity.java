@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Locale;
 
 import codingpark.net.cheesecloud.R;
+import codingpark.net.cheesecloud.entity.DownloadFile;
 import codingpark.net.cheesecloud.entity.UploadFile;
 import codingpark.net.cheesecloud.handle.OnTransFragmentInteractionListener;
 import codingpark.net.cheesecloud.handle.UploadService;
@@ -237,11 +238,30 @@ public class TransferStateActivity extends Activity implements ActionBar.TabList
         }
     }
 
-
     @Override
-    public void refreshDownloadBottomBar() {
+    public void refreshDownloadBottomBar(ArrayList<DownloadFile> waitDownloadFile, ArrayList<DownloadFile> uploadingFile, ArrayList<DownloadFile> pauseDownloadFile, ArrayList<DownloadFile> uploadedFile) {
+        if (mActivePagePos != DOWNLOAD_LIST_PAGE_ID)
+            return;
+        Log.d(TAG, "Receive update bottom bar request from FragmentDownloadList");
+        if (waitDownloadFile.size() > 0 || uploadingFile.size() > 0 || pauseDownloadFile.size() > 0) {
+            trans_control_bt.setVisibility(View.VISIBLE);
+            trans_cancel_all_bt.setVisibility(View.VISIBLE);
+            trans_clear_all_bt.setVisibility(View.GONE);
 
+            if (waitDownloadFile.size() > 0 || uploadingFile.size() > 0) {
+                trans_control_bt.setText(R.string.transfer_state_activity_control_pause_all_bt_text);
+                trans_control_bt.setTag(CONTROL_BUTTON_PAUSE_ACTIVE);
+            } else {
+                trans_control_bt.setText(R.string.transfer_state_activity_control_start_all_bt_text);
+                trans_control_bt.setTag(CONTROL_BUTTON_START_ACTIVE);
+            }
+        } else {
+            trans_control_bt.setVisibility(View.GONE);
+            trans_cancel_all_bt.setVisibility(View.GONE);
+            trans_clear_all_bt.setVisibility(View.VISIBLE);
+        }
     }
+
 
 
     /**

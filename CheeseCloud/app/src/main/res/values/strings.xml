@@ -69,6 +69,11 @@
     <string name="fragment_upload_list_uploading_state">Uploading</string>
     <string name="fragment_upload_list_pause_upload_state">Pause</string>
     <string name="fragment_upload_list_uploaded_state">Uploaded</string>
+    <!-- FragmentDownloadList -->
+    <string name="fragment_download_list_wait_download_state">Waiting</string>
+    <string name="fragment_download_list_downloading_state">Downloading</string>
+    <string name="fragment_download_list_pause_download_state">Pause</string>
+    <string name="fragment_download_list_downloaded_state">Downloaded</string>
 
     <!-- Help page -->
     <string name="product_info">Cheese Cloud description</string>

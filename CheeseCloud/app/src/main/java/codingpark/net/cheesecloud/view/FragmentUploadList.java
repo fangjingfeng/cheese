@@ -29,10 +29,6 @@ import codingpark.net.cheesecloud.model.UploadFileDataSource;
 
 /**
  * A fragment representing a list of uploading/uploaded/upload record
- * <p/>
- * <p/>
- * Activities containing this fragment MUST implement the {@link OnTransFragmentInteractionListener}
- * interface.
  */
 public class FragmentUploadList extends ListFragment {
     private static final String TAG = FragmentUploadList.class.getSimpleName();
@@ -66,8 +62,7 @@ public class FragmentUploadList extends ListFragment {
     }
 
     /**
-     * Mandatory empty constructor for the fragment manager to instantiate the
-     * fragment (e.g. upon screen orientation changes).
+     * The constructor
      */
     public FragmentUploadList() {
         mAllFileList = new ArrayList<UploadFile>();

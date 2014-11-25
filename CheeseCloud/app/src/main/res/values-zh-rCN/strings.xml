@@ -65,6 +65,11 @@
     <string name="fragment_upload_list_uploading_state">正在上传</string>
     <string name="fragment_upload_list_pause_upload_state">暂停上传</string>
     <string name="fragment_upload_list_uploaded_state">上传完成</string>
+    <!-- FragmentDownloadList -->
+    <string name="fragment_download_list_wait_download_state">等待下载</string>
+    <string name="fragment_download_list_downloading_state">正在下载</string>
+    <string name="fragment_download_list_pause_download_state">暂停下载</string>
+    <string name="fragment_download_list_downloaded_state">下载完成</string>
 
     <!--Help page-->
     <string name="product_info">"Cheese 资源管理系统移动客户端,功能稳定,易用, 是您管理多媒体资源的好帮手.\n\n"</string>
