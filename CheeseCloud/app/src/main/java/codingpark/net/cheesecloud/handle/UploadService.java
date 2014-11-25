@@ -38,7 +38,10 @@ public class UploadService extends Service {
      * Default size 100KB
      */
     public static final int UPLOAD_BLOCK_SIZE               = 100 * CheeseConstants.KB;
-
+    /**
+     * Upload state changed action
+     */
+    public static final String ACTION_UPLOAD_STATE_CHANGE       = "codingpark.net.cheesecloud.handle.ACTION_PAUSE_SUCCESS";
     /**
      * Start upload command
      */
@@ -51,17 +54,26 @@ public class UploadService extends Service {
      * Pause upload command
      */
     private static final String ACTION_PAUSE_ALL_UPLOAD         = "codingpark.net.cheesecloud.handle.ACTION_PAUSE_ALL_UPLOAD";
-
+    /**
+     * Cancel all upload command
+     */
     private static final String ACTION_CANCEL_ALL_UPLOAD        = "codingpark.net.cheesecloud.handle.ACTION_CANCEL_ALL_UPLOAD";
-
+    /**
+     * Cancel target upload record command
+     */
     private static final String ACTION_CANCEL_ONE_UPLOAD        = "codingpark.net.cheesecloud.handle.ACTION_CANCEL_ONE_UPLOAD";
-
+    /**
+     * Clear all upload record
+     */
     private static final String ACTION_CLEAR_ALL_UPLOAD_RECORD  = "codingpark.net.cheesecloud.handle.ACTION_CLEAR_ALL_UPLOAD_RECORD";
-
-    public static final String ACTION_UPLOAD_STATE_CHANGE       = "codingpark.net.cheesecloud.handle.ACTION_PAUSE_SUCCESS";
-
+    /**
+     * As send extra data(UploadFile) to UploadService, use EXTRA_UPLOAD_FILE as key
+     */
     public static final String EXTRA_UPLOAD_FILE                = "uploadfile";
-
+    /**
+     * As send ACTION_UPLOAD_STATE_CHANGE broadcast to receiver, add some extra
+     * data(EVENT) to Intent, use EXTRA_UPLOAD_STATE as key.
+     */
     public static final String EXTRA_UPLOAD_STATE               = "uploadstate";
 
     public static final int EVENT_UPLOAD_BLOCK_SUCCESS                  = 0;
@@ -100,7 +112,6 @@ public class UploadService extends Service {
      * Starts this service to perform action ACTION_START_ALL_UPLOAD with the
      * given parameters. If the service is already performing a task this
      * action will be queued.
-     * @see IntentService
      */
     public static void startActionUploadAll(Context context) {
         Intent intent = new Intent(context, UploadService.class);
@@ -112,7 +123,6 @@ public class UploadService extends Service {
      * Starts this service to perform action ACTION_START_ALL_UPLOAD with the
      * given parameters. If the service is already performing a task this
      * action will be queued.
-     * @see IntentService
      */
     public static void startActionResumeAll(Context context) {
         Intent intent = new Intent(context, UploadService.class);
@@ -124,7 +134,6 @@ public class UploadService extends Service {
      * Starts this service to perform action ACTION_PAUSE_ALL_UPLOAD with the
      * given parameters. If the service is already performing a task this
      * action will be queued.
-     * @see IntentService
      */
     public static void startActionPauseAll(Context context) {
         Intent intent = new Intent(context, UploadService.class);
@@ -136,7 +145,6 @@ public class UploadService extends Service {
      * Starts this service to perform action ACTION_CANCEL_ALL_UPLOAD with the
      * given parameters. If the service is already performing a task this
      * action will be queued.
-     * @see IntentService
      */
     public static void startActionCancelAll(Context context) {
         Intent intent = new Intent(context, UploadService.class);
@@ -149,7 +157,6 @@ public class UploadService extends Service {
      * Starts this service to perform action ACTION_CANCEL_ONE_UPLOAD with the
      * given parameters. If the service is already performing a task this
      * action will be queued.
-     * @see IntentService
      */
     public static void startActionCancelOne(Context context) {
         Intent intent = new Intent(context, UploadService.class);
@@ -161,7 +168,6 @@ public class UploadService extends Service {
      * Starts this service to perform action ACTION_CLEAR_ALL_UPLOAD_RECORD with the
      * given parameters. If the service is already performing a task this
      * action will be queued.
-     * @see IntentService
      */
     public static void startActionClearAll(Context context) {
         Intent intent = new Intent(context, UploadService.class);

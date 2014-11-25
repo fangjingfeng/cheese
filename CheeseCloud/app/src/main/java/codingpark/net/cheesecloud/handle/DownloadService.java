@@ -19,6 +19,9 @@ public class DownloadService extends Service {
      */
     public static final int DOWNLOAD_BLOCK_SIZE             = 100 * CheeseConstants.KB;
 
+    /**
+     * Download state changed action
+     */
     public static final String ACTION_DOWNLOAD_STATE_CHANGE   = "codingpark.net.cheesecloud.handle.ACTION_DOWNLOAD_STATE_CHANGE";
     /**
      * In TransferStateActivity, when havel download file item in wait or downloading
@@ -240,22 +243,6 @@ public class DownloadService extends Service {
     public static void stopUploadService(Context context){
         Intent intent = new Intent(context, DownloadService.class);
         context.stopService(intent);
-    }
-
-    /**
-     * Handle action Foo in the provided background thread with the provided
-     * parameters.
-     */
-    private void handleActionFoo() {
-        throw new UnsupportedOperationException("Not yet implemented");
-    }
-
-    /**
-     * Handle action Baz in the provided background thread with the provided
-     * parameters.
-     */
-    private void handleActionBaz() {
-        throw new UnsupportedOperationException("Not yet implemented");
     }
 
     @Override
