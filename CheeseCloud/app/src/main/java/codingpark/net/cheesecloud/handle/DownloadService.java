@@ -116,7 +116,7 @@ public class DownloadService extends Service {
      * When send download related action with extra state information, use
      * EXTRA_DOWNLOAD_STATE as the data key.
      */
-    public static final String EXTRA_DOWNLOAD_STATE = "download_file";
+    public static final String EXTRA_DOWNLOAD_STATE = "download_state";
 
     private DownloadFileDataSource downloadFileDataSource     = null;
 
@@ -227,6 +227,8 @@ public class DownloadService extends Service {
         refreshWaitData();
         // 3. Start mTask again
         startDownloadThread();
+        // 4. Send start all download success message
+        sendChangedBroadcast(EVENT_START_ALL_DOWNLOAD_SUCCESS);
     }
 
     /**
@@ -447,7 +449,7 @@ public class DownloadService extends Service {
                 // TODO Handle create full directory failed situation
                 Misc.createFullDir(parent_dir_path);
                 // 3. Create the download file
-                File r_file = new File(file.getFilePath());
+                File r_file = new File(full_path);
                 /* Not need create the empty
                 if (!r_file.exists()) {
                     try {
@@ -460,23 +462,25 @@ public class DownloadService extends Service {
                 */
                 // 4. Download block one by one
                 int count = 0;
-                WsSyncFile syncFile = new WsSyncFile();
-                SyncFileBlock syncBlock = new SyncFileBlock();
-                syncBlock.SourceSize = DOWNLOAD_BLOCK_SIZE;
-                syncFile.Blocks = syncBlock;
-                syncFile.ID = file.getRemote_id();
                 try {
                     while (true) {
                         if (isInterrupted()) {
                             Log.d(TAG, "isInterrupted");
                             return;
                         }
+                        WsSyncFile syncFile = new WsSyncFile();
+                        SyncFileBlock syncBlock = new SyncFileBlock();
+                        syncBlock.SourceSize = DOWNLOAD_BLOCK_SIZE;
+                        syncFile.Blocks = syncBlock;
+                        syncFile.ID = file.getRemote_id();
                         syncBlock.OffSet = file.getChangedSize();
+                        syncFile.Blocks.UpdateData = null;
                         result = ClientWS.getInstance(DownloadService.this).downloadFile(syncFile);
                         if (result != WsResultType.Success) {
                             sendChangedBroadcast(file, EVENT_DOWNLOAD_BLOCK_FAILED);
                             if (mTry < MAX_RETRY_TIME) {
                                 Log.d(TAG, "Download failed, retry: " + mTry);
+                                mTry++;
                                 continue;
                             }
                             else {
@@ -487,7 +491,7 @@ public class DownloadService extends Service {
                         mTry = 0;
                         count = syncFile.Blocks.UpdateData.length;
                         Log.d(TAG, "Download real size:" + count + "\n" + "Download block size: " + DOWNLOAD_BLOCK_SIZE);
-                        if (count >0 ) {
+                        if (count > 0) {
                             RandomAccessFile stream = new RandomAccessFile(r_file, "rw");
                             stream.seek(file.getChangedSize());
                             stream.write(syncFile.Blocks.UpdateData, 0, count);
@@ -502,6 +506,8 @@ public class DownloadService extends Service {
                             sendChangedBroadcast(file, EVENT_DOWNLOAD_BLOCK_SUCCESS);
                         } else
                             break;// Download completed
+                        if (syncFile.IsFinally)
+                            break;
                     }
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();

@@ -599,6 +599,7 @@ public class UploadService extends Service {
                                 sendChangedBroadcast(file, EVENT_UPLOAD_BLOCK_FAILED);
                                 if (mTry < MAX_RETRY_TIME) {
                                     Log.d(TAG, "Upload failed, retry: " + mTry);
+                                    mTry++;
                                     continue;
                                 }
                                 else {

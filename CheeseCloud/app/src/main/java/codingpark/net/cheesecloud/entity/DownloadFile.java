@@ -1,6 +1,9 @@
 package codingpark.net.cheesecloud.entity;
 
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * @author Ethan Shan
  * @version 1.0
@@ -8,8 +11,38 @@ package codingpark.net.cheesecloud.entity;
  */
 public class DownloadFile extends CloudFile {
 
-    public DownloadFile(){
+    public DownloadFile() {
 
+    }
+
+
+    public void finalize() throws Throwable {
+        super.finalize();
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public DownloadFile(Parcel in) {
+        super(in);
+    }
+
+    public static final Parcelable.Creator<DownloadFile> CREATOR
+            = new Parcelable.Creator<DownloadFile>() {
+        public DownloadFile createFromParcel(Parcel in) {
+            return new DownloadFile(in);
+        }
+
+        public DownloadFile[] newArray(int size) {
+            return new DownloadFile[size];
+        }
+    };
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
     }
 
     public DownloadFile(CloudFile file) {
@@ -26,10 +59,6 @@ public class DownloadFile extends CloudFile {
         this.setRemote_id(file.getRemote_id());
         this.setRemote_parent_id(file.getRemote_parent_id());
         this.setState(file.getState());
-    }
-
-    public void finalize() throws Throwable {
-        super.finalize();
     }
 
 }

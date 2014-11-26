@@ -519,7 +519,7 @@ public final class ClientWS {
         try {
             transport.call(soapAction, envelope, paraHttpHeaders);
             Log.d(TAG, "Request: \n" + transport.requestDump);
-            Log.d(TAG, "Response: \n" + transport.responseDump);
+            //Log.d(TAG, "Response: \n" + transport.responseDump);
 
             final SoapObject resp = (SoapObject) envelope.bodyIn;
             // Process return data
