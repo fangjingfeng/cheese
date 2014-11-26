@@ -252,9 +252,9 @@ public class FragmentDownloadList extends ListFragment {
             String action = intent.getAction();
             if (action.equals(DownloadService.ACTION_DOWNLOAD_STATE_CHANGE)) {
                 int event = intent.getIntExtra(DownloadService.EXTRA_DOWNLOAD_STATE, DownloadService.EVENT_DOWNLOAD_BLOCK_SUCCESS);
-                DownloadFile file = (DownloadFile)intent.getExtras().get(DownloadService.EXTRA_DOWNLOAD_FILE);
                 if (event == DownloadService.EVENT_DOWNLOAD_BLOCK_SUCCESS) {
                     Log.d(TAG, "download block success");
+                    DownloadFile file = (DownloadFile)intent.getExtras().get(DownloadService.EXTRA_DOWNLOAD_FILE);
                     for (int i = 0; i < mAllFileList.size(); i++) {
                         if (mAllFileList.get(i).getId() == file.getId()) {
                             mAllFileList.set(i, file);

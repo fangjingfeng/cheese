@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
+import org.apache.http.util.ByteArrayBuffer;
 import org.kobjects.base64.Base64;
 import org.ksoap2.HeaderProperty;
 import org.ksoap2.SoapEnvelope;
@@ -508,7 +509,7 @@ public final class ClientWS {
 
         // Initial http transport
         HttpTransportSE transport = new HttpTransportSE(mEndPoint);
-        //transport.debug = true;
+        transport.debug = true;
 
         // Set http header cookies values before call WS
         List<HeaderProperty> paraHttpHeaders = new ArrayList<HeaderProperty>();
@@ -518,7 +519,7 @@ public final class ClientWS {
         try {
             transport.call(soapAction, envelope, paraHttpHeaders);
             Log.d(TAG, "Request: \n" + transport.requestDump);
-            //Log.d(TAG, "Response: \n" + transport.responseDump);
+            Log.d(TAG, "Response: \n" + transport.responseDump);
 
             final SoapObject resp = (SoapObject) envelope.bodyIn;
             // Process return data

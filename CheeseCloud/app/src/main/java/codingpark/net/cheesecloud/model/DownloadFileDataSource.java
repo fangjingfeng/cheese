@@ -128,8 +128,22 @@ public class DownloadFileDataSource {
      * @return If deleted rows > 0, return true. else return false;
      */
     public boolean deleteDownloadFile(DownloadFile file){
-        int rows = database.delete(DownloadFileEntry.TABLE_NAME, DownloadFileEntry._ID + " =? ",
-                new String[] {String.valueOf(file.getId())});
+        int rows = database.delete(DownloadFileEntry.TABLE_NAME, DownloadFileEntry._ID + " =? and " +
+                        DownloadFileEntry.COLUMN_LOCAL_USER_ID + " =? ",
+                new String[] {String.valueOf(file.getId()), String.valueOf(AppConfigs.current_local_user_id)});
+        return rows > 0;
+    }
+
+
+    /**
+     * Delete the record batched by the given download state
+     * @param state The target state
+     * @return If affected rows > 0, return true. Else return false
+     */
+    public boolean deleteDownloadFileByState(int state) {
+        int rows = database.delete(DownloadFileEntry.TABLE_NAME, DownloadFileEntry.COLUMN_STATE + " =? and " +
+                DownloadFileEntry.COLUMN_LOCAL_USER_ID + " =? ",
+                new String[] {String.valueOf(state), String.valueOf(AppConfigs.current_local_user_id)});
         return rows > 0;
     }
 

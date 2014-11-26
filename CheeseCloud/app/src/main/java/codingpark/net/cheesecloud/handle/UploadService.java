@@ -562,7 +562,9 @@ public class UploadService extends Service {
     }
 
 
-
+    /**
+     * Upload file block thread
+     */
     private class UploadTask extends Thread {
         private int mTry = 0;
         @Override

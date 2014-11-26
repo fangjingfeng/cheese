@@ -3,11 +3,13 @@ package codingpark.net.cheesecloud.handle;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Environment;
 import android.os.IBinder;
 import android.util.Log;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.ArrayList;
@@ -18,6 +20,10 @@ import codingpark.net.cheesecloud.entity.DownloadFile;
 import codingpark.net.cheesecloud.enumr.DownloadFileState;
 import codingpark.net.cheesecloud.enumr.WsResultType;
 import codingpark.net.cheesecloud.model.DownloadFileDataSource;
+import codingpark.net.cheesecloud.utils.Misc;
+import codingpark.net.cheesecloud.wsi.SyncFileBlock;
+import codingpark.net.cheesecloud.wsi.WsSyncFile;
+import codingpark.net.cheesecloud.wsi.WsSyncFileBlock;
 
 /**
  * The service download file from remote server
@@ -89,8 +95,8 @@ public class DownloadService extends Service {
     public static final int EVENT_CANCEL_ALL_DOWNLOAD_SUCCESS = 0;
     public static final int EVENT_CANCEL_ONE_DOWNLOAD_FAILED = 3;
     public static final int EVENT_CANCEL_ONE_DOWNLOAD_SUCCESS = 2;
-    public static final int EVENT_CLEAR_ALL_DOWNLOAD_FAILED = 5;
-    public static final int EVENT_CLEAR_ALL_DOWNLOAD_SUCCESS = 4;
+    public static final int EVENT_CLEAR_ALL_DOWNLOAD_RECORD_FAILED = 5;
+    public static final int EVENT_CLEAR_ALL_DOWNLOAD_RECORD_SUCCESS = 4;
     public static final int EVENT_PAUSE_ALL_DOWNLOAD_FAILED = 7;
     public static final int EVENT_PAUSE_ALL_DOWNLOAD_SUCCESS = 6;
     public static final int EVENT_RESUME_ALL_DOWNLOAD_FAILED = 9;
@@ -175,6 +181,38 @@ public class DownloadService extends Service {
         mWaitDataList = downloadFileDataSource.getNotDownloadedFile();
         Log.d(TAG, "refreshWaitData: mWaitDataList.size = " + mWaitDataList.size());
     }
+
+    private void pauseDownloadThread() {
+        if (mTask != null && mTask.isAlive()) {
+            mTask.interrupt();
+            try {
+                mTask.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            Log.d(TAG, "Pause download thread success");
+        }
+    }
+
+    private void startDownloadThread() {
+        if (mTask == null) {
+            mTask = new DownloadTask();
+        }
+        if (mTask.isAlive()) {
+            Log.d(TAG, "DownloadThread is running, not need start again");
+            return;
+        }
+        // If task stop and not NEW state, just create new DownloadTask
+        if (mTask.getState() != Thread.State.NEW) {
+            Log.d(TAG, "download thread have completed, new ThreadTask");
+            mTask = null;
+            mTask = new DownloadTask();
+        }
+        Log.d(TAG, "Start downloading");
+        // Start download
+        mTask.start();
+    }
+
     // TODO Implement follow handle action function
 
     /**
@@ -182,6 +220,13 @@ public class DownloadService extends Service {
      */
     private void handleActionStartAllDownload(Intent intent) {
         Log.d(TAG, "handelActionStartAllDownload");
+        // For sync, we stop upload thread first
+        // 1. Pause mTask
+        pauseDownloadThread();
+        // 2. Refresh mWaitDataList from local table upload_table
+        refreshWaitData();
+        // 3. Start mTask again
+        startDownloadThread();
     }
 
     /**
@@ -189,6 +234,23 @@ public class DownloadService extends Service {
      */
     private void handleActionResumeAllDownload(Intent intent) {
         Log.d(TAG, "handleActionResumeAllDownload");
+
+        // For sync, we stop download thread first
+        // 1. Pause mTask
+        pauseDownloadThread();
+        // 2. Update all pause state record to wait
+        ArrayList<DownloadFile> tmp_datas = downloadFileDataSource.getAllDownloadFileByState(DownloadFileState.PAUSE_DOWNLOAD);
+        for (int i = 0; i < tmp_datas.size(); i++) {
+            DownloadFile file = tmp_datas.get(i);
+            file.setState(DownloadFileState.WAIT_DOWNLOAD);
+            downloadFileDataSource.updateDownloadFile(file);
+        }
+        // 3. Refresh mWaitDataList from local table download_table
+        refreshWaitData();
+        // 4. Start mTask again
+        startDownloadThread();
+        // 5. Send broadcast
+        sendChangedBroadcast(EVENT_RESUME_ALL_DOWNLOAD_SUCCESS);
     }
 
     /**
@@ -196,6 +258,18 @@ public class DownloadService extends Service {
      */
     private void handleActionPauseAllDownload(Intent intent) {
         Log.d(TAG, "handleActionPauseAllDownload");
+
+        // 1. Pause download thread
+        pauseDownloadThread();
+        // 2. Set all wait and downloading state record to pause state
+        for (int i = 0; i < mWaitDataList.size(); i++) {
+            DownloadFile file = mWaitDataList.get(i);
+            int state = file.getState();
+            if (state == DownloadFileState.DOWNLOADING || state == DownloadFileState.WAIT_DOWNLOAD)
+                file.setState(DownloadFileState.PAUSE_DOWNLOAD);
+            downloadFileDataSource.updateDownloadFile(file);
+        }
+        sendChangedBroadcast(EVENT_PAUSE_ALL_DOWNLOAD_SUCCESS);
     }
 
     /**
@@ -203,6 +277,18 @@ public class DownloadService extends Service {
      */
     private void handleActionCancelAllDownload(Intent intent) {
         Log.d(TAG, "handleActionCancelAllDownload");
+
+        // 1. Pause download thread
+        pauseDownloadThread();
+        // 2. Delete downloading and wait state record from database
+        // TODO Need delete rubbish records/datas from server
+        downloadFileDataSource.deleteDownloadFileByState(DownloadFileState.DOWNLOADING);
+        downloadFileDataSource.deleteDownloadFileByState(DownloadFileState.WAIT_DOWNLOAD);
+        downloadFileDataSource.deleteDownloadFileByState(DownloadFileState.PAUSE_DOWNLOAD);
+        // 3. Update mWaitDataList
+        refreshWaitData();
+        // 4. Send broadcast
+        sendChangedBroadcast(EVENT_CANCEL_ALL_DOWNLOAD_SUCCESS);
     }
 
     /**
@@ -217,6 +303,12 @@ public class DownloadService extends Service {
      */
     private void handleActionClearAllDownloadRecord(Intent intent) {
         Log.d(TAG, "handleActionClearAllDownloadRecord");
+        // 1. Pause download thread
+        pauseDownloadThread();
+        // 2. Delete downloaded state record from database
+        downloadFileDataSource.deleteDownloadFileByState(DownloadFileState.DOWNLOADED);
+        // 3. Send broadcast
+        sendChangedBroadcast(EVENT_CLEAR_ALL_DOWNLOAD_RECORD_SUCCESS);
     }
 
     /**
@@ -304,6 +396,28 @@ public class DownloadService extends Service {
         Log.d(TAG, "Send download state changed broadcast with file: " + event);
     }
 
+    private void sendChangedBroadcast(int event) {
+        Intent intent = new Intent(ACTION_DOWNLOAD_STATE_CHANGE);
+        intent.putExtra(EXTRA_DOWNLOAD_STATE, event);
+        getApplicationContext().sendBroadcast(intent);
+        Log.d(TAG, "Send download state changed broadcast without file: " + event);
+    }
+
+    /**
+     * Get the download files/folders stored root folder.
+     * Such as /sdcard/CheeseCloudDownload
+     * @return The download root folder
+     */
+    private String getDownloadRootDir() {
+        String prefix_path = Environment.getExternalStorageDirectory().toString();
+        String path = Misc.mergePath(prefix_path, CheeseConstants.DOWNLOAD_ROOT_DIR_NAME);
+        File file = new File(path);
+        if (!file.exists()) {
+            file.mkdir();
+        }
+        return path;
+    }
+
     @Override
     public IBinder onBind(Intent intent) {
         return null;
@@ -325,39 +439,62 @@ public class DownloadService extends Service {
                     downloadFileDataSource.updateDownloadFile(file);
                 }
                 // 2. Create local full directory
-                //Download block one by one
-                byte[] buffer = new byte[DOWNLOAD_BLOCK_SIZE];
+                String parent_dir_path = getDownloadRootDir();
+                parent_dir_path = Misc.mergePath(parent_dir_path, file.getFilePath().substring(0, file.getFilePath().lastIndexOf(CheeseConstants.SEPARATOR)));
+                String full_path = Misc.mergePath(parent_dir_path, file.getFilePath().substring(file.getFilePath().lastIndexOf(CheeseConstants.SEPARATOR) + 1));
+                Log.d(TAG, "Download File parent directory path: " + parent_dir_path);
+                Log.d(TAG, "Download file full path: " + full_path);
+                // TODO Handle create full directory failed situation
+                Misc.createFullDir(parent_dir_path);
+                // 3. Create the download file
                 File r_file = new File(file.getFilePath());
+                /* Not need create the empty
+                if (!r_file.exists()) {
+                    try {
+                        // TODO Handle create file failed situation
+                        r_file.createNewFile();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+                */
+                // 4. Download block one by one
                 int count = 0;
+                WsSyncFile syncFile = new WsSyncFile();
+                SyncFileBlock syncBlock = new SyncFileBlock();
+                syncBlock.SourceSize = DOWNLOAD_BLOCK_SIZE;
+                syncFile.Blocks = syncBlock;
+                syncFile.ID = file.getRemote_id();
                 try {
                     while (true) {
-                        //FileInputStream stream = new FileInputStream(r_file);
-                        RandomAccessFile stream = new RandomAccessFile(r_file, "r");
-                        Log.d(TAG, "Array size:" + buffer.length + "\n" + "downloadedsize: " + (int)file.getChangedSize());
-                        stream.seek(file.getChangedSize());
-                        count = stream.read(buffer, 0, DOWNLOAD_BLOCK_SIZE);
-                        if (count != -1) {
-                            if (isInterrupted()) {
-                                Log.d(TAG, "isInterrupted");
-                                return;
+                        if (isInterrupted()) {
+                            Log.d(TAG, "isInterrupted");
+                            return;
+                        }
+                        syncBlock.OffSet = file.getChangedSize();
+                        result = ClientWS.getInstance(DownloadService.this).downloadFile(syncFile);
+                        if (result != WsResultType.Success) {
+                            sendChangedBroadcast(file, EVENT_DOWNLOAD_BLOCK_FAILED);
+                            if (mTry < MAX_RETRY_TIME) {
+                                Log.d(TAG, "Download failed, retry: " + mTry);
+                                continue;
                             }
-                            result = ClientWS.getInstance(DownloadService.this).downloadFile_wrapper(file, buffer, count);
-                            if (result != WsResultType.Success) {
-                                sendChangedBroadcast(file, EVENT_DOWNLOAD_BLOCK_FAILED);
-                                if (mTry < MAX_RETRY_TIME) {
-                                    Log.d(TAG, "Download failed, retry: " + mTry);
-                                    continue;
-                                }
-                                else {
-                                    Log.d(TAG, "Download failed, reach limit:" + MAX_RETRY_TIME + "\t" + " stop: " + file.getFilePath());
-                                    break;
-                                }
+                            else {
+                                Log.d(TAG, "Download failed, reach limit:" + MAX_RETRY_TIME + "\t" + " stop: " + file.getFilePath());
+                                break;
                             }
-                            mTry = 0;
+                        }
+                        mTry = 0;
+                        count = syncFile.Blocks.UpdateData.length;
+                        Log.d(TAG, "Download real size:" + count + "\n" + "Download block size: " + DOWNLOAD_BLOCK_SIZE);
+                        if (count >0 ) {
+                            RandomAccessFile stream = new RandomAccessFile(r_file, "rw");
+                            stream.seek(file.getChangedSize());
+                            stream.write(syncFile.Blocks.UpdateData, 0, count);
                             // Increase index
                             file.setChangedSize(file.getChangedSize() + count);
                             // Download completed
-                            if (file.getChangedSize() == file.getFileSize()) {
+                            if (syncFile.IsFinally) {
                                 file.setState(DownloadFileState.DOWNLOADED);
                             }
                             // Update to database
