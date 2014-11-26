@@ -12,6 +12,9 @@ gen/
 libs/
 bin/
 obj/
+CheeseCloud/pagerSlibTabLib/build/
+CheeseCloud/build/
+TestMediaStore/build/
 build/
 .project
 .classpath
