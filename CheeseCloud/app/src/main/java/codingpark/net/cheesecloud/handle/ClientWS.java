@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InterruptedIOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -477,7 +478,7 @@ public final class ClientWS {
      * @param file    Store the target file information, The guid of the file
      * @return {@link codingpark.net.cheesecloud.enumr.WsResultType}
      */
-    public int downloadFile(WsSyncFile file){
+    public int downloadFile(WsSyncFile file) throws InterruptedIOException {
         int result = WsResultType.Success;
 
         // Create SOAP Action
@@ -538,7 +539,10 @@ public final class ClientWS {
                 }
             }
             Log.d(TAG, "DownloadFile result : " + result);
-        } catch (Exception e) {
+        } catch (InterruptedIOException e) {
+            throw e;
+        }
+        catch (Exception e) {
             e.printStackTrace();
             result = WsResultType.Faild;
         }
@@ -1029,12 +1033,14 @@ public final class ClientWS {
         return result;
     }
 
+    /*
     public int downloadFile_wrapper(DownloadFile file, byte[] data, int count) {
         int result = WsResultType.Success;
         WsSyncFile syncFile = new WsSyncFile();
         result = downloadFile(syncFile);
         return result;
     }
+    */
 
     /* ###########################################Unit Test###################################### */
     private void test_userLogin() {

@@ -11,6 +11,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InterruptedIOException;
 import java.io.RandomAccessFile;
 import java.util.ArrayList;
 
@@ -34,9 +35,9 @@ public class DownloadService extends Service {
 
     /**
      * The download block size in byte unit
-     * Default size 100KB
+     * Default size 10KB
      */
-    public static final int DOWNLOAD_BLOCK_SIZE             = 100 * CheeseConstants.KB;
+    public static final int DOWNLOAD_BLOCK_SIZE             = 10 * CheeseConstants.KB;
 
     /**
      * Download state changed action
@@ -511,8 +512,11 @@ public class DownloadService extends Service {
                     }
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
+                } catch (InterruptedIOException e) {
+                    this.interrupt();
                 } catch (IOException e) {
                     e.printStackTrace();
+                    return;
                 }
             }
         }
