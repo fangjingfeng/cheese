@@ -6,6 +6,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -26,7 +27,9 @@ import codingpark.net.cheesecloud.enumr.DownloadFileState;
 import codingpark.net.cheesecloud.handle.DownloadService;
 import codingpark.net.cheesecloud.handle.OnTransFragmentInteractionListener;
 import codingpark.net.cheesecloud.model.DownloadFileDataSource;
+import codingpark.net.cheesecloud.utils.Misc;
 import codingpark.net.cheesecloud.utils.ThumbnailCreator;
+import codingpark.net.cheesecloud.utils.TypeFilter;
 import codingpark.net.cheesecloud.view.dummy.DummyContent;
 
 /**
@@ -53,6 +56,9 @@ public class FragmentDownloadList extends ListFragment {
     private ArrayList<DownloadFile> mDownloadingFileList     = null;
     private ArrayList<DownloadFile> mDownloadedFileList         = null;
     private ArrayList<DownloadFile> mPauseDownloadFileList      = null;
+
+    private boolean thumbnail_flag                  = true;
+    private ThumbnailCreator thumbnail              = null;
 
     public static FragmentDownloadList newInstance(int number) {
         FragmentDownloadList fragment = new FragmentDownloadList();
@@ -84,7 +90,7 @@ public class FragmentDownloadList extends ListFragment {
         if (getArguments() != null) {
             section_number = getArguments().getInt(SECTION_NUMBER);
         }
-
+        thumbnail = new ThumbnailCreator(mContext, 64, 64);
         mContext = getActivity();
         mAdapter = new DownloadListAdapter(mContext, R.layout.upload_state_item_layout, mAllFileList);
         mDownloadDataSource = new DownloadFileDataSource(mContext);
@@ -217,6 +223,23 @@ public class FragmentDownloadList extends ListFragment {
             long fileSize = file.getFileSize() * 1000;
             holder.ratioView.setText(file.getChangedSize() + "/" + fileSize);
             holder.rowImage.setImageResource(ThumbnailCreator.getDefThumbnailsByName(file.getFilePath()));
+            if (thumbnail_flag && file.getState() == DownloadFileState.DOWNLOADED) {
+                String ext = file.getFilePath().substring(file.getFilePath().lastIndexOf(".")+1);
+                Log.d(TAG, "Download item path: '" + file.getFilePath());
+                Log.d(TAG, "Download item extension: " + ext);
+                if (TypeFilter.getInstance().isPictureFile(ext)) {
+                    String fullPath = Misc.mergePath(Misc.getDownloadRootDir(), file.getFilePath());
+                    Bitmap thumb = thumbnail.hasBitmapCached(fullPath);
+                    if (thumb == null) {
+                        holder.rowImage.setImageResource(R.drawable.image);
+                        thumbnail.setBitmapToImageView(fullPath,
+                                holder.rowImage);
+
+                    } else {
+                        holder.rowImage.setImageBitmap(thumb);
+                    }
+                }
+            }
             switch (file.getState()) {
                 case DownloadFileState.NOT_DOWNLOAD:
                 case DownloadFileState.WAIT_DOWNLOAD:

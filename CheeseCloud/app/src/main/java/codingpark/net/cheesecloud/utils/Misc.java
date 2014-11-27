@@ -1,5 +1,6 @@
 package codingpark.net.cheesecloud.utils;
 
+import android.os.Environment;
 import android.text.format.DateFormat;
 
 import java.io.File;
@@ -53,5 +54,21 @@ public class Misc {
             }
         }
         return true;
+    }
+
+
+    /**
+     * Get the download files/folders stored root folder.
+     * Such as /sdcard/CheeseCloudDownload
+     * @return The download root folder
+     */
+    public static String getDownloadRootDir() {
+        String prefix_path = Environment.getExternalStorageDirectory().toString();
+        String path = Misc.mergePath(prefix_path, CheeseConstants.DOWNLOAD_ROOT_DIR_NAME);
+        File file = new File(path);
+        if (!file.exists()) {
+            file.mkdir();
+        }
+        return path;
     }
 }

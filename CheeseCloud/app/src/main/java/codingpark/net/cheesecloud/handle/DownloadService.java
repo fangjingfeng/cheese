@@ -406,20 +406,6 @@ public class DownloadService extends Service {
         Log.d(TAG, "Send download state changed broadcast without file: " + event);
     }
 
-    /**
-     * Get the download files/folders stored root folder.
-     * Such as /sdcard/CheeseCloudDownload
-     * @return The download root folder
-     */
-    private String getDownloadRootDir() {
-        String prefix_path = Environment.getExternalStorageDirectory().toString();
-        String path = Misc.mergePath(prefix_path, CheeseConstants.DOWNLOAD_ROOT_DIR_NAME);
-        File file = new File(path);
-        if (!file.exists()) {
-            file.mkdir();
-        }
-        return path;
-    }
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -442,7 +428,7 @@ public class DownloadService extends Service {
                     downloadFileDataSource.updateDownloadFile(file);
                 }
                 // 2. Create local full directory
-                String parent_dir_path = getDownloadRootDir();
+                String parent_dir_path = Misc.getDownloadRootDir();
                 parent_dir_path = Misc.mergePath(parent_dir_path, file.getFilePath().substring(0, file.getFilePath().lastIndexOf(CheeseConstants.SEPARATOR)));
                 String full_path = Misc.mergePath(parent_dir_path, file.getFilePath().substring(file.getFilePath().lastIndexOf(CheeseConstants.SEPARATOR) + 1));
                 Log.d(TAG, "Download File parent directory path: " + parent_dir_path);
