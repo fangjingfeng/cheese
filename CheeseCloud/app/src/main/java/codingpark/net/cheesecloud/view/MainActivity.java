@@ -26,12 +26,14 @@ import codingpark.net.cheesecloud.enumr.CheckedFileInfoResultType;
 import codingpark.net.cheesecloud.enumr.UploadFileState;
 import codingpark.net.cheesecloud.enumr.WsResultType;
 import codingpark.net.cheesecloud.handle.ClientWS;
+import codingpark.net.cheesecloud.handle.DownloadService;
 import codingpark.net.cheesecloud.handle.OnFragmentInteractionListener;
+import codingpark.net.cheesecloud.handle.OnSettingListener;
 import codingpark.net.cheesecloud.handle.UploadService;
 import codingpark.net.cheesecloud.model.UploadFileDataSource;
 
 
-public class MainActivity extends Activity implements OnFragmentInteractionListener {
+public class MainActivity extends Activity implements OnFragmentInteractionListener,OnSettingListener {
 
     private static final String TAG                 = "MainActivity";
     private static String remote_parent_id          = "";
@@ -272,6 +274,20 @@ public class MainActivity extends Activity implements OnFragmentInteractionListe
         Log.d(TAG, "Fragment interaction id:" + id);
     }
 
+    @Override
+    public void logout() {
+        // 1. Stop DownloadService
+        DownloadService.stopUploadService(MainActivity.this);
+        // 2. Stop UploadService
+        UploadService.stopUploadService(MainActivity.this);
+        // 3. Jump to WelcomeActivity
+        Intent intent = new Intent();
+        intent.setClass(MainActivity.this, WelcomeActivity.class);
+        this.startActivity(intent);
+        // 4. Finish self
+        finish();
+    }
+
     /**
      * A OnClickListener to listen top header tab click event,
      * Action:
@@ -336,7 +352,7 @@ public class MainActivity extends Activity implements OnFragmentInteractionListe
                 case 1:
                     return FragmentContact.newInstance(MainActivity.this, "");
                 case 2:
-                    return FragmentSetting.newInstance(MainActivity.this, "");
+                    return FragmentSetting.newInstance("");
                 default:
                     return FragmentHome.newInstance("");
             }

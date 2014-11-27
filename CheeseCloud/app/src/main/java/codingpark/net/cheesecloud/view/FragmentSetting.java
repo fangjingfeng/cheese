@@ -6,17 +6,22 @@ import android.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
 
+import codingpark.net.cheesecloud.AppConfigs;
 import codingpark.net.cheesecloud.R;
 import codingpark.net.cheesecloud.handle.OnFragmentInteractionListener;
+import codingpark.net.cheesecloud.handle.OnSettingListener;
 
 /**
  * A fragment representing a list of Items.
@@ -26,7 +31,7 @@ import codingpark.net.cheesecloud.handle.OnFragmentInteractionListener;
  * interface.
  */
 public class FragmentSetting extends Fragment {
-    public static final String TAG              = "FragmentSetting";
+    public static final String TAG              = FragmentSetting.class.getSimpleName();
     private boolean mHiddenChanged              = false;
     private boolean mThumbnailChanged           = false;
     private boolean mSortChanged                = false;
@@ -38,21 +43,20 @@ public class FragmentSetting extends Fragment {
     private int sort_state                      = 0;
     private Intent is                           = new Intent();
 
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1      = "param1";
-    private static final String ARG_PARAM2      = "param2";
+    // UI element
+    private CheckBox hidden_bx                  = null;
+    private CheckBox thumbnail_bx               = null;
+    private ImageButton sort_bt                 = null;
+    private Button logout_bt                    = null;
 
-    private static Context mContext             = null;
-    private String mParam2                      = null;
+    private Context mContext                = null;
+    private SharedPreferences mPrefs        = null;
 
-    private OnFragmentInteractionListener mListener;
+    private OnSettingListener mListener     = null;
 
-    public static FragmentSetting newInstance(Context context, String param2) {
+    public static FragmentSetting newInstance(String param2) {
         FragmentSetting fragment = new FragmentSetting();
         Bundle args = new Bundle();
-        //args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        mContext = context;
         fragment.setArguments(args);
         return fragment;
     }
@@ -67,11 +71,8 @@ public class FragmentSetting extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        if (getArguments() != null) {
-            //mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+        // Init System object
+        mPrefs = mContext.getSharedPreferences(AppConfigs.PREFS_NAME, Context.MODE_APPEND);
     }
 
     @Override
@@ -84,13 +85,22 @@ public class FragmentSetting extends Fragment {
         thumbnail_state     = true;//i.getExtras().getBoolean("THUMBNAIL");
         sort_state          = 0;//i.getExtras().getInt("SORT");
 
-        final CheckBox hidden_bx        = (CheckBox)v.findViewById(R.id.setting_hidden_box);
-        final CheckBox thumbnail_bx     = (CheckBox)v.findViewById(R.id.setting_thumbnail_box);
-        final ImageButton sort_bt       = (ImageButton)v.findViewById(R.id.settings_sort_button);
-
+        // Init UI elements
+        hidden_bx = (CheckBox)v.findViewById(R.id.setting_hidden_box);
+        thumbnail_bx = (CheckBox)v.findViewById(R.id.setting_thumbnail_box);
+        sort_bt = (ImageButton)v.findViewById(R.id.settings_sort_button);
+        logout_bt = (Button)v.findViewById(R.id.logout_bt);
         hidden_bx.setChecked(hidden_state);
         thumbnail_bx.setChecked(thumbnail_state);
 
+        // Init UI elements handler
+        initHandler();
+
+        return v;
+    }
+
+
+    private void initHandler() {
         hidden_bx.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -149,7 +159,17 @@ public class FragmentSetting extends Fragment {
                 builder.create().show();
             }
         });
-        return v;
+
+        logout_bt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG, "User logout manually!");
+                // Set PREFS_LOGIN false
+                mPrefs.edit().putBoolean(AppConfigs.PREFS_LOGIN, false).apply();
+                // Call MainActivity logout,, start WelcomeActivity, then finish MainActivity
+                mListener.logout();
+            }
+        });
 
         // TODO Store setting to SharedPreferences
         //return super.onCreateView(inflater, container, savedInstanceState);
@@ -160,7 +180,8 @@ public class FragmentSetting extends Fragment {
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         try {
-            mListener = (OnFragmentInteractionListener) activity;
+            mListener = (OnSettingListener) activity;
+            mContext = activity;
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
                 + " must implement OnFragmentInteractionListener");
