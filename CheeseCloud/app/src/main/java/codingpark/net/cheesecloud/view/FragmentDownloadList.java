@@ -213,7 +213,9 @@ public class FragmentDownloadList extends ListFragment {
             String fileName = file.getFilePath();
             fileName = fileName.substring(fileName.lastIndexOf("/")+1);
             holder.fileNameView.setText(fileName);
-            holder.ratioView.setText(file.getChangedSize() + "/" + file.getFileSize());
+            // TODO Resolve server return file size unit is KB
+            long fileSize = file.getFileSize() * 1000;
+            holder.ratioView.setText(file.getChangedSize() + "/" + fileSize);
             holder.rowImage.setImageResource(ThumbnailCreator.getDefThumbnailsByName(file.getFilePath()));
             switch (file.getState()) {
                 case DownloadFileState.NOT_DOWNLOAD:

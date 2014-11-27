@@ -840,7 +840,7 @@ public final class ClientWS {
             // Process return data
             // Fetch operation result
             result = Integer.valueOf(resp.getProperty("UploadFileResult").toString());
-            Log.d(TAG, "UploadFile 100KB result: " + result);
+            Log.d(TAG, "UploadFile 10KB result: " + result);
         } catch (Exception e) {
             e.printStackTrace();
             result = WsResultType.Faild;

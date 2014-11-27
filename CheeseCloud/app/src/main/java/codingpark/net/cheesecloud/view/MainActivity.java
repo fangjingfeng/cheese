@@ -464,10 +464,13 @@ public class MainActivity extends Activity implements OnFragmentInteractionListe
             // 1. create record on server
             // 2. insert record on local table
             else if (file.isFile()){
-                result = ClientWS.getInstance(MainActivity.this).checkedFileInfo_wrapper(uFile);
-                if (result == CheckedFileInfoResultType.RESULT_CHECK_SUCCESS ||
-                        result == CheckedFileInfoResultType.RESULT_QUICK_UPLOAD) {
-                    mDataSource.addUploadFile(uFile);
+                // Just handle exist and size > 0 file
+                if (file.exists() && file.length() > 0) {
+                    result = ClientWS.getInstance(MainActivity.this).checkedFileInfo_wrapper(uFile);
+                    if (result == CheckedFileInfoResultType.RESULT_CHECK_SUCCESS ||
+                            result == CheckedFileInfoResultType.RESULT_QUICK_UPLOAD) {
+                        mDataSource.addUploadFile(uFile);
+                    }
                 }
             }
             return;

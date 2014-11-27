@@ -31,9 +31,9 @@ public class UploadService extends Service {
 
     /**
      * The upload block size in byte unit
-     * Default size 100KB
+     * Default size 10KB
      */
-    public static final int UPLOAD_BLOCK_SIZE               = 100 * CheeseConstants.KB;
+    public static final int UPLOAD_BLOCK_SIZE               = 10 * CheeseConstants.KB;
     /**
      * Upload state changed action
      */
