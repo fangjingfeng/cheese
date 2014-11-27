@@ -3,7 +3,7 @@ package codingpark.net.cheesecloud.enumr;
 
 /**
  * Mark the upload file state.
- * For folder: NOT_UPLOAD/UPLOADED
+ * For folder: Folder item is sync to server when scan process, so needn't store record on local table
  * For file: NOT_UPLOAD/WAIT_UPLOAD/UPLOADING/UPLOADED/PAUSE_UPLOAD
  * @author Ethan Shan
  * @version 1.0

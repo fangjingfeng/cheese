@@ -3,8 +3,8 @@ package codingpark.net.cheesecloud.enumr;
 
 /**
  * Mark the download file state.
- * For folder: NOT_UPLOAD/UPLOADED
- * For file: NOT_UPLOAD/WAIT_UPLOAD/UPLOADING/UPLOADED/PAUSE_UPLOAD
+ * For folder: Folder needn't record on local table
+ * For file: NOT_DOWNLOAD/WAIT_DOWNLOAD/DOWNLOADING/DOWNLOADED/PAUSE_DOWNLOAD
  * @author Ethan Shan
  * @version 1.0
  * @created 06-十一月-2014 16:23:09
