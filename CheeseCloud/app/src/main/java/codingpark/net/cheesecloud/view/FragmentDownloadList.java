@@ -28,6 +28,7 @@ import codingpark.net.cheesecloud.handle.DownloadService;
 import codingpark.net.cheesecloud.handle.OnTransFragmentInteractionListener;
 import codingpark.net.cheesecloud.model.DownloadFileDataSource;
 import codingpark.net.cheesecloud.utils.Misc;
+import codingpark.net.cheesecloud.utils.PlayFileHelper;
 import codingpark.net.cheesecloud.utils.ThumbnailCreator;
 import codingpark.net.cheesecloud.utils.TypeFilter;
 import codingpark.net.cheesecloud.view.dummy.DummyContent;
@@ -59,6 +60,7 @@ public class FragmentDownloadList extends ListFragment {
 
     private boolean thumbnail_flag                  = true;
     private ThumbnailCreator thumbnail              = null;
+    private PlayFileHelper mPlayHelper              = null;
 
     public static FragmentDownloadList newInstance(int number) {
         FragmentDownloadList fragment = new FragmentDownloadList();
@@ -91,6 +93,7 @@ public class FragmentDownloadList extends ListFragment {
             section_number = getArguments().getInt(SECTION_NUMBER);
         }
         thumbnail = new ThumbnailCreator(mContext, 64, 64);
+        mPlayHelper = new PlayFileHelper(mContext);
         mContext = getActivity();
         mAdapter = new DownloadListAdapter(mContext, R.layout.upload_state_item_layout, mAllFileList);
         mDownloadDataSource = new DownloadFileDataSource(mContext);
@@ -162,6 +165,14 @@ public class FragmentDownloadList extends ListFragment {
             // Notify the active callbacks interface (the activity, if the
             // fragment is attached to one) that an item has been selected.
             //mListener.onFragmentInteraction(DummyContent.ITEMS.get(position).id);
+        }
+
+        // TODO Current just handle the downloaded file's click event
+        DownloadFile r_file = mAllFileList.get(position);
+        if (r_file.getState() == DownloadFileState.DOWNLOADED) {
+            String path = Misc.mergePath(Misc.getDownloadRootDir(), r_file.getFilePath());
+            Log.d(TAG, "Try to open downloaded file: " + path);
+            mPlayHelper.playFile(path);
         }
     }
 

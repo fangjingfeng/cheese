@@ -114,4 +114,13 @@
     <string name="input_layout_create">Create</string>
     <string name="input_layout_confirm">Confirm</string>
 
+    <string name="directory">"目录"</string>
+    <string name="equipment">"设备"</string>
+    <string name="video">"视频"</string>
+    <string name="picture">"图片"</string>
+    <string name="music">"音乐"</string>
+    <string name="file">"全部"</string>
+    <string name="open_file">"选择文件的类型"</string>
+    <string name="text">"文档"</string>
+
 </resources>

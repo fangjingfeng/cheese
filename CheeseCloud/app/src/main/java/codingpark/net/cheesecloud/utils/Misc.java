@@ -71,4 +71,9 @@ public class Misc {
         }
         return path;
     }
+
+    public static String getExtesion(String path) {
+        String ext = path.substring(path.lastIndexOf(".") + 1);
+        return ext;
+    }
 }

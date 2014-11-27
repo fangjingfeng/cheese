@@ -108,4 +108,13 @@
     <string name="cfa_make_dir_dialog_def_dirName">新建文件夹</string>
     <string name="cfa_rename_dialog_title">重命名</string>
     <string name="input_layout_confirm">确认</string>
+
+    <string name="directory">directory:</string>
+    <string name="equipment">Device</string>
+    <string name="video">Video</string>
+    <string name="picture">Picture</string>
+    <string name="music">Music</string>
+    <string name="file">File</string>
+    <string name="open_file">Select the type of file</string>
+    <string name="text">Text</string>
 </resources>
