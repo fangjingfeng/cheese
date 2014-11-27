@@ -26,6 +26,7 @@ import codingpark.net.cheesecloud.enumr.DownloadFileState;
 import codingpark.net.cheesecloud.handle.DownloadService;
 import codingpark.net.cheesecloud.handle.OnTransFragmentInteractionListener;
 import codingpark.net.cheesecloud.model.DownloadFileDataSource;
+import codingpark.net.cheesecloud.utils.ThumbnailCreator;
 import codingpark.net.cheesecloud.view.dummy.DummyContent;
 
 /**
@@ -213,6 +214,7 @@ public class FragmentDownloadList extends ListFragment {
             fileName = fileName.substring(fileName.lastIndexOf("/")+1);
             holder.fileNameView.setText(fileName);
             holder.ratioView.setText(file.getChangedSize() + "/" + file.getFileSize());
+            holder.rowImage.setImageResource(ThumbnailCreator.getDefThumbnailsByName(file.getFilePath()));
             switch (file.getState()) {
                 case DownloadFileState.NOT_DOWNLOAD:
                 case DownloadFileState.WAIT_DOWNLOAD:
@@ -233,13 +235,14 @@ public class FragmentDownloadList extends ListFragment {
             return convertView;
         }
 
-        private class ViewHolder {
-            public ImageView rowImage       = null;
-            public TextView fileNameView    = null;
-            public TextView ratioView       = null;
-            public TextView stateView       = null;
-            public CheckBox multiselect_view    = null;
-        }
+    }
+
+    private class ViewHolder {
+        public ImageView rowImage       = null;
+        public TextView fileNameView    = null;
+        public TextView ratioView       = null;
+        public TextView stateView       = null;
+        public CheckBox multiselect_view    = null;
     }
 
     /**
