@@ -1,12 +1,15 @@
 package codingpark.net.cheesecloud.view;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
+import codingpark.net.cheesecloud.AppConfigs;
 import codingpark.net.cheesecloud.R;
 
 
@@ -20,6 +23,7 @@ public class WelcomeActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        SharedPreferences sp = getSharedPreferences(AppConfigs.PREFS_NAME, Context.MODE_APPEND);
 
         // TODO Android 4.1 later valid, 4.1 before need solve by other method
         if(android.os.Build.VERSION.SDK_INT >= 16) {
@@ -57,28 +61,20 @@ public class WelcomeActivity extends Activity {
             public void onClick(View v) {
                 Log.d(TAG, "Welcome login in button clicked!");
                 // TODO Handle login in action
-                /*
-                Log.d(TAG, "*****Test UserLogin******");
-                Thread t = new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        ClientWS.getInstance().test_userLogin();
-                    }
-                });
-                t.start();
-
-                LocalDatabase ldb = new LocalDatabase(WelcomeActivity.this);
-                ldb.getWritableDatabase();
-                ldb.close();
-                Intent intent = new Intent(WelcomeActivity.this, MainActivity.class);
-                WelcomeActivity.this.startActivity(intent);
-                WelcomeActivity.this.finish();
-                */
                 Intent intent = new Intent(WelcomeActivity.this, LoginActivity.class);
                 WelcomeActivity.this.startActivity(intent);
                 WelcomeActivity.this.finish();
             }
         });
+
+        // TODO Judge user is login, False: need enter password again; Ture: auto login in
+        boolean login = sp.getBoolean(AppConfigs.PREFS_LOGIN, false);
+        if (login) {
+            Intent intent = new Intent(WelcomeActivity.this, LoginActivity.class);
+            WelcomeActivity.this.startActivity(intent);
+            WelcomeActivity.this.finish();
+        }
+
     }
 
 }

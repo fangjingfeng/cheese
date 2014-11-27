@@ -108,6 +108,12 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
         mPrefs = getSharedPreferences(AppConfigs.PREFS_NAME, Context.MODE_PRIVATE);
 
         initInfo();
+
+        // TODO Judge user login state, True: auto login; False: wait enter password
+        boolean login = mPrefs.getBoolean(AppConfigs.PREFS_LOGIN, false);
+        if(login) {
+            attemptLogin();
+        }
     }
 
     private void initInfo() {
@@ -387,6 +393,8 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     LoginActivity.this.startActivity(intent);
                     LoginActivity.this.finish();
+                    // TODO Set PREFS_LOGIN to true
+                    mPrefs.edit().putBoolean(AppConfigs.PREFS_LOGIN, true).commit();
                     finish();
                     return;
                 case -1:

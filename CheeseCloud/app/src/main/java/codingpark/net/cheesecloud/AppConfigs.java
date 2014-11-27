@@ -1,8 +1,5 @@
 package codingpark.net.cheesecloud;
 
-import android.content.Context;
-import android.content.SharedPreferences;
-
 /**
  * Created by ethanshan on 14-9-25.
  * Setting preferences of application runtime
@@ -19,16 +16,18 @@ public class AppConfigs {
      * Data type: boolean
      */
     public static final String PREFS_HIDDEN             = "hidden";
-    public static final boolean HIDDEDN_ENABLED         = true;
-    public static final boolean HIDDEN_DISABLED         = false;
 
     /**
      * Set create pictures thumbnails
      * Data type: boolean
      */
     public static final String PREFS_THUMBNAIL          = "thumbnail";
-    public static final boolean THUMBNAIL_ENABLED       = true;
-    public static final boolean THUMBNAIL_DISABLED      = false;
+
+    /**
+     * Tag the user exit manually
+     * Data type: boolean
+     */
+    public static final String PREFS_LOGIN              = "login";
 
     /**
      * Set file list sort mode
