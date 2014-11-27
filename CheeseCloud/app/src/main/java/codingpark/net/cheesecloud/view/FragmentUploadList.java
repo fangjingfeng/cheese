@@ -26,6 +26,7 @@ import codingpark.net.cheesecloud.enumr.UploadFileState;
 import codingpark.net.cheesecloud.handle.OnTransFragmentInteractionListener;
 import codingpark.net.cheesecloud.handle.UploadService;
 import codingpark.net.cheesecloud.model.UploadFileDataSource;
+import codingpark.net.cheesecloud.utils.ThumbnailCreator;
 
 /**
  * A fragment representing a list of uploading/uploaded/upload record
@@ -252,6 +253,7 @@ public class FragmentUploadList extends ListFragment {
             fileName = fileName.substring(fileName.lastIndexOf("/")+1);
             holder.fileNameView.setText(fileName);
             holder.ratioView.setText(file.getChangedSize() + "/" + file.getFileSize());
+            holder.rowImage.setImageResource(ThumbnailCreator.getDefThumbnailsByName(file.getFilePath()));
             switch (file.getState()) {
                 case UploadFileState.NOT_UPLOAD:
                 case UploadFileState.WAIT_UPLOAD:
@@ -272,13 +274,14 @@ public class FragmentUploadList extends ListFragment {
             return convertView;
         }
 
-        private class ViewHolder {
-            public ImageView rowImage       = null;
-            public TextView fileNameView    = null;
-            public TextView ratioView       = null;
-            public TextView stateView       = null;
-            public CheckBox multiselect_view    = null;
-        }
+    }
+
+    private class ViewHolder {
+        public ImageView rowImage       = null;
+        public TextView fileNameView    = null;
+        public TextView ratioView       = null;
+        public TextView stateView       = null;
+        public CheckBox multiselect_view    = null;
     }
 
 }
