@@ -72,7 +72,7 @@ public class FragmentSetting extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // Init System object
-        mPrefs = mContext.getSharedPreferences(AppConfigs.PREFS_NAME, Context.MODE_APPEND);
+        mPrefs = mContext.getSharedPreferences(AppConfigs.PREFS_NAME, Context.MODE_PRIVATE);
     }
 
     @Override

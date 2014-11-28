@@ -23,7 +23,7 @@ public class WelcomeActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        SharedPreferences sp = getSharedPreferences(AppConfigs.PREFS_NAME, Context.MODE_APPEND);
+        SharedPreferences sp = getSharedPreferences(AppConfigs.PREFS_NAME, Context.MODE_PRIVATE);
 
         // TODO Android 4.1 later valid, 4.1 before need solve by other method
         if(android.os.Build.VERSION.SDK_INT >= 16) {
