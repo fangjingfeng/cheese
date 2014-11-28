@@ -424,7 +424,7 @@ public class FragmentSelectUploadFiles extends ListFragment implements OnKeyDown
          * Get view on TreeView mode
          * @param position
          *      Current view position in the list view
-         * @param convertView
+         * @param convertView The item view object
          * @param parent
          * @return
          */
@@ -476,7 +476,7 @@ public class FragmentSelectUploadFiles extends ListFragment implements OnKeyDown
             else
                 holder.mSelect.setChecked(false);
 
-            if(file != null && file.isFile()) {
+            if(file.isFile()) {
                 String ext = file.toString();
                 String sub_ext = ext.substring(ext.lastIndexOf(".") + 1);
 
@@ -499,7 +499,7 @@ public class FragmentSelectUploadFiles extends ListFragment implements OnKeyDown
                     }
                 }
 
-            } else if (file != null && file.isDirectory()) {
+            } else if (file.isDirectory()) {
                 holder.icon.setImageResource(R.drawable.folder);
             } else{
                 holder.icon.setImageResource(R.drawable.folder);
