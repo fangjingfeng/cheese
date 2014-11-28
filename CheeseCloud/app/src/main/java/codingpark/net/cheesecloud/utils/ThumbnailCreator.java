@@ -14,6 +14,9 @@ import android.graphics.Matrix;
 import codingpark.net.cheesecloud.R;
 import codingpark.net.cheesecloud.model.MessageCache;
 
+/**
+ * The helper to create thumbnail from local image file
+ */
 public class ThumbnailCreator {
     private int width;
     private int height;

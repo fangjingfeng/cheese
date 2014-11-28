@@ -343,13 +343,6 @@ public class FragmentSelectUploadFiles extends ListFragment implements OnKeyDown
         }
     }
 
-    /**
-     * Interface definition for a callback to be invoked when user
-     * changed item check state
-     */
-    public interface SelectedChangedListener {
-        public void changed(ArrayList<String> selectedPathList);
-    }
 
     /**
      * File/Directory list item view encapsulate
@@ -487,21 +480,12 @@ public class FragmentSelectUploadFiles extends ListFragment implements OnKeyDown
                 String ext = file.toString();
                 String sub_ext = ext.substring(ext.lastIndexOf(".") + 1);
 
-    			/* This series of else if statements will determine which
-    			 * icon is displayed
-    			 */
-                if (TypeFilter.getInstance().isPdfFile(sub_ext)) {
-                    holder.icon.setImageResource(R.drawable.pdf);
+                holder.icon.setImageResource(ThumbnailCreator.getDefThumbnailsByName(file.toString()));
+                if (TypeFilter.getInstance().isPictureFile(sub_ext)) {
 
-                } else if (TypeFilter.getInstance().isMusicFile(sub_ext)) {
-
-                    holder.icon.setImageResource(R.drawable.music);
-
-                } else if (TypeFilter.getInstance().isPictureFile(sub_ext)) {
-
-                    if(thumbnail_flag && file.length() != 0) {
+                    if (thumbnail_flag && file.length() != 0) {
                         Bitmap thumb = thumbnail.hasBitmapCached(file.getAbsolutePath());
-                        if(thumb == null) {
+                        if (thumb == null) {
                             holder.icon.setImageResource(R.drawable.image);
                             thumbnail.setBitmapToImageView(file.getAbsolutePath(),
                                     holder.icon);
@@ -513,51 +497,11 @@ public class FragmentSelectUploadFiles extends ListFragment implements OnKeyDown
                     } else {
                         holder.icon.setImageResource(R.drawable.image);
                     }
-
-                } else if (TypeFilter.getInstance().isZipFile(sub_ext) ||
-                        TypeFilter.getInstance().isGZipFile(sub_ext)) {
-
-                    holder.icon.setImageResource(R.drawable.zip);
-
-                } else if(TypeFilter.getInstance().isMovieFile(sub_ext)) {
-
-                    holder.icon.setImageResource(R.drawable.movies);
-
-                } else if(TypeFilter.getInstance().isWordFile(sub_ext)) {
-
-                    holder.icon.setImageResource(R.drawable.word);
-
-                } else if(TypeFilter.getInstance().isExcelFile(sub_ext)) {
-
-                    holder.icon.setImageResource(R.drawable.excel);
-
-                } else if(TypeFilter.getInstance().isPptFile(sub_ext)) {
-
-                    holder.icon.setImageResource(R.drawable.ppt);
-
-                } else if(TypeFilter.getInstance().isHtml32File(sub_ext)) {
-                    holder.icon.setImageResource(R.drawable.html32);
-
-                } else if(TypeFilter.getInstance().isXml32File(sub_ext)) {
-                    holder.icon.setImageResource(R.drawable.xml32);
-
-                } else if(TypeFilter.getInstance().isConfig32File(sub_ext)) {
-                    holder.icon.setImageResource(R.drawable.config32);
-
-                } else if(TypeFilter.getInstance().isApkFile(sub_ext)) {
-                    holder.icon.setImageResource(R.drawable.appicon);
-
-                } else if(TypeFilter.getInstance().isJarFile(sub_ext)) {
-                    holder.icon.setImageResource(R.drawable.jar32);
-
-                } else {
-                    holder.icon.setImageResource(R.drawable.text);
                 }
 
             } else if (file != null && file.isDirectory()) {
                 holder.icon.setImageResource(R.drawable.folder);
-            }
-            else{
+            } else{
                 holder.icon.setImageResource(R.drawable.folder);
             }
 
