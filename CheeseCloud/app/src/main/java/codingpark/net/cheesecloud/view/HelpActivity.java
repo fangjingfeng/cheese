@@ -19,7 +19,9 @@ import codingpark.net.cheesecloud.R;
  * send email to the app developer and open company home page functions.
  */
 public class HelpActivity extends Activity implements OnClickListener {
+    // The app developer emails array
     private static final String[] EMAIL = {"shan0xiao0xi@163.com"};
+    // Company web home page URL
     private static final String WEB = "http://codingpark.net/blog";
 
     @Override

@@ -49,7 +49,6 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
 
     private static final String TAG = LoginActivity.class.getSimpleName();
 
-
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
      */
@@ -60,9 +59,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
     private EditText mPasswordView              = null;
     private EditText mWebUrlView                = null;
     private View mProgressView                  = null;
-    private View mEmailLoginFormView            = null;
     private View mLoginFormView                 = null;
-
 
     private UserDataSource mDataSource          = null;
     private SharedPreferences mPrefs            = null;
@@ -100,7 +97,6 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
-        mEmailLoginFormView = findViewById(R.id.email_login_form);
 
         // Initial data source
         mDataSource = new UserDataSource(this);
@@ -116,9 +112,13 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
         }
     }
 
+    /**
+     * Fill the UI control with the data from local storage(Database/SharedPreferences)
+     */
     private void initInfo() {
         Log.d(TAG, "initInfo");
         String latestUser = mPrefs.getString(AppConfigs.USERNAME, "");
+        // If have login before, recovery user info from storage
         if (!latestUser.isEmpty()) {
             Log.d(TAG, "latestUser: " + latestUser);
             User user = mDataSource.getUserByUsername(latestUser);

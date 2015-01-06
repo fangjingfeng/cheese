@@ -38,14 +38,6 @@ public class MainActivity extends Activity implements OnFragmentInteractionListe
     private static final String TAG                 = "MainActivity";
     private static String remote_parent_id          = "";
 
-
-    // Application preferences key
-    public static final String PREFS_NAME           = "ManagerPrefsFile";	//user preference file name
-    public static final String PREFS_HIDDEN         = "hidden";
-    public static final String PREFS_COLOR          = "color";
-    public static final String PREFS_THUMBNAIL      = "thumbnail";
-    public static final String PREFS_SORT           = "sort";
-
     // Bottom tab button
     private Button upload_bt            = null;
     private Button copy_bt              = null;
@@ -150,28 +142,6 @@ public class MainActivity extends Activity implements OnFragmentInteractionListe
             Log.d(TAG, "User selected remote parent id: " + remote_parent_id);
 
             new ScanUploadFilesTask(selectFiles).execute();
-            /*
-            Log.d(TAG, "*****Test CheckedFileInfo and UploadFile******");
-            Thread t = new Thread(new Runnable() {
-
-                @Override
-                public void run() {
-                    if (selectFiles.size() <= 0)
-                        return;
-                    File file = new File(selectFiles.get(0));
-                    if (file.exists()) {
-                        if (file.isFile()) {
-                            ClientWS.getInstance(MainActivity.this).test_checkedFileInfo(selectFiles.get(0));
-                            ClientWS.getInstance(MainActivity.this).test_uploadFile(selectFiles.get(0));
-                        } else if (file.isDirectory()) {
-                            ClientWS.getInstance(MainActivity.this).test_createFolder(selectFiles.get(0));
-                        }
-
-                    }
-                }
-            });
-            t.start();
-            */
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
@@ -437,7 +407,7 @@ public class MainActivity extends Activity implements OnFragmentInteractionListe
             long l_id = -1;     // insert to local DB return value
             // If is folder
             // 1. create record on server
-            // 2. insert record on local table
+            // 2. insert record on local database
             // 3. scan sub files and folders
             if (file.isDirectory()) {
                 result = ClientWS.getInstance(MainActivity.this).createFolderUpload_wrapper(uFile);
