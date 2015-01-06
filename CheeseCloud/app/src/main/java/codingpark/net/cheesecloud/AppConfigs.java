@@ -61,7 +61,13 @@ public class AppConfigs {
      */
     public static final String SERVER_ADDRESS           = "server_address";
 
+    /**
+     * Current login user id(Local database)
+     */
     public static long current_local_user_id            = -1;
 
+    /**
+     * Current login user guid(Remote server database)
+     */
     public static String current_remote_user_id         = "";
 }

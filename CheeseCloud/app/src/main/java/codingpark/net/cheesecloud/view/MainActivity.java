@@ -249,11 +249,6 @@ public class MainActivity extends Activity implements OnFragmentInteractionListe
 
             @Override
             public void onClick(View v) {
-                /*
-                Intent i = new Intent(MainActivity.this, UploadSelectActivity.class);
-                MainActivity.this.startActivityForResult(i, 0);
-                */
-                // TODO Replace UploadSelectActivity to SelectUploadActivity
                 Intent i = new Intent(MainActivity.this, SelectUploadActivity.class);
                 MainActivity.this.startActivityForResult(i, 0);
             }

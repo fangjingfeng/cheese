@@ -569,7 +569,6 @@ public class FragmentSelectUploadFiles extends ListFragment implements OnKeyDown
             }
         }
 
-
     }
 
 }

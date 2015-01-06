@@ -19,8 +19,12 @@ import codingpark.net.cheesecloud.entity.User;
 public class UserDataSource {
     private Context mContext            = null;
     private SQLiteDatabase database     = null;
-    private SQLiteOpenHelper dbHelper   = null;
+        private SQLiteOpenHelper dbHelper   = null;
 
+    /**
+     * The constructor
+     * @param context The Application context
+     */
     public UserDataSource(Context context) {
         mContext = context;
         dbHelper = new LocalDatabase(mContext);

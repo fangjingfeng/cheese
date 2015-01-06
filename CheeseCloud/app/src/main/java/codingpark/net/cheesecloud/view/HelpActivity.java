@@ -14,6 +14,10 @@ import android.widget.Toast;
 
 import codingpark.net.cheesecloud.R;
 
+/**
+ * HelpActivity used to show application version and the company information. More, support
+ * send email to the app developer and open company home page functions.
+ */
 public class HelpActivity extends Activity implements OnClickListener {
     private static final String[] EMAIL = {"shan0xiao0xi@163.com"};
     private static final String WEB = "http://codingpark.net/blog";
@@ -47,8 +51,8 @@ public class HelpActivity extends Activity implements OnClickListener {
                 i.setType("message/rfc822");
                 i.putExtra(Intent.EXTRA_EMAIL, EMAIL);
                 try {
-                    startActivity(Intent.createChooser(i, "Email using..."));
-
+                    String title = getResources().getString(R.string.send_email_chooser_title);
+                    startActivity(Intent.createChooser(i, title));
                 } catch(ActivityNotFoundException e) {
                     Toast.makeText(this, "Sorry, could not start the email", Toast.LENGTH_SHORT).show();
                 }

@@ -75,6 +75,7 @@
     <string name="product_info">"Cheese 资源管理系统移动客户端,功能稳定,易用, 是您管理多媒体资源的好帮手.\n\n"</string>
     <string name="version_info">版本: 1.0 beta</string>
     <string name="Email_Developer">"电子邮件"</string>
+    <string name="send_email_chooser_title">发送邮件 ...</string>
     <string name="Website">"官网"</string>
     <string name="action_settings">设置</string>
     <string name="upload_activity_bottom_bar_default_item_string">磁盘</string>

@@ -79,6 +79,7 @@
     <string name="product_info">Cheese Cloud description</string>
     <string name="version_info">Version: 1.0 beta</string>
     <string name="Email_Developer">Email Developer</string>
+    <string name="send_email_chooser_title">Email using ...</string>
     <string name="Website">Website</string>
     <string name="title_activity_select_path">SelectPathActivity</string>
     <string name="action_settings">Settings</string>

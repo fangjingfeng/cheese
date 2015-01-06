@@ -12,12 +12,17 @@ import android.widget.Button;
 import codingpark.net.cheesecloud.AppConfigs;
 import codingpark.net.cheesecloud.R;
 
-
+/**
+ * Home page, show welcome information and provide login and
+ * about action entrance.
+ * Login entrance: Start LoginActivity
+ * About entrance: Start HelpActivity
+ */
 public class WelcomeActivity extends Activity {
 
     private static final String TAG = "WelcomeActivity";
 
-    private Button about_bt = null;
+    private Button about_bt         = null;
     private Button loginin_bt       = null;
 
     @Override
@@ -25,10 +30,11 @@ public class WelcomeActivity extends Activity {
         super.onCreate(savedInstanceState);
         SharedPreferences sp = getSharedPreferences(AppConfigs.PREFS_NAME, Context.MODE_PRIVATE);
 
+        // Hide action bar and status bar
         // TODO Android 4.1 later valid, 4.1 before need solve by other method
-        if(android.os.Build.VERSION.SDK_INT >= 16) {
+        //if(android.os.Build.VERSION.SDK_INT >= 16) {
             // Welcome page don't need status bar and action bar
-            View decorView = getWindow().getDecorView();
+            //View decorView = getWindow().getDecorView();
             // Hide the status bar.
             //int uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN;
             //decorView.setSystemUiVisibility(uiOptions);
@@ -36,7 +42,7 @@ public class WelcomeActivity extends Activity {
             // status bar is hidden, so hide that too if necessary.
             //ActionBar actionBar = getActionBar();
             //actionBar.hide();
-        }
+        //}
 
         setContentView(R.layout.activity_welcome);
 
@@ -60,14 +66,14 @@ public class WelcomeActivity extends Activity {
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "Welcome login in button clicked!");
-                // TODO Handle login in action
+                // Start LoginActivity to handle login process
                 Intent intent = new Intent(WelcomeActivity.this, LoginActivity.class);
                 WelcomeActivity.this.startActivity(intent);
                 WelcomeActivity.this.finish();
             }
         });
 
-        // TODO Judge user is login, False: need enter password again; Ture: auto login in
+        // Judge user is login, False: need enter password again; True: auto login in
         boolean login = sp.getBoolean(AppConfigs.PREFS_LOGIN, false);
         if (login) {
             Intent intent = new Intent(WelcomeActivity.this, LoginActivity.class);

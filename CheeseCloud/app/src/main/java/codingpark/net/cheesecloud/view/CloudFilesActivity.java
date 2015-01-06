@@ -31,7 +31,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Stack;
 
@@ -49,7 +48,6 @@ import codingpark.net.cheesecloud.handle.DownloadService;
 import codingpark.net.cheesecloud.handle.PullFileListTask;
 import codingpark.net.cheesecloud.handle.RenameFileTask;
 import codingpark.net.cheesecloud.model.DownloadFileDataSource;
-import codingpark.net.cheesecloud.model.UploadFileDataSource;
 import codingpark.net.cheesecloud.utils.ThumbnailCreator;
 
 /**
@@ -179,6 +177,9 @@ public class CloudFilesActivity extends ListActivity implements View.OnClickList
                 Toast.makeText(this, "Create folder", Toast.LENGTH_SHORT).show();
                 mkdir();
                 return true;
+            case R.id.ab_menu_upload:
+                Toast.makeText(this, "Upload", Toast.LENGTH_SHORT).show();
+                upload();
             default:
                 break;
         }
@@ -328,6 +329,12 @@ public class CloudFilesActivity extends ListActivity implements View.OnClickList
             }
         });
         dialog.show();
+    }
+
+    private void upload() {
+        Intent intent = new Intent();
+        intent.setClass(this, SelectUploadActivity.class);
+        startActivityForResult(intent, 0);
     }
 
     private void delFile() {
@@ -613,6 +620,7 @@ public class CloudFilesActivity extends ListActivity implements View.OnClickList
                     mode.finish(); // Action picked, so close the CAB
                     editFile();
                     break;
+                //case R.id.cab_
                 case R.id.cab_menu_copy:
                     Toast.makeText(CloudFilesActivity.this, "Copy action", Toast.LENGTH_SHORT).show();
                     mode.finish(); // Action picked, so close the CAB
