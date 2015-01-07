@@ -112,7 +112,7 @@ public class TransferStateActivity extends Activity implements ActionBar.TabList
                             .setTabListener(this));
         }
         initUI();
-        initHanlder();
+        initHandler();
     }
 
     @Override
@@ -173,11 +173,10 @@ public class TransferStateActivity extends Activity implements ActionBar.TabList
         trans_clear_all_bt = (Button)findViewById(R.id.trans_clear_rec_bt);
     }
 
-    private void initHanlder() {
+    private void initHandler() {
         trans_control_bt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO handle download
                 Log.d(TAG, "start/pause all");
                 int curr_positive_state = Integer.valueOf(trans_control_bt.getTag().toString());
                 switch (curr_positive_state) {
@@ -216,7 +215,6 @@ public class TransferStateActivity extends Activity implements ActionBar.TabList
         trans_clear_all_bt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO clear all uploaded record from local table
                 Log.d(TAG, "Clear all record");
                 if (mActivePagePos == DOWNLOAD_LIST_PAGE_ID) {
                     DownloadService.startActionClearAll(TransferStateActivity.this);

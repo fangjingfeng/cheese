@@ -204,10 +204,6 @@ public class PlayFileHelper {
                 try {
                     mContext.startActivity(mIntent);
                 } catch (ActivityNotFoundException e) {
-                    /*
-                    DisplayToast(mContext.getResources().getString(
-                            R.string.not_app_to_open_the_file));
-                            */
                     DisplayToast("无法打开文件");
                 }
             }

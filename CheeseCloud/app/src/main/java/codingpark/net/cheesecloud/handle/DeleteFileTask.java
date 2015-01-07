@@ -11,7 +11,6 @@ import codingpark.net.cheesecloud.enumr.CloudFileType;
 import codingpark.net.cheesecloud.enumr.WsResultType;
 import codingpark.net.cheesecloud.wsi.WsFolder;
 
-// TODO Comment this class
 /**
  * This class used to delete files and folders on remote server and refresh UI(ListView +
  * Bottom Bar).

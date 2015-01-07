@@ -359,7 +359,6 @@ public class FragmentSelectUploadImage extends ListFragment implements LoaderMan
      * bottom of the view.
      */
     public void clearMultiSelect() {
-        // TODO Handle multiple select
 
         if(mSelectedPositions != null && !mSelectedPositions.isEmpty())
             mSelectedPositions.clear();

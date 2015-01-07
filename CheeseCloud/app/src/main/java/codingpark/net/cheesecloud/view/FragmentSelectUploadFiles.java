@@ -44,15 +44,6 @@ import codingpark.net.cheesecloud.utils.TypeFilter;
 public class FragmentSelectUploadFiles extends ListFragment implements OnKeyDownListener {
     public static final String TAG      = FragmentSelectUploadFiles.class.getSimpleName();
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
     private OnSelectUploadChangedListener mListener     = null;
     private Context mContext                            = null;
     private FileManager mFileMgr                        = null;
@@ -73,13 +64,8 @@ public class FragmentSelectUploadFiles extends ListFragment implements OnKeyDown
     //private SelectedChangedListener mSelectedChangedListener    = null;
     private SharedPreferences mSettings                         = null;
 
-    // TODO: Rename and change types of parameters
     public static FragmentSelectUploadFiles newInstance(String param1, String param2) {
         FragmentSelectUploadFiles fragment = new FragmentSelectUploadFiles();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
         return fragment;
     }
 
@@ -94,10 +80,6 @@ public class FragmentSelectUploadFiles extends ListFragment implements OnKeyDown
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.d(TAG, "onCreate");
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
 
         mSettings           = mContext.getSharedPreferences(AppConfigs.PREFS_NAME, 0);
         boolean hide        = mSettings.getBoolean(AppConfigs.PREFS_HIDDEN, false);
@@ -402,7 +384,6 @@ public class FragmentSelectUploadFiles extends ListFragment implements OnKeyDown
          * bottom of the view.
          */
         public void clearMultiSelect() {
-            // TODO Handle multiple select
 
             if(mSelectedPositions != null && !mSelectedPositions.isEmpty())
                 mSelectedPositions.clear();

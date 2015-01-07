@@ -357,7 +357,6 @@ public class CloudFilesActivity extends ListActivity implements View.OnClickList
         rename_icon.setImageResource(R.drawable.folder);
         final EditText rename_input = (EditText) dialog
                 .findViewById(R.id.input_inputText);
-        // TODO Change the default text to current selected file name
         rename_input.setText(R.string.cfa_make_dir_dialog_def_dirName);
         final CloudFile file;
         if (mSelectedFileList.size() > 0) {
@@ -376,7 +375,6 @@ public class CloudFilesActivity extends ListActivity implements View.OnClickList
                     new RenameFileTask(CloudFilesActivity.this, null, file, CloudFilesActivity.this).execute();
                     setLoadingViewVisible(true);
                 }
-                // TODO According name call Web Service create folder API to create target folder
                 dialog.dismiss();
             }
         });

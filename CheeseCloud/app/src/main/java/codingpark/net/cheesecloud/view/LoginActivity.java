@@ -105,7 +105,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
 
         initInfo();
 
-        // TODO Judge user login state, True: auto login; False: wait enter password
+        // Judge user login state, True: auto login; False: wait enter password
         boolean login = mPrefs.getBoolean(AppConfigs.PREFS_LOGIN, false);
         if(login) {
             attemptLogin();
@@ -224,17 +224,14 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
     }
 
     private boolean isEmailValid(String email) {
-        //TODO: Replace this with email check logic
         return email.contains("@");
     }
 
     private boolean isPasswordValid(String password) {
-        //TODO: Replace this with password check logic
         return password.length() > 2;
     }
 
     private boolean isWebUrlValid(String weburl) {
-        //TODO: Replace this with password check logic
         return weburl.length() > 7;
     }
 
@@ -393,22 +390,21 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     LoginActivity.this.startActivity(intent);
                     LoginActivity.this.finish();
-                    // TODO Set PREFS_LOGIN to true
-                    mPrefs.edit().putBoolean(AppConfigs.PREFS_LOGIN, true).commit();
+                    mPrefs.edit().putBoolean(AppConfigs.PREFS_LOGIN, true).apply();
                     finish();
                     return;
                 case -1:
-                    Toast.makeText(LoginActivity.this, "服务器无法访问", Toast.LENGTH_SHORT);
+                    Toast.makeText(LoginActivity.this, "服务器无法访问", Toast.LENGTH_SHORT).show();
                     mWebUrlView.setError(getString(R.string.error_invalid_weburl));
                     mWebUrlView.requestFocus();
                     return;
                 case LoginResultType.UserIsNotFind:
-                    Toast.makeText(LoginActivity.this, "用户名错误", Toast.LENGTH_SHORT);
+                    Toast.makeText(LoginActivity.this, "用户名错误", Toast.LENGTH_SHORT).show();
                     mEmailView.setError(getString(R.string.error_invalid_email));
                     mEmailView.requestFocus();
                     return;
                 case LoginResultType.PasswordIsWrong:
-                    Toast.makeText(LoginActivity.this, "密码错误", Toast.LENGTH_SHORT);
+                    Toast.makeText(LoginActivity.this, "密码错误", Toast.LENGTH_SHORT).show();
                     mPasswordView.setError(getString(R.string.error_incorrect_password));
                     mPasswordView.requestFocus();
                     return;
@@ -417,7 +413,6 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
                     mWebUrlView.setError(getString(R.string.error_invalid_weburl));
                     mWebUrlView.requestFocus();
                     return;
-
             }
         }
 

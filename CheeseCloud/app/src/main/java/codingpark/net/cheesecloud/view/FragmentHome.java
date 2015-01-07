@@ -31,11 +31,8 @@ import codingpark.net.cheesecloud.model.HomeListAdapter;
  */
 public class FragmentHome extends ListFragment implements PullFileListTask.OnPullDataReadyListener {
     private static final String TAG         = "FragmentHome";
-    // TODO: Rename parameter arguments, choose names that match
-    private static final String ARG_PARAM2 = "param2";
 
     private static Context mContext                 = null;
-    private String mParam2;
 
     public static final String TAB_HOME_ITEM_NEWS               = "news";
     public static final String TAB_HOME_ITEM_CLOUD_DISK         = "cloud_disk";
@@ -62,9 +59,6 @@ public class FragmentHome extends ListFragment implements PullFileListTask.OnPul
 
     public static FragmentHome newInstance(String param2) {
         FragmentHome fragment = new FragmentHome();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
         return fragment;
     }
 
@@ -80,9 +74,6 @@ public class FragmentHome extends ListFragment implements PullFileListTask.OnPul
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (getArguments() != null) {
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
         mAdapter = new HomeListAdapter(mContext, R.layout.home_item_layout, mDiskList);
         setListAdapter(mAdapter);
     }

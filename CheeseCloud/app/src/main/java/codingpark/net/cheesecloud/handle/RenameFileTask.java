@@ -74,7 +74,6 @@ public class RenameFileTask extends AsyncTask<Void,Void,Integer> {
                     mListener.onRenameFileCompleted(result);
                 return;
             default:
-                // TODO Refresh ListView
                 if (mAdapter != null)
                     mAdapter.notifyDataSetChanged();
                 if (mListener != null)

@@ -22,13 +22,6 @@ public class FragmentContact extends ListFragment {
 
     private static Context mContext             = null;
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam2;
-
     public static final String TAB_CONTACT_ITEM_OLD_FRIENDS                 = "old_friends";
     public static final String TAB_CONTACT_ITEM_NEW_FRIENDS                 = "new_friends";
     public static final String TAB_CONTACT_ITEM_GROUP_CHAT                  = "group_chat";
@@ -45,9 +38,6 @@ public class FragmentContact extends ListFragment {
 
     public static FragmentContact newInstance(Context context, String param2) {
         FragmentContact fragment = new FragmentContact();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
 
         mContext = context;
         return fragment;
@@ -63,10 +53,6 @@ public class FragmentContact extends ListFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        if (getArguments() != null) {
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
 
         setListAdapter(new ContactListAdapter(mContext, R.layout.home_item_layout, values));
     }

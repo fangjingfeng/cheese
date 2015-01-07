@@ -11,7 +11,6 @@ package codingpark.net.cheesecloud.enumr;
  */
 public class DownloadFileState {
 
-    // TODO Analysis the state meaning
     /**
      * Just add the record to local database, DownloadService not run on it ever
      * Current, the download file never in this state.

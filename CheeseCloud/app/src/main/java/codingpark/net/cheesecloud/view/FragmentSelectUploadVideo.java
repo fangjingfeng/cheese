@@ -368,7 +368,6 @@ public class FragmentSelectUploadVideo extends ListFragment implements OnKeyDown
      * bottom of the view.
      */
     public void clearMultiSelect() {
-        // TODO Handle multiple select
 
         if(mSelectedPositions != null && !mSelectedPositions.isEmpty())
             mSelectedPositions.clear();

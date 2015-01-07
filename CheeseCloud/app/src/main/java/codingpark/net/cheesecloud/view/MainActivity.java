@@ -33,21 +33,20 @@ import codingpark.net.cheesecloud.handle.UploadService;
 import codingpark.net.cheesecloud.model.UploadFileDataSource;
 
 
+/**
+ * MainActivity is first show when user login success.
+ */
 public class MainActivity extends Activity implements OnFragmentInteractionListener,OnSettingListener {
 
     private static final String TAG                 = "MainActivity";
-    private static String remote_parent_id          = "";
 
+
+    // UI
     // Bottom tab button
     private Button upload_bt            = null;
     private Button copy_bt              = null;
     private Button paste_bt             = null;
     private Button more_bt              = null;
-
-    private boolean doubleBackToExitPressedOnce = false;
-    private static final int INTERNAL_DOUBLE_CLICK_EXIT_TIME    = 2000;
-
-
     // Tab activity headers
     /**
      * Tab 0    -->     home
@@ -57,6 +56,20 @@ public class MainActivity extends Activity implements OnFragmentInteractionListe
     private ImageView tab_home_iv       = null;
     private ImageView tab_contact_iv    = null;
     private ImageView tab_setting_iv    = null;
+
+    /**
+     * The go back button click state tag
+     */
+    private boolean doubleBackToExitPressedOnce                 = false;
+    /**
+     * The internal time of double click(Double click exit mechanism)
+     */
+    private static final int INTERNAL_DOUBLE_CLICK_EXIT_TIME    = 2000;
+
+    /**
+     * The remote folder id(Upload folder)
+     */
+    private static String remote_parent_id                      = "";
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -82,11 +95,11 @@ public class MainActivity extends Activity implements OnFragmentInteractionListe
             requestWindowFeature(Window.FEATURE_NO_TITLE);
         } else {
             ActionBar actionBar = getActionBar();
-            actionBar.hide();
+            if (actionBar != null)
+                actionBar.hide();
         }
 
         setContentView(R.layout.activity_main);
-
 
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
@@ -112,7 +125,6 @@ public class MainActivity extends Activity implements OnFragmentInteractionListe
         Toast.makeText(this, getString(R.string.double_click_exit_hint_msg), Toast.LENGTH_SHORT).show();
 
         new Handler().postDelayed(new Runnable() {
-
             @Override
             public void run() {
                 doubleBackToExitPressedOnce=false;
@@ -146,6 +158,9 @@ public class MainActivity extends Activity implements OnFragmentInteractionListe
         super.onActivityResult(requestCode, resultCode, data);
     }
 
+    /**
+     * Initial UI elements data
+     */
     private void initUI() {
         tab_home_iv = (ImageView)findViewById(R.id.tab_home);
         tab_contact_iv = (ImageView)findViewById(R.id.tab_contact);
