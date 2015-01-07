@@ -524,7 +524,6 @@ public class FragmentSelectUploadVideo extends ListFragment implements OnKeyDown
                 holder.videoTakeDateView = (TextView)convertView.findViewById(R.id.video_take_date_view);
                 holder.videoCheckbox = (CheckBox)convertView.findViewById(R.id.video_checkbox);
                 holder.videoCheckbox.setOnCheckedChangeListener(mCheckedListener);
-                holder.videoCheckbox.setTag(String.valueOf(position));
                 convertView.setTag(holder);
             } else {
                 holder = (VideoItemViewHolder)convertView.getTag();
@@ -547,6 +546,7 @@ public class FragmentSelectUploadVideo extends ListFragment implements OnKeyDown
             path = path.substring(path.lastIndexOf("/") + 1, path.length());
             holder.videoNameView.setText(path);
             holder.videoTakeDateView.setText(item.date_taken + "");
+            holder.videoCheckbox.setTag(String.valueOf(position));
 
             if (mSelectedPositions != null && mSelectedPositions.contains(position))
                 holder.videoCheckbox.setChecked(true);

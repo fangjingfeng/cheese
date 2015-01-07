@@ -44,13 +44,6 @@ import codingpark.net.cheesecloud.handle.OnSelectUploadChangedListener;
  */
 public class FragmentSelectUploadImage extends ListFragment implements LoaderManager.LoaderCallbacks<Cursor>, OnKeyDownListener {
 
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    private String mParam1;
-    private String mParam2;
-
     private OnSelectUploadChangedListener mListener;
 
     private Context mContext = null;
@@ -128,10 +121,6 @@ public class FragmentSelectUploadImage extends ListFragment implements LoaderMan
 
     public static FragmentSelectUploadImage newInstance(String param1, String param2) {
         FragmentSelectUploadImage fragment = new FragmentSelectUploadImage();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
         return fragment;
     }
 
@@ -145,11 +134,6 @@ public class FragmentSelectUploadImage extends ListFragment implements LoaderMan
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
 
         cr = mContext.getContentResolver();
         mInflater = (LayoutInflater)mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -230,6 +214,7 @@ public class FragmentSelectUploadImage extends ListFragment implements LoaderMan
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
+        Log.d(TAG, "onListItemClick: position=" + position);
         if (mListMode == CATEGORY_LIST_MODE) {
             setLoadingViewVisible(true);
             new LoadThumbTask(position).execute();
@@ -492,7 +477,6 @@ public class FragmentSelectUploadImage extends ListFragment implements LoaderMan
                 holder.imageTakeDateView = (TextView)convertView.findViewById(R.id.image_take_date_view);
                 holder.imageCheckbox = (CheckBox)convertView.findViewById(R.id.image_checkbox);
                 holder.imageCheckbox.setOnCheckedChangeListener(mCheckedListener);
-                holder.imageCheckbox.setTag(String.valueOf(position));
                 convertView.setTag(holder);
             } else {
                 holder = (ImageItemViewHolder)convertView.getTag();
@@ -507,6 +491,7 @@ public class FragmentSelectUploadImage extends ListFragment implements LoaderMan
             path = path.substring(path.lastIndexOf("/") + 1, path.length());
             holder.imageNameView.setText(path);
             holder.imageTakeDateView.setText(item.date_taken + "");
+            holder.imageCheckbox.setTag(String.valueOf(position));
 
             if (mSelectedPositions != null && mSelectedPositions.contains(position))
                 holder.imageCheckbox.setChecked(true);
