@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+
+    <android.support.v4.view.ViewPager xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/pager"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        tools:context="codingpark.net.cheesecloud.view.TransferStateActivity"
+        android:layout_alignParentTop="true"
+        android:layout_above="@+id/trans_bottom_bar" />
+
+    <LinearLayout
+        android:id="@+id/trans_bottom_bar"
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentBottom="true">
+
+        <Button
+            android:id="@+id/trans_control_bt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:text="@string/transfer_state_activity_control_pause_all_bt_text"
+            android:background="@drawable/menu_more_bg_black"
+            android:layout_weight="1" />
+		<View
+		    android:layout_width="2dip"
+		    android:layout_height="fill_parent"
+		    android:background="@drawable/title_line" 
+		    />
+        <Button
+            android:id="@+id/trans_cancel_bt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:text="@string/transfer_state_activity_control_cancel_all_bt_text"
+            android:background="@drawable/menu_more_bg_black"
+            android:layout_weight="1" />
+
+        <Button
+            android:id="@+id/trans_clear_rec_bt"
+            android:visibility="gone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/menu_more_bg_black"
+            android:textColor="@color/white"
+            android:text="@string/transfer_state_activity_control_clear_all_bt_text"
+            android:layout_weight="1" />
+        
+    </LinearLayout>
+
+</RelativeLayout>

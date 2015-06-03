@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+
+    <SurfaceView
+        android:id="@+id/surfaceView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <ProgressBar
+        android:id="@+id/loadingVideo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center" />
+    
+    <TextView 
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:id="@+id/tv_prompt"
+        android:visibility="gone"
+        />
+    <RelativeLayout
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:layout_gravity="top"
+        android:layout_margin="8dip"
+        android:background="#00000000"
+        android:focusable="true"
+        android:gravity="center_vertical">
+	
+	
+	    <TextView
+	        android:id="@+id/cacheT"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_alignParentRight="true"
+	        android:layout_centerVertical="true"
+	        android:textColor="#0000ff"
+	        android:textSize="15sp"
+	        android:textAppearance="?android:attr/textAppearanceMedium"/>
+	</RelativeLayout>
+	
+    <RelativeLayout
+        android:id="@+id/opLy"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_margin="8dip"
+        android:background="#00000000"
+        android:focusable="true"
+        android:gravity="center_vertical">
+
+        <Button
+	        android:id="@+id/playBtn"
+	        android:layout_width="40dp"
+	        android:layout_height="40dp"
+	        android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+	        android:background="@drawable/btn_play" />
+
+        <SeekBar
+            android:id="@+id/seekBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:maxHeight="4dip"
+            android:minHeight="4dip"
+            android:paddingLeft="15dip"
+            android:paddingRight="15dip"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/playBtn"
+            android:progressDrawable="@drawable/seek_drawable"
+            android:thumb="@drawable/seek_thumb"/>
+    </RelativeLayout>
+
+</FrameLayout>

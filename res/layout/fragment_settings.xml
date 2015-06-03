@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:padding="6dip">
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="帐号:shan0xiao0xi@163.com"
+            android:id="@+id/account_info_textview"
+            android:layout_below="@+id/imageView"
+            android:layout_centerHorizontal="true" />
+
+        <ProgressBar
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="@dimen/popuWindow_height"
+            android:layout_height="wrap_content"
+            android:id="@+id/disk_space_ratio_progressbar"
+            android:layout_below="@+id/account_info_textview"
+            android:layout_centerHorizontal="true" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="容量：25GB/1000GB"
+            android:id="@+id/disk_space_state_textview"
+            android:layout_below="@+id/disk_space_ratio_progressbar"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="10dp" />
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="15dp"
+            android:src="@drawable/bunny" />
+
+    </RelativeLayout>
+
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_weight="2">
+        <TableLayout
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:stretchColumns="*"
+            android:shrinkColumns="*" >
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/Display"
+                android:textStyle="bold"
+                android:background="@color/themeBlue"
+                android:textColor="@android:color/white" />
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="5dip"
+                />
+
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="3dip"
+                android:background="@color/themeBlue" />
+
+            <TableRow>
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content" >
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingLeft="3dip"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:text="@string/Show_hidden_files_folders" />
+                    <TextView
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:singleLine="false"
+                        android:paddingTop="3dip"
+                        android:paddingLeft="8dip"
+                        android:text="@string/Display_f_f" />
+                </LinearLayout>
+                <CheckBox
+                    android:id="@+id/setting_hidden_box"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right"
+                    android:padding="3dp"
+                    android:checked="false" />
+            </TableRow>
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="3dip"
+                />
+
+            <TableRow>
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content" >
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingLeft="3dip"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:text="@string/Show_Image_Preview" />
+                    <TextView
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:singleLine="false"
+                        android:paddingTop="3dip"
+                        android:paddingLeft="8dip"
+                        android:text="@string/Display_thumbnail" />
+                </LinearLayout>
+                <CheckBox
+                    android:id="@+id/setting_thumbnail_box"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right"
+                    android:padding="3dp"
+                    android:checked="false" />
+            </TableRow>
+            <Button 
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="查看上传下载"
+                android:id="@+id/show_update_down"
+                />
+            
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="3dip"
+                android:background="@color/themeBlue" />
+
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="5dip"
+                android:background="@color/themeBlue" />
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:text="@string/Sorting"
+                android:background="@color/themeBlue"
+                android:textColor="@android:color/white" />
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="5dip"
+                android:background="@color/themeBlue" />
+
+            <TableRow>
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_height="wrap_content"
+                    android:layout_width="fill_parent" >
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingLeft="3dip"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:text="@string/Sorting_type" />
+                    <TextView
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:singleLine="false"
+                        android:paddingTop="3dip"
+                        android:paddingLeft="8dip"
+                        android:text="@string/Choose_sort_type" />
+                </LinearLayout>
+                <ImageButton
+                    android:id="@+id/settings_sort_button"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_gravity="right"
+                    android:src="@drawable/more" />
+
+            </TableRow>
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="退出登陆"
+                android:id="@+id/logout_bt" />
+
+        </TableLayout>
+    </ScrollView>
+
+</LinearLayout>

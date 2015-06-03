@@ -1,0 +1,12 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".MainActivity">
+    <item android:id="@+id/ab_menu_create_folder" android:title="@string/ab_create_folder_action"
+        android:showAsAction="ifRoom|withText"
+        android:icon="@drawable/ab_action_create_folder"
+        android:orderInCategory="100" />
+    <item android:id="@+id/ab_menu_upload" android:title="@string/ab_upload_action"
+        android:showAsAction="ifRoom|withText"
+        android:icon="@drawable/ab_action_upload"
+        android:orderInCategory="100" />
+</menu>

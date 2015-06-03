@@ -1,0 +1,36 @@
+<resources>
+    <!-- 公用的 -->
+     <dimen name="m_p_5">5dip</dimen>
+    <dimen name="m_p_15">20dip</dimen>
+    <dimen name="m_p_10">13dip</dimen>
+    <dimen name="reply_heght_25">33dip</dimen>
+    <dimen name="height_35">46dip</dimen>
+    <dimen name="height_30">40dip</dimen>
+    <dimen name="height_42">48dip</dimen>
+    <dimen name="distance_150">150dip</dimen>
+    
+    <!-- Default screen margins, 1280*720 per the Android Design guidelines. -->
+    <dimen name="activity_vertical_margin">35dp</dimen>
+    <dimen name="activity_welcome_button_width">105dip</dimen>
+    <dimen name="activity_welcome_button_height">34dip</dimen>
+    <string name="welcome_button_layout_width">115dip</string>
+	<string name="welcome_button_layout_height">55dip</string>
+	<dimen name="popuWindow_height">180dip</dimen>
+	
+	
+	<dimen name="activity_horizontal_margin">80dp</dimen>
+	<dimen name="foot_limearlayout_height">60dp</dimen>
+	<dimen name="welcome_button_width">126dp</dimen>
+	<dimen name="welcome_button_height">46dp</dimen>
+	
+	<dimen name="froment_home_list_item_text_whiet">42dip</dimen>
+	<dimen name="activity_album_padding">320dip</dimen>
+	<dimen name="activity_share_img_foot">160dip</dimen>
+	<dimen name="pupowindown_top">112dip</dimen>
+	<dimen name="file_list_icon_height">44.0dip</dimen>
+	<dimen name="send_file_height">120dip</dimen>
+	
+	<dimen name="send_add_button_height">45dip</dimen>
+	<dimen name="send_add_button_width">60dip</dimen>
+	
+</resources>

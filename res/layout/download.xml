@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout android:orientation="vertical" android:background="@color/trans_list_back" android:layout_width="fill_parent" android:layout_height="fill_parent"
+  xmlns:android="http://schemas.android.com/apk/res/android" xmlns:txt_drawable="http://schemas.android.com/apk/res/com.qihoo.yunpan">
+    <include android:id="@+id/titleLayout" layout="@layout/titlelayout" />
+    <LinearLayout android:gravity="center" android:orientation="vertical" android:id="@+id/center_zone" android:layout_below="@id/titleLayout" android:background="@drawable/open_bg" android:layout_weight="1.0" style="@style/fillall">
+        <RelativeLayout android:layout_gravity="center" android:id="@+id/relaview" android:layout_marginTop="-56.0dip" style="@style/wrap">
+            <ImageView android:id="@+id/icon" android:scaleType="centerCrop" android:layout_centerInParent="true" style="@style/wrap" />
+            <ImageView android:id="@+id/job_status_img" android:visibility="gone" android:layout_marginRight="-5.0dip" android:layout_marginBottom="-5.0dip" android:src="@drawable/job_status_fail" android:layout_alignRight="@id/icon" android:layout_alignBottom="@id/icon" style="@style/wrap" />
+        </RelativeLayout>
+        <TextView android:textSize="14.0dip" android:textColor="@color/trans_failed_txt" android:gravity="center" android:id="@+id/fileName" android:layout_marginLeft="15.0dip" android:text="基础文档.doc" android:layout_marginTop="23.0dip" android:layout_marginRight="15.0dip" style="@style/fillx" />
+        <LinearLayout android:gravity="center" android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_marginTop="14.0dip">
+            <TextView android:textSize="13.0dip" 
+                android:text="23M"
+                android:textColor="#ff969696" android:id="@+id/file_size" style="@style/wrap" />
+            <TextView android:textSize="13.0dip" android:textColor="#ff969696" android:text="2014-12-15 10:32" android:id="@+id/file_mtime" android:layout_marginLeft="15.0dip" style="@style/wrap" />
+        </LinearLayout>
+       <TextView android:textSize="14.0dip" android:textColor="#ff969696" android:gravity="center" android:id="@+id/job_more_info_second" android:layout_marginLeft="10.0dip" android:layout_marginTop="8.0dip" android:layout_marginRight="10.0dip" android:drawablePadding="4.0dip" style="@style/wrap" />
+    <FrameLayout android:id="@+id/bottom" android:layout_width="fill_parent" android:layout_height="@dimen/bottom_menu_height" android:layout_alignParentBottom="true" >
+        	<Button
+        	    android:id="@+id/downClic"
+        	    android:layout_width="match_parent"
+        	    android:layout_marginLeft="15.0dip"
+        	    android:layout_height="match_parent"
+        	    android:layout_marginRight="15.0dip"
+        	    android:background="@drawable/bttontypestyle"
+        	    android:text="文件下载 "
+        	    android:textColor="@color/button_openloadingfile"
+        	    />
+    </FrameLayout>
+    <LinearLayout android:gravity="center" android:orientation="horizontal" android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_marginLeft="20.0dip" android:layout_marginRight="15.0dip">
+            <RelativeLayout android:gravity="center_vertical" android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_weight="1.0">
+                <TextView android:textSize="14.0dip" android:textColor="#ff323232"  android:id="@+id/downloadStatus" android:visibility="gone" android:singleLine="true"  style="@style/wrap" android:text="正在打开文件（需要下载）" />
+                <ProgressBar android:id="@+id/progressBar" android:visibility="gone" android:layout_width="fill_parent" android:layout_height="6.0dip" android:layout_marginTop="10.0dip" android:maxHeight="6.0dip"  android:indeterminate="false" android:minHeight="6.0dip" android:layout_below="@id/downloadStatus" android:layout_centerHorizontal="true" android:layout_centerVertical="true" style="@style/ProgressBar_bg" />
+                <TextView
+                    android:id="@+id/job_downloading"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentTop="true"
+                    android:textColor="#ff323232"
+                    android:textSize="14.0dip"
+                    android:visibility="gone" />
+            </RelativeLayout>
+            <ImageView android:id="@+id/stop_download"  android:visibility="gone" android:layout_width="50.0dip" android:layout_height="50.0dip" android:src="@drawable/task_delete_btn" />
+    </LinearLayout>
+	</LinearLayout>
+</RelativeLayout>

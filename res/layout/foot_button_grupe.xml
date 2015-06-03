@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>  
+<RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:orientation="vertical"
+			xmlns:android="http://schemas.android.com/apk/res/android" >
+
+            <LinearLayout
+                android:id="@+id/button_fenxian"
+                android:layout_width="fill_parent"
+                android:layout_height="48dip"
+                android:orientation="horizontal"
+                android:background="@drawable/bottom_trans_menu_bg"
+                android:visibility="gone">
+                <Button
+                    android:id="@+id/menu_bottom_new_btsdd"
+                    style="@style/tab_button"
+                    android:layout_width="0px"
+                    android:layout_weight="1"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentBottom="true"
+                    android:text="共享"
+                    android:textColor="@color/trans_btn_txt"
+                    android:textSize="12sp" />
+                
+				 <View android:id="@+id/leftLine" 
+		        	android:background="@drawable/title_line" 
+		        	android:layout_width="2.0dip" 
+		        	android:layout_height="fill_parent" 
+		        	android:layout_toRightOf="@id/btnExitMuliti" />
+                <Button
+                    style="@style/tab_button"
+                    android:id="@+id/menu_bottom_upload_btsd"
+                    android:layout_width="0px"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textSize="12sp"
+                    android:adjustViewBounds="true"
+                    android:textColor="@color/trans_btn_txt"
+                    android:text="发送" />
+
+                <View android:id="@+id/leftLine" 
+		        	android:background="@drawable/title_line" 
+		        	android:layout_width="2.0dip" 
+		        	android:layout_height="fill_parent" 
+		        	android:layout_toRightOf="@id/btnExitMuliti" />
+                <Button
+                    style="@style/tab_button"
+                    android:id="@+id/menu_bottom_deleter"
+                    android:layout_width="0px"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textColor="@color/trans_btn_txt"
+                    android:textSize="12sp"
+                    android:text="删除" />
+            </LinearLayout>
+            <!-- @dimen/foot_limearlayout_height" -->
+         <LinearLayout
+                android:id="@+id/mian_bottom_content"
+                android:layout_width="fill_parent"
+                android:layout_height="@dimen/foot_limearlayout_height"
+                android:layout_below="@id/button_fenxian"
+                android:layout_weight="1"
+                android:divider="@color/black"
+                android:orientation="horizontal" 
+                android:layout_marginTop="-4dip"
+                android:background="@drawable/multi_menu_bottom">
+
+              <Button
+                  android:id="@+id/menu_bottom_new_bt"
+                  android:layout_width="0px"
+                  android:layout_height="match_parent"
+                  android:layout_weight="1"
+                  android:background="@drawable/newfile_button_bg_selector"
+                  android:paddingTop="@dimen/foot_button_padding"
+                  android:text="@string/newfile_button_text"
+                  android:textColor="@color/footbutton_text_select_color"
+                  android:textSize="12sp" />
+
+                <Button
+                    android:id="@+id/menu_bottom_upload_bt"
+                    android:layout_width="0px"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:paddingTop="@dimen/foot_button_padding"
+                    android:text="@string/upload_button_text"
+                    android:gravity="center"
+                    android:textColor="@color/footbutton_text_select_color"
+                    android:textSize="12sp"
+                    android:background="@drawable/bottom_menu_bar_upload" />
+               <Button
+                    android:id="@+id/menu_bottom_download_bt"
+                    android:layout_width="0px"
+                    android:layout_height="match_parent"
+                    android:paddingTop="@dimen/foot_button_padding"
+                    android:layout_weight="1"
+                    android:text="@string/downlaod_button_text"
+                    android:textColor="@color/footbutton_text_select_color"
+                    android:textSize="12sp"
+                    android:background="@drawable/bottom_menu_bar_download" />
+
+               
+                <Button
+                    android:id="@+id/menu_bottom_paste_bt"
+                   	android:layout_width="0px"
+                    android:layout_height="match_parent"
+                    android:paddingTop="@dimen/foot_button_padding"
+                    android:layout_weight="1"
+                    android:text="@string/mobile"
+                    android:textColor="@color/footbutton_text_select_color"
+                    android:textSize="12sp"
+                    android:background="@drawable/bottom_menu_bar_paste" />
+
+                <Button
+                    android:id="@+id/menu_bottom_more_bt"
+                    android:layout_width="0px"
+                    android:layout_height="match_parent"
+                    android:paddingTop="@dimen/foot_button_padding"
+                    android:layout_weight="1"
+                    android:text="@string/more_button_text"
+                    android:textColor="@color/footbutton_text_select_color"
+                    android:textSize="12sp"
+                    android:background="@drawable/bottom_menu_bar_more" />
+               
+            </LinearLayout>      
+</RelativeLayout>

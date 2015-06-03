@@ -1,0 +1,78 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root_itm_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="codingpark.net.cheesecloud.view.CloudFilesActivity" >
+
+    <HorizontalScrollView
+        android:id="@+id/horizontalScrollView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/file_path_bitmap"
+        android:fillViewport="false"
+        android:scrollbars="none"
+        tools:context=".view.UploadActivity" >
+        <!-- android:background="@drawable/path_bar_bg_img" -->
+        <LinearLayout
+            android:id="@+id/pathBarContainer"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/file_path_bitmap"
+            android:orientation="horizontal" >
+        </LinearLayout>
+    </HorizontalScrollView>
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical" >
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="100dip"
+            android:layout_weight="2.89">
+             <RelativeLayout
+            	android:id="@+id/listcontainer"
+            	android:layout_height="wrap_content"
+            	android:layout_width="wrap_content">
+                 <codingpark.net.cheesecloud.view.MyListView
+	                android:id="@+id/content_list"
+	                android:layout_width="wrap_content"
+	                android:layout_height="match_parent" 
+	                android:scrollbarThumbVertical="@drawable/scrollbar">
+            	</codingpark.net.cheesecloud.view.MyListView>
+             </RelativeLayout>
+            <RelativeLayout
+		         android:id="@+id/rl_file_null"
+		         android:layout_width="match_parent"
+		         android:layout_height="match_parent"
+		         android:visibility="gone"
+		         android:gravity="center" >
+		         <ImageView
+		             android:id="@+id/empty_view_iv"
+		             android:layout_width="wrap_content"
+		             android:layout_height="wrap_content"
+		             android:layout_centerInParent="true"
+		             android:src="@drawable/list_view_empty_small_img" />
+		         <TextView
+		             android:id="@+id/empty_view_tv"
+		             android:layout_width="wrap_content"
+		             android:layout_height="wrap_content"
+		             android:layout_below="@id/empty_view_iv"
+		             android:layout_centerHorizontal="true"
+		             android:layout_marginTop="25dip"
+		             android:text="文件夹为空" />
+		    </RelativeLayout>
+		    <!-- Loading progress -->
+             <ProgressBar
+                android:id="@+id/loading"
+                style="?android:attr/progressBarStyleLarge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_centerVertical="true"
+                />
+        </RelativeLayout>
+        <include layout="@layout/foot_button_grupe" />
+    </LinearLayout>
+</LinearLayout>

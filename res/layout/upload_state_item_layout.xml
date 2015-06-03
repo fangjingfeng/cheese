@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+     <TextView
+	        android:id="@+id/text_title_view"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:paddingLeft="@dimen/login_activity_horizontal_margin"
+			android:gravity="center_vertical"
+	        android:background="@drawable/update_file_title"
+	        android:text="上传完成"/>
+    <LinearLayout 
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:layout_marginBottom="10dip"
+        android:layout_marginLeft="@dimen/m_p_10"
+		android:layout_marginTop="@dimen/login_activity_horizontal_margin"
+		android:layout_marginRight="@dimen/login_activity_horizontal_margin">
+			<RelativeLayout
+		        android:layout_width="@dimen/file_list_icon_height"
+		        android:layout_height="@dimen/file_list_icon_height">
+	        	<ImageView
+		             android:id="@+id/file_thumb"
+		             android:layout_width="@dimen/file_list_icon_height"
+		             android:layout_height="@dimen/file_list_icon_height"
+		             android:src="@drawable/text" />
+	        	<ImageView
+	        	    android:layout_width="wrap_content"
+	        	    android:layout_height="wrap_content"
+	        	    android:id="@+id/update_static"
+	        	    android:layout_alignParentRight="true"
+	        	    android:layout_alignParentBottom="true"
+	        	    />
+        	</RelativeLayout>
+       	 	<RelativeLayout
+		        android:id="@+id/relativeLayout1"
+		        android:layout_width="match_parent"
+				android:layout_height="@dimen/file_list_icon_height">
+		
+		        <TextView
+		            android:id="@+id/update_file_size"
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:layout_alignParentRight="true"
+		            android:text="12M"
+		            android:textStyle="bold" />
+		
+		        <ProgressBar
+		            android:id="@+id/progressbar_updown"
+		            style="?android:attr/progressBarStyleHorizontal"
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:layout_alignParentBottom="true"
+		            android:layout_alignParentRight="true"
+		            android:layout_below="@+id/update_file_name"
+		            android:layout_marginBottom="5dip"
+		            android:layout_toRightOf="@+id/state_view"
+		            android:max="100" />
+		
+		        <TextView
+		            android:id="@+id/update_file_name"
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:layout_alignParentLeft="true"
+		            android:layout_alignParentTop="true"
+		            android:layout_toLeftOf="@+id/update_file_size"
+		            android:singleLine="true" 
+		            android:ellipsize="end"
+		            android:gravity="left"
+		            android:text="File Name"
+		            android:textStyle="bold" />
+		
+		        <TextView
+		            android:id="@+id/state_view"
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:layout_alignParentBottom="true"
+		            android:gravity="center_vertical"
+		            android:text="正在上传" />
+		    </RelativeLayout>
+    </LinearLayout>
+   
+</LinearLayout>

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/rl_root_view"
+    android:padding="6dip" >
+    <RelativeLayout 
+        android:layout_width="@dimen/file_list_item_height"
+        android:layout_height="@dimen/file_list_item_height"
+        android:id="@+id/rl_file_thumb"
+        >
+        <ImageView
+	        android:src="@drawable/text"
+	        android:layout_width="match_parent"
+	        android:layout_height="match_parent"
+	        android:layout_alignParentTop="true"
+	        android:layout_alignParentBottom="false"
+	        android:layout_marginRight="6dip"
+	        android:id="@+id/file_thumb"/>
+         <ImageView
+	        android:layout_width="match_parent"
+	        android:layout_height="match_parent"
+	        android:id="@+id/is_file_hidden"
+			android:visibility="gone"
+	        android:background="#90f1f1f1"
+	        />
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/file_name_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_toLeftOf="@+id/select_sender_file"
+        android:layout_toRightOf="@+id/rl_file_thumb"
+        android:gravity="center_vertical"
+        android:maxLength="32"
+        android:singleLine="true" 
+		android:ellipsize="end" 
+        android:textStyle="bold" />
+
+    <CheckBox
+        android:id="@+id/select_sender_file"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true" 
+        android:button="@drawable/checkbok_select_bj"
+        android:visibility="gone"
+        />
+
+</RelativeLayout>

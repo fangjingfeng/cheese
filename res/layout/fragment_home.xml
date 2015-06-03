@@ -1,0 +1,181 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+    <LinearLayout
+        android:id="@+id/state_menu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/linearLayout1"
+        android:orientation="vertical" >
+
+       	<RelativeLayout
+       	    android:id="@+id/button_notice"
+       	    android:layout_width="match_parent"
+       	    android:layout_height="wrap_content"
+       	    android:background="@drawable/naction_item_bj" >
+
+       	    <RelativeLayout
+       	        android:layout_width="wrap_content"
+       	        android:layout_height="40dip"
+       	        android:layout_alignParentLeft="true"
+       	        android:layout_centerVertical="true"
+       	        android:layout_toLeftOf="@+id/notice_title" >
+
+       	        <TextView
+       	            android:id="@+id/notice"
+       	            android:layout_width="wrap_content"
+       	            android:layout_height="wrap_content"
+       	            android:layout_centerHorizontal="true"
+       	            android:layout_centerVertical="true"
+       	            android:text="通告"
+       	            android:textColor="@color/notice"
+       	            android:textSize="16sp" />
+
+       	        <TextView
+       	            android:id="@+id/notice_messager_number"
+       	            android:layout_width="14dip"
+       	            android:layout_height="14dip"
+       	            android:layout_marginTop="5dip"
+       	            android:layout_alignParentTop="true"
+       	            android:layout_toRightOf="@+id/notice"
+       	            android:background="@drawable/message_item_number"
+       	            android:gravity="center"
+       	            android:text="2"
+       	            android:textColor="@color/white"
+       	            android:textSize="8sp" />
+
+       	    </RelativeLayout>
+
+       	    <TextView
+       	        android:id="@+id/notice_title"
+       	         android:layout_width="@dimen/Letter_name_padng"
+       	        android:layout_height="wrap_content"
+       	        android:layout_centerInParent="true"
+       	        android:ellipsize="end"
+       	        android:singleLine="true"
+       	        android:gravity="left"
+       	        android:text=" 等待中...."
+       	        android:textColor="@color/notice_title" />
+
+       	    <ImageView
+       	        android:id="@+id/imageView1"
+       	        android:layout_width="wrap_content"
+       	        android:layout_height="wrap_content"
+       	        android:layout_alignParentRight="true"
+       	        android:layout_centerVertical="true"
+       	        android:layout_marginRight="@dimen/fragment_home_naction_item_magen_right"
+       	        android:background="@drawable/notice_bj" />
+       	</RelativeLayout>
+       	<RelativeLayout
+       	    android:id="@+id/letters_button"
+       	    android:layout_width="match_parent"
+       	    android:layout_height="wrap_content"
+       	    android:background="@drawable/naction_item_bj" >
+
+       	    <RelativeLayout
+       	        android:layout_width="wrap_content"
+       	        android:layout_height="40dip"
+       	        android:layout_alignParentLeft="true"
+       	        android:layout_centerVertical="true"
+       	        android:layout_toLeftOf="@+id/letters_title" >
+
+       	        <TextView
+       	            android:id="@+id/letters"
+       	            android:layout_width="wrap_content"
+       	            android:layout_height="wrap_content"
+       	            android:layout_centerHorizontal="true"
+       	            android:layout_centerVertical="true"
+       	            android:text="信件"
+       	            android:textColor="@color/notice"
+       	            android:textSize="16sp" />
+
+       	        <TextView
+       	            android:id="@+id/letters_messager_number"
+       	            android:layout_width="14dip"
+       	            android:layout_height="14dip"
+       	            android:layout_marginTop="5dip"
+       	            android:layout_alignParentTop="true"
+       	            android:layout_toRightOf="@+id/letters"
+       	            android:background="@drawable/message_item_number"
+       	            android:gravity="center"
+       	            android:text="2"
+       	            android:textColor="@color/white"
+       	            android:textSize="8sp" />
+
+       	    </RelativeLayout>
+
+       	    <TextView
+       	        android:id="@+id/letters_title"
+       	        android:layout_width="@dimen/Letter_name_padng"
+       	        android:layout_height="wrap_content"
+       	        android:layout_centerInParent="true"
+       	        android:gravity="left"
+       	        android:ellipsize="end"
+       	        android:singleLine="true"
+       	        android:text=" 等待中...."
+       	        android:textColor="@color/notice_title" />
+
+       	    <ImageView
+       	        android:id="@+id/imageView2"
+       	        android:layout_width="wrap_content"
+       	        android:layout_height="wrap_content"
+       	        android:layout_alignParentRight="true"
+       	        android:layout_centerVertical="true"
+       	        android:layout_marginRight="@dimen/fragment_home_naction_item_magen_right"
+       	        android:background="@drawable/notice_bj" />
+       	</RelativeLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/listcontainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/foot_buttom"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/state_menu"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/fragmemt_homeactivity_vertical_margin"
+        android:paddingLeft="@dimen/fragmemt_home_activity_horizontal_margin"
+        android:paddingRight="@dimen/fragmemt_home_activity_horizontal_margin"
+        android:paddingTop="@dimen/fragmemt_homeactivity_vertical_margin" >
+
+        <ListView
+            android:id="@+id/android:list"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+             >
+        </ListView>
+        
+        <RelativeLayout
+            android:id="@id/android:empty"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
+
+            <ImageView
+                android:id="@+id/empty_view_iv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:src="@drawable/list_view_empty_small_img" />
+
+            <TextView
+                android:id="@+id/empty_view_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/empty_view_iv"
+                android:layout_centerInParent="true"
+                android:layout_gravity="center"
+                android:text="文件夹为空" />
+        </RelativeLayout>
+    </LinearLayout>
+    <!-- Loading progress -->
+
+    <ProgressBar
+        android:id="@+id/loading"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="gone" />
+</RelativeLayout>

@@ -1,0 +1,124 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical"
+    tools:context="codingpark.net.cheesecloud.view.SelectPathActivity"
+    >
+    <HorizontalScrollView xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/horizontalScrollView"
+        android:scrollbars="none"
+        android:background="@drawable/file_path_bitmap"
+        tools:context=".view.UploadActivity">
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/path_bar_bg_img"
+            android:id="@+id/pathBarContainer"
+            >
+        </LinearLayout>
+    </HorizontalScrollView>
+
+    <LinearLayout
+        android:id="@+id/listcontainer"
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="false"
+        android:layout_below="@+id/horizontalScrollView"
+        android:layout_above="@+id/bottom_form" >
+        <ListView
+            android:id="@+id/android:list"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            />
+        <!-- the android:id is important -->
+        <RelativeLayout
+            android:id="@id/android:empty"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <ImageView
+                android:id="@+id/empty_view_iv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/list_view_empty_small_img"
+                android:layout_centerInParent="true" />
+            <TextView
+                android:id="@+id/empty_view_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="文件夹为空"
+                android:layout_gravity="center"
+                android:layout_below="@+id/empty_view_iv"
+                android:layout_centerInParent="true" />
+        </RelativeLayout>
+    </LinearLayout>
+
+    <!-- Loading progress -->
+
+    <RelativeLayout
+        android:id="@+id/bottom_form"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="#ff1b1724"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentStart="true">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="@string/upload_activity_bottom_bar_title"
+            android:id="@+id/textView"
+            android:layout_alignParentTop="true"
+            android:textColor="@color/white"
+            android:visibility="visible"/>
+		<LinearLayout 
+		    android:layout_width="match_parent"
+		    android:layout_height="wrap_content"
+		    android:orientation="horizontal"
+		    android:layout_margin="10dip"
+		    android:paddingBottom="10dip"
+		    android:layout_below="@+id/textView"
+		    >
+			<Button
+			    android:id="@+id/select_upload_path_cancel_bt"
+			    android:layout_width="wrap_content"
+			    android:layout_height="match_parent"
+			    android:background="@drawable/upload_activity_bottom_select_location_bg"
+			    android:text="@string/select_path_activity_cancel_bt_string"
+			    android:textColor="@color/white" 
+			    android:singleLine="true" 
+				android:ellipsize="end"
+			    android:layout_weight="1"/>
+
+	        <Button
+	            android:id="@+id/select_upload_path_ok_bt"
+	            android:layout_width="wrap_content"
+	            android:layout_height="match_parent"
+	            android:layout_alignParentRight="true"
+	            android:background="@drawable/upload_activity_bottom_start_upload_bg_normal_img"
+	            android:text="@string/select_path_activity_ok_bt_prefix_string"
+	            android:textColor="@color/white" 
+	            android:singleLine="true" 
+				android:ellipsize="end"
+	            android:layout_weight="1"/>
+		    
+		</LinearLayout>
+    </RelativeLayout>
+
+    <ProgressBar
+        android:id="@+id/loading"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true" />
+
+</RelativeLayout>

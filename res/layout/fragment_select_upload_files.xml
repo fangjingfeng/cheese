@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!--Use to show current path-->
+    <HorizontalScrollView xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tabs"
+        android:background="@drawable/file_path_bitmap"
+        android:id="@+id/horizontalScrollView"
+        android:scrollbars="none"
+        tools:context=".view.UploadActivity">
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/path_bar_bg_img"
+            android:id="@+id/pathBarContainer"
+            >
+            <!--<include layout="@layout/path_bar_item_layout"/>-->
+        </LinearLayout>
+    </HorizontalScrollView>
+
+    <ListView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_weight="2"
+        android:smoothScrollbar="true"
+        android:longClickable="true"
+        android:id="@+id/android:list"
+        style="@style/AppTheme" />
+
+
+    <!--  Footer for shortcut buttons -->
+    <!-- <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:baselineAligned="false"
+        android:id="@+id/mian_bottom_content"
+        android:divider="@color/black"
+        android:layout_weight="1">
+        <Button
+            android:id="@+id/menu_bottom_upload_bt"
+            android:layout_width="0px"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/bottom_menu_bar_upload"
+            android:adjustViewBounds="true" />
+        <Button
+            android:id="@+id/menu_bottom_copy_bt"
+            android:layout_width="0px"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bottom_menu_bar_copy"
+            android:layout_weight="1"
+            android:adjustViewBounds="true" />
+        <Button
+            android:id="@+id/menu_bottom_paste_bt"
+            android:layout_width="0px"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bottom_menu_bar_paste"
+            android:layout_weight="1"
+            android:adjustViewBounds="true" />
+        <Button
+            android:id="@+id/menu_bottom_more_bt"
+            android:layout_width="0px"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bottom_menu_bar_more"
+            android:layout_weight="1"
+            android:adjustViewBounds="true" />
+    </LinearLayout>
+ -->
+</LinearLayout>

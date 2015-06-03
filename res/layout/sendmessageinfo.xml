@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/file_list_icon_height"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:paddingLeft="@dimen/m_p_10"
+    android:paddingRight="@dimen/m_p_10"
+    >
+
+     <ImageView
+        android:id="@+id/icon"
+        android:layout_width="@dimen/file_list_icon_height"
+        android:layout_height="@dimen/file_list_icon_height"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:src="@drawable/image" />
+    
+    <TextView
+        android:id="@+id/file_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:singleLine="true" 
+		android:ellipsize="end" 
+		android:maxEms="12" 
+        android:text="试试 "/>
+
+     <LinearLayout  
+        android:layout_width="match_parent"  
+        android:layout_height="wrap_content"  
+        android:gravity="right" >  
+         <Button
+	        android:id="@+id/delete_send_file"
+	        android:layout_width="@dimen/m_p_15"
+	        android:layout_height="@dimen/m_p_15"
+	        android:layout_alignParentRight="true"
+	        android:background="@drawable/send_heckbox_select_bg" />
+    </LinearLayout>  
+
+</LinearLayout>

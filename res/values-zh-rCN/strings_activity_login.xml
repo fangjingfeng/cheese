@@ -1,0 +1,16 @@
+<resources>
+    <string name="title_activity_login">登陆</string>
+
+    <!-- Strings related to login -->
+    <string name="prompt_email">邮箱</string>
+    <string name="prompt_password">密码(可选)</string>
+    <string name="prompt_web_url">网站地址</string>
+    <string name="action_sign_in">登陆或注册</string>
+    <string name="action_sign_in_short">登陆</string>
+    <string name="error_invalid_email">无效邮箱</string>
+    <string name="error_invalid_weburl">服务器地址无效</string>
+    <string name="error_invalid_password">密码过短</string>
+    <string name="error_incorrect_password">密码无效</string>
+    <string name="error_field_required">需要设置内容</string>
+
+</resources>

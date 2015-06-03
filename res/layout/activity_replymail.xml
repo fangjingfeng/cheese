@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+    <RelativeLayout android:id="@+id/titleLayout" android:background="@drawable/music_title_bar_bg" android:layout_width="fill_parent" android:layout_height="@dimen/title_bar_height">
+        <TextView android:textSize="15.0dip" android:textColor="@color/trans_title_back" android:gravity="center_vertical" android:id="@+id/ib_playback" android:background="@drawable/titlelayout_bg" android:paddingLeft="15.0dip" android:paddingRight="15.0dip" android:layout_width="wrap_content" android:layout_height="fill_parent" android:text="@string/back" android:drawableLeft="@drawable/back" android:drawablePadding="5.0dip" />
+        <View android:background="@drawable/title_line" android:layout_width="1.0dip" android:layout_height="fill_parent" android:layout_toRightOf="@id/ib_playback" />
+        <TextView android:textSize="16.0sp" android:textColor="@color/white" android:gravity="center" android:id="@+id/textView1" android:paddingLeft="7.0dip" android:text="@string/notice_tile_name" android:layout_centerHorizontal="true" style="@style/filly" />
+        <TextView android:textSize="16.0sp" android:paddingRight="@dimen/m_p_10" android:background="@drawable/titlelayout_bg"  android:textColor="@color/white" android:id="@+id/button_right" android:gravity="center_vertical" android:paddingLeft="7.0dip" android:text="@string/button_send" android:layout_alignParentRight="true" style="@style/filly" />
+	</RelativeLayout>
+
+            
+            <RelativeLayout
+		        android:layout_width="match_parent"
+		        android:layout_height="@dimen/height_42"
+		        android:orientation="horizontal"
+		        android:paddingLeft="@dimen/m_p_10"
+				android:paddingRight="@dimen/m_p_10">
+		        <TextView
+		            android:layout_width="wrap_content"
+		            android:layout_height="match_parent"
+		            android:gravity="center_vertical"
+		            android:id="@+id/sender"
+		            android:text="收送人："
+		            android:textColor="@color/huise"
+		            />
+		        <TextView
+		            android:id="@+id/sender_mail"
+		            android:layout_width="wrap_content"
+		            android:layout_height="match_parent"
+		            android:layout_toRightOf="@+id/sender"
+		            android:gravity="center_vertical"
+		            android:text="15011575219@163.com"
+		            />
+		
+		        <Button
+		            android:id="@+id/add_user"
+		            android:layout_width="@dimen/reply_heght_25"
+		            android:layout_height="@dimen/reply_heght_25"
+		            android:layout_alignParentRight="true"
+		            android:layout_centerVertical="true"
+		            android:layout_marginRight="@dimen/m_p_10"
+		            android:background="@drawable/email_add_user_button_selecter_bg"
+		            android:gravity="center_vertical" />
+		
+		    </RelativeLayout>
+		    <View  android:layout_height="1dip"
+		    	   android:layout_width="match_parent"
+				    android:background="@drawable/i1"
+		    	   />
+		    <LinearLayout
+		        android:layout_width="match_parent"
+		        android:layout_height="@dimen/height_42"
+		        android:orientation="horizontal"
+		        android:paddingLeft="@dimen/m_p_10"
+				android:paddingRight="@dimen/m_p_10">
+		        <TextView
+		            android:layout_width="wrap_content"
+		            android:layout_height="match_parent"
+		            android:gravity="center_vertical"
+		            android:id="@+id/recipient"
+		            android:text="发信人："
+		            android:textColor="@color/huise"
+		            />
+		        <TextView
+		            android:layout_width="match_parent"
+		            android:layout_height="match_parent"
+		            android:id="@+id/recipient_mail"
+		            android:gravity="center_vertical"
+		            android:text="cheese@163.com"
+		            android:textColor="@color/huise"
+		            />
+		    </LinearLayout>
+		    <View 
+				android:layout_height="1dip"
+		   	    android:layout_width="match_parent"
+			    android:background="@drawable/i1"/>
+		  <RelativeLayout
+		        android:layout_width="match_parent"
+		        android:layout_height="match_parent"
+		        android:layout_below="@+id/mail_content"
+		        android:orientation="vertical" >
+
+				<ScrollView
+				    android:layout_width="match_parent"
+				    android:layout_height="match_parent" >
+			
+			        <LinearLayout
+			            android:layout_width="match_parent"
+			            android:layout_height="match_parent"
+			            android:orientation="vertical" >
+						<EditText
+				            android:id="@+id/mail_title"
+				            android:layout_width="match_parent"
+				            android:layout_height="wrap_content"
+				            android:visibility="gone"
+				            android:hint="标题" >
+				       	</EditText>
+					    <EditText
+				            android:id="@+id/mail_content"
+				            android:layout_width="match_parent"
+				            android:layout_height="wrap_content"
+				             android:layout_below="@+id/mail_title"
+				            android:hint="内容" >
+				       	</EditText>
+				        
+				        <ListView
+				            android:id="@+id/enclosure"
+				            android:layout_height="wrap_content"
+				            android:layout_width="match_parent"
+				            android:layout_above="@+id/add_attachment"
+				            android:layout_below="@+id/mail_content" >
+				        </ListView>
+			         </LinearLayout>
+	    		</ScrollView>
+	    		<Button
+			          android:id="@+id/add_attachment"
+			          android:layout_width="@dimen/send_add_button_width"
+			          android:layout_height="@dimen/send_add_button_height"
+			          android:layout_alignParentBottom="true"
+			          android:layout_alignParentRight="true"
+			          android:background="@drawable/selsecter_add_attachment_button" />
+    		</RelativeLayout>
+</LinearLayout>

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="@dimen/file_list_item_height"
+    android:padding="6dip" >
+    <ImageView
+        android:src="@drawable/text"
+        android:layout_width="@dimen/file_list_item_height"
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentBottom="false"
+        android:layout_marginRight="6dip"
+        android:id="@+id/file_thumb"/>
+
+    <TextView
+        android:id="@+id/file_name_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/multiselect_checkbox"
+        android:layout_toLeftOf="@+id/sub_files_count_view"
+        android:layout_toRightOf="@+id/file_thumb"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:text="Texdsfsdfsdfsfsdsfsdfsfdsdfsfddsfsddfsdfsfsdfsfsft"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/sub_files_count_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/file_name_view"
+        android:layout_alignBottom="@+id/file_name_view"
+        android:layout_toLeftOf="@+id/multiselect_checkbox"
+        android:ellipsize="end"
+        android:gravity="bottom|right"
+        android:singleLine="true"
+        android:text="Texdsfsdfsdfsdfsdfsfdt" />
+
+    <CheckBox
+        android:id="@+id/multiselect_checkbox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignTop="@+id/file_thumb"
+        android:layout_margin="@dimen/m_p_10"
+        
+        android:button="@drawable/checkbok_select_bj"
+        android:focusable="false" />
+
+</RelativeLayout>

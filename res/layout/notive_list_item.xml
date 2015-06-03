@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:padding="@dimen/file_list_thumb"
+    android:layout_height="@dimen/file_list_icon_height"> 
+    <ImageView
+        android:layout_width="@dimen/file_list_icon_height" 
+        android:layout_height="@dimen/file_list_icon_height" 
+        android:id="@+id/fujian_imag_icon"
+        android:src="@drawable/attachment"
+        />
+
+    <TextView
+        android:id="@+id/notive_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_toLeftOf="@+id/fujian_preview"
+        android:layout_toRightOf="@id/fujian_imag_icon"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:text="gnhjdskghjksdjglk" />
+
+    <TextView
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:id="@+id/fujian_preview"
+        android:layout_centerInParent="true"
+        android:layout_alignParentRight="true"
+        android:text="[点击预览]"
+        android:textColor="@color/yulan_button"
+        />
+</RelativeLayout>

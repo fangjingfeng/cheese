@@ -1,0 +1,42 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="codingpark.net.cheesecloud.view.WelcomeActivity"
+    android:background="@drawable/main_bg_img"
+    style="@android:style/Theme.Light.NoTitleBar.Fullscreen">
+
+    <RelativeLayout
+        android:layout_width="@dimen/activity_album_padding"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="30dip"
+         >
+ 		<Button
+            android:id="@+id/welcome_login_bt"
+            android:layout_width="@dimen/welcome_button_width"
+            android:layout_height="@dimen/welcome_button_height"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:background="@drawable/welcome_login_bt"
+            android:padding="0dp"
+            android:text="@string/welcome_login_bt_string"
+            android:textColor="#ffffffff"
+            android:textSize="12sp" />
+        <Button
+            android:id="@+id/welcome_about_bt"
+            android:layout_width="@dimen/welcome_button_width"
+            android:layout_height="@dimen/welcome_button_height"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:background="@drawable/welcome_about_bt"
+            android:padding="0dp"
+            android:text="@string/welcome_about_bt_string"
+            android:textColor="#ffffffff"
+            android:textSize="12sp" />
+
+       
+
+    </RelativeLayout>
+</RelativeLayout>

@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">"校园云盘"</string>
+
+    <!-- UploadActivity -->
+    <string name="flash">"内部存储"</string>
+    <string name="extsd">"外部SD卡"</string>
+    <string name="path_is">"路径为"</string>
+    <string name="Multi_select_off">"多选关闭"</string>
+    <string name="upload_activity_action_bar_title">上传</string>
+    <string name="upload_activity_bottom_bar_title">选择上传目录</string>
+    <string name="upload_activity_bottom_bar_select_path_bt">我的云盘</string>
+    <string name="upload_activity_bottom_bar_upload_bt">上传</string>
+    <string name="title_images">照片</string>
+    <string name="title_video">视频</string>
+    <string name="title_activity_select_upload">选择上传文件</string>
+
+    <!-- SelectPathActivity -->
+    <string name="select_path_activity_action_bar_title">选择上传路径</string>
+    <string name="action_create_directory">创建文件夹</string>
+
+    <!-- main menu -->
+    <string name="New_Directory">"新目录"</string>
+    <string name="Search">"搜索"</string>
+    <string name="Settings">"设置"</string>
+    <string name="Quit">"退出"</string>
+    <string name="Help">"帮助"</string>
+
+
+    <!-- App setting fragment -->
+    <string name="Display">"显示"</string>
+    <string name="Show_hidden_files_folders">"显示隐藏文件/文件夹"</string>
+    <string name="Display_f_f">"显示以.开始的文件和文件夹"</string>
+    <string name="Show_Image_Preview">"图片预览"</string>
+    <string name="Display_thumbnail">"显示图片文件的缩略图"</string>
+    <string name="Sorting">"排序"</string>
+    <string name="Sorting_type">"排序类型"</string>
+    <string name="Choose_sort_type">"选择怎样排序文件和文件夹"</string>
+    <string name="Sort_by">"排序.."</string>
+    <string name="None">"无"</string>
+    <string name="Alphabetical">"按字母"</string>
+    <string name="Type">"按类型"</string>
+
+    <!--MainActivity title bar-->
+    <string name="title_activity_main">校园云</string>
+    <string name="double_click_exit_hint_msg">再按一次离开校园云盘</string>
+
+    <!-- MainActivity Home Fragment -->
+    <string name="tab_home_item_news_title">消息公告</string>
+    <string name="tab_home_item_cloud_disk_title">我的云盘</string>
+    <string name="tab_home_item_res_lib_title">公共云盘</string>
+    <string name="tab_home_item_small_class_title">微课吧</string>
+    <string name="tab_home_item_temp_screen_title">临时屏</string>
+
+    <!-- TransferStateActivity -->
+    <string name="transfer_state_activity_download_section_title">下载列表</string>
+    <string name="transfer_state_activity_upload_section_title">上传列表</string>
+    <string name="transfer_state_activity_control_start_all_bt_text">全部恢复</string>
+    <string name="transfer_state_activity_control_pause_all_bt_text">全部暂停</string>
+    <string name="transfer_state_activity_control_cancel_all_bt_text">全部终止</string>
+    <string name="transfer_state_activity_control_clear_all_bt_text">清除所有记录</string>
+    <string name="title_activity_transfer_state">传输状态</string>
+    <!-- FragmentUploadList -->
+    <string name="fragment_upload_list_wait_upload_state">等待上传</string>
+    <string name="fragment_upload_list_uploading_state">正在上传</string>
+    <string name="fragment_upload_list_pause_upload_state">暂停上传</string>
+    <string name="fragment_upload_list_uploaded_state">上传完成</string>
+    <!-- FragmentDownloadList -->
+    <string name="fragment_download_list_wait_download_state">等待下载</string>
+    <string name="fragment_download_list_downloading_state">正在下载</string>
+    <string name="fragment_download_list_pause_download_state">暂停下载</string>
+    <string name="fragment_download_list_downloaded_state">下载完成</string>
+
+    <!--Help page-->
+    <string name="product_info">"Cheese 资源管理系统移动客户端,功能稳定,易用, 是您管理多媒体资源的好帮手.\n\n"</string>
+    <string name="version_info">版本: 1.0 beta</string>
+    <string name="Email_Developer">"电子邮件"</string>
+    <string name="send_email_chooser_title">发送邮件 ...</string>
+    <string name="Website">"官网"</string>
+    <string name="action_settings">设置</string>
+    <string name="upload_activity_bottom_bar_default_item_string">磁盘</string>
+    <string name="upload_activity_list_item_count_unit_string">个</string>
+
+    <!-- Welcome Activity -->
+    <string name="welcome_login_bt_string">登录</string>
+    <string name="welcome_about_bt_string">关于</string>
+    <string name="select_path_activity_cancel_bt_string">取消</string>
+    <string name="select_path_activity_ok_bt_prefix_string">选定: </string>
+    <string name="title_activity_select_path">选择上传路径</string>
+    <string name="title_files">其它文件</string>
+
+    <!-- CloudFilesActivity -->
+    <string name="title_activity_cloud_files">云盘</string>
+    <!-- CloudFilesActivity.CAB -->
+    <string name="cab_copy_action">复制</string>
+    <string name="cab_cut_action">移动</string>
+    <string name="cab_delete_action">删除</string>
+    <string name="cab_download_action">下载</string>
+    <string name="cab_edit_action">重命名</string>
+    <string name="cab_more_action">更多</string>
+    <string name="cab_share_action">共享</string>
+    <string name="cab_subtitle">子标题</string>
+    <string name="cab_title">已选择 %d 个</string>
+    <string name="ab_create_folder_action">新建目录</string>
+    <string name="ab_upload_action">上传</string>
+    <string name="input_layout_cancel">取消</string>
+    <string name="input_layout_create">创建</string>
+    <string name="cfa_make_dir_dialog_title">新建文件夹</string>
+    <string name="cfa_make_dir_dialog_def_dirName">新建文件夹</string>
+    <string name="cfa_rename_dialog_title">重命名</string>
+    <string name="input_layout_confirm">确认</string>
+
+    <!-- PlayFileHelper -->
+    <string name="directory">"目录"</string>
+    <string name="equipment">"设备"</string>
+    <string name="video">"视频"</string>
+    <string name="picture">"图片"</string>
+    <string name="music">"音乐"</string>
+    <string name="file">"全部"</string>
+    <string name="open_file">"选择文件的类型"</string>
+    <string name="text">"文档"</string>
+    <string name="not_app_to_open_the_file">"还没安装打开该文件的应用程序"</string>
+    <string name="not_app_to_oepn_the_pic">"还没安装查看图片的应用程序"</string>
+    <string name="not_app_to_play_the_video">"还没安装视频播放器"</string>
+    <string name="not_app_to_play_the_music">"还没安装音乐播放器"</string>
+	<string name="release_to_refresh">松开刷新</string>
+    <string name="pull_to_refresh">下拉刷新</string>
+    <string name="refreshing">正在刷新...</string>
+    <string name="updating">最近更新：</string>
+</resources>

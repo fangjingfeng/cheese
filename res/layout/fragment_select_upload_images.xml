@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!--Use to show current path-->
+    <HorizontalScrollView xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/horizontalScrollView"
+        android:scrollbars="none"
+        android:background="@drawable/file_path_bitmap"
+        tools:context=".view.UploadActivity">
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/file_path_bitmap"
+            android:id="@+id/pathBarContainer">
+        </LinearLayout>
+    </HorizontalScrollView>
+    <LinearLayout
+        android:id="@+id/listcontainer"
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="false"
+        android:layout_below="@+id/horizontalScrollView">
+        <ListView
+            android:id="@+id/android:list"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"/>
+        <GridView
+	        android:id="@+id/id_gridView"
+	        android:layout_width="match_parent"
+	        android:layout_height="match_parent"
+	        android:cacheColorHint="@android:color/transparent"
+	        android:clipChildren="true"
+	        android:gravity="center"
+	        android:horizontalSpacing="3dip"
+	        android:listSelector="@android:color/transparent"
+	        android:numColumns="3"
+	        android:stretchMode="columnWidth"
+	        android:verticalSpacing="3dip" 
+	        android:visibility="gone">
+    	</GridView>
+        <RelativeLayout
+            android:id="@id/android:empty"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <ImageView
+                android:id="@+id/empty_view_iv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/list_view_empty_small_img"
+                android:layout_centerInParent="true" />
+            <TextView
+                android:id="@+id/empty_view_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="文件夹为空"
+                android:layout_gravity="center"
+                android:layout_below="@+id/empty_view_iv"
+                android:layout_centerInParent="true" />
+        </RelativeLayout>
+    </LinearLayout>
+    
+    <!-- Loading progress -->
+    <ProgressBar
+        android:id="@+id/loading"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:layout_centerInParent="true" />
+</RelativeLayout>

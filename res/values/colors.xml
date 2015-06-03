@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="white">#FFFFFF</color>
+    <color name="offWhite">#DDDDDD</color>
+    <color name="black">#000000</color>
+    <color name="darkGray">#333333</color>
+    <color name="huise">#8c8a8a</color>
+    <color name="lightGray">#777777</color>
+    <color name="brightRed">#FF0000</color>
+    <color name="brightGreen">#00FF00</color>
+    <color name="brightBlue">#0000FF</color>
+    <color name="darkBlue">#880000FF</color>
+    <color name="themeBlue">#ff3098fa</color>
+	<color name="trans_title_back">#ffffe7f2</color>
+    <color name="background_window">#FFE5E5E5</color>
+    <color name="offWhite_test">#CBDFDDE4</color>
+    <color name="transparent">#00000000</color>
+    <!-- PagerSlidingTabStrip -->
+     <color name="background_tab_pressed">#6633B5E5</color>
+     <!-- login url editText Color -->
+     <color  name="long_edittext_url_color">#232323</color>
+      <color name="trans_list_back">#fffafafb</color>
+     <!--  login Title bg -->
+     <color name="login_title_bg" >#08a9f9</color>
+     <color name="trans_failed_txt">#ff323232</color>
+     <color name ="popu_botion" >#1f7fdf</color>
+     <color name ="popu_greep" >#666</color>
+     
+     <color name ="list_item_select_bj">#d0f7f7</color>
+     
+     <color name="trans_btn_txt">#ffeceff0</color>
+     
+     <color name="tab_2_item_pressed">#3387939d</color>
+     
+     <color name="select_upload__item_bg">#efefef</color>
+     
+     <color name="actionbar_select_color">#243a48</color>
+     <color name="button_openloadingfile">#2d99d7</color>
+     
+     <color name="news">#ED445B</color>
+     <color name="tow">#FF8254</color>
+     <color name="three">#F8AD38</color>
+     <color name="four">#0094FF</color>
+     
+     <color name="share_foot">#353535</color>
+     <color name="share_uplaod">#4a99fc</color>
+     <color name="yulan_button">#244281</color>
+     
+     <color name="notice_number_bj">#fd8587</color>
+     <color name="notice">#898989</color>
+     <color name="notice_title">#bdbdbd</color>
+
+     
+     <color name="mobile_foot_button_textcolor_blue">#2394d5</color>
+     
+     <color name="more_bt_bg_coler">#42aeef</color>
+     
+     
+     <color name="mobile_footer_bg">#383f4f</color>
+     <color name="mobile_cancal_default">#7d8592</color>
+     <color name="mobile_cancal_pressed">#696e76</color>
+     <color name="mobile_determine_default">#4ca3f3</color>
+     <color name="mobile_determine_pressed">#277fcf</color>
+     <color name="file_ishedden">#cccccc</color>
+     
+     <color name="half_transparent">#ffffff</color>
+     <color name="translucent_gray">#cccccc</color>
+     <color name="gold">#b89766</color>
+     
+</resources>

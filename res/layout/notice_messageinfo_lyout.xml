@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/bj_notice_messageinfo" >
+        <RelativeLayout
+             android:layout_width="match_parent"
+	    	 android:layout_height="44dip">
+		    <TextView
+                android:id="@+id/tv_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:ellipsize="end"
+                android:singleLine="true"
+                android:text="fdshjfhsjkdfhjksdhfdjkds"
+                android:textSize="16sp" />
+		</RelativeLayout>
+		
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical" >
+            <TextView
+		        android:id="@+id/tv_message_context"
+		        android:layout_width="match_parent"
+		        android:layout_height="wrap_content"
+		        android:gravity="center_vertical"
+		        android:padding="@dimen/file_list_thumb"
+		        android:textColor="@color/popu_greep"
+		        android:text="dfjdksfjksdjfk" />
+
+            <ListView
+                android:id="@+id/notice_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_above="@+id/button_reply"
+                android:layout_below="@+id/tv_message_context" />
+	        <Button
+   	            android:id="@+id/button_reply"
+   	            android:layout_width="wrap_content"
+   	            android:layout_height="50dip"
+   	            android:layout_alignParentRight="true"
+   	            android:layout_alignParentBottom="true"
+   	            android:visibility="gone"
+   	            android:text="回复" />
+        </RelativeLayout>
+</LinearLayout>

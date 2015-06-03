@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <FrameLayout android:id="@+id/fgv_player_main" android:layout_width="fill_parent" android:layout_height="wrap_content"
+      xmlns:android="http://schemas.android.com/apk/res/android">
+        <ImageView android:layout_gravity="center_horizontal" android:id="@+id/albumImageView" android:paddingLeft="6.0dip" android:paddingTop="@dimen/music_album_padding" android:paddingRight="6.0dip" android:focusable="false" android:focusableInTouchMode="false" android:clickable="false" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="30.0dip" android:src="@drawable/music_album_stub"
+          xmlns:android="http://schemas.android.com/apk/res/android" />
+    </FrameLayout>
+    <TextView android:textSize="16.0sp" android:textColor="#ff737373" android:ellipsize="marquee" android:id="@+id/tv_play_song" android:focusable="true" android:focusableInTouchMode="true" android:layout_marginTop="@dimen/music_album_padding" android:layout_marginBottom="30.0dip" android:scrollHorizontally="true" android:singleLine="true" android:marqueeRepeatLimit="marquee_forever" style="@style/wrap" />
+    <RelativeLayout android:id="@+id/music_function" android:visibility="invisible" android:layout_marginLeft="27.0dip" android:layout_marginRight="27.0dip" style="@style/wrap">
+        <ImageButton android:id="@+id/music_share" android:background="@drawable/music_btn_share" style="@style/wrap" />
+        <ImageButton android:id="@+id/music_download" android:background="@drawable/music_btn_download" android:layout_alignParentRight="true" style="@style/wrap" />
+    </RelativeLayout>
+</merge>

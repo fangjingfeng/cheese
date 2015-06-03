@@ -1,0 +1,120 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical"
+    tools:context="codingpark.net.cheesecloud.view.SelectPathActivity"
+    >
+    <RelativeLayout android:id="@+id/titleLayout" android:background="@drawable/music_title_bar_bg" android:layout_width="fill_parent" android:layout_height="@dimen/title_bar_height">
+        <TextView android:textSize="15.0dip" android:textColor="@color/trans_title_back" android:gravity="center_vertical" android:id="@+id/ib_playback" android:background="@drawable/titlelayout_bg" android:paddingLeft="15.0dip" android:paddingRight="15.0dip" android:layout_width="wrap_content" android:layout_height="fill_parent" android:text="@string/back" android:drawableLeft="@drawable/back" android:drawablePadding="5.0dip" />
+        <View android:background="@drawable/title_line" android:layout_width="1.0dip" android:layout_height="fill_parent" android:layout_toRightOf="@id/ib_playback" />
+        <TextView android:textSize="16.0sp" android:textColor="@color/white" android:gravity="center" android:id="@+id/textView1" android:paddingLeft="7.0dip" android:text="选择移动的位置" android:layout_centerHorizontal="true" style="@style/filly" />
+
+		<ImageView
+		    android:id="@+id/add_folder"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:src="@drawable/create_folder_default"
+		    android:layout_alignParentRight="true"
+		    android:layout_centerVertical="true" />
+
+	</RelativeLayout>
+    <HorizontalScrollView 
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/horizontalScrollView"
+        android:scrollbars="none"
+        android:layout_below="@id/titleLayout"
+        android:background="@drawable/file_path_bitmap"
+        tools:context=".view.UploadActivity">
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/path_bar_bg_img"
+            android:id="@+id/pathBarContainer">
+        </LinearLayout>
+    </HorizontalScrollView>
+
+    <LinearLayout
+        android:id="@+id/listcontainer"
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="false"
+        android:layout_below="@+id/horizontalScrollView"
+        android:layout_above="@+id/bottom_form" >
+        <ListView
+            android:id="@+id/android:list"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            />
+        <!-- the android:id is important -->
+        <RelativeLayout
+            android:id="@id/android:empty"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <ImageView
+                android:id="@+id/empty_view_iv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/list_view_empty_small_img"
+                android:layout_centerInParent="true" />
+            <TextView
+                android:id="@+id/empty_view_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="文件夹为空"
+                android:layout_gravity="center"
+                android:layout_below="@+id/empty_view_iv"
+                android:layout_centerInParent="true" />
+        </RelativeLayout>
+    </LinearLayout>
+
+    <!-- Loading progress -->
+
+    <LinearLayout
+        android:id="@+id/bottom_form"
+        android:layout_width="fill_parent"
+        android:layout_height="@dimen/mobile_relativeLayout_height"
+        android:background="@color/mobile_footer_bg"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentStart="true">
+
+		<Button
+		    android:id="@+id/cancel"
+		    android:layout_width="wrap_content"
+		    android:layout_height="@dimen/mobile_button_height"
+		    android:layout_weight="1"
+		    android:layout_gravity="center_vertical"
+		    android:background="@drawable/mobile_footer_button_select_bg"
+		    android:layout_marginLeft="@dimen/m_p_10"
+            android:layout_marginRight="@dimen/m_p_5"
+		    android:text="@string/select_path_activity_cancel_bt_string"
+		    android:textColor="@color/white" />
+		<Button
+            android:id="@+id/mobile_target_forder"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/mobile_button_height"
+            android:layout_weight="1"
+            android:layout_marginLeft="@dimen/m_p_5"
+            android:layout_marginRight="@dimen/m_p_10"
+            android:layout_gravity="center_vertical"
+            android:background="@drawable/mobile_footer_pressed_buttons_select_bg"
+            android:text="@string/input_layout_confirm"
+            android:textColor="@color/white" />
+
+    </LinearLayout>
+
+    <ProgressBar
+        android:id="@+id/loading"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true" />
+
+</RelativeLayout>

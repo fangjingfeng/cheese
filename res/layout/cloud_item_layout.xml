@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="@dimen/file_list_item_height"
+    android:id="@+id/rl_root_view"
+    android:padding="6dip" >
+    <ImageView
+        android:src="@drawable/folder"
+        android:layout_width="@dimen/file_list_icon_height" 
+        android:layout_height="@dimen/file_list_icon_height" 
+        android:id="@+id/file_thumb"
+        android:layout_marginRight="@dimen/file_list_thumb"/>
+    
+    <TextView
+        android:id="@+id/file_name_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/file_thumb"
+        android:layout_marginTop="5dip"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentBottom="false"
+        android:text="fsdfssdfgdskfgjksdjgkdfjkjglhdkfljgl;dkflgjdlkfjgkldjkfgdkwi ejwsrfhswejfnhbsjkhnfiosie sf jksfj"
+        android:singleLine="true" 
+		android:ellipsize="end" 
+		android:layout_marginRight="@dimen/height_30"
+        android:gravity="center_vertical" />
+
+    <TextView
+        android:id="@+id/file_size_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/file_name_view"
+        android:layout_toRightOf="@+id/file_thumb"
+        android:text="23M       "
+        android:textSize="11sp"
+        android:textColor="@color/huise" />
+    
+    <CheckBox
+        android:id="@+id/multiselect_checkbox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:button="@drawable/checkbok_select_bj"
+        android:focusable="false" />
+
+    <TextView
+        android:id="@+id/file_date_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/file_name_view"
+        android:layout_toRightOf="@+id/file_size_view"
+        android:gravity="center_vertical"
+        android:text="2014-01-25 12:35:12"
+        android:textColor="@color/huise"
+        android:textSize="11sp" />
+
+</RelativeLayout>

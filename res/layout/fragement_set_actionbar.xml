@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/topbar_bg_button"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/multi_menu_top"
+    android:layout_gravity="center"
+    android:clickable="true" 
+    android:orientation="horizontal">
+
+ <Button android:textSize="13.0dip"
+      android:textColor="#ffd2e0e7" 
+      android:id="@+id/button_cancel" 
+      android:background="@drawable/btn_title_right_bg" 
+      android:text="@string/cancel" 
+      android:width="70.0dip"
+      style="@style/title_bar_button"
+      android:gravity="center"
+      android:layout_height="match_parent"
+       />
+
+    <View android:id="@+id/leftLine" 
+        android:background="@drawable/title_line" 
+        android:layout_width="2.0dip" 
+        android:layout_height="fill_parent" 
+        android:layout_toRightOf="@id/btnExitMuliti" />
+
+    <TextView android:textSize="16.0dip" 
+        android:textColor="@color/white" 
+        android:ellipsize="end" 
+        android:id="@+id/tv_celic_box" 
+        android:layout_width="0.0dip" 
+        android:layout_height="fill_parent" 
+        android:text="@string/cloud_file_browser_nums_no" 
+        android:singleLine="true" 
+        android:gravity="center"
+        android:layout_weight="1.0" />
+     <View android:id="@+id/rightLine" 
+         android:background="@drawable/title_line" 
+         android:layout_width="2.0dip"   
+         android:layout_height="fill_parent" />
+     
+     <Button
+         android:id="@+id/button_all_seleck"
+         style="@style/title_bar_button"
+         android:layout_height="match_parent"
+         android:background="@drawable/btn_title_right_bg"
+         android:gravity="center"
+         android:minWidth="70.0dip"
+         android:text="@string/all_select"
+         android:textColor="#ffd2e0e7"
+         android:textSize="13.0dip" />
+
+</LinearLayout>

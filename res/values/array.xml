@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>  
+<resources>  
+    <string-array name="student">  
+        <item>新建文件夹</item>  
+    </string-array>  
+</resources>  
