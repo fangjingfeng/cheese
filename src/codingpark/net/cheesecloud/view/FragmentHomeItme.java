@@ -401,6 +401,7 @@ DeleteFileTask.OnDeleteFileCompletedListener, RenameFileTask.OnRenameFileComplet
 	                	 		 for(CloudFile cloudimager:mFileList){
 	                	 			 if(ContentntIsFile.TAB_File_IS_IMAGER1==ContentntIsFile.isFileType(cloudimager.getFilePath())){
 	                            		String url= wepURL+"Images/Prev/"+cloudimager.getThumb_uri_name()+"-original.jpg";
+	                            		System.out.println("图片路径"+url);
 	                            		if(file.getThumb_uri_name().equals(cloudimager.getThumb_uri_name())){
 	                            			clicimage =com;
 	                            			System.out.println(file.getThumb_uri_name() +":"+ cloudimager.getThumb_uri_name());

@@ -460,9 +460,9 @@ public class CloudFilesActivity_1s extends Activity implements OnFragmentInterac
             else if (file.isFile()){
                 // Just handle exist and size > 0 file
                 if (file.exists() && file.length() > 0) {
+                	System.out.println("调用了，checkedFileInfo 借口方法，返回值：result="+result+"上传文件的大小     ：  "+uFile.getFileSize());
                     result = ClientWS.getInstance(CloudFilesActivity_1s.this).checkedFileInfo_wrapper(uFile);
-                    if (result == CheckedFileInfoResultType.RESULT_CHECK_SUCCESS ||
-                            result == CheckedFileInfoResultType.RESULT_QUICK_UPLOAD) {
+                    if (result == CheckedFileInfoResultType.RESULT_CHECK_SUCCESS || result == CheckedFileInfoResultType.RESULT_QUICK_UPLOAD) {
                         mDataSource.addUploadFile(uFile);
                     }
                 }

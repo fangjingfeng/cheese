@@ -127,4 +127,10 @@
     <string name="pull_to_refresh">下拉刷新</string>
     <string name="refreshing">正在刷新...</string>
     <string name="updating">最近更新：</string>
+    
+    <string name="tv_menu_space">21G / 100G</string>
+    <string name="tv_menu_auto_backup">自动备份照片</string>
+    <string name="tv_downlao_and_update">查看文件上传下载进程</string>
+    
+    <string name="tv_app_off">退出登入</string>
 </resources>

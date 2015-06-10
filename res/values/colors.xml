@@ -14,7 +14,6 @@
 	<color name="trans_title_back">#ffffe7f2</color>
     <color name="background_window">#FFE5E5E5</color>
     <color name="offWhite_test">#CBDFDDE4</color>
-    <color name="transparent">#00000000</color>
     <!-- PagerSlidingTabStrip -->
      <color name="background_tab_pressed">#6633B5E5</color>
      <!-- login url editText Color -->
@@ -25,7 +24,7 @@
      <color name="trans_failed_txt">#ff323232</color>
      <color name ="popu_botion" >#1f7fdf</color>
      <color name ="popu_greep" >#666</color>
-     
+     <color name="transparent">#00000000</color>
      <color name ="list_item_select_bj">#d0f7f7</color>
      
      <color name="trans_btn_txt">#ffeceff0</color>
@@ -49,8 +48,9 @@
      <color name="notice_number_bj">#fd8587</color>
      <color name="notice">#898989</color>
      <color name="notice_title">#bdbdbd</color>
-
-     
+	
+	 <color name="close_app_on">#ca1e1e</color>     
+	 <color name="close_app_off">#f33a3a</color>     
      <color name="mobile_foot_button_textcolor_blue">#2394d5</color>
      
      <color name="more_bt_bg_coler">#42aeef</color>
@@ -67,4 +67,11 @@
      <color name="translucent_gray">#cccccc</color>
      <color name="gold">#b89766</color>
      
+     
+    <color name="green">#ff4f8c0b</color>
+    <color name="blue">#ff1869af</color>
+    <color name="shadow">#1e000000</color>
+    <color name="grey">#ff5b5a5a</color>
+    <color name="light_gray">#ffebebeb</color>
+    <color name="deep_gray">#ff3b3b3b</color>
 </resources>

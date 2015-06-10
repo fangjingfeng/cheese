@@ -115,4 +115,24 @@
         <item name="android:windowIsFloating">true</item>
     </style>
     
+    <style name="menuItem">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">48dp</item>
+        <item name="android:background">@drawable/menu_item_bg</item>
+        <item name="android:paddingLeft">30dp</item>
+        <item name="android:paddingRight">20dp</item>
+    </style>
+    <style name="menuItemIcon">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_centerVertical">true</item>
+        <item name="android:layout_marginRight">16dp</item>
+    </style>
+    <style name="menuItemTitle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_centerVertical">true</item>
+        <item name="android:textColor">@color/deep_gray</item>
+        <item name="android:textSize">15sp</item>
+    </style>
 </resources>

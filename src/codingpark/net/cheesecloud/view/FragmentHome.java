@@ -261,8 +261,10 @@ public class FragmentHome extends ListFragment implements PullFileListTask.OnPul
 				}
 				notic_editor.putInt(MyConstances.Notic_name_key, nectionInfo.size());
 				notic_editor.commit();
-				WsMessageInfo wsMessageInfo =nectionInfo.get(0);
-				notice_title.setText(wsMessageInfo.getContext());
+				if(nectionInfo.size()>0){
+					WsMessageInfo wsMessageInfo =nectionInfo.get(0);
+					notice_title.setText(wsMessageInfo.getContext());
+				}
 			}else{
 				Toast.makeText(mContext, "信件加载失败！", 0).show();
 			}

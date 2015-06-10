@@ -406,6 +406,8 @@ public class UploadService extends Service {
         int result = 0;
         WsSyncFile wsFile = new WsSyncFile();
         wsFile.ID = file.getRemote_id();
+        
+        System.out.println("file.getFileSize() = "+file.getFileSize()+" : : "+file.getChangedSize() +" : size = " +size );
         if (file.getFileSize() == (file.getChangedSize() + size)) {
             wsFile.IsFinally = true;
             byte[] r_buf = new byte[size];
@@ -454,15 +456,14 @@ public class UploadService extends Service {
                                 Log.d(TAG, "isInterrupted");
                                 return;
                             }
-                            file.setChangedSize(file.getChangedSize() + count);
-                            System.out.println("getFileSize =="+file.getFileSize()+" : setChangedSize =="+file.getChangedSize());
                             result = uploadFile_wrapper(file, buffer, count);
                             if (result == WsResultType.Success) {
+                            	file.setChangedSize(file.getChangedSize() + count);
                             	System.out.println("上传中，发送上传中广播~~~~~");
                                 sendChangedBroadcast(file, EVENT_UPLOAD_BLOCK_SUCCESS);
                                 mTry = 0;
                             }else{
-                                if (mTry < MAX_RETRY_TIME) {
+                                if(mTry < MAX_RETRY_TIME) {
 	                                Log.d(TAG, "Upload failed, retry: " + mTry);
 	                                mTry++;
 	                                continue;

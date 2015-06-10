@@ -70,7 +70,7 @@ public final class ClientWS {
      * In reality, the endpoint address should dynamic fetch from SharedPreference,
      * this const string used for SharedPrefernece.getString's default value parameter
      */
-    public static final String DEFAULT_ENDPOINT = "http://192.168.0.149:8989/ClientWS.asmx";
+    public static final String DEFAULT_ENDPOINT = "http://52.116.52.8:8989/ClientWS.asmx";
     /**
      * Web service API name used by upload file process
      */
@@ -888,11 +888,12 @@ public final class ClientWS {
      * record on server and the byte array of the part file.
      * @return
      */
-    public int uploadFile(WsSyncFile wsSyncFile) {
+    public int uploadFile(WsSyncFile wsSyncFile) {   
         int result;
         // Create SOAP Action
         String soapAction = NAMESPACE + METHOD_UPLOADFILE;//"http://tempuri.org/Test";
 
+        System.out.println("wsSyncFile -----"+wsSyncFile.IsFinally);
         // Initial SoapObject
         SoapObject rpc = new SoapObject(NAMESPACE, METHOD_UPLOADFILE);
         // add web service method parameter
@@ -966,7 +967,6 @@ public final class ClientWS {
     	   //加载失败
     	   
 	   }
- 	   
     }
 
     /**

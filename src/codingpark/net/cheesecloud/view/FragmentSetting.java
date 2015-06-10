@@ -16,8 +16,13 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.widget.Toast;
+import android.widget.ToggleButton;
 import codingpark.net.cheesecloud.AppConfigs;
 import codingpark.net.cheesecloud.R;
 import codingpark.net.cheesecloud.handle.OnSettingListener;
@@ -29,7 +34,7 @@ import codingpark.net.cheesecloud.handle.OnSettingListener;
  * Activities containing this fragment MUST implement the {@link }
  * interface.
  */
-public class FragmentSetting extends Fragment {
+public class FragmentSetting extends Fragment implements OnClickListener{
     public static final String TAG              = FragmentSetting.class.getSimpleName();
     private boolean mHiddenChanged              = false;
     private boolean mThumbnailChanged           = false;
@@ -43,10 +48,13 @@ public class FragmentSetting extends Fragment {
     private Intent is                           = new Intent();
 
     // UI element
-    private CheckBox hidden_bx                  = null;
+   /* private CheckBox hidden_bx                  = null;
     private CheckBox thumbnail_bx               = null;
-    private ImageButton sort_bt                 = null;
-    private Button logout_bt                    = null;
+    private ImageButton sort_bt                 = null;*/
+    
+    private TextView logenName;
+    private ProgressBar disk_space ;
+    
     
     private Context context= null;
 
@@ -55,6 +63,9 @@ public class FragmentSetting extends Fragment {
 
     private OnSettingListener mListener     = null;
 	private ProgressBar user_space_ratio_progressbar;
+	private RelativeLayout iv_update_and_down;
+	private ToggleButton toggleButton;
+	private Button iv_logo;
 
     public static FragmentSetting newInstance(String param2) {
         FragmentSetting fragment = new FragmentSetting();
@@ -84,30 +95,16 @@ public class FragmentSetting extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater,  ViewGroup container,  Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_settings, null);
+        
+        logenName = (TextView) v.findViewById(R.id.account_info_textview);
+        disk_space =(ProgressBar) v.findViewById(R.id.disk_space_state_textview);
+        iv_update_and_down = (RelativeLayout) v.findViewById(R.id.iv_update_and_down);
+        iv_update_and_down.setOnClickListener(this);
+        toggleButton = (ToggleButton)v.findViewById(R.id.toggleButton);
+        iv_logo = (Button) v.findViewById(R.id.iv_logo);
+        iv_logo.setOnClickListener(this);
+        
 
-        hidden_state        = true;//i.getExtras().getBoolean("HIDDEN");
-        thumbnail_state     = true;//i.getExtras().getBoolean("THUMBNAIL");
-        sort_state          = 0;//i.getExtras().getInt("SORT");
-
-        // Init UI elements
-        hidden_bx = (CheckBox)v.findViewById(R.id.setting_hidden_box);
-        thumbnail_bx = (CheckBox)v.findViewById(R.id.setting_thumbnail_box);
-        sort_bt = (ImageButton)v.findViewById(R.id.settings_sort_button);
-        logout_bt = (Button)v.findViewById(R.id.logout_bt);
-        hidden_bx.setChecked(hidden_state);
-        thumbnail_bx.setChecked(thumbnail_state);
-        user_space_ratio_progressbar = (ProgressBar)v.findViewById(R.id.disk_space_ratio_progressbar);
-        user_space_ratio_progressbar.setMax(1000);
-        user_space_ratio_progressbar.setProgress(25);
-        Button show_update_down =(Button) v.findViewById(R.id.show_update_down);
-        show_update_down.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				Intent intent =new Intent(mContext, TransferStateActivity.class);
-				mContext.startActivity(intent);
-			}
-		});
-        // Init UI elements handler
         initHandler();
 
         return v;
@@ -115,6 +112,26 @@ public class FragmentSetting extends Fragment {
 
 
     private void initHandler() {
+    	disk_space.setMax(100);
+    	disk_space.setProgress(10);
+    	
+    	toggleButton.setOnCheckedChangeListener(new OnCheckedChangeListener(){
+
+            public void onCheckedChanged(CompoundButton buttonView,
+                    boolean isChecked) {
+            	if(isChecked){
+            		Toast.makeText(mContext, "关闭", 0).show();
+            	}else{
+            		Toast.makeText(mContext, "打开", 0).show();
+            	}
+                
+            }
+
+        });
+    	
+    	
+    	
+    	/*
         hidden_bx.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -173,17 +190,8 @@ public class FragmentSetting extends Fragment {
             }
         });
 
-        logout_bt.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d(TAG, "User logout manually!");
-                // Set PREFS_LOGIN false
-                mPrefs.edit().putBoolean(AppConfigs.PREFS_LOGIN, false).apply();
-                // Call MainActivity logout,start WelcomeActivity, then finish MainActivity
-                mListener.logout();
-            }
-        });
-    }
+        
+    */}
 
 
     @Override
@@ -205,5 +213,26 @@ public class FragmentSetting extends Fragment {
         mListener = null;
         
     }
+
+	@Override
+	public void onClick(View v) {
+		switch (v.getId()) {
+		case R.id.rl_photho_updat:
+			//同步照片
+			
+			break;
+
+		case R.id.iv_update_and_down:
+			//查看当前进度
+			Intent intent =new Intent(mContext, TransferStateActivity.class);
+			mContext.startActivity(intent);
+			break;
+		case R.id.iv_logo:
+			Toast.makeText(mContext, "退出等人",0).show();
+            mPrefs.edit().putBoolean(AppConfigs.PREFS_LOGIN, false).apply();
+            mListener.logout();
+           break;
+		}
+	}
 
 }

@@ -75,7 +75,7 @@ public class MyListView extends ListView implements OnScrollListener {
 	}
 
 	private void init(Context context) {
-		setCacheColorHint(context.getResources().getColor(R.color.transparent));
+		setCacheColorHint(context.getResources().getColor(R.color.black));
 		inflater = LayoutInflater.from(context);
 
 		headView = (LinearLayout) inflater.inflate(R.layout.head, null);
